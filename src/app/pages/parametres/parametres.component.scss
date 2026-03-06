@@ -1,0 +1,438 @@
+// src/app/pages/parametres/parametres.component.scss
+@use 'sass:color';
+
+$primary-blue: #3b82f6;
+$success:      #10b981;
+$warning:      #f59e0b;
+$danger:       #ef4444;
+$dark-blue:    #1e293b;
+$gray-light:   #f8fafc;
+$gray-text:    #64748b;
+$border:       #e2e8f0;
+
+// ===== CONTENEUR PRINCIPAL =====
+.parametres-container {
+  padding: 1rem 1.5rem 3rem;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  box-sizing: border-box;
+}
+
+// ===== EN-TÊTE =====
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    .back-btn {
+      width: 38px; height: 38px;
+      border-radius: 10px; border: none;
+      background: white; color: $dark-blue;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all 0.2s;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      flex-shrink: 0;
+      i { font-size: 1.1rem; }
+      &:hover { background: $dark-blue; color: white; transform: translateX(-3px); }
+    }
+
+    h1 {
+      color: $dark-blue; font-weight: 700;
+      font-size: 1.5rem; margin: 0;
+      display: flex; align-items: center; gap: 0.5rem;
+      i { color: $primary-blue; }
+    }
+  }
+
+  .header-actions {
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+}
+
+// ===== TABS =====
+::ng-deep .p-tabview {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  overflow: hidden;
+
+  .p-tabview-nav {
+    background: white;
+    border-bottom: 2px solid $border;
+    padding: 0 1.5rem;
+
+    li .p-tabview-nav-link {
+      color: $gray-text;
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 1rem 1.25rem;
+      border: none !important;
+      border-bottom: 2px solid transparent !important;
+      background: transparent !important;
+      transition: all 0.2s;
+      display: flex; align-items: center; gap: 0.4rem;
+
+      &:hover { color: $primary-blue; }
+    }
+
+    li.p-highlight .p-tabview-nav-link {
+      color: $primary-blue !important;
+      border-bottom-color: $primary-blue !important;
+    }
+  }
+
+  .p-tabview-panels {
+    background: white;
+    padding: 0;
+  }
+}
+
+// ===== CONTENU ONGLET =====
+.tab-content {
+  padding: 2rem;
+
+  h3 {
+    color: $dark-blue;
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 0 0 1.25rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid $border;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+}
+
+// ===== PROFIL HEADER =====
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: $gray-light;
+  border-radius: 14px;
+  border: 1px solid $border;
+
+  .avatar-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+
+    ::ng-deep .profile-avatar {
+      width: 80px !important; height: 80px !important;
+      font-size: 2rem !important;
+      background: $primary-blue !important;
+      color: white !important;
+      box-shadow: 0 4px 12px rgba($primary-blue, 0.3);
+    }
+
+    .avatar-upload {
+      ::ng-deep .p-button {
+        font-size: 0.78rem; padding: 0.4rem 0.9rem;
+        border-radius: 6px; background: white;
+        border: 1px solid $border; color: $dark-blue;
+        &:hover { border-color: $primary-blue; color: $primary-blue; }
+      }
+    }
+  }
+
+  .profile-info {
+    flex: 1;
+    h3 {
+      color: $dark-blue; font-size: 1.25rem; font-weight: 700;
+      margin: 0 0 0.25rem; border: none; padding: 0;
+    }
+    .user-email  { color: $gray-text; margin: 0.15rem 0; font-size: 0.9rem; }
+    .user-role   { color: $primary-blue; font-weight: 600; font-size: 0.85rem; margin: 0.15rem 0; }
+    .user-meta   { color: color.adjust($gray-text, $lightness: 15%); font-size: 0.8rem; margin: 0; }
+  }
+}
+
+// ===== GRILLE FORMULAIRE =====
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+
+  .form-group {
+    &.full-width { grid-column: 1 / -1; }
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+
+  label {
+    font-size: 0.85rem; font-weight: 600;
+    color: $dark-blue;
+  }
+
+  .field-hint {
+    font-size: 0.78rem; color: $gray-text;
+    margin-top: 0.2rem;
+  }
+}
+
+.param-input {
+  width: 100%;
+  padding: 0.65rem 0.9rem;
+  border: 2px solid $border;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: $dark-blue;
+  background: white;
+  box-sizing: border-box;
+  transition: all 0.2s;
+
+  &:focus { border-color: $primary-blue; outline: none; box-shadow: 0 0 0 3px rgba($primary-blue, 0.1); }
+  &:disabled { background: $gray-light; color: $gray-text; cursor: not-allowed; }
+}
+
+// ===== BOUTON SECTION =====
+.save-section-btn {
+  margin-top: 1.5rem;
+}
+
+// ===== SÉCURITÉ =====
+::ng-deep .password-field {
+  width: 100% !important;
+  .p-password-input {
+    width: 100% !important;
+    border: 2px solid $border !important;
+    border-radius: 8px !important;
+    padding: 0.65rem 0.9rem !important;
+    &:focus { border-color: $primary-blue !important; box-shadow: 0 0 0 3px rgba($primary-blue, 0.1) !important; }
+  }
+}
+
+.twofa-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem;
+  background: $gray-light;
+  border-radius: 12px;
+  border: 1px solid $border;
+  gap: 1rem;
+
+  .twofa-info {
+    display: flex; align-items: center; gap: 1rem;
+
+    i.pi-shield {
+      font-size: 2rem; color: $primary-blue;
+      background: rgba($primary-blue, 0.1);
+      width: 50px; height: 50px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    p    { margin: 0; color: $dark-blue; font-weight: 600; font-size: 0.95rem; }
+    small {
+      color: $gray-text; font-size: 0.82rem;
+      &.active { color: $success; font-weight: 600; }
+    }
+  }
+}
+
+// ===== SESSIONS =====
+.sessions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.session-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  background: $gray-light;
+  border-radius: 10px;
+  border: 1px solid $border;
+  gap: 1rem;
+
+  .session-info {
+    display: flex; align-items: center; gap: 1rem;
+    i.pi-desktop { font-size: 1.4rem; color: $primary-blue; }
+    .session-device   { display: block; font-weight: 600; color: $dark-blue; font-size: 0.9rem; }
+    .session-location { display: block; color: $gray-text; font-size: 0.8rem; }
+  }
+
+  .session-meta {
+    display: flex; align-items: center; gap: 0.75rem;
+    .session-date { color: $gray-text; font-size: 0.8rem; }
+
+    .session-badge.current {
+      background: rgba($success, 0.1); color: $success;
+      padding: 0.25rem 0.75rem; border-radius: 20px;
+      font-size: 0.78rem; font-weight: 600;
+    }
+
+    .session-delete {
+      width: 30px; height: 30px; border-radius: 6px;
+      border: none; background: rgba($danger, 0.1);
+      color: $danger; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+      &:hover { background: $danger; color: white; }
+    }
+  }
+}
+
+// ===== PRÉFÉRENCES =====
+.preferences-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.pref-item {
+  background: $gray-light;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  border: 1px solid $border;
+
+  .pref-label {
+    display: flex; align-items: center; gap: 0.75rem;
+    margin-bottom: 0.9rem;
+
+    .pref-icon { font-size: 1.1rem; color: $primary-blue; }
+
+    .pref-title {
+      font-weight: 700; color: $dark-blue;
+      font-size: 0.95rem; display: block;
+    }
+
+    .pref-hint {
+      font-size: 0.75rem; color: $gray-text;
+      display: block; margin-top: 0.1rem;
+    }
+  }
+
+  ::ng-deep .p-selectbutton {
+    .p-button {
+      font-size: 0.85rem;
+      padding: 0.5rem 1rem;
+      border-color: $border !important;
+      color: $gray-text;
+      background: white;
+      font-weight: 600;
+      transition: all 0.2s;
+
+      &:hover { border-color: $primary-blue !important; color: $primary-blue; }
+    }
+    .p-button.p-highlight {
+      background: $primary-blue !important;
+      border-color: $primary-blue !important;
+      color: white !important;
+      box-shadow: 0 2px 8px rgba($primary-blue, 0.3);
+    }
+  }
+}
+
+.pref-preview {
+  margin-top: 0.75rem;
+  padding: 0.6rem 1rem;
+  background: white;
+  border: 1px solid $border;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: $gray-text;
+
+  strong { color: $dark-blue; }
+
+  &.rtl-preview { direction: rtl; text-align: right; }
+}
+
+// ===== NOTIFICATIONS =====
+.notifications-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.notif-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  background: $gray-light;
+  border-radius: 10px;
+  border: 1px solid $border;
+
+  .notif-info {
+    display: flex; align-items: center; gap: 0.75rem;
+    i { font-size: 1.1rem; color: $primary-blue; }
+    span { font-weight: 600; color: $dark-blue; font-size: 0.9rem; }
+  }
+}
+
+// ===== ZONE DE DANGER =====
+.danger-zone {
+  margin-top: 2rem;
+  background: #fff5f5;
+  border: 2px solid #fecaca;
+  border-radius: 16px;
+  overflow: hidden;
+
+  .danger-header {
+    background: linear-gradient(135deg, #fee2e2, #fecaca);
+    padding: 1rem 1.5rem;
+    display: flex; align-items: center; gap: 0.75rem;
+    i { font-size: 1.5rem; color: $danger; }
+    h3 { margin: 0; color: $danger; font-size: 1rem; font-weight: 700; }
+  }
+
+  .danger-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2rem;
+    padding: 1.5rem;
+
+    .danger-info {
+      flex: 1;
+      h4 { color: $danger; font-size: 0.95rem; margin: 0 0 0.5rem; }
+      p  { color: #7f1d1d; font-size: 0.88rem; margin: 0 0 0.5rem; }
+      ul {
+        margin: 0; padding-left: 1.2rem;
+        li { color: #7f1d1d; font-size: 0.85rem; margin-bottom: 0.2rem; }
+      }
+    }
+
+    .danger-actions {
+      display: flex; flex-direction: column; gap: 0.5rem;
+      align-items: flex-end; flex-shrink: 0;
+    }
+  }
+}
+
+// ===== RESPONSIVE =====
+@media (max-width: 900px) {
+  .form-grid { grid-template-columns: 1fr; }
+  .form-grid .form-group.full-width { grid-column: 1; }
+  .profile-header { flex-direction: column; text-align: center; }
+  .twofa-section { flex-direction: column; align-items: flex-start; }
+  .session-item { flex-direction: column; align-items: flex-start; }
+  .danger-content { flex-direction: column; }
+  .danger-actions { align-items: stretch; width: 100%; }
+}
+
+@media (max-width: 600px) {
+  .parametres-container { padding: 0.75rem 1rem 2rem; }
+  .tab-content { padding: 1rem; }
+  .header-section h1 { font-size: 1.2rem; }
+  .pref-item { padding: 1rem; }
+  ::ng-deep .p-selectbutton .p-button { padding: 0.4rem 0.7rem; font-size: 0.8rem; }
+}

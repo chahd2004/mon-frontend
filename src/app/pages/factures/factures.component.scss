@@ -1,0 +1,422 @@
+// src/app/pages/factures/factures.component.scss
+$primary-blue: #3b82f6;
+$dark-blue: #1e293b;
+$success: #10b981;
+$warning: #f59e0b;
+$danger: #ef4444;
+$border: #e2e8f0;
+$bg: #f8fafc;
+
+.factures-container {
+  padding: 1rem 1.5rem;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  box-sizing: border-box;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+// ===== EN-TÊTE =====
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+
+  h2 {
+    color: $dark-blue;
+    font-weight: 700;
+    font-size: 1.4rem;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    i { color: $primary-blue; }
+  }
+}
+
+// ===== BOUTON NOUVELLE FACTURE =====
+.nouvelle-facture-btn {
+  background-color: $success;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.65rem 1.4rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 8px rgba($success, 0.35);
+  white-space: nowrap;
+  flex-shrink: 0;
+
+  i { font-size: 0.95rem; }
+
+  &:hover {
+    background-color: #0d9668;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba($success, 0.4);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba($success, 0.3);
+  }
+}
+
+// ===== STATISTIQUES =====
+.stats-section {
+  margin-bottom: 1rem;
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+
+    .stat-card {
+      background: white;
+      border-radius: 15px;
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      transition: transform 0.2s;
+      &:hover { transform: translateY(-3px); }
+
+      .stat-icon {
+        width: 46px; height: 46px;
+        border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.3rem;
+        flex-shrink: 0;
+        &.total   { background: rgba($primary-blue, 0.1); color: $primary-blue; }
+        &.paye    { background: rgba($success, 0.1);      color: $success; }
+        &.attente { background: rgba($warning, 0.1);      color: $warning; }
+        &.montant { background: rgba($danger, 0.1);       color: $danger; }
+      }
+
+      .stat-details {
+        .stat-label { display: block; font-size: 0.82rem; color: #64748b; margin-bottom: 0.2rem; }
+        .stat-value { display: block; font-size: 1.2rem; font-weight: 700; color: $dark-blue; }
+      }
+    }
+  }
+}
+
+// ===== GRAPHIQUE =====
+.chart-section {
+  margin-bottom: 1rem;
+  ::ng-deep .p-card {
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    .p-card-title { color: $dark-blue; font-weight: 600; }
+  }
+}
+
+// ===== FILTRES =====
+.filters-section {
+  background: white;
+  border-radius: 15px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+
+  .filters-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr auto;
+    gap: 1rem;
+    align-items: flex-end;
+
+    .filter-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      min-width: 0;
+
+      label { font-size: 0.85rem; font-weight: 600; color: $dark-blue; }
+
+      .search-box {
+        position: relative;
+        display: flex;
+        align-items: center;
+
+        i.pi-search { position: absolute; left: 1rem; color: #94a3b8; z-index: 1; }
+
+        input {
+          padding-left: 2.5rem;
+          padding-right: 2.5rem;
+          width: 100%; height: 42px;
+          border-radius: 8px;
+          border: 1px solid $border;
+          box-sizing: border-box;
+          &:focus {
+            border-color: $primary-blue;
+            box-shadow: 0 0 0 3px rgba($primary-blue, 0.1);
+            outline: none;
+          }
+        }
+
+        .clear-search {
+          position: absolute; right: 1rem;
+          background: none; border: none; color: #94a3b8; cursor: pointer;
+          &:hover { color: $danger; }
+        }
+      }
+
+      &.filter-actions .reset-btn {
+        height: 42px; padding: 0 1.2rem;
+        border: 1px solid $border; background: white;
+        border-radius: 8px; color: #64748b; font-weight: 500;
+        display: flex; align-items: center; gap: 0.5rem;
+        cursor: pointer; transition: all 0.2s; white-space: nowrap;
+        &:hover { background: $bg; color: $dark-blue; border-color: $dark-blue; }
+      }
+    }
+  }
+}
+
+// ===== TABLEAU =====
+::ng-deep .p-card {
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+  .p-card-body { padding: 0; }
+}
+
+::ng-deep .p-datatable {
+  .p-datatable-thead > tr > th {
+    background: $dark-blue;
+    color: white;
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .p-datatable-tbody > tr {
+    background: white;
+    td {
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid #f1f5f9;
+      color: #334155;
+      &.text-right { text-align: right; }
+      &.font-bold   { font-weight: 600; color: $dark-blue; }
+    }
+    .client-info {
+      .client-name { font-weight: 600; color: $dark-blue; }
+    }
+    &:hover { background: $bg; }
+  }
+}
+
+// ===== BOUTONS D'ACTION =====
+.actions-cell {
+  display: flex;
+  gap: 0.4rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.35rem 0.7rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: white;
+  white-space: nowrap;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+
+  i { font-size: 0.85rem; }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  }
+
+  &.view-btn   { background: $primary-blue; &:hover { background: #2563eb; } }
+  &.edit-btn   { background: $warning;      &:hover { background: #d97706; } }
+  &.delete-btn { background: $danger;       &:hover { background: #dc2626; } }
+}
+
+// ===== MESSAGE VIDE =====
+.empty-message {
+  text-align: center;
+  padding: 1.5rem;
+  i  { color: #94a3b8; margin-bottom: 1rem; }
+  h3 { color: $dark-blue; margin: 0.5rem 0; }
+  p  { color: #64748b; margin-bottom: 1rem; }
+}
+
+// ===== PAGINATION =====
+::ng-deep .p-paginator {
+  background: white;
+  padding: 0.75rem 1rem;
+  border-top: 1px solid #f1f5f9;
+  .p-paginator-page.p-highlight {
+    background: $primary-blue;
+    color: white;
+    border-radius: 8px;
+  }
+}
+
+// ===== RESPONSIVE =====
+@media (max-width: 1200px) {
+  .stats-section .stats-grid     { grid-template-columns: repeat(2, 1fr); }
+  .filters-section .filters-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 900px) {
+  .factures-container { padding: 0.75rem; }
+  .header-section h2  { font-size: 1.2rem; }
+}
+
+@media (max-width: 768px) {
+  .header-section {
+    flex-direction: column;
+    align-items: flex-start;
+    .nouvelle-facture-btn { width: 100%; justify-content: center; }
+  }
+
+  .stats-section .stats-grid     { grid-template-columns: 1fr 1fr; }
+  .filters-section .filters-grid { grid-template-columns: 1fr; }
+  .actions-cell { flex-direction: column; align-items: stretch; }
+  .action-btn   { justify-content: center; }
+}
+
+@media (max-width: 480px) {
+  .stats-section .stats-grid { grid-template-columns: 1fr; }
+}
+
+
+// =====================================================
+// ===== CONFIRM DIALOG — STYLE PERSONNALISÉ =====
+// =====================================================
+
+// Overlay : fond sombre + flou de fond
+::ng-deep .p-dialog-mask {
+  background: rgba(15, 23, 42, 0.65) !important;
+  backdrop-filter: blur(6px) !important;
+}
+
+::ng-deep p-confirmdialog .p-dialog {
+  border-radius: 20px !important;
+  overflow: hidden;
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.45) !important;
+  min-width: 440px;
+  border: none !important;
+  font-family: 'Segoe UI', sans-serif;
+
+  // ── Header ──
+  .p-dialog-header {
+    background: $dark-blue !important;
+    color: white !important;
+    padding: 1.3rem 1.8rem !important;
+    border-bottom: none !important;
+
+    .p-dialog-title {
+      font-size: 1.05rem !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.4px;
+      color: white !important;
+    }
+
+    .p-dialog-header-icons .p-dialog-header-icon {
+      color: rgba(255, 255, 255, 0.55) !important;
+      border-radius: 50%;
+      width: 2rem;
+      height: 2rem;
+      transition: all 0.2s;
+
+      &:hover {
+        color: white !important;
+        background: rgba(255, 255, 255, 0.12) !important;
+      }
+    }
+  }
+
+  // ── Contenu ──
+  .p-dialog-content {
+    background: #ffffff !important;
+    padding: 2rem 1.8rem 1.6rem !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 1.2rem;
+
+    .p-confirm-dialog-icon {
+      font-size: 2.4rem !important;
+      color: $warning !important;
+      flex-shrink: 0;
+    }
+
+    .p-confirm-dialog-message {
+      font-size: 1rem !important;
+      color: $dark-blue !important;
+      font-weight: 500 !important;
+      line-height: 1.6;
+    }
+  }
+
+  // ── Footer ──
+  .p-dialog-footer {
+    background: #f8fafc !important;
+    padding: 1rem 1.8rem 1.4rem !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+    gap: 0.8rem;
+    border-top: 1px solid $border !important;
+
+    // Bouton Non / Annuler
+    .p-confirm-dialog-reject.p-button {
+      background: transparent !important;
+      color: #64748b !important;
+      border: 2px solid $border !important;
+      border-radius: 10px !important;
+      padding: 0.55rem 1.4rem !important;
+      font-weight: 600 !important;
+      font-size: 0.9rem !important;
+      box-shadow: none !important;
+      transition: all 0.2s;
+
+      &:hover {
+        background: #f1f5f9 !important;
+        border-color: #94a3b8 !important;
+        color: $dark-blue !important;
+      }
+
+      .p-button-label { font-weight: 600 !important; }
+    }
+
+    // Bouton Oui / Confirmer
+    .p-confirm-dialog-accept.p-button {
+      background: $danger !important;
+      color: white !important;
+      border: 2px solid $danger !important;
+      border-radius: 10px !important;
+      padding: 0.55rem 1.4rem !important;
+      font-weight: 700 !important;
+      font-size: 0.9rem !important;
+      box-shadow: 0 4px 14px rgba($danger, 0.35) !important;
+      transition: all 0.2s;
+
+      &:hover {
+        background: #dc2626 !important;
+        border-color: #dc2626 !important;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 18px rgba($danger, 0.45) !important;
+      }
+
+      .p-button-label { font-weight: 700 !important; }
+    }
+  }
+}

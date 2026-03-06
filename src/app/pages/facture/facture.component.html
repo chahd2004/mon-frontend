@@ -1,0 +1,410 @@
+<!-- src/app/pages/facture/facture.component.html -->
+<div class="facture-container">
+
+  <!-- ===================== MODE VUE REÇU ===================== -->
+  <ng-container *ngIf="isViewMode">
+
+    <!-- Barre du haut -->
+    <div class="top-bar no-print">
+      <button class="back-btn" (click)="retourListe()">
+        <i class="pi pi-arrow-left"></i> Retour à la liste
+      </button>
+      <div class="top-actions">
+       
+        <button class="print-btn" (click)="imprimer()">
+          <i class="pi pi-print"></i> Imprimer
+        </button>
+        <button class="edit-action-btn" (click)="passerEnModeEdition()">
+          <i class="pi pi-pencil"></i> Modifier
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== REÇU / APERÇU ===== -->
+    <div class="recu-wrapper">
+
+      <!-- Bande supérieure -->
+      <div class="recu-top-band"></div>
+
+      <div class="recu-body">
+
+        <!-- En-tête : Logo + Titre -->
+        <div class="recu-header">
+
+          <!-- Logo personnalisé + Infos vendeur -->
+          <div class="recu-logo-block">
+            <div class="recu-logo-svg">
+              <div class="logo-icon">
+                <!-- Icône SVG personnalisée : document/facture -->
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                  <line x1="16" y1="13" x2="8" y2="13"/>
+                  <line x1="16" y1="17" x2="8" y2="17"/>
+                  <polyline points="10 9 9 9 8 9"/>
+                </svg>
+              </div>
+              <div class="logo-text-block">
+                <span class="logo-name">FacturePro</span>
+                <span class="logo-tagline">Gestion & Facturation</span>
+              </div>
+            </div>
+
+            <div class="recu-vendeur-infos">
+              <div class="recu-vendeur-nom">{{ vendeurSelectionne?.raisonSociale ?? '—' }}</div>
+              <div class="recu-vendeur-detail">{{ vendeurSelectionne?.adresseComplete ?? '' }}</div>
+              <div class="recu-vendeur-detail" *ngIf="vendeurSelectionne?.telephone || vendeurSelectionne?.email">
+                {{ vendeurSelectionne?.telephone ?? '' }}
+                <ng-container *ngIf="vendeurSelectionne?.telephone && vendeurSelectionne?.email"> &nbsp;|&nbsp; </ng-container>
+                {{ vendeurSelectionne?.email ?? '' }}
+              </div>
+              <div class="recu-vendeur-detail">MF : {{ vendeurSelectionne?.matriculeFiscal ?? 'N/A' }}</div>
+            </div>
+          </div>
+
+          <!-- Titre FACTURE -->
+          <div class="recu-title-block">
+            <div class="recu-title">FACTURE</div>
+            <div class="recu-num">N° {{ numFact || '—' }}</div>
+            
+          </div>
+        </div>
+
+        <!-- Séparateur -->
+        <div class="recu-divider"></div>
+
+        <!-- Infos facture : dates + mode paiement -->
+        <div class="recu-meta">
+          <div class="recu-meta-item">
+            <span class="recu-meta-label">Date d'émission</span>
+            <span class="recu-meta-value">{{ dateEmission | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="recu-meta-item">
+            <span class="recu-meta-label">Date de paiement</span>
+            <span class="recu-meta-value">{{ datePaiement | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="recu-meta-item">
+            <span class="recu-meta-label">Mode de paiement</span>
+            <span class="recu-meta-value">{{ formatModePaiement(modePaiement) }}</span>
+          </div>
+        </div>
+
+        <!-- Séparateur -->
+        <div class="recu-divider"></div>
+
+        <!-- Acheteur -->
+        <div class="recu-section-label">Facturé à</div>
+        <div class="recu-acheteur">
+          <div class="recu-acheteur-nom">{{ acheteurSelectionne?.raisonSociale ?? '—' }}</div>
+          <div class="recu-acheteur-detail" *ngIf="acheteurSelectionne?.adresseComplete">
+            {{ acheteurSelectionne?.adresseComplete }}
+          </div>
+          <div class="recu-acheteur-detail" *ngIf="acheteurSelectionne?.email || acheteurSelectionne?.telephone">
+            {{ acheteurSelectionne?.email ?? '' }}
+            <ng-container *ngIf="acheteurSelectionne?.email && acheteurSelectionne?.telephone"> &nbsp;|&nbsp; </ng-container>
+            {{ acheteurSelectionne?.telephone ?? '' }}
+          </div>
+        </div>
+
+        <!-- Séparateur -->
+        <div class="recu-divider"></div>
+
+        <!-- Tableau des lignes -->
+        <div class="recu-section-label">Détail des prestations</div>
+        <table class="recu-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Désignation</th>
+              <th class="text-right">Qté</th>
+              <th class="text-right">Prix HT</th>
+              <th class="text-right">TVA %</th>
+              <th class="text-right">Montant HT</th>
+              <th class="text-right">TVA</th>
+              <th class="text-right">Total TTC</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let ligne of lignes; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ ligne.produitLabel }}</td>
+              <td class="text-right">{{ ligne.quantite }}</td>
+              <td class="text-right">{{ formatPrix(ligne.prixUnitaire) }}</td>
+              <td class="text-right">{{ ligne.tauxTVA }}%</td>
+              <td class="text-right">{{ formatPrix(ligne.montantHT) }}</td>
+              <td class="text-right">{{ formatPrix(ligne.montantTVA) }}</td>
+              <td class="text-right font-bold">{{ formatPrix(ligne.montantTTC) }}</td>
+            </tr>
+            <tr *ngIf="lignes.length === 0">
+              <td colspan="8" class="text-center empty-lignes">Aucune ligne</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Séparateur -->
+        <div class="recu-divider"></div>
+
+        <!-- Pied : Mention + Totaux -->
+        <div class="recu-footer">
+          <div class="recu-mention">
+            <p><strong>{{ vendeurSelectionne?.raisonSociale }}</strong></p>
+            <p>Matricule fiscal : {{ vendeurSelectionne?.matriculeFiscal ?? 'N/A' }}</p>
+            <p>Merci pour votre confiance.</p>
+          </div>
+
+          <div class="recu-totaux">
+            <div class="recu-total-row">
+              <span>Total H.T.</span>
+              <strong>{{ formatPrix(totalHT) }}</strong>
+            </div>
+            <div class="recu-total-row">
+              <span>TVA</span>
+              <strong>{{ formatPrix(totalTVA) }}</strong>
+            </div>
+            <div class="recu-total-row">
+              <span>Droit de Timbre</span>
+              <strong>{{ formatPrix(droitTimbre) }}</strong>
+            </div>
+            <div class="recu-total-row grand-total">
+              <span>TOTAL T.T.C</span>
+              <strong>{{ formatPrix(totalTTC + droitTimbre) }}</strong>
+            </div>
+            <div class="recu-total-lettres">
+              {{ montantEnLettres(totalTTC + droitTimbre) }}
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <!-- fin recu-body -->
+
+      <!-- Bande de bas de page -->
+      <div class="recu-bottom-band">
+        <span class="recu-bottom-text">
+          {{ vendeurSelectionne?.raisonSociale }} — MF : {{ vendeurSelectionne?.matriculeFiscal ?? 'N/A' }} — {{ vendeurSelectionne?.email ?? '' }}
+        </span>
+      </div>
+
+    </div>
+    <!-- fin recu-wrapper -->
+
+  </ng-container>
+
+
+  <!-- ===================== MODE FORMULAIRE (create / edit) ===================== -->
+  <ng-container *ngIf="!isViewMode">
+
+    <!-- Barre du haut -->
+    <div class="top-bar">
+      <button class="back-btn" (click)="retourListe()">
+        <i class="pi pi-arrow-left"></i> Retour à la liste
+      </button>
+      <div class="top-actions">
+        <p-tag
+          [value]="formatStatut(statut)"
+          [severity]="getStatutSeverity(statut)"
+          class="statut-tag">
+        </p-tag>
+        <button class="save-btn" (click)="sauvegarder()" [disabled]="loading">
+          <i class="pi pi-save"></i> {{ isEditMode ? 'Mettre à jour' : 'Sauvegarder' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Vendeur -->
+    <div class="section vendeur-section">
+      <div class="vendeur-left">
+        <div class="vendeur-avatar">
+          <span>{{ vendeurSelectionne?.raisonSociale?.charAt(0) ?? 'V' }}</span>
+        </div>
+        <div class="vendeur-info">
+          <div class="vendeur-select">
+            <p-dropdown
+              [options]="emetteurs"
+              [(ngModel)]="vendeurId"
+              optionLabel="raisonSociale"
+              optionValue="id"
+              placeholder="Sélectionner l'émetteur vendeur"
+              (onChange)="onVendeurChange()"
+              [style]="{'min-width':'250px'}"
+            ></p-dropdown>
+          </div>
+          <span class="vendeur-subtitle">Solutions professionnelles</span>
+        </div>
+      </div>
+      <div class="vendeur-right">
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Adresse :</span>
+            <span class="info-value">{{ vendeurSelectionne?.adresseComplete ?? 'Non renseignée' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Téléphone :</span>
+            <span class="info-value">{{ vendeurSelectionne?.telephone ?? 'Non renseigné' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Code / RC :</span>
+            <span class="info-value">{{ vendeurSelectionne?.code ?? 'Non renseigné' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Email :</span>
+            <span class="info-value">{{ vendeurSelectionne?.email ?? 'Non renseigné' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p-divider></p-divider>
+
+    <!-- En-tête facture -->
+    <div class="section facture-header">
+      <div class="facture-title-block">
+        <h1 class="facture-title">FACTURE</h1>
+        <div class="form-row">
+          <label>N°</label>
+          <input type="text" pInputText [(ngModel)]="numFact"
+            placeholder="Numéro facture (auto-généré)"
+            class="num-input" readonly>
+        </div>
+      </div>
+      <div class="facture-dates">
+        <div class="date-block">
+          <label>Date d'émission <span class="required">*</span></label>
+          <p-calendar [(ngModel)]="dateEmission" dateFormat="dd/mm/yy" [showIcon]="true" (onSelect)="onDateEmissionChange()"></p-calendar>
+        </div>
+        <div class="date-block">
+          <label>Date de paiement <span class="required">*</span></label>
+          <p-calendar [(ngModel)]="datePaiement" dateFormat="dd/mm/yy" [showIcon]="true" [minDate]="minDatePaiement"></p-calendar>
+        </div>
+        <div class="date-block">
+          <label>Mode de paiement <span class="required">*</span></label>
+          <p-dropdown [options]="modePaiementOptions" [(ngModel)]="modePaiement" optionLabel="label" optionValue="value" placeholder="Mode de paiement"></p-dropdown>
+        </div>
+        <div class="date-block">
+          <label>Statut</label>
+          <p-dropdown [options]="statutOptions" [(ngModel)]="statut" optionLabel="label" optionValue="value"></p-dropdown>
+        </div>
+      </div>
+    </div>
+
+    <p-divider></p-divider>
+
+    <!-- Acheteur -->
+    <div class="section acheteur-section">
+      <h3 class="section-title">ACHETEUR</h3>
+      <div class="acheteur-grid">
+        <div class="acheteur-select-block">
+          <div class="form-group">
+            <label>Type d'acheteur <span class="required">*</span></label>
+            <p-dropdown [options]="typeAcheteurOptions" [(ngModel)]="typeAcheteur" optionLabel="label" optionValue="value" (onChange)="onTypeAcheteurChange()"></p-dropdown>
+          </div>
+          <div class="form-group">
+            <label>Sélectionner l'acheteur <span class="required">*</span></label>
+            <p-dropdown [options]="acheteurOptions" [(ngModel)]="acheteurId" optionLabel="label" optionValue="value"
+              placeholder="Choisir un acheteur" (onChange)="onAcheteurChange()" [filter]="true" filterPlaceholder="Rechercher..."></p-dropdown>
+          </div>
+        </div>
+        <div class="acheteur-info-block">
+          <div class="info-card">
+            <div class="info-row"><span class="info-label">RAISON SOCIALE :</span><span class="info-value">{{ acheteurSelectionne?.raisonSociale ?? 'Sélectionnez un acheteur' }}</span></div>
+            <div class="info-row"><span class="info-label">ADRESSE :</span><span class="info-value">{{ acheteurSelectionne?.adresseComplete ?? 'Non renseignée' }}</span></div>
+            <div class="info-row"><span class="info-label">EMAIL :</span><span class="info-value">{{ acheteurSelectionne?.email ?? 'Non renseigné' }}</span></div>
+            <div class="info-row"><span class="info-label">TÉLÉPHONE :</span><span class="info-value">{{ acheteurSelectionne?.telephone ?? 'Non renseigné' }}</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p-divider></p-divider>
+
+    <!-- Lignes -->
+    <div class="section lignes-section">
+      <h3 class="section-title">LIGNES DE FACTURE</h3>
+      <div class="add-ligne-bar">
+        <div class="add-ligne-title"><i class="pi pi-plus-circle"></i> Ajouter une ligne</div>
+        <div class="add-ligne-controls">
+          <div class="ctrl-group">
+            <label>PRODUIT</label>
+            <p-dropdown [options]="produitOptions" [(ngModel)]="produitSelectionne" optionLabel="label" optionValue="value"
+              placeholder="Sélectionner un produit" [filter]="true" filterPlaceholder="Rechercher..."
+              (onChange)="onProduitSelect($event.value)" [style]="{'min-width':'320px'}"></p-dropdown>
+          </div>
+          <div class="ctrl-group">
+            <label>QUANTITÉ</label>
+            <p-inputNumber [(ngModel)]="quantiteAjout" [min]="1" [max]="9999" [style]="{'width':'120px'}"></p-inputNumber>
+          </div>
+          <button class="ajouter-btn" (click)="ajouterLigne()">Ajouter</button>
+        </div>
+        <div class="add-ligne-hint" *ngIf="!acheteurId">
+          <i class="pi pi-info-circle"></i>
+          Sélectionnez l'acheteur ci-dessus, puis ajoutez des lignes (produit + quantité)
+        </div>
+      </div>
+
+      <p-table [value]="lignes" *ngIf="lignes.length > 0" class="lignes-table">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>#</th><th>Produit</th>
+            <th class="text-right">Qté</th>
+            <th class="text-right">Prix HT</th>
+            <th class="text-right">TVA %</th>
+            <th class="text-right">Montant HT</th>
+            <th class="text-right">Montant TVA</th>
+            <th class="text-right">Montant TTC</th>
+            <th></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-ligne let-i="rowIndex">
+          <tr>
+            <td>{{ i + 1 }}</td>
+            <td>{{ ligne.produitLabel }}</td>
+            <td class="text-right">{{ ligne.quantite }}</td>
+            <td class="text-right">{{ formatPrix(ligne.prixUnitaire) }}</td>
+            <td class="text-right">{{ ligne.tauxTVA }}%</td>
+            <td class="text-right">{{ formatPrix(ligne.montantHT) }}</td>
+            <td class="text-right">{{ formatPrix(ligne.montantTVA) }}</td>
+            <td class="text-right font-bold">{{ formatPrix(ligne.montantTTC) }}</td>
+            <td>
+              <button class="delete-ligne-btn" (click)="supprimerLigne(i)" pTooltip="Supprimer">
+                <i class="pi pi-trash"></i>
+              </button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+
+    <!-- Totaux -->
+    <div class="section footer-section">
+      <div class="mention-legale" *ngIf="vendeurSelectionne">
+        {{ vendeurSelectionne.raisonSociale }} - Matricule fiscal : {{ vendeurSelectionne.matriculeFiscal ?? 'N/A' }}
+      </div>
+      <div class="total-bloc">
+        <h4>TOTAL GÉNÉRAL</h4>
+        <div class="total-row"><span>Total H.T.</span><strong>{{ formatPrix(totalHT) }}</strong></div>
+        <div class="total-row"><span>TVA</span><strong>{{ formatPrix(totalTVA) }}</strong></div>
+        <div class="total-row"><span>Droit de Timbre</span><strong>{{ formatPrix(droitTimbre) }}</strong></div>
+        <p-divider></p-divider>
+        <div class="total-row grand-total"><span>Total T.T.C</span><strong>{{ formatPrix(totalTTC + droitTimbre) }}</strong></div>
+      </div>
+    </div>
+
+    <!-- Barre inférieure -->
+    <div class="bottom-bar">
+      <span class="facture-num-label">
+        Facture N° {{ numFact || 'Non généré' }} &nbsp;|&nbsp; Date {{ dateEmission | date:'dd/MM/yyyy' }}
+      </span>
+      <div class="bottom-actions">
+        <p-tag [value]="formatStatut(statut)" [severity]="getStatutSeverity(statut)"></p-tag>
+        <button class="save-btn secondary" (click)="sauvegarder()" [disabled]="loading">
+          <i class="pi pi-save"></i>
+          {{ loading ? 'Enregistrement...' : (isEditMode ? 'Mettre à jour' : 'Sauvegarder') }}
+        </button>
+      </div>
+    </div>
+
+  </ng-container>
+
+</div>
+
+<p-toast></p-toast>

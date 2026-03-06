@@ -1,0 +1,195 @@
+<!-- src/app/pages/produits/produits.component.html -->
+<div class="produits-container">
+
+  <!-- En-tête -->
+  <div class="header-section">
+    <div class="header-left">
+      <button class="back-btn" (click)="retourListe()" pTooltip="Retour au dashboard">
+        <i class="pi pi-arrow-left"></i>
+      </button>
+      <h2>
+        <i class="pi pi-box"></i>
+        Gestion des produits
+      </h2>
+    </div>
+    <button class="add-btn" (click)="ajouterProduit()">
+      <i class="pi pi-plus"></i> Nouveau produit
+    </button>
+  </div>
+
+  <!-- Filtres -->
+  <div class="filters-section">
+    <div class="search-box">
+      <i class="pi pi-search"></i>
+      <input
+        type="text"
+        pInputText
+        placeholder="Rechercher par référence ou désignation..."
+        [(ngModel)]="searchText"
+        (keyup.enter)="onSearch()"
+      >
+      <button *ngIf="searchText" class="clear-search" (click)="clearSearch()">
+        <i class="pi pi-times"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Tableau -->
+  <p-card>
+    <p-table
+      [value]="produitsFiltered"
+      [paginator]="true"
+      [rows]="rowsPerPage"
+      [totalRecords]="produitsFiltered.length"
+      [loading]="loading"
+      [lazy]="false"
+      (onPageChange)="onPageChange($event)"
+      responsiveLayout="scroll"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>ID</th>
+          <th>Référence</th>
+          <th>Désignation</th>
+          <th>Prix unitaire HT</th>
+          <th>TVA %</th>
+          <th>Prix TTC</th>
+          <th style="text-align: center; min-width: 160px;">Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-produit>
+        <tr>
+          <td>{{ produit.id }}</td>
+          <td class="font-bold">{{ produit.reference }}</td>
+          <td>{{ produit.designation }}</td>
+          <td class="text-right">{{ formatPrix(produit.prixUnitaire) }}</td>
+          <td class="text-right">{{ formatTVA(produit.tauxTVA) }}</td>
+          <td class="text-right font-bold">{{ formatPrix(produit.prixUnitaire * (1 + produit.tauxTVA/100)) }}</td>
+          <td>
+            <div class="actions-cell">
+              <button
+                class="action-btn edit-btn"
+                (click)="modifierProduit(produit)"
+                pTooltip="Modifier ce produit"
+                tooltipPosition="top">
+                <i class="pi pi-pencil"></i>
+                <span>Modifier</span>
+              </button>
+              <button
+                class="action-btn delete-btn"
+                (click)="supprimerProduit(produit.id)"
+                pTooltip="Supprimer ce produit"
+                tooltipPosition="top">
+                <i class="pi pi-trash"></i>
+                <span>Supprimer</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="7" style="text-align: center; padding: 3rem;">
+            <i class="pi pi-box" style="font-size: 3rem; color: #94a3b8; display:block; margin-bottom:1rem;"></i>
+            <h3 style="color:#1e293b; margin:0.5rem 0;">Aucun produit trouvé</h3>
+            <p style="color:#64748b; margin-bottom:1.5rem;">Commencez par ajouter votre premier produit.</p>
+            <button class="add-btn" (click)="ajouterProduit()">
+              <i class="pi pi-plus"></i> Nouveau produit
+            </button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+
+  <!-- Dialogue d'ajout/modification -->
+  <p-dialog
+    [(visible)]="displayDialog"
+    [header]="dialogMode === 'add' ? 'Nouveau produit' : 'Modifier le produit'"
+    [style]="{width: '500px'}"
+    [modal]="true"
+    [draggable]="false"
+    [resizable]="false"
+  >
+    <div class="dialog-content">
+
+      <div class="form-group">
+        <label>Référence <span class="required">*</span></label>
+        <input type="text" pInputText [(ngModel)]="produitForm.reference"
+               placeholder="Ex: PROD-001" autofocus>
+      </div>
+
+      <div class="form-group">
+        <label>Désignation <span class="required">*</span></label>
+        <input type="text" pInputText [(ngModel)]="produitForm.designation"
+               placeholder="Nom du produit">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group half">
+          <label>Prix unitaire HT <span class="required">*</span></label>
+          <p-inputNumber [(ngModel)]="produitForm.prixUnitaire"
+                        mode="decimal"
+                        [min]="0"
+                        [max]="9999999"
+                        [minFractionDigits]="3"
+                        [maxFractionDigits]="3"
+                        suffix=" TND">
+          </p-inputNumber>
+        </div>
+        <div class="form-group half">
+          <label>TVA % <span class="required">*</span></label>
+          <p-inputNumber [(ngModel)]="produitForm.tauxTVA"
+                        [min]="0"
+                        [max]="100"
+                        [minFractionDigits]="2"
+                        [maxFractionDigits]="2"
+                        suffix=" %">
+          </p-inputNumber>
+        </div>
+      </div>
+
+      <div class="form-group test-mode-field">
+        <label>
+          <i class="pi pi-info-circle" style="color: #f59e0b;"></i>
+          ID Émetteur <span class="required">*</span>
+          <small style="color: #94a3b8; font-weight: 400;"> (mode test)</small>
+        </label>
+        <p-inputNumber [(ngModel)]="produitForm.emetteurId" [min]="1" placeholder="Ex: 1"></p-inputNumber>
+      </div>
+
+      <div class="preview-section" *ngIf="produitForm.prixUnitaire > 0">
+        <h4>Aperçu</h4>
+        <div class="preview-item">
+          <span>Prix HT :</span>
+          <strong>{{ formatPrix(produitForm.prixUnitaire) }}</strong>
+        </div>
+        <div class="preview-item">
+          <span>Montant TVA ({{ produitForm.tauxTVA }}%) :</span>
+          <strong>{{ formatPrix(produitForm.prixUnitaire * produitForm.tauxTVA / 100) }}</strong>
+        </div>
+        <div class="preview-item total">
+          <span>Prix TTC :</span>
+          <strong>{{ formatPrix(produitForm.prixUnitaire * (1 + produitForm.tauxTVA/100)) }}</strong>
+        </div>
+      </div>
+
+    </div>
+
+    <ng-template pTemplate="footer">
+      <div class="dialog-footer">
+        <button type="button" class="dialog-footer-btn cancel" (click)="displayDialog = false">
+          <i class="pi pi-times"></i> Annuler
+        </button>
+        <button type="button" class="dialog-footer-btn" (click)="sauvegarderProduit()" [disabled]="loading">
+          <i class="pi pi-check"></i> {{ dialogMode === 'add' ? 'Ajouter' : 'Modifier' }}
+        </button>
+      </div>
+    </ng-template>
+  </p-dialog>
+
+  <p-toast></p-toast>
+  <p-confirmDialog></p-confirmDialog>
+</div>

@@ -1,0 +1,813 @@
+// src/app/pages/facture/facture.component.scss
+@use 'sass:color';
+
+// ===== VARIABLES =====
+$blue: #1e40af;
+$blue-light: #3b82f6;
+$blue-pale: #eff6ff;
+$gold: #b8860b;
+$gold-light: #d4a843;
+$success: #10b981;
+$warning: #f59e0b;
+$danger: #ef4444;
+$dark: #1e293b;
+$gray: #64748b;
+$border: #e2e8f0;
+$bg: #f8fafc;
+$white: #ffffff;
+
+// ===== CONTENEUR PRINCIPAL =====
+.facture-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.5rem 2rem 4rem;
+  background: $bg;
+  min-height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+// ===== BARRE DU HAUT =====
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+
+  .top-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+}
+
+.back-btn {
+  background: $dark;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 20px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+  &:hover { background: color.adjust($dark, $lightness: 10%); transform: translateX(-3px); }
+}
+
+.save-btn {
+  background: $success;
+  color: white;
+  border: none;
+  padding: 0.7rem 1.8rem;
+  border-radius: 20px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.95rem;
+  box-shadow: 0 4px 12px rgba($success, 0.3);
+  &:hover { background: #0d9668; transform: translateY(-2px); box-shadow: 0 6px 16px rgba($success, 0.4); }
+  &:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  &.secondary { background: $blue-light; box-shadow: 0 4px 12px rgba($blue-light, 0.3); &:hover { background: $blue; } }
+}
+
+.print-btn {
+  background: $dark;
+  color: white;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  border-radius: 20px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+  &:hover { background: color.adjust($dark, $lightness: 10%); transform: translateY(-2px); }
+}
+
+.edit-action-btn {
+  background: $warning;
+  color: white;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  border-radius: 20px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+  box-shadow: 0 4px 12px rgba($warning, 0.3);
+  &:hover { background: #d97706; transform: translateY(-2px); box-shadow: 0 6px 16px rgba($warning, 0.4); }
+}
+
+// ===== SECTIONS (formulaire) =====
+.section {
+  background: $white;
+  border-radius: 16px;
+  padding: 1.5rem 2rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.section-title {
+  color: $blue;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0 0 1.2rem 0;
+  letter-spacing: 1px;
+}
+
+// ===== VENDEUR =====
+.vendeur-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+
+  .vendeur-left {
+    display: flex; align-items: flex-start; gap: 1rem; flex: 1;
+    .vendeur-avatar {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: $blue-light;
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-weight: 700; font-size: 1.4rem; flex-shrink: 0;
+    }
+    .vendeur-info {
+      display: flex; flex-direction: column; gap: 0.3rem;
+      .vendeur-subtitle { color: $gray; font-size: 0.85rem; font-style: italic; }
+    }
+  }
+
+  .vendeur-right {
+    flex: 1;
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+  }
+}
+
+.info-item, .info-row {
+  display: flex; gap: 0.5rem; align-items: baseline;
+  .info-label { font-weight: 600; color: $dark; font-size: 0.85rem; white-space: nowrap; }
+  .info-value  { color: $gray; font-size: 0.9rem; }
+}
+
+// ===== EN-TÊTE FACTURE =====
+.facture-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+
+  .facture-title-block {
+    .facture-title {
+      color: $blue; font-size: 2.5rem; font-weight: 900;
+      margin: 0 0 1rem 0; letter-spacing: 3px;
+    }
+    .form-row {
+      display: flex; align-items: center; gap: 0.8rem;
+      label { font-weight: 700; color: $dark; font-size: 1rem; }
+      .num-input {
+        width: 200px; padding: 0.6rem 1rem;
+        border: 2px solid $border; border-radius: 8px;
+        color: $gray; background: $bg; font-size: 0.95rem;
+      }
+    }
+  }
+
+  .facture-dates {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; min-width: 420px;
+    .date-block {
+      display: flex; flex-direction: column; gap: 0.4rem;
+      label { font-weight: 600; color: $dark; font-size: 0.85rem; .required { color: $danger; } }
+      ::ng-deep .p-calendar, ::ng-deep .p-dropdown { width: 100%; }
+    }
+  }
+}
+
+// ===== ACHETEUR =====
+.acheteur-section {
+  .acheteur-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
+
+    .acheteur-select-block {
+      display: flex; flex-direction: column; gap: 1rem;
+      .form-group {
+        display: flex; flex-direction: column; gap: 0.4rem;
+        label { font-weight: 600; color: $dark; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; .required { color: $danger; } }
+        ::ng-deep .p-dropdown { width: 100%; }
+      }
+    }
+
+    .acheteur-info-block {
+      .info-card {
+        background: $bg; border-radius: 12px; padding: 1.2rem;
+        border: 1px solid $border; display: flex; flex-direction: column; gap: 0.8rem;
+        .info-row {
+          flex-direction: column; gap: 0.2rem;
+          .info-label { font-size: 0.75rem; color: $gray; letter-spacing: 0.5px; }
+          .info-value  { font-size: 0.95rem; color: $dark; font-weight: 500; }
+        }
+      }
+    }
+  }
+}
+
+// ===== LIGNES =====
+.lignes-section {
+  .add-ligne-bar {
+    background: $bg; border-radius: 12px; padding: 1.2rem 1.5rem;
+    margin-bottom: 1.5rem; border: 1px solid $border;
+
+    .add-ligne-title {
+      font-weight: 700; color: $blue; margin-bottom: 1rem;
+      display: flex; align-items: center; gap: 0.5rem;
+      i { font-size: 1.1rem; }
+    }
+
+    .add-ligne-controls {
+      display: flex; align-items: flex-end; gap: 1rem; flex-wrap: wrap;
+      .ctrl-group {
+        display: flex; flex-direction: column; gap: 0.4rem;
+        label { font-weight: 600; color: $dark; font-size: 0.8rem; letter-spacing: 0.5px; }
+      }
+    }
+
+    .add-ligne-hint {
+      margin-top: 1rem; color: $warning; font-size: 0.9rem;
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.7rem 1rem; background: rgba($warning, 0.08);
+      border-radius: 8px; border-left: 3px solid $warning;
+    }
+  }
+}
+
+.ajouter-btn {
+  background: $blue-light; color: white; border: none;
+  padding: 0.65rem 1.5rem; border-radius: 8px;
+  font-weight: 600; cursor: pointer; transition: all 0.2s; height: 42px;
+  &:hover { background: $blue; transform: translateY(-1px); }
+}
+
+.lignes-table {
+  ::ng-deep .p-datatable-thead > tr > th {
+    background: $dark; color: white; padding: 0.8rem 1rem;
+    font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  ::ng-deep .p-datatable-tbody > tr > td {
+    padding: 0.8rem 1rem; border-bottom: 1px solid $border;
+    color: $dark; font-size: 0.9rem;
+    &.text-right { text-align: right; }
+    &.font-bold { font-weight: 700; }
+  }
+}
+
+.delete-ligne-btn {
+  width: 32px; height: 32px; border: none; border-radius: 6px;
+  background: rgba($danger, 0.1); color: $danger;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all 0.2s;
+  &:hover { background: $danger; color: white; }
+}
+
+// ===== PIED FORMULAIRE =====
+.footer-section {
+  display: flex; justify-content: space-between; align-items: flex-end; gap: 2rem;
+
+  .mention-legale {
+    flex: 1; padding: 1rem; background: $bg;
+    border-radius: 8px; border: 1px solid $border;
+    font-size: 0.85rem; color: $gray; align-self: flex-end;
+  }
+
+  .total-bloc {
+    min-width: 300px; background: $blue-pale; border-radius: 12px; padding: 1.5rem;
+    border: 1px solid rgba($blue-light, 0.2);
+
+    h4 { color: $dark; font-weight: 700; margin: 0 0 1rem 0; font-size: 1rem; letter-spacing: 1px; }
+
+    .total-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0.5rem 0; font-size: 0.95rem; color: $dark;
+      strong { font-weight: 600; }
+      &.grand-total { color: $blue-light; font-size: 1.15rem; font-weight: 700; strong { font-size: 1.2rem; color: $blue-light; } }
+    }
+  }
+}
+
+// ===== BARRE INFÉRIEURE =====
+.bottom-bar {
+  position: sticky; bottom: 0; background: $white;
+  border-top: 2px solid $border; padding: 1rem 2rem;
+  display: flex; justify-content: space-between; align-items: center;
+  margin: 0 -2rem -4rem;
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.08); z-index: 10;
+
+  .facture-num-label { color: $gray; font-size: 0.9rem; font-weight: 500; }
+  .bottom-actions { display: flex; align-items: center; gap: 1rem; }
+}
+
+// =====================================================
+// ===== REÇU / APERÇU — REFONTE COMPLÈTE =====
+// =====================================================
+
+.recu-wrapper {
+  background: $white;
+  border-radius: 4px;
+  padding: 0;
+  box-shadow: 0 4px 40px rgba(0,0,0,0.12);
+  max-width: 860px;
+  margin: 0 auto;
+  overflow: hidden;
+  border: 1px solid #dde3ee;
+}
+
+// ─── BANDE SUPÉRIEURE COLORÉE ───
+.recu-top-band {
+  background: $dark;
+  height: 6px;
+  width: 100%;
+}
+
+// ─── CORPS DE LA FACTURE ───
+.recu-body {
+  padding: 2.5rem 3rem;
+}
+
+// ─── HEADER : LOGO + TITRE ───
+.recu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2.5rem;
+}
+
+// Logo personnalisé SVG
+.recu-logo-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+
+  .recu-logo-svg {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+
+    .logo-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, $blue 0%, $blue-light 100%);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba($blue, 0.35);
+
+      svg {
+        width: 28px;
+        height: 28px;
+        fill: none;
+        stroke: white;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+    }
+
+    .logo-text-block {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+
+      .logo-name {
+        font-size: 1.15rem;
+        font-weight: 800;
+        color: $dark;
+        letter-spacing: -0.3px;
+      }
+      .logo-tagline {
+        font-size: 0.7rem;
+        color: $gray;
+        font-weight: 500;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+      }
+    }
+  }
+
+  .recu-vendeur-infos {
+    margin-top: 0.8rem;
+    padding-left: 0.2rem;
+
+    .recu-vendeur-nom {
+      font-size: 1rem;
+      font-weight: 700;
+      color: $dark;
+      margin-bottom: 0.25rem;
+    }
+    .recu-vendeur-detail {
+      font-size: 0.8rem;
+      color: $gray;
+      margin-bottom: 0.15rem;
+      line-height: 1.5;
+    }
+  }
+}
+
+// Bloc titre FACTURE
+.recu-title-block {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+
+  .recu-title {
+    font-size: 3rem;
+    font-weight: 900;
+    color: $blue;
+    letter-spacing: 6px;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .recu-num {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: $gray;
+    letter-spacing: 0.5px;
+  }
+
+  .recu-statut-tag {
+    margin-top: 0.2rem;
+  }
+}
+
+// ─── LIGNE SÉPARATRICE DOUBLE ───
+.recu-divider {
+  height: 1px;
+  background: $border;
+  margin: 1.5rem 0;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: rgba($blue-light, 0.2);
+  }
+}
+
+// ─── MÉTA INFOS (dates + mode) ───
+.recu-meta {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  background: #f8fafc;
+  border: 1px solid $border;
+  border-radius: 10px;
+  padding: 1.2rem 1.5rem;
+  margin-bottom: 0.5rem;
+
+  .recu-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+
+    .recu-meta-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: $gray;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .recu-meta-value {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: $dark;
+    }
+  }
+}
+
+// ─── ACHETEUR ───
+.recu-section-label {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: $blue;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 0.7rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba($blue-light, 0.25);
+  }
+}
+
+.recu-acheteur {
+  background: linear-gradient(135deg, rgba($blue-pale, 0.6) 0%, rgba($white, 0) 100%);
+  border: 1px solid rgba($blue-light, 0.2);
+  border-left: 3px solid $blue-light;
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 0.5rem;
+
+  .recu-acheteur-nom {
+    font-size: 1rem;
+    font-weight: 700;
+    color: $dark;
+    margin-bottom: 0.3rem;
+  }
+  .recu-acheteur-detail {
+    font-size: 0.82rem;
+    color: $gray;
+    margin-bottom: 0.15rem;
+    line-height: 1.5;
+  }
+}
+
+// ─── TABLEAU PRESTATIONS ───
+.recu-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid $border;
+
+  thead tr {
+    background: $dark;
+
+    th {
+      padding: 0.85rem 1rem;
+      color: white;
+      font-weight: 600;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      text-align: left;
+      white-space: nowrap;
+
+      &.text-right { text-align: right; }
+    }
+  }
+
+  tbody tr {
+    border-bottom: 1px solid $border;
+    transition: background 0.15s;
+
+    &:nth-child(even) { background: #fafbfc; }
+    &:hover { background: rgba($blue-pale, 0.5); }
+    &:last-child { border-bottom: none; }
+
+    td {
+      padding: 0.85rem 1rem;
+      color: $dark;
+      vertical-align: middle;
+
+      &.text-right  { text-align: right; }
+      &.font-bold   {
+        font-weight: 700;
+        color: $blue;
+        font-size: 0.95rem;
+      }
+      &.text-center { text-align: center; }
+
+      // Colonne numéro (#)
+      &:first-child {
+        color: $gray;
+        font-size: 0.8rem;
+        font-weight: 600;
+        width: 36px;
+      }
+    }
+  }
+}
+
+.empty-lignes {
+  padding: 2rem !important;
+  color: $gray;
+  font-style: italic;
+}
+
+// ─── PIED : TOTAUX + MENTION ───
+.recu-footer {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2rem;
+  align-items: end;
+  margin-top: 0.5rem;
+
+  .recu-mention {
+    padding: 1rem 1.2rem;
+    background: $bg;
+    border-radius: 8px;
+    border: 1px solid $border;
+    font-size: 0.78rem;
+    color: $gray;
+    line-height: 1.7;
+    align-self: end;
+
+    p { margin: 0 0 0.25rem 0; }
+  }
+
+  .recu-totaux {
+    min-width: 260px;
+    border: 1px solid $border;
+    border-radius: 10px;
+    overflow: hidden;
+
+    .recu-total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.6rem 1.2rem;
+      font-size: 0.875rem;
+      color: $dark;
+      border-bottom: 1px solid $border;
+      background: white;
+
+      &:last-child { border-bottom: none; }
+
+      span { color: $gray; font-size: 0.82rem; }
+      strong { font-weight: 600; color: $dark; }
+
+      &.grand-total {
+        background: $dark;
+        padding: 0.9rem 1.2rem;
+
+        span {
+          color: rgba(white, 0.85);
+          font-size: 0.85rem;
+          font-weight: 700;
+          letter-spacing: 0.5px;
+        }
+        strong {
+          color: white;
+          font-size: 1.05rem;
+          font-weight: 800;
+        }
+      }
+    }
+
+    .recu-total-lettres {
+      padding: 0.65rem 1.2rem 0.75rem;
+      font-size: 0.75rem;
+      font-style: italic;
+      color: $gray;
+      background: white;
+      border-top: 1px dashed $border;
+      text-align: center;
+      line-height: 1.5;
+    }
+  }
+}
+
+// ─── BANDE DE BAS DE PAGE ───
+.recu-bottom-band {
+  background: $dark;
+  padding: 0.75rem 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .recu-bottom-text {
+    font-size: 0.72rem;
+    color: rgba(white, 0.55);
+    letter-spacing: 0.5px;
+    text-align: center;
+  }
+}
+
+// =====================================================
+// ===== IMPRESSION =====
+// =====================================================
+@media print {
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+  .no-print { display: none !important; }
+
+  body, html { margin: 0; padding: 0; background: white; }
+
+  .facture-container {
+    padding: 0;
+    background: white;
+    max-width: 100%;
+  }
+
+  .recu-wrapper {
+    box-shadow: none;
+    border-radius: 0;
+    border: none;
+    max-width: 100%;
+    page-break-inside: avoid;
+  }
+
+  .recu-body {
+    padding: 1.5rem 2rem;
+  }
+
+  .recu-top-band {
+    background: $dark !important;
+    height: 5px;
+  }
+
+  .recu-logo-block .logo-icon {
+    background: linear-gradient(135deg, $blue 0%, $blue-light 100%) !important;
+  }
+
+  .recu-meta {
+    background: #f8fafc !important;
+    border: 1px solid $border !important;
+  }
+
+  .recu-table {
+    thead tr { background: $dark !important; }
+    thead tr th { color: white !important; }
+    tbody tr:nth-child(even) { background: #fafbfc !important; }
+  }
+
+  .recu-totaux .recu-total-row.grand-total {
+    background: $dark !important;
+    span, strong { color: white !important; }
+  }
+
+  .recu-bottom-band {
+    background: $dark !important;
+    .recu-bottom-text { color: rgba(white, 0.55) !important; }
+  }
+
+  .recu-acheteur {
+    border-left-color: $blue-light !important;
+    background: rgba($blue-pale, 0.4) !important;
+  }
+}
+
+// =====================================================
+// ===== RESPONSIVE =====
+// =====================================================
+@media (max-width: 768px) {
+  .facture-container { padding: 1rem; }
+  .vendeur-section { flex-direction: column; }
+  .facture-header {
+    flex-direction: column;
+    .facture-dates { min-width: unset; width: 100%; }
+  }
+  .acheteur-section .acheteur-grid { grid-template-columns: 1fr; }
+  .footer-section { flex-direction: column; .total-bloc { width: 100%; } }
+  .add-ligne-controls { flex-direction: column; align-items: stretch !important; }
+
+  .recu-body { padding: 1.5rem; }
+  .recu-bottom-band { padding: 0.75rem 1.5rem; }
+
+  .recu-header {
+    flex-direction: column;
+    gap: 1.5rem;
+    .recu-title-block { text-align: left; align-items: flex-start; }
+  }
+
+  .recu-meta { grid-template-columns: 1fr; gap: 1rem; }
+
+  .recu-footer {
+    grid-template-columns: 1fr;
+    .recu-totaux { width: 100%; }
+  }
+
+  .recu-table {
+    font-size: 0.78rem;
+    th, td { padding: 0.6rem 0.6rem; }
+  }
+}
+
+// ===== REQUIRED =====
+.required { color: $danger; margin-left: 2px; }
+
+// ===== PRIMENG OVERRIDES =====
+::ng-deep {
+  .p-dropdown, .p-calendar {
+    .p-inputtext {
+      border-radius: 8px;
+      border: 2px solid $border;
+      &:focus { border-color: $blue-light; box-shadow: 0 0 0 3px rgba($blue-light, 0.15); }
+    }
+  }
+
+  .p-dropdown-panel .p-dropdown-item:hover { background: $blue-pale; }
+  .p-tag { border-radius: 20px; font-weight: 600; padding: 0.3rem 0.8rem; }
+}
