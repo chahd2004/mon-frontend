@@ -1,4 +1,3 @@
-// src/app/app.routes.ts
 import { Routes } from '@angular/router';
 import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
@@ -11,25 +10,31 @@ import { ProduitsComponent } from './pages/produits/produits.component';
 import { EmetteursComponent } from './pages/emetteurs/emetteurs.component';
 import { ParametresComponent } from './pages/parametres/parametres.component';
 import { DeviseComponent } from './pages/devise/devise.component';
+import { authGuard, adminGuard, guestGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
-  { path: 'login',    component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
 
+  // ── Publiques (redirige vers dashboard si déjà connecté) ──────
+  { path: 'login', component: LoginComponent, canActivate: [guestGuard] },
+  { path: 'register', component: RegisterComponent, canActivate: [guestGuard] },
+
+  // ── Protégées : faut être connecté ────────────────────────────
   {
-    // AccueilComponent = layout sidebar + router-outlet
     path: '',
     component: AccueilComponent,
+    canActivate: [authGuard],   // ← Toutes les pages enfants protégées
     children: [
-      { path: '',           redirectTo: 'dashboard', pathMatch: 'full' },
-      { path: 'dashboard',  component: DashboardComponent },  // ← stats/tableau de bord
-      { path: 'clients',    component: ClientsComponent },
-      { path: 'emetteurs',  component: EmetteursComponent },
-      { path: 'produits',   component: ProduitsComponent },
-      { path: 'factures',   component: FacturesComponent },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: 'dashboard', component: DashboardComponent },
+      { path: 'factures', component: FacturesComponent },
       { path: 'factures/:id', component: FactureComponent },
-      { path: 'devise',     component: DeviseComponent },
+      { path: 'devise', component: DeviseComponent },
       { path: 'parametres', component: ParametresComponent },
+
+      // ── Admin seulement ───────────────────────────────────────
+      { path: 'clients', component: ClientsComponent, canActivate: [adminGuard] },
+      { path: 'emetteurs', component: EmetteursComponent, canActivate: [adminGuard] },
+      { path: 'produits', component: ProduitsComponent, canActivate: [adminGuard] },
     ]
   },
 

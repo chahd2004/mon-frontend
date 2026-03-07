@@ -1,29 +1,68 @@
-// src/app/core/guards/auth.guard.ts
-import { Injectable } from '@angular/core';
-import { CanActivate, Router } from '@angular/router';
-import { AuthService } from '../services/auth.service'; // ← Vérifie ce chemin
+import { inject } from '@angular/core';
+import { CanActivateFn, Router } from '@angular/router';
+import { AuthService } from '../services/auth.service';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class AuthGuard implements CanActivate {
+// ── Guard : utilisateur connecté ──────────────────────────────
+export const authGuard: CanActivateFn = () => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
 
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) {}
-
-  canActivate(): boolean {
-    const isLoggedIn = this.authService.isLoggedIn();
-    console.log('🔒 AuthGuard - Est connecté ?', isLoggedIn);
-    
-    if (isLoggedIn) {
-      console.log('✅ Accès autorisé au dashboard');
-      return true;
-    } else {
-      console.log('❌ Non connecté, redirection vers login');
-      this.router.navigate(['/login']);
-      return false;
-    }
+  if (authService.isLoggedIn()) {
+    return true;
   }
-}
+
+  router.navigate(['/login']);
+  return false;
+};
+
+// ── Guard : Admin seulement ───────────────────────────────────
+export const adminGuard: CanActivateFn = () => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+
+  if (authService.isAdmin()) {
+    return true;
+  }
+
+  router.navigate(['/dashboard']);
+  return false;
+};
+
+// ── Guard : Client seulement ──────────────────────────────────
+export const clientGuard: CanActivateFn = () => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+
+  if (authService.isClient()) {
+    return true;
+  }
+
+  router.navigate(['/dashboard']);
+  return false;
+};
+
+// ── Guard : Emetteur seulement ────────────────────────────────
+export const emetteurGuard: CanActivateFn = () => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+
+  if (authService.isEmetteur()) {
+    return true;
+  }
+
+  router.navigate(['/dashboard']);
+  return false;
+};
+
+// ── Guard : Déjà connecté → redirige vers dashboard ──────────
+export const guestGuard: CanActivateFn = () => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+
+  if (!authService.isLoggedIn()) {
+    return true;
+  }
+
+  router.navigate(['/dashboard']);
+  return false;
+};

@@ -1,4 +1,3 @@
-// À créer dans models/user.model.ts
 export interface LoginRequest {
   email: string;
   password: string;
@@ -10,8 +9,12 @@ export interface RegisterRequest {
   email: string;
   password: string;
   telephone?: string;
-  typeUser?: 'CLIENT' | 'EMETTEUR' | null;
   role?: 'ADMIN' | 'USER';
+  typeUser?: 'CLIENT' | 'EMETTEUR' | null;
+  // Champs Client (requis si typeUser = CLIENT)
+  raisonSociale?: string;
+  adresseComplete?: string;
+  region?: string;
 }
 
 export interface AuthResponse {
@@ -19,18 +22,18 @@ export interface AuthResponse {
   type: string;
   id: number;
   email: string;
-  role: 'ADMIN' | 'USER';
-  typeUser: 'CLIENT' | 'EMETTEUR' | null;
   nom: string;
   prenom: string;
   telephone: string;
+  role: 'ADMIN' | 'USER';
+  typeUser: 'CLIENT' | 'EMETTEUR' | null;
 }
 
 export interface UserDTO {
   id: number;
-  email: string;
   nom: string;
   prenom: string;
+  email: string;
   telephone: string;
   role: 'ADMIN' | 'USER';
   typeUser: 'CLIENT' | 'EMETTEUR' | null;

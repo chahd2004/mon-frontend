@@ -1,56 +1,35 @@
-// src/app/core/services/produit.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Produit, ProduitRequest } from '../../models/produit.model';
+import { BaseService } from './base.service';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class ProduitService {
+@Injectable({ providedIn: 'root' })
+export class ProduitService extends BaseService {
   private apiUrl = `${environment.apiUrl}/produits`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { super(); }
 
-  /**
-   * Récupère les produits.
-   * Backend: GET /api/produits (tous) ou GET /api/produits/emetteur/{emetteurId} (par émetteur).
-   * On n'utilise le path emetteur que si emetteurId est un nombre > 0 (évite /emetteur/undefined ou /emetteur/0).
-   */
   getProduits(emetteurId?: number | null): Observable<Produit[]> {
     const id = typeof emetteurId === 'number' && emetteurId > 0 ? emetteurId : null;
-    if (id !== null) {
-      return this.http.get<Produit[]>(`${this.apiUrl}/emetteur/${id}`);
-    }
-    return this.http.get<Produit[]>(this.apiUrl);
+    const url = id !== null ? `${this.apiUrl}/emetteur/${id}` : this.apiUrl;
+    return this.http.get<Produit[]>(url, this.getHeaders());
   }
 
-  /**
-   * Récupère un produit par son ID
-   */
   getProduitById(id: number): Observable<Produit> {
-    return this.http.get<Produit>(`${this.apiUrl}/${id}`);
+    return this.http.get<Produit>(`${this.apiUrl}/${id}`, this.getHeaders());
   }
 
-  /**
-   * Crée un nouveau produit
-   */
   createProduit(produit: ProduitRequest): Observable<Produit> {
-    return this.http.post<Produit>(this.apiUrl, produit);
+    return this.http.post<Produit>(this.apiUrl, produit, this.getHeaders());
   }
 
-  /**
-   * Met à jour un produit
-   */
   updateProduit(id: number, produit: ProduitRequest): Observable<Produit> {
-    return this.http.put<Produit>(`${this.apiUrl}/${id}`, produit);
+    return this.http.put<Produit>(`${this.apiUrl}/${id}`, produit, this.getHeaders());
   }
 
-  /**
-   * Supprime un produit
-   */
   deleteProduit(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}/${id}`, this.getHeaders());
   }
 }

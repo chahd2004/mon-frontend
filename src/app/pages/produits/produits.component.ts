@@ -76,12 +76,12 @@ export class ProduitsComponent implements OnInit {
     tauxTVA: number;
     emetteurId: number;
   } = {
-    reference: '',
-    designation: '',
-    prixUnitaire: 0,
-    tauxTVA: 19,
-    emetteurId: DEFAULT_EMETTEUR_ID
-  };
+      reference: '',
+      designation: '',
+      prixUnitaire: 0,
+      tauxTVA: 19,
+      emetteurId: DEFAULT_EMETTEUR_ID
+    };
 
   ngOnInit(): void {
     this.loadProduits();
@@ -91,7 +91,7 @@ export class ProduitsComponent implements OnInit {
    * Résout l'emetteurId : depuis l'utilisateur connecté, sinon fallback DEFAULT
    */
   private resolveEmetteurId(): number {
-    const user = this.authService.getUser();
+    const user = this.authService.currentUser();
     if (user?.emetteurId != null && Number(user.emetteurId) > 0) {
       return Number(user.emetteurId);
     }
@@ -129,8 +129,8 @@ export class ProduitsComponent implements OnInit {
     const search = (this.searchText || '').toLowerCase().trim();
     this.produitsFiltered = search
       ? this.produits.filter(p =>
-          (p.reference || '').toLowerCase().includes(search) ||
-          (p.designation || '').toLowerCase().includes(search))
+        (p.reference || '').toLowerCase().includes(search) ||
+        (p.designation || '').toLowerCase().includes(search))
       : [...this.produits];
   }
 
@@ -251,7 +251,7 @@ export class ProduitsComponent implements OnInit {
   supprimerProduit(id: number): void {
     this.confirmationService.confirm({
       message: 'Êtes-vous sûr de vouloir supprimer ce produit ?',
-     
+
       header: 'Confirmation',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
