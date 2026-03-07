@@ -32,9 +32,9 @@ export const routes: Routes = [
       { path: 'parametres', component: ParametresComponent },
 
       // ── Admin seulement ───────────────────────────────────────
-      { path: 'clients', component: ClientsComponent, canActivate: [adminGuard] },
-      { path: 'emetteurs', component: EmetteursComponent, canActivate: [adminGuard] },
-      { path: 'produits', component: ProduitsComponent, canActivate: [adminGuard] },
+      { path: 'clients', component: ClientsComponent },
+      { path: 'emetteurs', component: EmetteursComponent },
+      { path: 'produits', component: ProduitsComponent },
     ]
   },
 

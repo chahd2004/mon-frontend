@@ -12,9 +12,10 @@ export class AuthService {
   private readonly TOKEN_KEY = 'jwt_token';
   private readonly USER_KEY = 'current_user';
 
-  // ── Signals ────────────────────────────────────────────────────
+  // ── Signals ───────────────────────────────────────────────
   private _currentUser = signal<UserDTO | null>(this.getUserFromStorage());
   currentUser = this._currentUser.asReadonly();
+
   isLoggedIn = computed(() => this._currentUser() !== null);
   isAdmin = computed(() => this._currentUser()?.role === 'ADMIN');
   isClient = computed(() => this._currentUser()?.typeUser === 'CLIENT');
@@ -24,21 +25,21 @@ export class AuthService {
     this.checkTokenExpiry();
   }
 
-  // ── LOGIN ──────────────────────────────────────────────────────
+  // ── LOGIN ───────────────────────────────────────────────
   login(request: LoginRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.API_URL}/login`, request).pipe(
       tap(response => this.saveSession(response))
     );
   }
 
-  // ── REGISTER ───────────────────────────────────────────────────
+  // ── REGISTER ────────────────────────────────────────────
   register(request: RegisterRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.API_URL}/register`, request).pipe(
       tap(response => this.saveSession(response))
     );
   }
 
-  // ── LOGOUT ─────────────────────────────────────────────────────
+  // ── LOGOUT ──────────────────────────────────────────────
   logout(): void {
     localStorage.removeItem(this.TOKEN_KEY);
     localStorage.removeItem(this.USER_KEY);
@@ -46,17 +47,15 @@ export class AuthService {
     this.router.navigate(['/login']);
   }
 
-  // ── TOKEN ──────────────────────────────────────────────────────
+  // ── TOKEN ───────────────────────────────────────────────
   getToken(): string | null {
     return localStorage.getItem(this.TOKEN_KEY);
   }
 
-  // ── PRIVÉS ─────────────────────────────────────────────────────
-
+  // ── PRIVÉS ──────────────────────────────────────────────
   private saveSession(response: AuthResponse): void {
     localStorage.setItem(this.TOKEN_KEY, response.token);
 
-    // Construire UserDTO depuis AuthResponse (pas besoin d'appeler /me)
     const user: UserDTO = {
       id: response.id,
       nom: response.nom,
@@ -82,11 +81,17 @@ export class AuthService {
     if (!token) return;
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
-      if (payload.exp * 1000 < Date.now()) {
-        this.logout();
+      const isExpired = payload.exp * 1000 < Date.now();
+      if (isExpired) {
+        console.warn('🔒 Token expiré détecté — déconnexion automatique');
+        localStorage.removeItem(this.TOKEN_KEY);
+        localStorage.removeItem(this.USER_KEY);
+        this._currentUser.set(null);
       }
     } catch {
-      this.logout();
+      localStorage.removeItem(this.TOKEN_KEY);
+      localStorage.removeItem(this.USER_KEY);
+      this._currentUser.set(null);
     }
   }
 }

@@ -2,15 +2,10 @@ import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
-import { AuthService } from '../services/auth.service';
 
 export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
-  const authService = inject(AuthService);
   const router = inject(Router);
-  const token = authService.getToken();
-
-  console.log('🔑 Interceptor exécuté - token:', token ? 'présent' : 'absent');
-  console.log('🌐 URL:', req.url);
+  const token = localStorage.getItem('jwt_token'); // clé unique
 
   const authReq = token
     ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })
@@ -18,9 +13,9 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
-      console.log('❌ Erreur HTTP:', error.status);
       if (error.status === 401) {
-        authService.logout();
+        localStorage.removeItem('jwt_token');
+        localStorage.removeItem('current_user');
         router.navigate(['/login']);
       }
       return throwError(() => error);

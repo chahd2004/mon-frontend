@@ -1,28 +1,53 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, forkJoin, map } from 'rxjs';
+import { environment } from '../../../environments/environment';
 import { FactureService } from './facture.service';
 import { ClientService } from './client.service';
 import { BaseService } from './base.service';
-import { environment } from '../../../environments/environment';
 
 export interface DashboardStats {
-  factures: { total: number; enAttente: number; payees: number; enRetard: number; };
-  clients: { total: number; };
-  chiffreAffaires: {
-    actuel: number; evolution: number; exercice: string;
-    parAnnee: { annee: number; montant: number; debut: string; fin: string; }[];
+  factures: {
+    total: number;
+    enAttente: number;
+    payees: number;
+    enRetard: number;
   };
-  graphiques: { caMensuel: { mois: string[]; valeurs: number[]; }; };
+  clients: {
+    total: number;
+  };
+  chiffreAffaires: {
+    actuel: number;
+    evolution: number;
+    exercice: string;
+    parAnnee: {
+      annee: number;
+      montant: number;
+      debut: string;
+      fin: string;
+    }[];
+  };
+  graphiques: {
+    caMensuel: {
+      mois: string[];
+      valeurs: number[];
+    };
+  };
 }
 
 export interface FactureRecente {
-  id: number; num_fact: string; nom_client: string;
-  totalttc: number; statut: string; date_emission: Date;
+  id: number;
+  num_fact: string;
+  nom_client: string;
+  totalttc: number;
+  statut: string;
+  date_emission: Date;
 }
 
 export interface FactureBatch {
-  nom: string; dateCreation: string; montant: string;
+  nom: string;
+  dateCreation: string;
+  montant: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -39,7 +64,9 @@ export class DashboardService extends BaseService {
     return forkJoin({
       factures: this.factureService.getFactures(1, 1000),
       clients: this.clientService.getClients()
-    }).pipe(map(({ factures, clients }) => this.calculerStats(factures.data, clients)));
+    }).pipe(
+      map(({ factures, clients }) => this.calculerStats(factures.data, clients))
+    );
   }
 
   getDashboardStats(): Observable<DashboardStats> {
@@ -49,18 +76,28 @@ export class DashboardService extends BaseService {
   getDernieresFactures(limit: number = 5): Observable<FactureRecente[]> {
     return this.factureService.getFactures(1, limit).pipe(
       map(response => response.data.map((f: any) => ({
-        id: f.id, num_fact: f.num_fact, nom_client: f.nom_client,
-        totalttc: f.totalttc, statut: f.statut, date_emission: f.date_emission
+        id: f.id,
+        num_fact: f.num_fact,
+        nom_client: f.nom_client,
+        totalttc: f.totalttc,
+        statut: f.statut,
+        date_emission: f.date_emission
       })))
     );
   }
 
   getFactureBatches(): Observable<FactureBatch[]> {
-    return this.http.get<FactureBatch[]>(`${this.apiUrl}/factures/batches`, this.getHeaders());
+    return this.http.get<FactureBatch[]>(
+      `${this.apiUrl}/factures/batches`,
+      this.getHeaders()
+    );
   }
 
   getDashboardStatsFromAPI(): Observable<DashboardStats> {
-    return this.http.get<DashboardStats>(`${this.apiUrl}/dashboard/stats`, this.getHeaders());
+    return this.http.get<DashboardStats>(
+      `${this.apiUrl}/dashboard/stats`,
+      this.getHeaders()
+    );
   }
 
   private calculerStats(factures: any[], clients: any[]): DashboardStats {
@@ -75,7 +112,12 @@ export class DashboardService extends BaseService {
     });
 
     const caParAnnee = Array.from(caParAnneeMap.entries())
-      .map(([annee, montant]) => ({ annee, montant, debut: `01/01/${annee}`, fin: `31/12/${annee}` }))
+      .map(([annee, montant]) => ({
+        annee,
+        montant,
+        debut: `01/01/${annee}`,
+        fin: `31/12/${annee}`
+      }))
       .sort((a, b) => a.annee - b.annee);
 
     const caActuel = caParAnnee.find(ca => ca.annee === anneeActuelle)?.montant || 0;
@@ -89,10 +131,14 @@ export class DashboardService extends BaseService {
         payees: factures.filter(f => f.statut === 'PAYEE').length,
         enRetard: factures.filter(f => f.statut === 'EN_RETARD').length
       },
-      clients: { total: clients.length },
+      clients: {
+        total: clients.length
+      },
       chiffreAffaires: {
         actuel: caActuel,
-        evolution: caPrecedent > 0 ? ((caActuel - caPrecedent) / caPrecedent) * 100 : 0,
+        evolution: caPrecedent > 0
+          ? ((caActuel - caPrecedent) / caPrecedent) * 100
+          : 0,
         exercice: anneeActuelle.toString(),
         parAnnee: caParAnnee
       },
@@ -100,10 +146,14 @@ export class DashboardService extends BaseService {
         caMensuel: {
           mois,
           valeurs: mois.map((_, i) =>
-            factures.filter(f => f.date_emission &&
-              new Date(f.date_emission).getFullYear() === anneeActuelle &&
-              new Date(f.date_emission).getMonth() === i)
-              .reduce((sum, f) => sum + (f.totalttc || 0), 0))
+            factures
+              .filter(f =>
+                f.date_emission &&
+                new Date(f.date_emission).getFullYear() === anneeActuelle &&
+                new Date(f.date_emission).getMonth() === i
+              )
+              .reduce((sum, f) => sum + (f.totalttc || 0), 0)
+          )
         }
       }
     };
