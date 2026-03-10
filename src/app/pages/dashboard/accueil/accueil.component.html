@@ -1,7 +1,8 @@
 <!-- src/app/pages/dashboard/accueil/accueil.component.html -->
 <p-toast></p-toast>
 <div class="dashboard-layout">
-  <!-- SIDEBAR GAUCHE (FIXE) -->
+
+  <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sidebar-header">
       <div class="logo">
@@ -11,70 +12,107 @@
     </div>
 
     <nav class="sidebar-nav">
+
+      <!-- GÉNÉRAL -->
       <div class="nav-section">
-        <div class="section-title">GÉNÉRAL</div>
-        <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-item">
-          <i class="pi pi-th-large"></i>
-          <span>Tableau de bord</span>
+        <div class="section-title">
+          <i class="pi pi-home"></i>
+          GÉNÉRAL
+        </div>
+
+        <!-- Tableau de bord : vue d'ensemble -->
+        <a routerLink="/dashboard" routerLinkActive="active"
+           [routerLinkActiveOptions]="{exact: true}" class="nav-item">
+          <i class="pi pi-gauge"></i>
+          <span class="nav-label">Tableau de bord</span>
         </a>
+
+        <!-- Clients : personnes -->
         <a routerLink="/clients" routerLinkActive="active" class="nav-item">
           <i class="pi pi-users"></i>
-          <span>Clients</span>
+          <span class="nav-label">Clients</span>
         </a>
+
+        <!-- Émetteurs : entreprise -->
         <a routerLink="/emetteurs" routerLinkActive="active" class="nav-item">
           <i class="pi pi-building"></i>
-          <span>Émetteurs</span>
+          <span class="nav-label">Émetteurs</span>
         </a>
+
+        <!-- Produits : article/tag -->
         <a routerLink="/produits" routerLinkActive="active" class="nav-item">
-          <i class="pi pi-box"></i>
-          <span>Produits</span>
+          <i class="pi pi-tag"></i>
+          <span class="nav-label">Produits</span>
         </a>
       </div>
 
+      <!-- FACTURATION -->
       <div class="nav-section">
-        <div class="section-title">FACTURATION</div>
+        <div class="section-title">
+          <i class="pi pi-receipt"></i>
+          FACTURATION
+        </div>
+
+        <!-- Factures : document texte -->
         <a routerLink="/factures" routerLinkActive="active" class="nav-item">
-          <i class="pi pi-file"></i>
-          <span>Factures</span>
+          <i class="pi pi-file-edit"></i>
+          <span class="nav-label">Factures</span>
           <span class="nav-badge">{{ totalFactures }}</span>
         </a>
+
+        <!-- Devis : document avec loupe -->
         <a routerLink="/devise" routerLinkActive="active" class="nav-item">
-          <i class="pi pi-calculator"></i>
-          <span>Devis</span>
+          <i class="pi pi-file-export"></i>
+          <span class="nav-label">Devis</span>
           <span class="nav-badge">0</span>
         </a>
+
+        <!-- Avoirs : remboursement/retour -->
         <a routerLink="/avoirs" routerLinkActive="active" class="nav-item">
-          <i class="pi pi-credit-card"></i>
-          <span>Avoirs</span>
+          <i class="pi pi-arrow-right-arrow-left"></i>
+          <span class="nav-label">Avoirs</span>
           <span class="nav-badge">0</span>
         </a>
       </div>
 
+      <!-- PARAMÈTRES -->
       <div class="nav-section">
-        <div class="section-title">PARAMÈTRES</div>
-        <a routerLink="/parametres" routerLinkActive="active" class="nav-item">
+        <div class="section-title">
           <i class="pi pi-cog"></i>
-          <span>Paramètres</span>
+          PARAMÈTRES
+        </div>
+
+        <!-- Paramètres : réglages -->
+        <a routerLink="/parametres" routerLinkActive="active" class="nav-item">
+          <i class="pi pi-sliders-h"></i>
+          <span class="nav-label">Paramètres</span>
         </a>
-        <a class="nav-item" (click)="logout()">
+
+        <!-- Déconnexion : sortie -->
+        <a class="nav-item logout" (click)="logout()">
           <i class="pi pi-sign-out"></i>
-          <span>Déconnexion</span>
+          <span class="nav-label">Déconnexion</span>
         </a>
       </div>
+
     </nav>
 
     <div class="sidebar-footer">
       <div class="user-info">
-        <div class="user-icon"><i class="pi pi-user"></i></div>
+        <div class="user-avatar">
+          <i class="pi pi-user"></i>
+        </div>
         <div class="user-details">
           <span class="user-name">Admin</span>
+          <span class="user-role">Administrateur</span>
         </div>
       </div>
     </div>
   </aside>
 
-  <!-- CONTENU PRINCIPAL -->
+  <!-- CONTENU -->
   <main class="main-content">
     <router-outlet></router-outlet>
   </main>
+
 </div>

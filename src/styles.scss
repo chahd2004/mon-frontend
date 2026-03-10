@@ -1,5 +1,11 @@
 /* Global styles */
 
+/* ===== IMPORTS PRIMENG ===== */
+@import "primeng/resources/themes/lara-light-blue/theme.css";
+@import "primeng/resources/primeng.css";
+@import "primeicons/primeicons.css";
+@import "primeflex/primeflex.css";
+
 /* ===== OVERLAY ===== */
 .p-dialog-mask {
   background: rgba(15, 23, 42, 0.65) !important;

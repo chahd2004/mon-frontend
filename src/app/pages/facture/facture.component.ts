@@ -19,9 +19,19 @@ import { MessageService } from 'primeng/api';
 import { TagModule } from 'primeng/tag';
 import { DividerModule } from 'primeng/divider';
 
+// QR Code
+import { QRCodeComponent } from 'angularx-qrcode';
+
 import { environment } from '../../../environments/environment';
 
 const DEFAULT_VENDEUR_ID = 1;
+
+// =====================================================
+// ⚙️  URL DU QR CODE — CHANGER ICI QUAND TU AS NGROK
+// =====================================================
+
+const QR_BASE_URL = 'https://mon-app.com';
+// =====================================================
 
 interface Emetteur {
   id: number;
@@ -68,7 +78,8 @@ interface LigneFacture {
     ButtonModule, CardModule, ToastModule,
     InputTextModule, InputNumberModule,
     DropdownModule, CalendarModule,
-    TooltipModule, TableModule, TagModule, DividerModule
+    TooltipModule, TableModule, TagModule, DividerModule,
+    QRCodeComponent
   ],
   providers: [MessageService],
   templateUrl: './facture.component.html',
@@ -94,6 +105,12 @@ export class FactureComponent implements OnInit {
     return 'Nouvelle facture';
   }
 
+  // ===== QR CODE =====
+  get qrUrl(): string {
+    const id = this.factureId ?? this.numFact ?? 'UNKNOWN';
+    return `${QR_BASE_URL}/factures/status/${id}`;
+  }
+
   // ===== DONNÉES =====
   emetteurs: Emetteur[] = [];
   clients: Client[] = [];
@@ -117,14 +134,14 @@ export class FactureComponent implements OnInit {
 
   // ===== OPTIONS =====
   typeAcheteurOptions = [
-    { label: 'Client',    value: 'CLIENT' },
-    { label: 'Émetteur',  value: 'EMETTEUR' }
+    { label: 'Client',   value: 'CLIENT' },
+    { label: 'Émetteur', value: 'EMETTEUR' }
   ];
   modePaiementOptions = [
     { label: 'Virement bancaire', value: 'VIREMENT' },
-    { label: 'Chèque',            value: 'CHEQUE' },
-    { label: 'Espèces',           value: 'ESPECES' },
-    { label: 'Carte bancaire',    value: 'CARTE' }
+    { label: 'Chèque',           value: 'CHEQUE' },
+    { label: 'Espèces',          value: 'ESPECES' },
+    { label: 'Carte bancaire',   value: 'CARTE' }
   ];
   statutOptions = [
     { label: 'Brouillon', value: 'BROUILLON' },
@@ -214,20 +231,16 @@ export class FactureComponent implements OnInit {
   }
 
   private mapLigne(l: any): LigneFacture {
-    const produit = this.produits.find(p => p.id === (l.produitId ?? l.produit?.id));
-
+    const produit  = this.produits.find(p => p.id === (l.produitId ?? l.produit?.id));
     const prixUnit = this.safeNum(l.prixUnitaire ?? l.prix_unitaire ?? produit?.prixUnitaire);
     const quantite = this.safeNum(l.quantite ?? l.qte ?? 1);
     const tauxTVA  = this.safeNum(l.tauxTVA  ?? l.taux_tva ?? produit?.tauxTVA ?? 0);
-
     const ht  = prixUnit * quantite;
     const tva = ht * (tauxTVA / 100);
     const ttc = ht + tva;
-
     const label = produit
       ? `${produit.reference} — ${produit.designation}`
       : (l.produitLabel ?? l.designation ?? l.libelle ?? `Produit #${l.produitId}`);
-
     return {
       produitId:    l.produitId ?? l.produit?.id ?? 0,
       produitLabel: label,
@@ -321,7 +334,6 @@ export class FactureComponent implements OnInit {
   }
 
   // ===== TOTAUX =====
-
   get totalHT():     number { return this.lignes.reduce((s, l) => s + this.safeNum(l.montantHT),  0); }
   get totalTVA():    number { return this.lignes.reduce((s, l) => s + this.safeNum(l.montantTVA), 0); }
   get totalTTC():    number { return this.lignes.reduce((s, l) => s + this.safeNum(l.montantTTC), 0); }
@@ -380,9 +392,7 @@ export class FactureComponent implements OnInit {
     });
   }
 
-  imprimer(): void {
-    window.print();
-  }
+  imprimer(): void { window.print(); }
 
   // ===== HELPERS =====
 
@@ -404,41 +414,32 @@ export class FactureComponent implements OnInit {
 
   formatStatut(statut: string): string {
     const map: Record<string, string> = {
-      BROUILLON: 'Brouillon', EMISE: 'Émise', PAYEE: 'Payée',
-      ANNULEE: 'Annulée', EN_ATTENTE: 'En attente', EN_RETARD: 'En retard'
+      BROUILLON: 'Brouillon', EMISE: 'Émise',     PAYEE: 'Payée',
+      ANNULEE:   'Annulée',   EN_ATTENTE: 'En attente', EN_RETARD: 'En retard'
     };
     return map[statut] ?? statut;
   }
 
   getStatutSeverity(statut: string): 'success' | 'warning' | 'danger' | 'info' | 'secondary' {
     const map: Record<string, any> = {
-      PAYEE: 'success', EN_ATTENTE: 'warning', BROUILLON: 'warning',
-      EN_RETARD: 'danger', ANNULEE: 'secondary', EMISE: 'info'
+      PAYEE:      'success', EN_ATTENTE: 'warning', BROUILLON: 'warning',
+      EN_RETARD:  'danger',  ANNULEE:    'secondary', EMISE:   'info'
     };
     return map[statut] ?? 'info';
   }
 
-  retourListe(): void {
-    this.router.navigate(['/factures']);
-  }
+  retourListe(): void { this.router.navigate(['/factures']); }
 
   // =====================================================
   // ===== MONTANT EN LETTRES (français / TND) =====
   // =====================================================
 
-  /**
-   * Convertit un montant numérique en lettres françaises avec TND
-   * Ex: 321.800 => "Trois cent vingt et un dinars et huit cents millimes"
-   */
   montantEnLettres(valeur: number): string {
     if (isNaN(valeur) || valeur < 0) return '';
-
     const dinars   = Math.floor(valeur);
     const millimes = Math.round((valeur - dinars) * 1000);
-
     const dinarStr   = dinars   > 0 ? `${this._nombreEnLettres(dinars)} ${dinars === 1 ? 'dinar' : 'dinars'}` : '';
     const millimeStr = millimes > 0 ? `${this._nombreEnLettres(millimes)} ${millimes === 1 ? 'millime' : 'millimes'}` : '';
-
     if (dinarStr && millimeStr) return `${dinarStr} et ${millimeStr}`;
     if (dinarStr)               return dinarStr;
     if (millimeStr)             return millimeStr;
@@ -447,7 +448,6 @@ export class FactureComponent implements OnInit {
 
   private _nombreEnLettres(n: number): string {
     if (n === 0) return 'zéro';
-
     const unites = [
       '', 'un', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf',
       'dix', 'onze', 'douze', 'treize', 'quatorze', 'quinze', 'seize',
@@ -457,8 +457,7 @@ export class FactureComponent implements OnInit {
 
     const _dizaine = (n: number): string => {
       if (n < 20) return unites[n];
-      const d = Math.floor(n / 10);
-      const u = n % 10;
+      const d = Math.floor(n / 10); const u = n % 10;
       if (d === 7) return u === 1 ? 'soixante et onze' : `soixante-${unites[10 + u]}`;
       if (d === 9) return u === 0 ? 'quatre-vingt-dix' : `quatre-vingt-${unites[10 + u]}`;
       if (d === 8) return u === 0 ? 'quatre-vingts' : `quatre-vingt-${unites[u]}`;
@@ -467,16 +466,14 @@ export class FactureComponent implements OnInit {
     };
 
     const _centaine = (n: number): string => {
-      const c = Math.floor(n / 100);
-      const r = n % 100;
+      const c = Math.floor(n / 100); const r = n % 100;
       if (c === 0) return _dizaine(r);
       const centStr = c === 1 ? 'cent' : `${unites[c]} cent${r === 0 && c > 1 ? 's' : ''}`;
       return r === 0 ? centStr : `${centStr} ${_dizaine(r)}`;
     };
 
     const _millier = (n: number): string => {
-      const m = Math.floor(n / 1000);
-      const r = n % 1000;
+      const m = Math.floor(n / 1000); const r = n % 1000;
       let result = '';
       if (m > 0) result = m === 1 ? 'mille' : `${_centaine(m)} mille`;
       if (r > 0) result = result ? `${result} ${_centaine(r)}` : _centaine(r);
@@ -484,8 +481,7 @@ export class FactureComponent implements OnInit {
     };
 
     const _million = (n: number): string => {
-      const m = Math.floor(n / 1_000_000);
-      const r = n % 1_000_000;
+      const m = Math.floor(n / 1_000_000); const r = n % 1_000_000;
       let result = '';
       if (m > 0) result = `${_centaine(m)} million${m > 1 ? 's' : ''}`;
       if (r > 0) result = result ? `${result} ${_millier(r)}` : _millier(r);

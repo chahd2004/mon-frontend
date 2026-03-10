@@ -10,7 +10,6 @@
         <i class="pi pi-arrow-left"></i> Retour à la liste
       </button>
       <div class="top-actions">
-       
         <button class="print-btn" (click)="imprimer()">
           <i class="pi pi-print"></i> Imprimer
         </button>
@@ -28,14 +27,13 @@
 
       <div class="recu-body">
 
-        <!-- En-tête : Logo + Titre -->
+        <!-- En-tête : Logo + Titre + QR Code -->
         <div class="recu-header">
 
           <!-- Logo personnalisé + Infos vendeur -->
           <div class="recu-logo-block">
             <div class="recu-logo-svg">
               <div class="logo-icon">
-                <!-- Icône SVG personnalisée : document/facture -->
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
                   <polyline points="14 2 14 8 20 8"/>
@@ -62,13 +60,36 @@
             </div>
           </div>
 
-          <!-- Titre FACTURE -->
+          <!-- Titre FACTURE + QR CODE (haut droite) -->
           <div class="recu-title-block">
             <div class="recu-title">FACTURE</div>
             <div class="recu-num">N° {{ numFact || '—' }}</div>
-            
+
+            <!-- ===== QR CODE ===== -->
+            <div class="recu-qr-block">
+              <div class="recu-qr-label">
+                <i class="pi pi-qrcode"></i>
+                Vérifier le statut
+              </div>
+              <qrcode
+                [qrdata]="qrUrl"
+                [width]="90"
+                [errorCorrectionLevel]="'M'"
+                [colorDark]="'#1e40af'"
+                [colorLight]="'#ffffff'">
+              </qrcode>
+              <div class="recu-qr-hint">
+                Scanner pour consulter<br>le statut en temps réel
+              </div>
+              <div class="recu-qr-num">{{ numFact }}</div>
+            </div>
+            <!-- ===== FIN QR CODE ===== -->
+
           </div>
+          <!-- fin recu-title-block -->
+
         </div>
+        <!-- fin recu-header -->
 
         <!-- Séparateur -->
         <div class="recu-divider"></div>
@@ -174,6 +195,7 @@
             </div>
           </div>
         </div>
+        <!-- fin recu-footer -->
 
       </div>
       <!-- fin recu-body -->

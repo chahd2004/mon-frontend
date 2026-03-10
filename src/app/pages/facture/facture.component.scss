@@ -314,7 +314,7 @@ $white: #ffffff;
 }
 
 // =====================================================
-// ===== REÇU / APERÇU — REFONTE COMPLÈTE =====
+// ===== REÇU / APERÇU =====
 // =====================================================
 
 .recu-wrapper {
@@ -328,19 +328,17 @@ $white: #ffffff;
   border: 1px solid #dde3ee;
 }
 
-// ─── BANDE SUPÉRIEURE COLORÉE ───
 .recu-top-band {
   background: $dark;
   height: 6px;
   width: 100%;
 }
 
-// ─── CORPS DE LA FACTURE ───
 .recu-body {
   padding: 2.5rem 3rem;
 }
 
-// ─── HEADER : LOGO + TITRE ───
+// ─── HEADER ───
 .recu-header {
   display: flex;
   justify-content: space-between;
@@ -348,7 +346,6 @@ $white: #ffffff;
   margin-bottom: 2.5rem;
 }
 
-// Logo personnalisé SVG
 .recu-logo-block {
   display: flex;
   flex-direction: column;
@@ -361,73 +358,41 @@ $white: #ffffff;
     gap: 0.6rem;
 
     .logo-icon {
-      width: 48px;
-      height: 48px;
+      width: 48px; height: 48px;
       background: linear-gradient(135deg, $blue 0%, $blue-light 100%);
       border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       box-shadow: 0 4px 12px rgba($blue, 0.35);
 
       svg {
-        width: 28px;
-        height: 28px;
-        fill: none;
-        stroke: white;
-        stroke-width: 2;
-        stroke-linecap: round;
-        stroke-linejoin: round;
+        width: 28px; height: 28px;
+        fill: none; stroke: white;
+        stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
       }
     }
 
     .logo-text-block {
-      display: flex;
-      flex-direction: column;
-      line-height: 1.1;
-
-      .logo-name {
-        font-size: 1.15rem;
-        font-weight: 800;
-        color: $dark;
-        letter-spacing: -0.3px;
-      }
-      .logo-tagline {
-        font-size: 0.7rem;
-        color: $gray;
-        font-weight: 500;
-        letter-spacing: 1.5px;
-        text-transform: uppercase;
-      }
+      display: flex; flex-direction: column; line-height: 1.1;
+      .logo-name    { font-size: 1.15rem; font-weight: 800; color: $dark; letter-spacing: -0.3px; }
+      .logo-tagline { font-size: 0.7rem; color: $gray; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; }
     }
   }
 
   .recu-vendeur-infos {
     margin-top: 0.8rem;
     padding-left: 0.2rem;
-
-    .recu-vendeur-nom {
-      font-size: 1rem;
-      font-weight: 700;
-      color: $dark;
-      margin-bottom: 0.25rem;
-    }
-    .recu-vendeur-detail {
-      font-size: 0.8rem;
-      color: $gray;
-      margin-bottom: 0.15rem;
-      line-height: 1.5;
-    }
+    .recu-vendeur-nom    { font-size: 1rem; font-weight: 700; color: $dark; margin-bottom: 0.25rem; }
+    .recu-vendeur-detail { font-size: 0.8rem; color: $gray; margin-bottom: 0.15rem; line-height: 1.5; }
   }
 }
 
-// Bloc titre FACTURE
+// ─── TITRE FACTURE + QR CODE (haut droite) ───
 .recu-title-block {
   text-align: right;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 0.5rem;
+  gap: 0.4rem;
 
   .recu-title {
     font-size: 3rem;
@@ -445,30 +410,68 @@ $white: #ffffff;
     letter-spacing: 0.5px;
   }
 
-  .recu-statut-tag {
-    margin-top: 0.2rem;
+  // ─── QR CODE ALIGNÉ À DROITE ───
+  .recu-qr-block {
+    margin-top: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 5px;
+    padding: 10px 12px;
+    background: #f8faff;
+    border: 1px solid $border;
+    border-radius: 10px;
+
+    .recu-qr-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: $blue;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 4px;
+      i { font-size: 12px; color: $blue; }
+    }
+
+    qrcode canvas {
+      border-radius: 6px;
+      display: block;
+    }
+
+    .recu-qr-hint {
+      font-size: 9.5px;
+      color: $gray;
+      line-height: 1.4;
+      text-align: right;
+    }
+
+    .recu-qr-num {
+      font-size: 9px;
+      color: #94a3b8;
+      font-style: italic;
+      text-align: right;
+    }
   }
 }
 
-// ─── LIGNE SÉPARATRICE DOUBLE ───
+// ─── SÉPARATEUR ───
 .recu-divider {
   height: 1px;
   background: $border;
   margin: 1.5rem 0;
   position: relative;
-
   &::after {
     content: '';
     position: absolute;
-    top: 3px;
-    left: 0;
-    right: 0;
+    top: 3px; left: 0; right: 0;
     height: 1px;
     background: rgba($blue-light, 0.2);
   }
 }
 
-// ─── MÉTA INFOS (dates + mode) ───
+// ─── MÉTA INFOS ───
 .recu-meta {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -480,26 +483,13 @@ $white: #ffffff;
   margin-bottom: 0.5rem;
 
   .recu-meta-item {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-
-    .recu-meta-label {
-      font-size: 0.7rem;
-      font-weight: 700;
-      color: $gray;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-    .recu-meta-value {
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: $dark;
-    }
+    display: flex; flex-direction: column; gap: 0.35rem;
+    .recu-meta-label { font-size: 0.7rem; font-weight: 700; color: $gray; text-transform: uppercase; letter-spacing: 1px; }
+    .recu-meta-value { font-size: 0.95rem; font-weight: 700; color: $dark; }
   }
 }
 
-// ─── ACHETEUR ───
+// ─── SECTION LABEL ───
 .recu-section-label {
   font-size: 0.68rem;
   font-weight: 800;
@@ -510,7 +500,6 @@ $white: #ffffff;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-
   &::after {
     content: '';
     flex: 1;
@@ -519,6 +508,7 @@ $white: #ffffff;
   }
 }
 
+// ─── ACHETEUR ───
 .recu-acheteur {
   background: linear-gradient(135deg, rgba($blue-pale, 0.6) 0%, rgba($white, 0) 100%);
   border: 1px solid rgba($blue-light, 0.2);
@@ -527,21 +517,11 @@ $white: #ffffff;
   padding: 1rem 1.2rem;
   margin-bottom: 0.5rem;
 
-  .recu-acheteur-nom {
-    font-size: 1rem;
-    font-weight: 700;
-    color: $dark;
-    margin-bottom: 0.3rem;
-  }
-  .recu-acheteur-detail {
-    font-size: 0.82rem;
-    color: $gray;
-    margin-bottom: 0.15rem;
-    line-height: 1.5;
-  }
+  .recu-acheteur-nom    { font-size: 1rem; font-weight: 700; color: $dark; margin-bottom: 0.3rem; }
+  .recu-acheteur-detail { font-size: 0.82rem; color: $gray; margin-bottom: 0.15rem; line-height: 1.5; }
 }
 
-// ─── TABLEAU PRESTATIONS ───
+// ─── TABLEAU ───
 .recu-table {
   width: 100%;
   border-collapse: collapse;
@@ -553,17 +533,11 @@ $white: #ffffff;
 
   thead tr {
     background: $dark;
-
     th {
       padding: 0.85rem 1rem;
-      color: white;
-      font-weight: 600;
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      text-align: left;
-      white-space: nowrap;
-
+      color: white; font-weight: 600;
+      font-size: 0.72rem; text-transform: uppercase;
+      letter-spacing: 0.8px; text-align: left; white-space: nowrap;
       &.text-right { text-align: right; }
     }
   }
@@ -571,31 +545,17 @@ $white: #ffffff;
   tbody tr {
     border-bottom: 1px solid $border;
     transition: background 0.15s;
-
     &:nth-child(even) { background: #fafbfc; }
     &:hover { background: rgba($blue-pale, 0.5); }
     &:last-child { border-bottom: none; }
 
     td {
       padding: 0.85rem 1rem;
-      color: $dark;
-      vertical-align: middle;
-
+      color: $dark; vertical-align: middle;
       &.text-right  { text-align: right; }
-      &.font-bold   {
-        font-weight: 700;
-        color: $blue;
-        font-size: 0.95rem;
-      }
+      &.font-bold   { font-weight: 700; color: $blue; font-size: 0.95rem; }
       &.text-center { text-align: center; }
-
-      // Colonne numéro (#)
-      &:first-child {
-        color: $gray;
-        font-size: 0.8rem;
-        font-weight: 600;
-        width: 36px;
-      }
+      &:first-child { color: $gray; font-size: 0.8rem; font-weight: 600; width: 36px; }
     }
   }
 }
@@ -606,7 +566,7 @@ $white: #ffffff;
   font-style: italic;
 }
 
-// ─── PIED : TOTAUX + MENTION ───
+// ─── PIED : MENTION + TOTAUX ───
 .recu-footer {
   display: grid;
   grid-template-columns: 1fr auto;
@@ -619,11 +579,8 @@ $white: #ffffff;
     background: $bg;
     border-radius: 8px;
     border: 1px solid $border;
-    font-size: 0.78rem;
-    color: $gray;
-    line-height: 1.7;
+    font-size: 0.78rem; color: $gray; line-height: 1.7;
     align-self: end;
-
     p { margin: 0 0 0.25rem 0; }
   }
 
@@ -634,58 +591,38 @@ $white: #ffffff;
     overflow: hidden;
 
     .recu-total-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      display: flex; justify-content: space-between; align-items: center;
       padding: 0.6rem 1.2rem;
-      font-size: 0.875rem;
-      color: $dark;
+      font-size: 0.875rem; color: $dark;
       border-bottom: 1px solid $border;
       background: white;
-
       &:last-child { border-bottom: none; }
-
-      span { color: $gray; font-size: 0.82rem; }
+      span   { color: $gray; font-size: 0.82rem; }
       strong { font-weight: 600; color: $dark; }
 
       &.grand-total {
         background: $dark;
         padding: 0.9rem 1.2rem;
-
-        span {
-          color: rgba(white, 0.85);
-          font-size: 0.85rem;
-          font-weight: 700;
-          letter-spacing: 0.5px;
-        }
-        strong {
-          color: white;
-          font-size: 1.05rem;
-          font-weight: 800;
-        }
+        span   { color: rgba(white, 0.85); font-size: 0.85rem; font-weight: 700; letter-spacing: 0.5px; }
+        strong { color: white; font-size: 1.05rem; font-weight: 800; }
       }
     }
 
     .recu-total-lettres {
       padding: 0.65rem 1.2rem 0.75rem;
-      font-size: 0.75rem;
-      font-style: italic;
-      color: $gray;
-      background: white;
+      font-size: 0.75rem; font-style: italic;
+      color: $gray; background: white;
       border-top: 1px dashed $border;
-      text-align: center;
-      line-height: 1.5;
+      text-align: center; line-height: 1.5;
     }
   }
 }
 
-// ─── BANDE DE BAS DE PAGE ───
+// ─── BANDE BAS ───
 .recu-bottom-band {
   background: $dark;
   padding: 0.75rem 3rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: flex; justify-content: center; align-items: center;
 
   .recu-bottom-text {
     font-size: 0.72rem;
@@ -700,42 +637,16 @@ $white: #ffffff;
 // =====================================================
 @media print {
   * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-
   .no-print { display: none !important; }
-
   body, html { margin: 0; padding: 0; background: white; }
 
-  .facture-container {
-    padding: 0;
-    background: white;
-    max-width: 100%;
-  }
+  .facture-container { padding: 0; background: white; max-width: 100%; }
 
-  .recu-wrapper {
-    box-shadow: none;
-    border-radius: 0;
-    border: none;
-    max-width: 100%;
-    page-break-inside: avoid;
-  }
-
-  .recu-body {
-    padding: 1.5rem 2rem;
-  }
-
-  .recu-top-band {
-    background: $dark !important;
-    height: 5px;
-  }
-
-  .recu-logo-block .logo-icon {
-    background: linear-gradient(135deg, $blue 0%, $blue-light 100%) !important;
-  }
-
-  .recu-meta {
-    background: #f8fafc !important;
-    border: 1px solid $border !important;
-  }
+  .recu-wrapper { box-shadow: none; border-radius: 0; border: none; max-width: 100%; page-break-inside: avoid; }
+  .recu-body { padding: 1.5rem 2rem; }
+  .recu-top-band { background: $dark !important; height: 5px; }
+  .recu-logo-block .logo-icon { background: linear-gradient(135deg, $blue 0%, $blue-light 100%) !important; }
+  .recu-meta { background: #f8fafc !important; border: 1px solid $border !important; }
 
   .recu-table {
     thead tr { background: $dark !important; }
@@ -748,14 +659,14 @@ $white: #ffffff;
     span, strong { color: white !important; }
   }
 
-  .recu-bottom-band {
-    background: $dark !important;
-    .recu-bottom-text { color: rgba(white, 0.55) !important; }
-  }
+  .recu-bottom-band { background: $dark !important; .recu-bottom-text { color: rgba(white, 0.55) !important; } }
+  .recu-acheteur { border-left-color: $blue-light !important; background: rgba($blue-pale, 0.4) !important; }
 
-  .recu-acheteur {
-    border-left-color: $blue-light !important;
-    background: rgba($blue-pale, 0.4) !important;
+  // QR code visible à l'impression
+  .recu-title-block .recu-qr-block {
+    background: #f8faff !important;
+    border: 1px solid $border !important;
+    qrcode canvas { display: block !important; }
   }
 }
 
@@ -779,20 +690,21 @@ $white: #ffffff;
   .recu-header {
     flex-direction: column;
     gap: 1.5rem;
-    .recu-title-block { text-align: left; align-items: flex-start; }
+    .recu-title-block {
+      text-align: left;
+      align-items: flex-start;
+      .recu-qr-block {
+        align-items: flex-start;
+        .recu-qr-label { justify-content: flex-start; }
+        .recu-qr-hint  { text-align: left; }
+        .recu-qr-num   { text-align: left; }
+      }
+    }
   }
 
   .recu-meta { grid-template-columns: 1fr; gap: 1rem; }
-
-  .recu-footer {
-    grid-template-columns: 1fr;
-    .recu-totaux { width: 100%; }
-  }
-
-  .recu-table {
-    font-size: 0.78rem;
-    th, td { padding: 0.6rem 0.6rem; }
-  }
+  .recu-footer { grid-template-columns: 1fr; .recu-totaux { width: 100%; } }
+  .recu-table { font-size: 0.78rem; th, td { padding: 0.6rem 0.6rem; } }
 }
 
 // ===== REQUIRED =====
@@ -807,7 +719,6 @@ $white: #ffffff;
       &:focus { border-color: $blue-light; box-shadow: 0 0 0 3px rgba($blue-light, 0.15); }
     }
   }
-
   .p-dropdown-panel .p-dropdown-item:hover { background: $blue-pale; }
   .p-tag { border-radius: 20px; font-weight: 600; padding: 0.3rem 0.8rem; }
 }
