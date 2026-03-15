@@ -1,0 +1,47 @@
+<div class="factures-list">
+  <div class="list-header">
+    <h2>Mes Factures de Vente</h2>
+    <p class="subtitle">Consultez vos factures de vente</p>
+  </div>
+
+  <div *ngIf="loading" class="loading-spinner">
+    <p>Chargement de vos factures...</p>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading && factures.length > 0" class="table-container">
+    <table class="factures-table">
+      <thead>
+        <tr>
+          <th>Numéro</th>
+          <th>Client</th>
+          <th>Date d'émission</th>
+          <th>Montant TTC</th>
+          <th>Statut</th>
+          <th>Mode de Paiement</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let facture of factures" class="facture-row">
+          <td class="facture-number">{{ facture.numFact }}</td>
+          <td>{{ facture.acheteurNom }}</td>
+          <td>{{ facture.dateEmission | date: 'dd/MM/yyyy' }}</td>
+          <td class="amount">{{ facture.totalTTC | number: '1.2-2' }} €</td>
+          <td>
+            <span [ngClass]="['badge', getStatutClass(facture.statut)]">
+              {{ facture.statut }}
+            </span>
+          </td>
+          <td>{{ facture.modePaiement || '-' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="!loading && factures.length === 0 && !error" class="no-data">
+    <p>Vous n'avez pas de factures pour le moment</p>
+  </div>
+</div>

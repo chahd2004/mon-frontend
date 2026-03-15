@@ -28,21 +28,60 @@
         </a>
 
         <!-- Clients : personnes -->
-        <a routerLink="/clients" routerLinkActive="active" class="nav-item">
+        <a *ngIf="hasRole('SUPER_ADMIN')" routerLink="/clients" routerLinkActive="active" class="nav-item">
           <i class="pi pi-users"></i>
           <span class="nav-label">Clients</span>
         </a>
 
         <!-- Émetteurs : entreprise -->
-        <a routerLink="/emetteurs" routerLinkActive="active" class="nav-item">
+        <a *ngIf="hasRole('SUPER_ADMIN')" routerLink="/emetteurs" routerLinkActive="active" class="nav-item">
           <i class="pi pi-building"></i>
           <span class="nav-label">Émetteurs</span>
         </a>
 
         <!-- Produits : article/tag -->
-        <a routerLink="/produits" routerLinkActive="active" class="nav-item">
+        <a *ngIf="hasAnyRole(['SUPER_ADMIN', 'ENTREPRISE_ADMIN', 'EMETTEUR'])" routerLink="/produits" routerLinkActive="active" class="nav-item">
           <i class="pi pi-tag"></i>
           <span class="nav-label">Produits</span>
+        </a>
+
+        <!-- Demandes super-admin -->
+        <a *ngIf="hasRole('SUPER_ADMIN')" routerLink="/demandes" routerLinkActive="active" class="nav-item">
+          <i class="pi pi-inbox"></i>
+          <span class="nav-label">Demandes</span>
+          <span class="nav-badge">{{ pendingDemandes }}</span>
+        </a>
+
+        <!-- Utilisateurs super-admin -->
+        <a *ngIf="hasRole('SUPER_ADMIN')" routerLink="/users" routerLinkActive="active" class="nav-item">
+          <i class="pi pi-users"></i>
+          <span class="nav-label">Utilisateurs</span>
+        </a>
+
+        <!-- Collaborateurs entreprise-admin -->
+        <a *ngIf="hasRole('ENTREPRISE_ADMIN')" routerLink="/collaborateurs" routerLinkActive="active" class="nav-item">
+          <i class="pi pi-id-card"></i>
+          <span class="nav-label">Collaborateurs</span>
+        </a>
+
+        <!-- Client -->
+        <a *ngIf="hasRole('CLIENT')" routerLink="/mes-achats" routerLinkActive="active" class="nav-item">
+          <i class="pi pi-shopping-bag"></i>
+          <span class="nav-label">Mes achats</span>
+        </a>
+        <a *ngIf="hasRole('CLIENT')" routerLink="/mon-profil" routerLinkActive="active" class="nav-item">
+          <i class="pi pi-user-edit"></i>
+          <span class="nav-label">Mon profil</span>
+        </a>
+
+        <!-- Emetteur -->
+        <a *ngIf="hasRole('EMETTEUR')" routerLink="/dashboard-emetteur" routerLinkActive="active" class="nav-item">
+          <i class="pi pi-chart-line"></i>
+          <span class="nav-label">Dashboard Émetteur</span>
+        </a>
+        <a *ngIf="hasRole('EMETTEUR')" routerLink="/profil-emetteur" routerLinkActive="active" class="nav-item">
+          <i class="pi pi-briefcase"></i>
+          <span class="nav-label">Profil émetteur</span>
         </a>
       </div>
 
@@ -54,21 +93,21 @@
         </div>
 
         <!-- Factures : document texte -->
-        <a routerLink="/factures" routerLinkActive="active" class="nav-item">
+        <a *ngIf="hasAnyRole(['SUPER_ADMIN', 'ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER', 'CLIENT', 'EMETTEUR'])" routerLink="/factures" routerLinkActive="active" class="nav-item">
           <i class="pi pi-file-edit"></i>
           <span class="nav-label">Factures</span>
           <span class="nav-badge">{{ totalFactures }}</span>
         </a>
 
         <!-- Devis : document avec loupe -->
-        <a routerLink="/devise" routerLinkActive="active" class="nav-item">
+        <a *ngIf="hasAnyRole(['SUPER_ADMIN', 'ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER'])" routerLink="/devise" routerLinkActive="active" class="nav-item">
           <i class="pi pi-file-export"></i>
           <span class="nav-label">Devis</span>
           <span class="nav-badge">0</span>
         </a>
 
         <!-- Avoirs : remboursement/retour -->
-        <a routerLink="/avoirs" routerLinkActive="active" class="nav-item">
+        <a *ngIf="hasAnyRole(['SUPER_ADMIN', 'ENTREPRISE_ADMIN'])" routerLink="/avoirs" routerLinkActive="active" class="nav-item">
           <i class="pi pi-arrow-right-arrow-left"></i>
           <span class="nav-label">Avoirs</span>
           <span class="nav-badge">0</span>
@@ -103,8 +142,8 @@
           <i class="pi pi-user"></i>
         </div>
         <div class="user-details">
-          <span class="user-name">Admin</span>
-          <span class="user-role">Administrateur</span>
+          <span class="user-name">{{ userLabel }}</span>
+          <span class="user-role">{{ roleLabel }}</span>
         </div>
       </div>
     </div>
@@ -112,6 +151,9 @@
 
   <!-- CONTENU -->
   <main class="main-content">
+    <div *ngIf="isViewer" class="viewer-banner">
+      Mode consultation: vous êtes en lecture seule (pas de boutons Ajouter/Modifier).
+    </div>
     <router-outlet></router-outlet>
   </main>
 

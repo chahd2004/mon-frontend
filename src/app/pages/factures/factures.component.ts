@@ -19,6 +19,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { MessageService, ConfirmationService } from 'primeng/api';
 
 import { FactureService } from '../../core/services/facture.service';
+import { AuthService } from '../../core/services/auth.service';
 import { Facture, StatutFacture } from '../../models/facture.model';
 
 @Component({
@@ -35,9 +36,14 @@ import { Facture, StatutFacture } from '../../models/facture.model';
 })
 export class FacturesComponent implements OnInit {
   private factureService       = inject(FactureService);
+  private authService          = inject(AuthService);
   private router               = inject(Router);
   private messageService       = inject(MessageService);
   private confirmationService  = inject(ConfirmationService);
+
+  get isViewer(): boolean {
+    return this.authService.hasRole('ENTREPRISE_VIEWER');
+  }
 
   factures: Facture[]  = [];
   totalRecords: number = 0;

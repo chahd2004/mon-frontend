@@ -1,0 +1,117 @@
+<div class="utilisateur-edit-container" [class.loading]="isLoading">
+  <div class="page-header">
+    <h1>{{ isNew ? 'Nouvel utilisateur' : 'Modifier utilisateur' }}</h1>
+  </div>
+
+  <p-card class="edit-card">
+    <form [formGroup]="editForm">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="prenom">Prénom *</label>
+          <input
+            pInputText
+            id="prenom"
+            formControlName="prenom"
+            placeholder="Prénom"
+            [class.ng-invalid]="editForm.get('prenom')?.invalid && editForm.get('prenom')?.touched"
+          />
+          <small *ngIf="editForm.get('prenom')?.invalid && editForm.get('prenom')?.touched" class="error">
+            Prénom requis
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label for="nom">Nom *</label>
+          <input
+            pInputText
+            id="nom"
+            formControlName="nom"
+            placeholder="Nom"
+            [class.ng-invalid]="editForm.get('nom')?.invalid && editForm.get('nom')?.touched"
+          />
+          <small *ngIf="editForm.get('nom')?.invalid && editForm.get('nom')?.touched" class="error">
+            Nom requis
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email *</label>
+          <input
+            pInputText
+            id="email"
+            type="email"
+            formControlName="email"
+            placeholder="email@example.com"
+            [class.ng-invalid]="editForm.get('email')?.invalid && editForm.get('email')?.touched"
+          />
+          <small *ngIf="editForm.get('email')?.invalid && editForm.get('email')?.touched" class="error">
+            Email valide requis
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label for="telephone">Téléphone *</label>
+          <input
+            pInputText
+            id="telephone"
+            formControlName="telephone"
+            placeholder="+216 XX XXX XXX"
+            [class.ng-invalid]="editForm.get('telephone')?.invalid && editForm.get('telephone')?.touched"
+          />
+          <small *ngIf="editForm.get('telephone')?.invalid && editForm.get('telephone')?.touched" class="error">
+            Téléphone requis
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label for="role">Rôle *</label>
+          <p-dropdown
+            id="role"
+            [options]="roleOptions"
+            optionLabel="label"
+            optionValue="value"
+            formControlName="role"
+            placeholder="Sélectionnez un rôle"
+            [showClear]="false"
+            [class.ng-invalid]="editForm.get('role')?.invalid && editForm.get('role')?.touched"
+          ></p-dropdown>
+          <small *ngIf="editForm.get('role')?.invalid && editForm.get('role')?.touched" class="error">
+            Rôle requis
+          </small>
+        </div>
+
+        <div class="form-group checkbox">
+          <label for="enabled" class="checkbox-label">
+            <input
+              id="enabled"
+              type="checkbox"
+              formControlName="enabled"
+              class="checkbox-input"
+            />
+            <span>Compte actif</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button
+          pButton
+          type="button"
+          label="Annuler"
+          (click)="cancel()"
+          text
+          class="action-cancel"
+        ></button>
+        <button
+          pButton
+          type="button"
+          label="{{ isNew ? 'Créer' : 'Sauvegarder' }}"
+          (click)="save()"
+          [disabled]="editForm.invalid || isLoading"
+          [loading]="isLoading"
+          class="action-save"
+        ></button>
+      </div>
+    </form>
+  </p-card>
+</div>

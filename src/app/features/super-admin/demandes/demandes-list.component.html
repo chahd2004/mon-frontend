@@ -1,0 +1,98 @@
+<div class="demandes-container">
+  <div class="page-header">
+    <h1>Gestion des demandes</h1>
+    <p>Gérez les demandes de création d'entreprise</p>
+  </div>
+
+  <div class="filter-section">
+    <div class="search-container">
+      <i class="pi pi-search"></i>
+      <input
+        pInputText
+        type="text"
+        placeholder="Rechercher par raison sociale ou email..."
+        [(ngModel)]="searchTerm"
+        (input)="onSearch(searchTerm)"
+        class="search-input"
+      />
+    </div>
+    <p-dropdown
+      [options]="statusOptions"
+      optionLabel="label"
+      optionValue="value"
+      [(ngModel)]="selectedStatus"
+      (onChange)="onStatusChange(selectedStatus)"
+      placeholder="Filtrer par statut"
+      class="status-dropdown"
+    ></p-dropdown>
+  </div>
+
+  <div class="table-container">
+    <p-table
+      [value]="filteredDemandes"
+      [loading]="isLoading"
+      [paginator]="true"
+      [rows]="10"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Affichage {first} à {last} sur {totalRecords} demandes"
+      [globalFilterFields]="['raisonSociale', 'email']"
+      responsiveLayout="scroll"
+      styleClass="p-datatable-striped"
+    >
+      <ng-template pTemplate="header">
+        <tr class="table-header">
+          <th pSortableColumn="raisonSociale">Raison Social <p-sortIcon field="raisonSociale"></p-sortIcon></th>
+          <th pSortableColumn="email">Email <p-sortIcon field="email"></p-sortIcon></th>
+          <th pSortableColumn="region">Région <p-sortIcon field="region"></p-sortIcon></th>
+          <th pSortableColumn="status">Statut <p-sortIcon field="status"></p-sortIcon></th>
+          <th pSortableColumn="createdAt">Date <p-sortIcon field="createdAt"></p-sortIcon></th>
+          <th style="width: 100px">Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-demande>
+        <tr>
+          <td>
+            <strong>{{ demande.raisonSociale }}</strong>
+          </td>
+          <td>
+            <span class="email">{{ demande.email }}</span>
+          </td>
+          <td>
+            <span class="region">{{ demande.region }}</span>
+          </td>
+          <td>
+            <p-tag
+              [value]="(demande.status | statusBadge)?.label"
+              [severity]="(demande.status | statusBadge)?.severity"
+              [icon]="(demande.status | statusBadge)?.icon"
+            ></p-tag>
+          </td>
+          <td>
+            <span class="date">{{ demande.createdAt | date: 'dd/MM/yyyy' }}</span>
+          </td>
+          <td>
+            <button
+              pButton
+              icon="pi pi-eye"
+              rounded
+              text
+              (click)="viewDetails(demande.id)"
+              pTooltip="Voir détails"
+              tooltipPosition="top"
+            ></button>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="6" class="empty-message">
+            <i class="pi pi-inbox"></i>
+            <p>Aucune demande trouvée</p>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

@@ -1,0 +1,24 @@
+<section class="page">
+  <header class="page-header">
+    <h1>Demandes</h1>
+    <span class="badge">{{ pendingCount }} en attente</span>
+  </header>
+
+  <div class="card" *ngFor="let d of demandes">
+    <div class="row">
+      <div>
+        <h3>{{ d.entreprise }}</h3>
+        <p>{{ d.email }} • {{ d.date }}</p>
+      </div>
+      <span class="status" [class.pending]="d.statut === 'EN_ATTENTE'" [class.ok]="d.statut === 'APPROUVEE'" [class.ko]="d.statut === 'REJETEE'">
+        {{ d.statut }}
+      </span>
+    </div>
+
+    <div class="actions">
+      <a [routerLink]="['/demandes', d.id]" class="btn secondary">Détail</a>
+      <button class="btn success" (click)="approuver(d)" [disabled]="d.statut !== 'EN_ATTENTE'">Approuver</button>
+      <button class="btn danger" (click)="rejeter(d)" [disabled]="d.statut !== 'EN_ATTENTE'">Rejeter</button>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,41 @@
+<div class="produits-view">
+  <div class="view-header">
+    <h2>Produits (Lecture)</h2>
+    <p class="subtitle">Consultez les produits en mode lecture seule</p>
+  </div>
+
+  <div *ngIf="loading" class="loading-spinner">
+    <p>Chargement des produits...</p>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading && produits.length > 0" class="table-container">
+    <table class="produits-table">
+      <thead>
+        <tr>
+          <th>Référence</th>
+          <th>Désignation</th>
+          <th>Prix Unitaire</th>
+          <th>Taux TVA</th>
+          <th>Émetteur</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let produit of produits" class="produit-row">
+          <td class="produit-reference">{{ produit.reference }}</td>
+          <td>{{ produit.designation }}</td>
+          <td class="price">{{ produit.prixUnitaire | number: '1.2-2' }} €</td>
+          <td class="tva">{{ produit.tauxTVA }}%</td>
+          <td>{{ produit.emetteurRaisonSociale || '-' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="!loading && produits.length === 0 && !error" class="no-data">
+    <p>Aucun produit disponible</p>
+  </div>
+</div>

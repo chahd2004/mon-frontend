@@ -1,0 +1,128 @@
+<div class="demande-detail-container" *ngIf="demande; else loading">
+  <div class="header">
+    <div class="header-content">
+      <h1>{{ demande.raisonSociale }}</h1>
+      <p-tag
+        [value]="(demande.statut | statusBadge)?.label"
+        [severity]="(demande.statut | statusBadge)?.severity"
+        [icon]="(demande.statut | statusBadge)?.icon"
+      ></p-tag>
+    </div>
+    <div class="actions" *ngIf="canApprove() || canReject()">
+      <button
+        pButton
+        label="Approuver"
+        icon="pi pi-check"
+        (click)="approveDemande()"
+        [disabled]="!canApprove() || isLoading"
+        [loading]="isLoading"
+        class="action-btn approve"
+      ></button>
+      <button
+        pButton
+        label="Rejeter"
+        icon="pi pi-times"
+        (click)="showRejection()"
+        [disabled]="!canReject()"
+        text
+        class="action-btn reject"
+      ></button>
+    </div>
+  </div>
+
+  <p-tabView>
+    <p-tabPanel header="Informations Entreprise" [selected]="true">
+      <div class="info-grid">
+        <div class="info-item">
+          <label>Raison Sociale</label>
+          <span>{{ demande.raisonSociale }}</span>
+        </div>
+        <div class="info-item">
+          <label>Email</label>
+          <span>{{ demande.email }}</span>
+        </div>
+        <div class="info-item">
+          <label>Téléphone</label>
+          <span>{{ demande.telephone }}</span>
+        </div>
+        <div class="info-item">
+          <label>Région</label>
+          <span>{{ demande.region }}</span>
+        </div>
+        <div class="info-item full">
+          <label>Adresse Complète</label>
+          <span>{{ demande.adresseComplete }}</span>
+        </div>
+      </div>
+    </p-tabPanel>
+
+    <p-tabPanel header="Représentant">
+      <div class="info-grid">
+        <div class="info-item">
+          <label>Prénom</label>
+          <span>{{ demande.prenomRepresentant }}</span>
+        </div>
+        <div class="info-item">
+          <label>Nom</label>
+          <span>{{ demande.nomRepresentant }}</span>
+        </div>
+      </div>
+    </p-tabPanel>
+
+    <p-tabPanel header="Historique">
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-marker created"></div>
+          <div class="timeline-content">
+            <p class="label">Demande créée</p>
+            <p class="date">{{ demande.dateCreation | date: 'dd/MM/yyyy HH:mm' }}</p>
+          </div>
+        </div>
+        <div class="timeline-item" *ngIf="demande.statut !== 'PENDING'">
+          <div class="timeline-marker" [class]="demande.statut === 'APPROVED' ? 'approved' : 'rejected'"></div>
+          <div class="timeline-content">
+            <p class="label">{{ demande.statut === 'APPROVED' ? 'Approuvée' : 'Rejetée' }}</p>
+            <p class="date">{{ demande.dateModification | date: 'dd/MM/yyyy HH:mm' }}</p>
+          </div>
+        </div>
+      </div>
+    </p-tabPanel>
+  </p-tabView>
+
+  <div class="rejection-form" *ngIf="showRejectionForm">
+    <div class="form-overlay">
+      <div class="form-card">
+        <h3>Raison du rejet</h3>
+        <textarea
+          pInputTextarea
+          [(ngModel)]="rejectionReason"
+          placeholder="Expliquez pourquoi cette demande est rejetée..."
+          rows="5"
+          class="rejection-textarea"
+        ></textarea>
+        <div class="form-actions">
+          <button
+            pButton
+            label="Annuler"
+            (click)="showRejectionForm = false"
+            text
+          ></button>
+          <button
+            pButton
+            label="Confirmer le rejet"
+            (click)="rejectDemande()"
+            [disabled]="!rejectionReason.trim() || isLoading"
+            [loading]="isLoading"
+            class="p-button-danger"
+          ></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #loading>
+  <div class="loading-container">
+    <div class="spinner"></div>
+  </div>
+</ng-template>

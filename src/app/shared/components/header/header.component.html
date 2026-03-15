@@ -1,0 +1,33 @@
+<div class="header-container">
+  <div class="header-content">
+    <div class="header-brand">
+      <h1>Facturation</h1>
+    </div>
+
+    <div class="header-actions">
+      <div class="user-section">
+        <span class="user-name">{{ currentUser()?.prenom }} {{ currentUser()?.nom }}</span>
+        <p-avatar 
+          [label]="getInitials()" 
+          shape="circle"
+          size="large"
+          styleClass="avatar-bg"
+        ></p-avatar>
+        <p-menu 
+          [model]="userMenuItems"
+          [popup]="true"
+          #userMenu
+        ></p-menu>
+        <button 
+          pButton 
+          type="button"
+          text 
+          rounded
+          icon="pi pi-chevron-down"
+          (click)="userMenu.toggle($event)"
+          class="menu-trigger"
+        ></button>
+      </div>
+    </div>
+  </div>
+</div>

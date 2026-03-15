@@ -12,7 +12,7 @@
         Gestion des produits
       </h2>
     </div>
-    <button class="add-btn" (click)="ajouterProduit()">
+    <button *ngIf="!isViewer" class="add-btn" (click)="ajouterProduit()">
       <i class="pi pi-plus"></i> Nouveau produit
     </button>
   </div>
@@ -71,6 +71,7 @@
               <button
                 class="action-btn edit-btn"
                 (click)="modifierProduit(produit)"
+                [disabled]="isViewer"
                 pTooltip="Modifier ce produit"
                 tooltipPosition="top">
                 <i class="pi pi-pencil"></i>
@@ -79,6 +80,7 @@
               <button
                 class="action-btn delete-btn"
                 (click)="supprimerProduit(produit.id)"
+                [disabled]="isViewer"
                 pTooltip="Supprimer ce produit"
                 tooltipPosition="top">
                 <i class="pi pi-trash"></i>

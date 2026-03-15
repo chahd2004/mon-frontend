@@ -4,7 +4,7 @@
   <!-- En-tête -->
   <div class="header-section">
     <h2><i class="pi pi-file"></i> Gestion des factures</h2>
-    <button class="nouvelle-facture-btn" (click)="nouvelleFacture()">
+    <button *ngIf="!isViewer" class="nouvelle-facture-btn" (click)="nouvelleFacture()">
       <i class="pi pi-plus"></i> Nouvelle facture
     </button>
   </div>
@@ -148,6 +148,7 @@
 
               <button class="action-btn edit-btn"
                 (click)="modifierFacture(facture.id)"
+                [disabled]="isViewer"
                 pTooltip="Modifier cette facture"
                 tooltipPosition="top">
                 <i class="pi pi-pencil"></i>
@@ -156,6 +157,7 @@
 
               <button class="action-btn delete-btn"
                 (click)="supprimerFacture(facture.id)"
+                [disabled]="isViewer"
                 pTooltip="Supprimer cette facture"
                 tooltipPosition="top">
                 <i class="pi pi-trash"></i>

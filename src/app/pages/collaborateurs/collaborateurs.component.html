@@ -1,0 +1,22 @@
+<section class="page">
+  <h1>Collaborateurs</h1>
+
+  <div class="form">
+    <input [(ngModel)]="nom" placeholder="Nom collaborateur" />
+    <input [(ngModel)]="email" placeholder="Email" />
+    <button (click)="ajouter()">Ajouter</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr><th>Nom</th><th>Email</th><th>Rôle</th></tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let c of collaborateurs">
+        <td>{{ c.nom }}</td>
+        <td>{{ c.email }}</td>
+        <td>{{ c.role }}</td>
+      </tr>
+    </tbody>
+  </table>
+</section>

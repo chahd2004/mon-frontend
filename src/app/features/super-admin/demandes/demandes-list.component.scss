@@ -1,0 +1,158 @@
+.demandes-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.page-header {
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+  }
+
+  p {
+    color: #6b7280;
+    margin: 0.5rem 0 0 0;
+  }
+}
+
+.filter-section {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.search-container {
+  flex: 1;
+  min-width: 250px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: white;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s ease;
+
+  &:focus-within {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  }
+
+  i {
+    color: #9ca3af;
+  }
+
+  .search-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 0.95rem;
+    background: transparent;
+
+    &::placeholder {
+      color: #d1d5db;
+    }
+  }
+}
+
+::ng-deep .status-dropdown {
+  min-width: 200px;
+
+  .p-dropdown-trigger {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 8px;
+
+    &:hover {
+      background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    }
+  }
+}
+
+.table-container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+
+  ::ng-deep .p-datatable {
+    .p-datatable-thead > tr > th {
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.08), rgba(118, 75, 162, 0.08));
+      border: none;
+      padding: 1rem;
+      font-weight: 600;
+      color: #111827;
+      border-bottom: 2px solid #e5e7eb;
+    }
+
+    .p-datatable-tbody > tr {
+      border-bottom: 1px solid #f3f4f6;
+
+      &:hover {
+        background: #f9fafb;
+      }
+
+      > td {
+        padding: 1rem;
+        vertical-align: middle;
+      }
+    }
+  }
+}
+
+.email {
+  color: #667eea;
+  font-size: 0.875rem;
+}
+
+.region {
+  background: rgba(102, 126, 234, 0.1);
+  color: #667eea;
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.date {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.empty-message {
+  text-align: center;
+  padding: 3rem 1rem !important;
+  color: #9ca3af;
+
+  i {
+    font-size: 3rem;
+    color: #d1d5db;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    margin: 0;
+    font-size: 1rem;
+  }
+}
+
+::ng-deep {
+  .p-paginator {
+    background: #f9fafb;
+    border-top: 1px solid #e5e7eb;
+    padding: 1rem;
+
+    .p-paginator-current {
+      color: #6b7280;
+    }
+  }
+}

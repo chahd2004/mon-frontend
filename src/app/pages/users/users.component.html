@@ -1,0 +1,16 @@
+<section class="page">
+  <h1>Utilisateurs</h1>
+  <table>
+    <thead>
+      <tr><th>ID</th><th>Email</th><th>Rôle</th><th>Statut</th></tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let u of users">
+        <td>{{ u.id }}</td>
+        <td>{{ u.email }}</td>
+        <td>{{ u.role }}</td>
+        <td>{{ u.statut }}</td>
+      </tr>
+    </tbody>
+  </table>
+</section>

@@ -1,0 +1,47 @@
+<div class="achats-list">
+  <div class="list-header">
+    <h2>Mes Achats</h2>
+    <p class="subtitle">Consultez l'historique de vos achats</p>
+  </div>
+
+  <div *ngIf="loading" class="loading-spinner">
+    <p>Chargement de vos achats...</p>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading && achats.length > 0" class="table-container">
+    <table class="achats-table">
+      <thead>
+        <tr>
+          <th>Numéro de Facture</th>
+          <th>Vendeur</th>
+          <th>Date d'achat</th>
+          <th>Montant TTC</th>
+          <th>Statut</th>
+          <th>Mode de Paiement</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let achat of achats" class="achat-row">
+          <td class="achat-number">{{ achat.numFact }}</td>
+          <td>{{ achat.vendeurNom }}</td>
+          <td>{{ achat.dateEmission | date: 'dd/MM/yyyy' }}</td>
+          <td class="amount">{{ achat.totalTTC | number: '1.2-2' }} €</td>
+          <td>
+            <span [ngClass]="['badge', getStatutClass(achat.statut)]">
+              {{ achat.statut }}
+            </span>
+          </td>
+          <td>{{ achat.modePaiement || '-' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="!loading && achats.length === 0 && !error" class="no-data">
+    <p>Vous n'avez pas d'achats pour le moment</p>
+  </div>
+</div>

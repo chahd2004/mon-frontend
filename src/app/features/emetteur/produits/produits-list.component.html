@@ -1,0 +1,39 @@
+<div class="produits-list">
+  <div class="list-header">
+    <h2>Mes Produits</h2>
+    <p class="subtitle">Gérez vos produits</p>
+  </div>
+
+  <div *ngIf="loading" class="loading-spinner">
+    <p>Chargement de vos produits...</p>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading && produits.length > 0" class="table-container">
+    <table class="produits-table">
+      <thead>
+        <tr>
+          <th>Référence</th>
+          <th>Désignation</th>
+          <th>Prix Unitaire</th>
+          <th>Taux TVA</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let produit of produits" class="produit-row">
+          <td class="produit-reference">{{ produit.reference }}</td>
+          <td>{{ produit.designation }}</td>
+          <td class="price">{{ produit.prixUnitaire | number: '1.2-2' }} €</td>
+          <td class="tva">{{ produit.tauxTVA }}%</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="!loading && produits.length === 0 && !error" class="no-data">
+    <p>Vous n'avez pas de produits pour le moment</p>
+  </div>
+</div>

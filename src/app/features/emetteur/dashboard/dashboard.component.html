@@ -1,0 +1,86 @@
+<div class="emetteur-dashboard">
+  <div class="dashboard-header">
+    <h2>Tableau de Bord Émetteur</h2>
+    <p class="subtitle">Aperçu de vos activités et performances</p>
+  </div>
+
+  <div *ngIf="loading" class="loading-spinner">
+    <p>Chargement du tableau de bord...</p>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading && !error" class="dashboard-content">
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">📊</div>
+        <div class="stat-info">
+          <p class="stat-label">Factures Émises</p>
+          <p class="stat-value">{{ stats.nombreFactures }}</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-info">
+          <p class="stat-label">Montant Total</p>
+          <p class="stat-value">{{ stats.montantTotal | number: '1.2-2' }} €</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">✅</div>
+        <div class="stat-info">
+          <p class="stat-label">Factures Payées</p>
+          <p class="stat-value">{{ stats.facturesPayees }}</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-info">
+          <p class="stat-label">En Attente</p>
+          <p class="stat-value">{{ stats.facturesEnAttente }}</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">📦</div>
+        <div class="stat-info">
+          <p class="stat-label">Produits</p>
+          <p class="stat-value">{{ stats.nombreProduits }}</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">📈</div>
+        <div class="stat-info">
+          <p class="stat-label">Total Ventes</p>
+          <p class="stat-value">{{ stats.totalVentes }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+      <h3>Actions Rapides</h3>
+      <div class="actions-grid">
+        <a routerLink="/emetteur/factures" class="action-btn">
+          <span class="action-icon">📄</span>
+          <span class="action-label">Mes Factures</span>
+        </a>
+        <a routerLink="/emetteur/produits" class="action-btn">
+          <span class="action-icon">📦</span>
+          <span class="action-label">Mes Produits</span>
+        </a>
+        <a routerLink="/emetteur/profil" class="action-btn">
+          <span class="action-icon">👤</span>
+          <span class="action-label">Mon Profil</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

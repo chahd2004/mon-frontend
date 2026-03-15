@@ -18,6 +18,7 @@ import { MessageService } from 'primeng/api';
 import { ConfirmationService } from 'primeng/api';
 
 import { ClientService } from '../../core/services/client.service';
+import { AuthService } from '../../core/services/auth.service';
 import { Client, ClientRequest, RegionTunisie } from '../../models/client.model';
 
 @Component({
@@ -42,9 +43,14 @@ import { Client, ClientRequest, RegionTunisie } from '../../models/client.model'
 })
 export class ClientsComponent implements OnInit {
   private clientService = inject(ClientService);
+  private authService = inject(AuthService);
   private router = inject(Router);
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
+
+  get isViewer(): boolean {
+    return this.authService.hasRole('ENTREPRISE_VIEWER');
+  }
 
   // Données
   clients: Client[] = [];

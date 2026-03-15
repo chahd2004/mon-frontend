@@ -1,0 +1,32 @@
+<div class="sidebar" [class.collapsed]="isCollapsed">
+  <div class="sidebar-header">
+    <button
+      pButton
+      type="button"
+      text
+      rounded
+      icon="pi pi-bars"
+      (click)="toggleSidebar()"
+      class="toggle-btn"
+    ></button>
+  </div>
+
+  <nav class="sidebar-nav">
+    <ul class="nav-list">
+      <li *ngFor="let item of sidebarItems" class="nav-item">
+        <a
+          [routerLink]="item.route"
+          routerLinkActive="active"
+          class="nav-link"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <span class="nav-icon">
+            <i [class]="item.icon"></i>
+          </span>
+          <span class="nav-label">{{ item.label }}</span>
+          <span *ngIf="item.badge" class="badge">{{ item.badge }}</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</div>

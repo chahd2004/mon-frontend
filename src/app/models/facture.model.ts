@@ -1,4 +1,6 @@
 // src/app/models/facture.model.ts - Aligné avec le backend (camelCase)
+import { BuyerRole } from './role.model';
+
 export interface Facture {
   id: number;
   numFact: string;
@@ -12,7 +14,7 @@ export interface Facture {
   montantTVA: number;
   acheteurId: number;
   acheteurNom: string;
-  typeAcheteur: 'CLIENT' | 'EMETTEUR';
+  typeAcheteur: BuyerRole;
   vendeurId: number;
   vendeurNom: string;
   lignes?: LigneFacture[];
@@ -33,7 +35,7 @@ export interface FactureRequest {
   dateEmission: string;
   datePaiement: string;
   acheteurId: number;
-  typeAcheteur: 'CLIENT' | 'EMETTEUR';
+  typeAcheteur: BuyerRole;
   vendeurId: number;
   modePaiement: string;
   statut?: string;

@@ -10,6 +10,7 @@ import { MessageService } from 'primeng/api';
 
 import { FactureService } from '../../../core/services/facture.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { UserRole } from '../../../models/enums';
 
 @Component({
   selector: 'app-accueil',
@@ -25,6 +26,41 @@ export class AccueilComponent {
   private messageService = inject(MessageService);
 
   totalFactures: number = 0;
+  pendingDemandes: number = 3;
+
+  get role(): UserRole | null {
+    return this.authService.currentUser()?.role ?? null;
+  }
+
+  hasRole(role: UserRole): boolean {
+    return this.authService.hasRole(role);
+  }
+
+  hasAnyRole(roles: readonly UserRole[]): boolean {
+    return this.authService.hasAnyRole(roles);
+  }
+
+  get isViewer(): boolean {
+    return this.hasRole('ENTREPRISE_VIEWER');
+  }
+
+  get userLabel(): string {
+    const user = this.authService.currentUser();
+    if (!user) return 'Utilisateur';
+    return `${user.prenom ?? ''} ${user.nom ?? ''}`.trim() || user.email;
+  }
+
+  get roleLabel(): string {
+    const map: Record<UserRole, string> = {
+      SUPER_ADMIN: 'Super Admin',
+      ENTREPRISE_ADMIN: 'Entreprise Admin',
+      ENTREPRISE_VIEWER: 'Viewer',
+      CLIENT: 'Client',
+      EMETTEUR: 'Emetteur'
+    };
+
+    return this.role ? map[this.role] : 'Utilisateur';
+  }
 
   constructor() {
     this.loadTotalFactures();

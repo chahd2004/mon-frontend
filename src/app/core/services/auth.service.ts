@@ -3,7 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { LoginRequest, RegisterRequest, AuthResponse, UserDTO } from '../../models/user.model';
+import { AuthResponse, LoginRequest, RegisterRequest } from '../../models/auth.models';
+import { UserDTO } from '../../models/user.models';
+import { ADMIN_ROLES, UserRole, normalizeUserRole } from '../../models/enums';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -17,9 +19,9 @@ export class AuthService {
   currentUser = this._currentUser.asReadonly();
 
   isLoggedIn = computed(() => this._currentUser() !== null);
-  isAdmin = computed(() => this._currentUser()?.role === 'ADMIN');
-  isClient = computed(() => this._currentUser()?.typeUser === 'CLIENT');
-  isEmetteur = computed(() => this._currentUser()?.typeUser === 'EMETTEUR');
+  isAdmin = computed(() => this.hasAnyRole(ADMIN_ROLES));
+  isClient = computed(() => this._currentUser()?.role === 'CLIENT');
+  isEmetteur = computed(() => this._currentUser()?.role === 'EMETTEUR');
 
   constructor(private http: HttpClient, private router: Router) {
     this.checkTokenExpiry();
@@ -52,9 +54,21 @@ export class AuthService {
     return localStorage.getItem(this.TOKEN_KEY);
   }
 
+  hasRole(role: UserRole): boolean {
+    return this._currentUser()?.role === role;
+  }
+
+  hasAnyRole(roles: readonly UserRole[]): boolean {
+    const role = this._currentUser()?.role;
+    return !!role && roles.includes(role);
+  }
+
   // ── PRIVÉS ──────────────────────────────────────────────
   private saveSession(response: AuthResponse): void {
     localStorage.setItem(this.TOKEN_KEY, response.token);
+
+    const normalizedRole = normalizeUserRole(response.role);
+    const typeUser = response.typeUser ?? (normalizedRole === 'CLIENT' || normalizedRole === 'EMETTEUR' ? normalizedRole : null);
 
     const user: UserDTO = {
       id: response.id,
@@ -62,9 +76,13 @@ export class AuthService {
       prenom: response.prenom,
       email: response.email,
       telephone: response.telephone,
-      role: response.role,
-      typeUser: response.typeUser,
-      enabled: true
+      role: normalizedRole,
+      typeUser,
+      accountStatus: response.accountStatus,
+      firstLogin: response.firstLogin,
+      enabled: true,
+      clientId: response.clientId ?? undefined,
+      emetteurId: response.emetteurId ?? undefined
     };
 
     localStorage.setItem(this.USER_KEY, JSON.stringify(user));
@@ -73,7 +91,21 @@ export class AuthService {
 
   private getUserFromStorage(): UserDTO | null {
     const stored = localStorage.getItem(this.USER_KEY);
-    return stored ? JSON.parse(stored) : null;
+    if (!stored) return null;
+
+    try {
+      const parsed = JSON.parse(stored) as UserDTO & { role?: string | null };
+      const normalizedRole = normalizeUserRole(parsed.role);
+      const typeUser = parsed.typeUser ?? (normalizedRole === 'CLIENT' || normalizedRole === 'EMETTEUR' ? normalizedRole : null);
+      return {
+        ...parsed,
+        role: normalizedRole,
+        typeUser,
+        enabled: parsed.enabled ?? true
+      };
+    } catch {
+      return null;
+    }
   }
 
   private checkTokenExpiry(): void {

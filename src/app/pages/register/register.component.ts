@@ -121,7 +121,7 @@ export class RegisterComponent {
       prenom: this.prenom.trim(),
       email: this.email.trim(),
       password: this.password,
-      typeUser: 'CLIENT',
+      role: 'CLIENT',
       telephone: undefined
     }).subscribe({
       next: (response) => {
@@ -153,5 +153,12 @@ export class RegisterComponent {
    */
   goToLogin(): void {
     this.router.navigate(['/login']);
+  }
+
+  /**
+   * Redirection vers le formulaire de demande d'émetteur
+   */
+  navigateToDemande(): void {
+    this.router.navigate(['/demande']);
   }
 }

@@ -20,7 +20,7 @@
           <i class="pi pi-times"></i>
         </button>
       </div>
-      <button class="add-btn" (click)="ajouterClient()">
+      <button *ngIf="!isViewer" class="add-btn" (click)="ajouterClient()">
         <i class="pi pi-user-plus"></i>
         Nouveau client
       </button>
@@ -64,6 +64,7 @@
               <button
                 class="action-btn edit-btn"
                 (click)="modifierClient(client)"
+                [disabled]="isViewer"
                 pTooltip="Modifier ce client"
                 tooltipPosition="top"
               >
@@ -73,6 +74,7 @@
               <button
                 class="action-btn delete-btn"
                 (click)="supprimerClient(client.id)"
+                [disabled]="isViewer"
                 pTooltip="Supprimer ce client"
                 tooltipPosition="top"
               >

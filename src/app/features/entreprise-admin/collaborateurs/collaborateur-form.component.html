@@ -1,0 +1,80 @@
+<div class="form-container">
+  <div class="form-header">
+    <h1>Ajouter Collaborateur</h1>
+  </div>
+
+  <p-card class="form-card">
+    <form [formGroup]="form">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="prenom">Prénom *</label>
+          <input id="prenom" type="text" pInputText formControlName="prenom" placeholder="Prénom" />
+          <small class="error" *ngIf="form.get('prenom')?.invalid && form.get('prenom')?.touched">
+            {{ getErrorMessage('prenom') }}
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label for="nom">Nom *</label>
+          <input id="nom" type="text" pInputText formControlName="nom" placeholder="Nom" />
+          <small class="error" *ngIf="form.get('nom')?.invalid && form.get('nom')?.touched">
+            {{ getErrorMessage('nom') }}
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email *</label>
+          <input id="email" type="email" pInputText formControlName="email" placeholder="Email" />
+          <small class="error" *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
+            {{ getErrorMessage('email') }}
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label for="telephone">Téléphone *</label>
+          <input id="telephone" type="tel" pInputText formControlName="telephone" placeholder="Téléphone" />
+          <small class="error" *ngIf="form.get('telephone')?.invalid && form.get('telephone')?.touched">
+            Téléphone est requis
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label for="role">Rôle *</label>
+          <p-dropdown
+            id="role"
+            [options]="roleOptions"
+            formControlName="role"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Sélectionner un rôle"
+          ></p-dropdown>
+          <small class="error" *ngIf="form.get('role')?.invalid && form.get('role')?.touched">
+            Rôle est requis
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label for="permissions">Permissions</label>
+          <input id="permissions" type="text" pInputText formControlName="permissions" placeholder="Admin, User, etc." />
+        </div>
+      </div>
+
+      <div class="checkbox-section">
+        <p-checkbox formControlName="actif" [binary]="true" label="Actif"></p-checkbox>
+      </div>
+
+      <div class="form-actions">
+        <button pButton type="button" label="Annuler" class="p-button-text" (click)="cancel()"></button>
+        <button
+          pButton
+          type="button"
+          label="Ajouter"
+          icon="pi pi-check"
+          [loading]="isSubmitting"
+          [disabled]="!form.valid || isSubmitting"
+          (click)="save()"
+        ></button>
+      </div>
+    </form>
+  </p-card>
+</div>

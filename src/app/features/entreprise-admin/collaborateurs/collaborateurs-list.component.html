@@ -1,0 +1,85 @@
+<div class="collaborateurs-container">
+  <div class="page-header">
+    <div>
+      <h1>Collaborateurs</h1>
+      <p class="subtitle">Gérez votre équipe de travail</p>
+    </div>
+    <a routerLink="ajouter" pButton type="button" icon="pi pi-plus" label="Ajouter Collaborateur" class="p-button-lg"></a>
+  </div>
+
+  <div class="filters-section">
+    <span class="p-input-icon-left">
+      <i class="pi pi-search"></i>
+      <input type="text" pInputText placeholder="Rechercher..." [(ngModel)]="searchTerm" (keyup)="onSearch()" />
+    </span>
+
+    <p-dropdown
+      [options]="roleOptions"
+      [(ngModel)]="selectedRole"
+      optionLabel="label"
+      optionValue="value"
+      placeholder="Filtrer par rôle"
+      (onChange)="onRoleChange()"
+      styleClass="w-full"
+    ></p-dropdown>
+  </div>
+
+  <p-table
+    [value]="filteredCollaborateurs"
+    [loading]="isLoading"
+    [paginator]="true"
+    [rows]="10"
+    responsiveLayout="scroll"
+    [globalFilterFields]="['prenom', 'nom', 'email']"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="prenom">Prénom <p-sortIcon field="prenom"></p-sortIcon></th>
+        <th pSortableColumn="nom">Nom <p-sortIcon field="nom"></p-sortIcon></th>
+        <th pSortableColumn="email">Email <p-sortIcon field="email"></p-sortIcon></th>
+        <th pSortableColumn="role">Rôle <p-sortIcon field="role"></p-sortIcon></th>
+        <th pSortableColumn="status">Statut <p-sortIcon field="status"></p-sortIcon></th>
+        <th pSortableColumn="dateAjout">Date d'Ajout <p-sortIcon field="dateAjout"></p-sortIcon></th>
+        <th style="width: 10%">Actions</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-collab>
+      <tr>
+        <td><strong>{{ collab.prenom }}</strong></td>
+        <td><strong>{{ collab.nom }}</strong></td>
+        <td style="color: #3b82f6">{{ collab.email }}</td>
+        <td>{{ collab.role }}</td>
+        <td>
+          <p-tag
+            [value]="collab.status"
+            [severity]="$any(getStatusSeverity(collab.status))"
+          ></p-tag>
+        </td>
+        <td>{{ collab.dateAjout }}</td>
+        <td>
+          <div class="action-buttons">
+            <button
+              pButton
+              type="button"
+              icon="pi pi-pencil"
+              class="p-button-rounded p-button-text p-button-sm"
+              pTooltip="Modifier"
+              tooltipPosition="top"
+              (click)="editCollaborateur(collab.id)"
+            ></button>
+            <button
+              pButton
+              type="button"
+              icon="pi pi-trash"
+              class="p-button-rounded p-button-text p-button-sm p-button-danger"
+              pTooltip="Supprimer"
+              tooltipPosition="top"
+              (click)="deleteCollaborateur(collab.id)"
+            ></button>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

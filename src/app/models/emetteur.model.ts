@@ -1,4 +1,5 @@
 // src/app/models/emetteur.model.ts - Aligné avec le backend (camelCase)
+import { UserRole } from './role.model';
 
 export type RegionTunisie =
   | 'ARIANA' | 'BEJA' | 'BEN_AROUS' | 'BIZERTE' | 'GABES' | 'GAFSA' | 'JENDOUBA'
@@ -26,7 +27,7 @@ export interface Emetteur {
   factureCount?: number;
   userId?: number;
   userEmail?: string;
-  userRole?: string;
+  userRole?: UserRole;
   userEnabled?: boolean;
 }
 

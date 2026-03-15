@@ -51,6 +51,10 @@ export class ProduitsComponent implements OnInit {
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
 
+  get isViewer(): boolean {
+    return this.authService.hasRole('ENTREPRISE_VIEWER');
+  }
+
   // Données
   produits: Produit[] = [];
   produitsFiltered: Produit[] = [];
