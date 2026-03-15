@@ -4,14 +4,14 @@
   <!-- ===================== MODE VUE REÇU ===================== -->
   <ng-container *ngIf="isViewMode">
 
-    <!-- Barre du haut -->
+    <!-- Barre du haut — bouton Imprimer supprimé -->
     <div class="top-bar no-print">
       <button class="back-btn" (click)="retourListe()">
         <i class="pi pi-arrow-left"></i> Retour à la liste
       </button>
       <div class="top-actions">
-        <button class="print-btn" (click)="imprimer()">
-          <i class="pi pi-print"></i> Imprimer
+        <button class="pdf-btn" (click)="telechargerPdfTexte()">
+          <i class="pi pi-download"></i> Télécharger PDF
         </button>
         <button class="edit-action-btn" (click)="passerEnModeEdition()">
           <i class="pi pi-pencil"></i> Modifier
@@ -19,18 +19,15 @@
       </div>
     </div>
 
-    <!-- ===== REÇU / APERÇU ===== -->
     <div class="recu-wrapper">
-
-      <!-- Bande supérieure -->
       <div class="recu-top-band"></div>
 
       <div class="recu-body">
 
-        <!-- En-tête : Logo + Titre + QR Code -->
+        <!-- En-tête -->
         <div class="recu-header">
 
-          <!-- Logo personnalisé + Infos vendeur -->
+          <!-- Logo + Vendeur -->
           <div class="recu-logo-block">
             <div class="recu-logo-svg">
               <div class="logo-icon">
@@ -44,10 +41,9 @@
               </div>
               <div class="logo-text-block">
                 <span class="logo-name">FacturePro</span>
-                <span class="logo-tagline">Gestion & Facturation</span>
+                <span class="logo-tagline">Gestion &amp; Facturation</span>
               </div>
             </div>
-
             <div class="recu-vendeur-infos">
               <div class="recu-vendeur-nom">{{ vendeurSelectionne?.raisonSociale ?? '—' }}</div>
               <div class="recu-vendeur-detail">{{ vendeurSelectionne?.adresseComplete ?? '' }}</div>
@@ -60,16 +56,13 @@
             </div>
           </div>
 
-          <!-- Titre FACTURE + QR CODE (haut droite) -->
+          <!-- Titre + QR -->
           <div class="recu-title-block">
             <div class="recu-title">FACTURE</div>
             <div class="recu-num">N° {{ numFact || '—' }}</div>
-
-            <!-- ===== QR CODE ===== -->
             <div class="recu-qr-block">
               <div class="recu-qr-label">
-                <i class="pi pi-qrcode"></i>
-                Vérifier le statut
+                <i class="pi pi-qrcode"></i> Scanner pour consulter le statut en temps réel
               </div>
               <qrcode
                 [qrdata]="qrUrl"
@@ -78,59 +71,54 @@
                 [colorDark]="'#1e40af'"
                 [colorLight]="'#ffffff'">
               </qrcode>
-              <div class="recu-qr-hint">
-                Scanner pour consulter<br>le statut en temps réel
-              </div>
               <div class="recu-qr-num">{{ numFact }}</div>
             </div>
-            <!-- ===== FIN QR CODE ===== -->
-
           </div>
-          <!-- fin recu-title-block -->
 
         </div>
-        <!-- fin recu-header -->
 
-        <!-- Séparateur -->
         <div class="recu-divider"></div>
 
-        <!-- Infos facture : dates + mode paiement -->
-        <div class="recu-meta">
-          <div class="recu-meta-item">
-            <span class="recu-meta-label">Date d'émission</span>
-            <span class="recu-meta-value">{{ dateEmission | date:'dd/MM/yyyy' }}</span>
+        <!-- Méta + Acheteur sur la même ligne -->
+        <div class="recu-meta-acheteur-row">
+
+          <div class="recu-meta">
+            <div class="recu-meta-item">
+              <span class="recu-meta-label">Date d'émission</span>
+              <span class="recu-meta-value">{{ dateEmission | date:'dd/MM/yyyy' }}</span>
+            </div>
+            <div class="recu-meta-item">
+              <span class="recu-meta-label">Date de paiement</span>
+              <span class="recu-meta-value">{{ datePaiement | date:'dd/MM/yyyy' }}</span>
+            </div>
+            <div class="recu-meta-item">
+              <span class="recu-meta-label">Mode de paiement</span>
+              <span class="recu-meta-value">{{ formatModePaiement(modePaiement) }}</span>
+            </div>
+            <div class="recu-meta-item">
+              <span class="recu-meta-label">Statut</span>
+              <span class="recu-meta-value">{{ formatStatut(statut) }}</span>
+            </div>
           </div>
-          <div class="recu-meta-item">
-            <span class="recu-meta-label">Date de paiement</span>
-            <span class="recu-meta-value">{{ datePaiement | date:'dd/MM/yyyy' }}</span>
+
+          <div class="recu-acheteur">
+            <div class="recu-section-label">Facturé à</div>
+            <div class="recu-acheteur-nom">{{ acheteurSelectionne?.raisonSociale ?? '—' }}</div>
+            <div class="recu-acheteur-detail" *ngIf="acheteurSelectionne?.adresseComplete">
+              {{ acheteurSelectionne?.adresseComplete }}
+            </div>
+            <div class="recu-acheteur-detail" *ngIf="acheteurSelectionne?.email || acheteurSelectionne?.telephone">
+              {{ acheteurSelectionne?.email ?? '' }}
+              <ng-container *ngIf="acheteurSelectionne?.email && acheteurSelectionne?.telephone"> &nbsp;|&nbsp; </ng-container>
+              {{ acheteurSelectionne?.telephone ?? '' }}
+            </div>
           </div>
-          <div class="recu-meta-item">
-            <span class="recu-meta-label">Mode de paiement</span>
-            <span class="recu-meta-value">{{ formatModePaiement(modePaiement) }}</span>
-          </div>
+
         </div>
 
-        <!-- Séparateur -->
         <div class="recu-divider"></div>
 
-        <!-- Acheteur -->
-        <div class="recu-section-label">Facturé à</div>
-        <div class="recu-acheteur">
-          <div class="recu-acheteur-nom">{{ acheteurSelectionne?.raisonSociale ?? '—' }}</div>
-          <div class="recu-acheteur-detail" *ngIf="acheteurSelectionne?.adresseComplete">
-            {{ acheteurSelectionne?.adresseComplete }}
-          </div>
-          <div class="recu-acheteur-detail" *ngIf="acheteurSelectionne?.email || acheteurSelectionne?.telephone">
-            {{ acheteurSelectionne?.email ?? '' }}
-            <ng-container *ngIf="acheteurSelectionne?.email && acheteurSelectionne?.telephone"> &nbsp;|&nbsp; </ng-container>
-            {{ acheteurSelectionne?.telephone ?? '' }}
-          </div>
-        </div>
-
-        <!-- Séparateur -->
-        <div class="recu-divider"></div>
-
-        <!-- Tableau des lignes -->
+        <!-- Tableau -->
         <div class="recu-section-label">Détail des prestations</div>
         <table class="recu-table">
           <thead>
@@ -162,10 +150,9 @@
           </tbody>
         </table>
 
-        <!-- Séparateur -->
         <div class="recu-divider"></div>
 
-        <!-- Pied : Mention + Totaux -->
+        <!-- Pied -->
         <div class="recu-footer">
           <div class="recu-mention">
             <p><strong>{{ vendeurSelectionne?.raisonSociale }}</strong></p>
@@ -195,12 +182,9 @@
             </div>
           </div>
         </div>
-        <!-- fin recu-footer -->
 
       </div>
-      <!-- fin recu-body -->
 
-      <!-- Bande de bas de page -->
       <div class="recu-bottom-band">
         <span class="recu-bottom-text">
           {{ vendeurSelectionne?.raisonSociale }} — MF : {{ vendeurSelectionne?.matriculeFiscal ?? 'N/A' }} — {{ vendeurSelectionne?.email ?? '' }}
@@ -208,85 +192,55 @@
       </div>
 
     </div>
-    <!-- fin recu-wrapper -->
 
   </ng-container>
 
 
-  <!-- ===================== MODE FORMULAIRE (create / edit) ===================== -->
+  <!-- ===================== MODE FORMULAIRE ===================== -->
   <ng-container *ngIf="!isViewMode">
 
-    <!-- Barre du haut -->
     <div class="top-bar">
       <button class="back-btn" (click)="retourListe()">
         <i class="pi pi-arrow-left"></i> Retour à la liste
       </button>
       <div class="top-actions">
-        <p-tag
-          [value]="formatStatut(statut)"
-          [severity]="getStatutSeverity(statut)"
-          class="statut-tag">
-        </p-tag>
+        <p-tag [value]="formatStatut(statut)" [severity]="getStatutSeverity(statut)" class="statut-tag"></p-tag>
         <button class="save-btn" (click)="sauvegarder()" [disabled]="loading">
           <i class="pi pi-save"></i> {{ isEditMode ? 'Mettre à jour' : 'Sauvegarder' }}
         </button>
       </div>
     </div>
 
-    <!-- Vendeur -->
     <div class="section vendeur-section">
       <div class="vendeur-left">
         <div class="vendeur-avatar">
           <span>{{ vendeurSelectionne?.raisonSociale?.charAt(0) ?? 'V' }}</span>
         </div>
         <div class="vendeur-info">
-          <div class="vendeur-select">
-            <p-dropdown
-              [options]="emetteurs"
-              [(ngModel)]="vendeurId"
-              optionLabel="raisonSociale"
-              optionValue="id"
-              placeholder="Sélectionner l'émetteur vendeur"
-              (onChange)="onVendeurChange()"
-              [style]="{'min-width':'250px'}"
-            ></p-dropdown>
-          </div>
+          <p-dropdown [options]="emetteurs" [(ngModel)]="vendeurId" optionLabel="raisonSociale" optionValue="id"
+            placeholder="Sélectionner l'émetteur vendeur" (onChange)="onVendeurChange()" [style]="{'min-width':'250px'}">
+          </p-dropdown>
           <span class="vendeur-subtitle">Solutions professionnelles</span>
         </div>
       </div>
       <div class="vendeur-right">
         <div class="info-grid">
-          <div class="info-item">
-            <span class="info-label">Adresse :</span>
-            <span class="info-value">{{ vendeurSelectionne?.adresseComplete ?? 'Non renseignée' }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">Téléphone :</span>
-            <span class="info-value">{{ vendeurSelectionne?.telephone ?? 'Non renseigné' }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">Code / RC :</span>
-            <span class="info-value">{{ vendeurSelectionne?.code ?? 'Non renseigné' }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">Email :</span>
-            <span class="info-value">{{ vendeurSelectionne?.email ?? 'Non renseigné' }}</span>
-          </div>
+          <div class="info-item"><span class="info-label">Adresse :</span><span class="info-value">{{ vendeurSelectionne?.adresseComplete ?? 'Non renseignée' }}</span></div>
+          <div class="info-item"><span class="info-label">Téléphone :</span><span class="info-value">{{ vendeurSelectionne?.telephone ?? 'Non renseigné' }}</span></div>
+          <div class="info-item"><span class="info-label">Code / RC :</span><span class="info-value">{{ vendeurSelectionne?.code ?? 'Non renseigné' }}</span></div>
+          <div class="info-item"><span class="info-label">Email :</span><span class="info-value">{{ vendeurSelectionne?.email ?? 'Non renseigné' }}</span></div>
         </div>
       </div>
     </div>
 
     <p-divider></p-divider>
 
-    <!-- En-tête facture -->
     <div class="section facture-header">
       <div class="facture-title-block">
         <h1 class="facture-title">FACTURE</h1>
         <div class="form-row">
           <label>N°</label>
-          <input type="text" pInputText [(ngModel)]="numFact"
-            placeholder="Numéro facture (auto-généré)"
-            class="num-input" readonly>
+          <input type="text" pInputText [(ngModel)]="numFact" placeholder="Numéro facture (auto-généré)" class="num-input" readonly>
         </div>
       </div>
       <div class="facture-dates">
@@ -300,7 +254,7 @@
         </div>
         <div class="date-block">
           <label>Mode de paiement <span class="required">*</span></label>
-          <p-dropdown [options]="modePaiementOptions" [(ngModel)]="modePaiement" optionLabel="label" optionValue="value" placeholder="Mode de paiement"></p-dropdown>
+          <p-dropdown [options]="modePaiementOptions" [(ngModel)]="modePaiement" optionLabel="label" optionValue="value"></p-dropdown>
         </div>
         <div class="date-block">
           <label>Statut</label>
@@ -311,7 +265,6 @@
 
     <p-divider></p-divider>
 
-    <!-- Acheteur -->
     <div class="section acheteur-section">
       <h3 class="section-title">ACHETEUR</h3>
       <div class="acheteur-grid">
@@ -323,15 +276,16 @@
           <div class="form-group">
             <label>Sélectionner l'acheteur <span class="required">*</span></label>
             <p-dropdown [options]="acheteurOptions" [(ngModel)]="acheteurId" optionLabel="label" optionValue="value"
-              placeholder="Choisir un acheteur" (onChange)="onAcheteurChange()" [filter]="true" filterPlaceholder="Rechercher..."></p-dropdown>
+              placeholder="Choisir un acheteur" (onChange)="onAcheteurChange()" [filter]="true" filterPlaceholder="Rechercher...">
+            </p-dropdown>
           </div>
         </div>
         <div class="acheteur-info-block">
           <div class="info-card">
-            <div class="info-row"><span class="info-label">RAISON SOCIALE :</span><span class="info-value">{{ acheteurSelectionne?.raisonSociale ?? 'Sélectionnez un acheteur' }}</span></div>
-            <div class="info-row"><span class="info-label">ADRESSE :</span><span class="info-value">{{ acheteurSelectionne?.adresseComplete ?? 'Non renseignée' }}</span></div>
-            <div class="info-row"><span class="info-label">EMAIL :</span><span class="info-value">{{ acheteurSelectionne?.email ?? 'Non renseigné' }}</span></div>
-            <div class="info-row"><span class="info-label">TÉLÉPHONE :</span><span class="info-value">{{ acheteurSelectionne?.telephone ?? 'Non renseigné' }}</span></div>
+            <div class="info-row"><span class="info-label">RAISON SOCIALE</span><span class="info-value">{{ acheteurSelectionne?.raisonSociale ?? 'Sélectionnez un acheteur' }}</span></div>
+            <div class="info-row"><span class="info-label">TÉLÉPHONE</span><span class="info-value">{{ acheteurSelectionne?.telephone ?? 'Non renseigné' }}</span></div>
+            <div class="info-row full-width"><span class="info-label">ADRESSE</span><span class="info-value">{{ acheteurSelectionne?.adresseComplete ?? 'Non renseignée' }}</span></div>
+            <div class="info-row full-width"><span class="info-label">EMAIL</span><span class="info-value">{{ acheteurSelectionne?.email ?? 'Non renseigné' }}</span></div>
           </div>
         </div>
       </div>
@@ -339,27 +293,27 @@
 
     <p-divider></p-divider>
 
-    <!-- Lignes -->
     <div class="section lignes-section">
       <h3 class="section-title">LIGNES DE FACTURE</h3>
       <div class="add-ligne-bar">
         <div class="add-ligne-title"><i class="pi pi-plus-circle"></i> Ajouter une ligne</div>
         <div class="add-ligne-controls">
-          <div class="ctrl-group">
+          <div class="ctrl-group ctrl-produit">
             <label>PRODUIT</label>
             <p-dropdown [options]="produitOptions" [(ngModel)]="produitSelectionne" optionLabel="label" optionValue="value"
               placeholder="Sélectionner un produit" [filter]="true" filterPlaceholder="Rechercher..."
-              (onChange)="onProduitSelect($event.value)" [style]="{'min-width':'320px'}"></p-dropdown>
+              (onChange)="onProduitSelect($event.value)">
+            </p-dropdown>
           </div>
           <div class="ctrl-group">
             <label>QUANTITÉ</label>
-            <p-inputNumber [(ngModel)]="quantiteAjout" [min]="1" [max]="9999" [style]="{'width':'120px'}"></p-inputNumber>
+            <p-inputNumber [(ngModel)]="quantiteAjout" [min]="1" [max]="9999" [style]="{'width':'100%'}"></p-inputNumber>
           </div>
           <button class="ajouter-btn" (click)="ajouterLigne()">Ajouter</button>
         </div>
         <div class="add-ligne-hint" *ngIf="!acheteurId">
           <i class="pi pi-info-circle"></i>
-          Sélectionnez l'acheteur ci-dessus, puis ajoutez des lignes (produit + quantité)
+          Sélectionnez l'acheteur ci-dessus, puis ajoutez des lignes
         </div>
       </div>
 
@@ -396,7 +350,6 @@
       </p-table>
     </div>
 
-    <!-- Totaux -->
     <div class="section footer-section">
       <div class="mention-legale" *ngIf="vendeurSelectionne">
         {{ vendeurSelectionne.raisonSociale }} - Matricule fiscal : {{ vendeurSelectionne.matriculeFiscal ?? 'N/A' }}
@@ -411,7 +364,6 @@
       </div>
     </div>
 
-    <!-- Barre inférieure -->
     <div class="bottom-bar">
       <span class="facture-num-label">
         Facture N° {{ numFact || 'Non généré' }} &nbsp;|&nbsp; Date {{ dateEmission | date:'dd/MM/yyyy' }}
@@ -429,4 +381,4 @@
 
 </div>
 
-<p-toast></p-toast>
+<p-toast></p-toast>s

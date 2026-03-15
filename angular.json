@@ -41,13 +41,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "1.5MB",
-                  "maximumError": "2MB"
+                  "maximumWarning": "2.5MB",
+                  "maximumError": "3MB"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "16kB",
-                  "maximumError": "24kB"
+                  "maximumWarning": "25kB",
+                  "maximumError": "30kB"
                 }
               ],
               "outputHashing": "all"
@@ -90,16 +90,13 @@
                 "input": "public"
               }
             ],
-            
-              "styles": [
-  "node_modules/primeng/resources/themes/lara-light-blue/theme.css",
-  "node_modules/primeng/resources/primeng.min.css",
-  "node_modules/primeicons/primeicons.css",
-  "node_modules/primeflex/primeflex.css",
-  "src/styles.scss"
-]
-
-            ,
+            "styles": [
+              "node_modules/primeng/resources/themes/lara-light-blue/theme.css",
+              "node_modules/primeng/resources/primeng.min.css",
+              "node_modules/primeicons/primeicons.css",
+              "node_modules/primeflex/primeflex.css",
+              "src/styles.scss"
+            ],
             "scripts": []
           }
         }

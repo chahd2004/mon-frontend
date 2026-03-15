@@ -41,34 +41,16 @@ $white: #ffffff;
 }
 
 .back-btn {
-  background: $dark;
-  color: white;
-  border: none;
-  padding: 0.6rem 1.2rem;
-  border-radius: 20px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-size: 0.9rem;
+  background: $dark; color: white; border: none;
+  padding: 0.6rem 1.2rem; border-radius: 20px; font-weight: 600;
+  display: flex; align-items: center; gap: 0.5rem; cursor: pointer; transition: all 0.2s; font-size: 0.9rem;
   &:hover { background: color.adjust($dark, $lightness: 10%); transform: translateX(-3px); }
 }
 
 .save-btn {
-  background: $success;
-  color: white;
-  border: none;
-  padding: 0.7rem 1.8rem;
-  border-radius: 20px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-size: 0.95rem;
+  background: $success; color: white; border: none;
+  padding: 0.7rem 1.8rem; border-radius: 20px; font-weight: 700;
+  display: flex; align-items: center; gap: 0.5rem; cursor: pointer; transition: all 0.2s; font-size: 0.95rem;
   box-shadow: 0 4px 12px rgba($success, 0.3);
   &:hover { background: #0d9668; transform: translateY(-2px); box-shadow: 0 6px 16px rgba($success, 0.4); }
   &:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
@@ -76,78 +58,54 @@ $white: #ffffff;
 }
 
 .print-btn {
-  background: $dark;
-  color: white;
-  border: none;
-  padding: 0.7rem 1.5rem;
-  border-radius: 20px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-size: 0.9rem;
+  background: $dark; color: white; border: none;
+  padding: 0.7rem 1.5rem; border-radius: 20px; font-weight: 600;
+  display: flex; align-items: center; gap: 0.5rem; cursor: pointer; transition: all 0.2s; font-size: 0.9rem;
   &:hover { background: color.adjust($dark, $lightness: 10%); transform: translateY(-2px); }
 }
 
+.pdf-btn {
+  background: $blue; color: white; border: none;
+  padding: 0.7rem 1.5rem; border-radius: 20px; font-weight: 700;
+  display: flex; align-items: center; gap: 0.5rem; cursor: pointer; transition: all 0.2s; font-size: 0.9rem;
+  box-shadow: 0 4px 12px rgba($blue, 0.3);
+  &:hover { background: color.adjust($blue, $lightness: -4%); transform: translateY(-2px); }
+}
+
 .edit-action-btn {
-  background: $warning;
-  color: white;
-  border: none;
-  padding: 0.7rem 1.5rem;
-  border-radius: 20px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-size: 0.9rem;
+  background: $warning; color: white; border: none;
+  padding: 0.7rem 1.5rem; border-radius: 20px; font-weight: 700;
+  display: flex; align-items: center; gap: 0.5rem; cursor: pointer; transition: all 0.2s; font-size: 0.9rem;
   box-shadow: 0 4px 12px rgba($warning, 0.3);
   &:hover { background: #d97706; transform: translateY(-2px); box-shadow: 0 6px 16px rgba($warning, 0.4); }
 }
 
 // ===== SECTIONS (formulaire) =====
 .section {
-  background: $white;
-  border-radius: 16px;
-  padding: 1.5rem 2rem;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  background: $white; border-radius: 16px; padding: 1.5rem 2rem;
+  margin-bottom: 1.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 
 .section-title {
-  color: $blue;
-  font-size: 1.1rem;
-  font-weight: 700;
-  margin: 0 0 1.2rem 0;
-  letter-spacing: 1px;
+  color: $blue; font-size: 1.1rem; font-weight: 700;
+  margin: 0 0 1.2rem 0; letter-spacing: 1px;
 }
 
 // ===== VENDEUR =====
 .vendeur-section {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 2rem;
-
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 2rem;
   .vendeur-left {
     display: flex; align-items: flex-start; gap: 1rem; flex: 1;
     .vendeur-avatar {
-      width: 56px; height: 56px; border-radius: 50%;
-      background: $blue-light;
+      width: 56px; height: 56px; border-radius: 50%; background: $blue-light;
       display: flex; align-items: center; justify-content: center;
       color: white; font-weight: 700; font-size: 1.4rem; flex-shrink: 0;
     }
-    .vendeur-info {
-      display: flex; flex-direction: column; gap: 0.3rem;
+    .vendeur-info { display: flex; flex-direction: column; gap: 0.3rem;
       .vendeur-subtitle { color: $gray; font-size: 0.85rem; font-style: italic; }
     }
   }
-
-  .vendeur-right {
-    flex: 1;
+  .vendeur-right { flex: 1;
     .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
   }
 }
@@ -160,27 +118,18 @@ $white: #ffffff;
 
 // ===== EN-TÊTE FACTURE =====
 .facture-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 2rem;
-
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 2rem;
   .facture-title-block {
-    .facture-title {
-      color: $blue; font-size: 2.5rem; font-weight: 900;
-      margin: 0 0 1rem 0; letter-spacing: 3px;
-    }
+    .facture-title { color: $blue; font-size: 2.5rem; font-weight: 900; margin: 0 0 1rem 0; letter-spacing: 3px; }
     .form-row {
       display: flex; align-items: center; gap: 0.8rem;
       label { font-weight: 700; color: $dark; font-size: 1rem; }
       .num-input {
-        width: 200px; padding: 0.6rem 1rem;
-        border: 2px solid $border; border-radius: 8px;
+        width: 200px; padding: 0.6rem 1rem; border: 2px solid $border; border-radius: 8px;
         color: $gray; background: $bg; font-size: 0.95rem;
       }
     }
   }
-
   .facture-dates {
     display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; min-width: 420px;
     .date-block {
@@ -195,7 +144,6 @@ $white: #ffffff;
 .acheteur-section {
   .acheteur-grid {
     display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
-
     .acheteur-select-block {
       display: flex; flex-direction: column; gap: 1rem;
       .form-group {
@@ -204,15 +152,15 @@ $white: #ffffff;
         ::ng-deep .p-dropdown { width: 100%; }
       }
     }
-
     .acheteur-info-block {
       .info-card {
-        background: $bg; border-radius: 12px; padding: 1.2rem;
-        border: 1px solid $border; display: flex; flex-direction: column; gap: 0.8rem;
+        background: $bg; border-radius: 12px; padding: 1.2rem; border: 1px solid $border;
+        display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem 1.2rem;
         .info-row {
-          flex-direction: column; gap: 0.2rem;
+          display: flex; flex-direction: column; gap: 0.2rem;
           .info-label { font-size: 0.75rem; color: $gray; letter-spacing: 0.5px; }
           .info-value  { font-size: 0.95rem; color: $dark; font-weight: 500; }
+          &.full-width { grid-column: 1 / -1; }
         }
       }
     }
@@ -224,21 +172,21 @@ $white: #ffffff;
   .add-ligne-bar {
     background: $bg; border-radius: 12px; padding: 1.2rem 1.5rem;
     margin-bottom: 1.5rem; border: 1px solid $border;
-
     .add-ligne-title {
       font-weight: 700; color: $blue; margin-bottom: 1rem;
       display: flex; align-items: center; gap: 0.5rem;
       i { font-size: 1.1rem; }
     }
-
     .add-ligne-controls {
-      display: flex; align-items: flex-end; gap: 1rem; flex-wrap: wrap;
+      display: grid; grid-template-columns: minmax(260px, 1fr) 140px auto;
+      align-items: flex-end; gap: 1rem;
       .ctrl-group {
         display: flex; flex-direction: column; gap: 0.4rem;
         label { font-weight: 600; color: $dark; font-size: 0.8rem; letter-spacing: 0.5px; }
+        ::ng-deep .p-dropdown, ::ng-deep .p-inputnumber, ::ng-deep .p-inputnumber-input { width: 100%; }
       }
+      .ctrl-produit { min-width: 0; }
     }
-
     .add-ligne-hint {
       margin-top: 1rem; color: $warning; font-size: 0.9rem;
       display: flex; align-items: center; gap: 0.5rem;
@@ -250,8 +198,8 @@ $white: #ffffff;
 
 .ajouter-btn {
   background: $blue-light; color: white; border: none;
-  padding: 0.65rem 1.5rem; border-radius: 8px;
-  font-weight: 600; cursor: pointer; transition: all 0.2s; height: 42px;
+  padding: 0.65rem 1.5rem; border-radius: 8px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s; height: 42px;
   &:hover { background: $blue; transform: translateY(-1px); }
 }
 
@@ -261,8 +209,7 @@ $white: #ffffff;
     font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;
   }
   ::ng-deep .p-datatable-tbody > tr > td {
-    padding: 0.8rem 1rem; border-bottom: 1px solid $border;
-    color: $dark; font-size: 0.9rem;
+    padding: 0.8rem 1rem; border-bottom: 1px solid $border; color: $dark; font-size: 0.9rem;
     &.text-right { text-align: right; }
     &.font-bold { font-weight: 700; }
   }
@@ -279,19 +226,14 @@ $white: #ffffff;
 // ===== PIED FORMULAIRE =====
 .footer-section {
   display: flex; justify-content: space-between; align-items: flex-end; gap: 2rem;
-
   .mention-legale {
-    flex: 1; padding: 1rem; background: $bg;
-    border-radius: 8px; border: 1px solid $border;
+    flex: 1; padding: 1rem; background: $bg; border-radius: 8px; border: 1px solid $border;
     font-size: 0.85rem; color: $gray; align-self: flex-end;
   }
-
   .total-bloc {
     min-width: 300px; background: $blue-pale; border-radius: 12px; padding: 1.5rem;
     border: 1px solid rgba($blue-light, 0.2);
-
     h4 { color: $dark; font-weight: 700; margin: 0 0 1rem 0; font-size: 1rem; letter-spacing: 1px; }
-
     .total-row {
       display: flex; justify-content: space-between; align-items: center;
       padding: 0.5rem 0; font-size: 0.95rem; color: $dark;
@@ -303,12 +245,9 @@ $white: #ffffff;
 
 // ===== BARRE INFÉRIEURE =====
 .bottom-bar {
-  position: sticky; bottom: 0; background: $white;
-  border-top: 2px solid $border; padding: 1rem 2rem;
-  display: flex; justify-content: space-between; align-items: center;
-  margin: 0 -2rem -4rem;
-  box-shadow: 0 -4px 12px rgba(0,0,0,0.08); z-index: 10;
-
+  position: sticky; bottom: 0; background: $white; border-top: 2px solid $border;
+  padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center;
+  margin: 0 -2rem -4rem; box-shadow: 0 -4px 12px rgba(0,0,0,0.08); z-index: 10;
   .facture-num-label { color: $gray; font-size: 0.9rem; font-weight: 500; }
   .bottom-actions { display: flex; align-items: center; gap: 1rem; }
 }
@@ -328,184 +267,106 @@ $white: #ffffff;
   border: 1px solid #dde3ee;
 }
 
-.recu-top-band {
-  background: $dark;
-  height: 6px;
-  width: 100%;
-}
+.recu-top-band { background: $dark; height: 6px; width: 100%; }
 
-.recu-body {
-  padding: 2.5rem 3rem;
-}
+.recu-body { padding: 2rem 2.5rem; }
 
 // ─── HEADER ───
 .recu-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 2.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .recu-logo-block {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.5rem;
-
+  display: flex; flex-direction: column; align-items: flex-start; gap: 0.5rem;
   .recu-logo-svg {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-
+    display: flex; align-items: center; gap: 0.6rem;
     .logo-icon {
-      width: 48px; height: 48px;
-      background: linear-gradient(135deg, $blue 0%, $blue-light 100%);
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
+      width: 48px; height: 48px; background: linear-gradient(135deg, $blue 0%, $blue-light 100%);
+      border-radius: 10px; display: flex; align-items: center; justify-content: center;
       box-shadow: 0 4px 12px rgba($blue, 0.35);
-
-      svg {
-        width: 28px; height: 28px;
-        fill: none; stroke: white;
-        stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-      }
+      svg { width: 28px; height: 28px; fill: none; stroke: white; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
     }
-
     .logo-text-block {
       display: flex; flex-direction: column; line-height: 1.1;
       .logo-name    { font-size: 1.15rem; font-weight: 800; color: $dark; letter-spacing: -0.3px; }
       .logo-tagline { font-size: 0.7rem; color: $gray; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; }
     }
   }
-
   .recu-vendeur-infos {
-    margin-top: 0.8rem;
-    padding-left: 0.2rem;
+    margin-top: 0.8rem; padding-left: 0.2rem;
     .recu-vendeur-nom    { font-size: 1rem; font-weight: 700; color: $dark; margin-bottom: 0.25rem; }
     .recu-vendeur-detail { font-size: 0.8rem; color: $gray; margin-bottom: 0.15rem; line-height: 1.5; }
   }
 }
 
-// ─── TITRE FACTURE + QR CODE (haut droite) ───
+// ─── TITRE + QR ───
 .recu-title-block {
-  text-align: right;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0.4rem;
+  text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 0.4rem;
+  .recu-title { font-size: 3rem; font-weight: 900; color: $blue; letter-spacing: 6px; line-height: 1; text-transform: uppercase; }
+  .recu-num   { font-size: 0.9rem; font-weight: 600; color: $gray; letter-spacing: 0.5px; }
 
-  .recu-title {
-    font-size: 3rem;
-    font-weight: 900;
-    color: $blue;
-    letter-spacing: 6px;
-    line-height: 1;
-    text-transform: uppercase;
-  }
-
-  .recu-num {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: $gray;
-    letter-spacing: 0.5px;
-  }
-
-  // ─── QR CODE ALIGNÉ À DROITE ───
   .recu-qr-block {
-    margin-top: 0.5rem;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 5px;
-    padding: 10px 12px;
-    background: #f8faff;
-    border: 1px solid $border;
-    border-radius: 10px;
+    margin-top: 0.5rem; display: flex; flex-direction: column; align-items: flex-end; gap: 5px;
+    padding: 10px 12px; background: #f8faff; border: 1px solid $border; border-radius: 10px;
 
     .recu-qr-label {
-      font-size: 10px;
-      font-weight: 700;
-      color: $blue;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 4px;
+      font-size: 10px; font-weight: 700; color: $blue; letter-spacing: 0.06em; text-transform: uppercase;
+      display: flex; align-items: center; justify-content: flex-end; gap: 4px;
       i { font-size: 12px; color: $blue; }
     }
 
-    qrcode canvas {
+    img {
       border-radius: 6px;
       display: block;
+      // Garantit l'affichage à l'impression
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
     }
 
-    .recu-qr-hint {
-      font-size: 9.5px;
-      color: $gray;
-      line-height: 1.4;
-      text-align: right;
-    }
-
-    .recu-qr-num {
-      font-size: 9px;
-      color: #94a3b8;
-      font-style: italic;
-      text-align: right;
-    }
+    .recu-qr-num { font-size: 9px; color: #94a3b8; font-style: italic; text-align: right; }
   }
 }
 
 // ─── SÉPARATEUR ───
 .recu-divider {
-  height: 1px;
-  background: $border;
-  margin: 1.5rem 0;
-  position: relative;
-  &::after {
-    content: '';
-    position: absolute;
-    top: 3px; left: 0; right: 0;
-    height: 1px;
-    background: rgba($blue-light, 0.2);
-  }
+  height: 1px; background: $border; margin: 1rem 0; position: relative;
+  &::after { content: ''; position: absolute; top: 3px; left: 0; right: 0; height: 1px; background: rgba($blue-light, 0.2); }
 }
 
-// ─── MÉTA INFOS ───
+// ─── MÉTA + ACHETEUR SUR LA MÊME LIGNE ───
+.recu-meta-acheteur-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 0.5rem;
+  align-items: start;
+}
+
 .recu-meta {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
   background: #f8fafc;
   border: 1px solid $border;
   border-radius: 10px;
-  padding: 1.2rem 1.5rem;
-  margin-bottom: 0.5rem;
+  padding: 1rem 1.2rem;
+  height: fit-content;
 
   .recu-meta-item {
-    display: flex; flex-direction: column; gap: 0.35rem;
-    .recu-meta-label { font-size: 0.7rem; font-weight: 700; color: $gray; text-transform: uppercase; letter-spacing: 1px; }
-    .recu-meta-value { font-size: 0.95rem; font-weight: 700; color: $dark; }
+    display: flex; flex-direction: column; gap: 0.25rem;
+    .recu-meta-label { font-size: 0.68rem; font-weight: 700; color: $gray; text-transform: uppercase; letter-spacing: 1px; }
+    .recu-meta-value { font-size: 0.9rem; font-weight: 700; color: $dark; }
   }
 }
 
 // ─── SECTION LABEL ───
 .recu-section-label {
-  font-size: 0.68rem;
-  font-weight: 800;
-  color: $blue;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  margin-bottom: 0.7rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  &::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: rgba($blue-light, 0.25);
-  }
+  font-size: 0.68rem; font-weight: 800; color: $blue; text-transform: uppercase;
+  letter-spacing: 2px; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;
+  &::after { content: ''; flex: 1; height: 1px; background: rgba($blue-light, 0.25); }
 }
 
 // ─── ACHETEUR ───
@@ -514,122 +375,84 @@ $white: #ffffff;
   border: 1px solid rgba($blue-light, 0.2);
   border-left: 3px solid $blue-light;
   border-radius: 8px;
-  padding: 1rem 1.2rem;
-  margin-bottom: 0.5rem;
+  padding: 0.9rem 1.1rem;
 
-  .recu-acheteur-nom    { font-size: 1rem; font-weight: 700; color: $dark; margin-bottom: 0.3rem; }
-  .recu-acheteur-detail { font-size: 0.82rem; color: $gray; margin-bottom: 0.15rem; line-height: 1.5; }
+  .recu-acheteur-nom    { font-size: 1rem; font-weight: 700; color: $dark; margin-bottom: 0.25rem; }
+  .recu-acheteur-detail { font-size: 0.82rem; color: $gray; margin-bottom: 0.1rem; line-height: 1.5; }
 }
 
 // ─── TABLEAU ───
 .recu-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 0.5rem;
-  font-size: 0.875rem;
-  border-radius: 8px;
-  overflow: hidden;
-  border: 1px solid $border;
+  width: 100%; border-collapse: collapse; margin-bottom: 0.5rem;
+  font-size: 0.85rem; border-radius: 8px; overflow: hidden; border: 1px solid $border;
 
   thead tr {
     background: $dark;
     th {
-      padding: 0.85rem 1rem;
-      color: white; font-weight: 600;
-      font-size: 0.72rem; text-transform: uppercase;
-      letter-spacing: 0.8px; text-align: left; white-space: nowrap;
+      padding: 0.75rem 0.9rem; color: white; font-weight: 600;
+      font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.8px;
+      text-align: left; white-space: nowrap;
       &.text-right { text-align: right; }
     }
   }
 
   tbody tr {
-    border-bottom: 1px solid $border;
-    transition: background 0.15s;
+    border-bottom: 1px solid $border; transition: background 0.15s;
     &:nth-child(even) { background: #fafbfc; }
     &:hover { background: rgba($blue-pale, 0.5); }
     &:last-child { border-bottom: none; }
-
     td {
-      padding: 0.85rem 1rem;
-      color: $dark; vertical-align: middle;
+      padding: 0.75rem 0.9rem; color: $dark; vertical-align: middle;
       &.text-right  { text-align: right; }
-      &.font-bold   { font-weight: 700; color: $blue; font-size: 0.95rem; }
+      &.font-bold   { font-weight: 700; color: $blue; font-size: 0.9rem; }
       &.text-center { text-align: center; }
       &:first-child { color: $gray; font-size: 0.8rem; font-weight: 600; width: 36px; }
     }
   }
 }
 
-.empty-lignes {
-  padding: 2rem !important;
-  color: $gray;
-  font-style: italic;
-}
+.empty-lignes { padding: 2rem !important; color: $gray; font-style: italic; }
 
 // ─── PIED : MENTION + TOTAUX ───
 .recu-footer {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 2rem;
-  align-items: end;
-  margin-top: 0.5rem;
+  display: grid; grid-template-columns: 1fr auto; gap: 2rem; align-items: end; margin-top: 0.5rem;
 
   .recu-mention {
-    padding: 1rem 1.2rem;
-    background: $bg;
-    border-radius: 8px;
-    border: 1px solid $border;
-    font-size: 0.78rem; color: $gray; line-height: 1.7;
-    align-self: end;
-    p { margin: 0 0 0.25rem 0; }
+    padding: 1rem 1.2rem; background: $bg; border-radius: 8px; border: 1px solid $border;
+    font-size: 0.78rem; color: $gray; line-height: 1.7; align-self: end;
+    p { margin: 0 0 0.2rem 0; }
   }
 
   .recu-totaux {
-    min-width: 260px;
-    border: 1px solid $border;
-    border-radius: 10px;
-    overflow: hidden;
+    min-width: 250px; border: 1px solid $border; border-radius: 10px; overflow: hidden;
 
     .recu-total-row {
       display: flex; justify-content: space-between; align-items: center;
-      padding: 0.6rem 1.2rem;
-      font-size: 0.875rem; color: $dark;
-      border-bottom: 1px solid $border;
-      background: white;
+      padding: 0.55rem 1.1rem; font-size: 0.875rem; color: $dark;
+      border-bottom: 1px solid $border; background: white;
       &:last-child { border-bottom: none; }
       span   { color: $gray; font-size: 0.82rem; }
       strong { font-weight: 600; color: $dark; }
 
       &.grand-total {
-        background: $dark;
-        padding: 0.9rem 1.2rem;
+        background: $dark; padding: 0.85rem 1.1rem;
         span   { color: rgba(white, 0.85); font-size: 0.85rem; font-weight: 700; letter-spacing: 0.5px; }
         strong { color: white; font-size: 1.05rem; font-weight: 800; }
       }
     }
 
     .recu-total-lettres {
-      padding: 0.65rem 1.2rem 0.75rem;
-      font-size: 0.75rem; font-style: italic;
-      color: $gray; background: white;
-      border-top: 1px dashed $border;
-      text-align: center; line-height: 1.5;
+      padding: 0.6rem 1.1rem 0.7rem; font-size: 0.72rem; font-style: italic;
+      color: $gray; background: white; border-top: 1px dashed $border; text-align: center; line-height: 1.5;
     }
   }
 }
 
 // ─── BANDE BAS ───
 .recu-bottom-band {
-  background: $dark;
-  padding: 0.75rem 3rem;
+  background: $dark; padding: 0.65rem 2.5rem;
   display: flex; justify-content: center; align-items: center;
-
-  .recu-bottom-text {
-    font-size: 0.72rem;
-    color: rgba(white, 0.55);
-    letter-spacing: 0.5px;
-    text-align: center;
-  }
+  .recu-bottom-text { font-size: 0.72rem; color: rgba(white, 0.55); letter-spacing: 0.5px; text-align: center; }
 }
 
 // =====================================================
@@ -637,16 +460,32 @@ $white: #ffffff;
 // =====================================================
 @media print {
   * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
   .no-print { display: none !important; }
+
   body, html { margin: 0; padding: 0; background: white; }
 
   .facture-container { padding: 0; background: white; max-width: 100%; }
 
-  .recu-wrapper { box-shadow: none; border-radius: 0; border: none; max-width: 100%; page-break-inside: avoid; }
-  .recu-body { padding: 1.5rem 2rem; }
-  .recu-top-band { background: $dark !important; height: 5px; }
-  .recu-logo-block .logo-icon { background: linear-gradient(135deg, $blue 0%, $blue-light 100%) !important; }
+  .recu-wrapper {
+    box-shadow: none !important; border-radius: 0; border: none !important;
+    max-width: 100%; page-break-inside: avoid;
+  }
+
+  .recu-body { padding: 1rem 1.5rem; }
+
+  .recu-top-band    { background: $dark !important; height: 5px; }
+  .recu-bottom-band { background: $dark !important; }
+  .recu-bottom-band .recu-bottom-text { color: rgba(white, 0.55) !important; }
+
+  .logo-icon { background: linear-gradient(135deg, $blue 0%, $blue-light 100%) !important; }
+
   .recu-meta { background: #f8fafc !important; border: 1px solid $border !important; }
+
+  .recu-acheteur {
+    border-left-color: $blue-light !important;
+    background: rgba($blue-pale, 0.4) !important;
+  }
 
   .recu-table {
     thead tr { background: $dark !important; }
@@ -659,14 +498,15 @@ $white: #ffffff;
     span, strong { color: white !important; }
   }
 
-  .recu-bottom-band { background: $dark !important; .recu-bottom-text { color: rgba(white, 0.55) !important; } }
-  .recu-acheteur { border-left-color: $blue-light !important; background: rgba($blue-pale, 0.4) !important; }
-
-  // QR code visible à l'impression
-  .recu-title-block .recu-qr-block {
+  // QR Code image — toujours visible à l'impression
+  .recu-qr-block {
     background: #f8faff !important;
     border: 1px solid $border !important;
-    qrcode canvas { display: block !important; }
+    img {
+      display: block !important;
+      width: 100px !important;
+      height: 100px !important;
+    }
   }
 }
 
@@ -682,29 +522,21 @@ $white: #ffffff;
   }
   .acheteur-section .acheteur-grid { grid-template-columns: 1fr; }
   .footer-section { flex-direction: column; .total-bloc { width: 100%; } }
-  .add-ligne-controls { flex-direction: column; align-items: stretch !important; }
+  .add-ligne-controls { grid-template-columns: 1fr !important; align-items: stretch !important; }
 
   .recu-body { padding: 1.5rem; }
   .recu-bottom-band { padding: 0.75rem 1.5rem; }
 
+  .recu-meta-acheteur-row { grid-template-columns: 1fr; }
+
   .recu-header {
-    flex-direction: column;
-    gap: 1.5rem;
-    .recu-title-block {
-      text-align: left;
-      align-items: flex-start;
-      .recu-qr-block {
-        align-items: flex-start;
-        .recu-qr-label { justify-content: flex-start; }
-        .recu-qr-hint  { text-align: left; }
-        .recu-qr-num   { text-align: left; }
-      }
-    }
+    flex-direction: column; gap: 1.5rem;
+    .recu-title-block { text-align: left; align-items: flex-start; }
   }
 
   .recu-meta { grid-template-columns: 1fr; gap: 1rem; }
   .recu-footer { grid-template-columns: 1fr; .recu-totaux { width: 100%; } }
-  .recu-table { font-size: 0.78rem; th, td { padding: 0.6rem 0.6rem; } }
+  .recu-table { font-size: 0.78rem; th, td { padding: 0.6rem; } }
 }
 
 // ===== REQUIRED =====
@@ -714,8 +546,7 @@ $white: #ffffff;
 ::ng-deep {
   .p-dropdown, .p-calendar {
     .p-inputtext {
-      border-radius: 8px;
-      border: 2px solid $border;
+      border-radius: 8px; border: 2px solid $border;
       &:focus { border-color: $blue-light; box-shadow: 0 0 0 3px rgba($blue-light, 0.15); }
     }
   }

@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import jsPDF from 'jspdf';
 
 // PrimeNG
 import { ButtonModule } from 'primeng/button';
@@ -25,13 +26,7 @@ import { QRCodeComponent } from 'angularx-qrcode';
 import { environment } from '../../../environments/environment';
 
 const DEFAULT_VENDEUR_ID = 1;
-
-// =====================================================
-// ⚙️  URL DU QR CODE — CHANGER ICI QUAND TU AS NGROK
-// =====================================================
-
 const QR_BASE_URL = 'https://mon-app.com';
-// =====================================================
 
 interface Emetteur {
   id: number;
@@ -170,7 +165,6 @@ export class FactureComponent implements OnInit {
   }
 
   // ===== CHARGEMENTS =====
-
   loadEmetteurs(): void {
     this.http.get<Emetteur[]>(`${environment.apiUrl}/emetteurs`).subscribe({
       next: (data) => {
@@ -219,7 +213,6 @@ export class FactureComponent implements OnInit {
         if (facture.lignes && Array.isArray(facture.lignes)) {
           this.lignes = facture.lignes.map((l: any) => this.mapLigne(l));
         }
-
         this.loading = false;
       },
       error: (err) => {
@@ -234,7 +227,7 @@ export class FactureComponent implements OnInit {
     const produit  = this.produits.find(p => p.id === (l.produitId ?? l.produit?.id));
     const prixUnit = this.safeNum(l.prixUnitaire ?? l.prix_unitaire ?? produit?.prixUnitaire);
     const quantite = this.safeNum(l.quantite ?? l.qte ?? 1);
-    const tauxTVA  = this.safeNum(l.tauxTVA  ?? l.taux_tva ?? produit?.tauxTVA ?? 0);
+    const tauxTVA  = this.safeNum(l.tauxTVA ?? l.taux_tva ?? produit?.tauxTVA ?? 0);
     const ht  = prixUnit * quantite;
     const tva = ht * (tauxTVA / 100);
     const ttc = ht + tva;
@@ -259,7 +252,6 @@ export class FactureComponent implements OnInit {
   }
 
   // ===== SÉLECTIONS =====
-
   onVendeurChange(): void {
     this.vendeurSelectionne = this.emetteurs.find(e => e.id === this.vendeurId) ?? null;
   }
@@ -286,7 +278,6 @@ export class FactureComponent implements OnInit {
   }
 
   // ===== LIGNES =====
-
   get acheteurOptions(): { label: string; value: number }[] {
     if (this.typeAcheteur === 'CLIENT') return this.clients.map(c => ({ label: c.raisonSociale, value: c.id }));
     return this.emetteurs.map(e => ({ label: e.raisonSociale, value: e.id }));
@@ -325,9 +316,7 @@ export class FactureComponent implements OnInit {
     this.quantiteAjout = 1;
   }
 
-  supprimerLigne(index: number): void {
-    this.lignes.splice(index, 1);
-  }
+  supprimerLigne(index: number): void { this.lignes.splice(index, 1); }
 
   onProduitSelect(produitId: number): void {
     this.produitSelectionne = this.produits.find(p => p.id === produitId) ?? null;
@@ -340,7 +329,6 @@ export class FactureComponent implements OnInit {
   get droitTimbre(): number { return 0.500; }
 
   // ===== SAUVEGARDE =====
-
   sauvegarder(): void {
     if (!this.acheteurId) {
       this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Sélectionnez un acheteur' });
@@ -392,12 +380,234 @@ export class FactureComponent implements OnInit {
     });
   }
 
-  imprimer(): void { window.print(); }
+  // ===== CONVERTIR CANVAS QR EN IMAGE (pour impression) =====
+  private convertirQrCanvasEnImg(container: Element): void {
+    const canvas = container.querySelector('canvas') as HTMLCanvasElement;
+    if (canvas) {
+      const img = document.createElement('img');
+      img.src = canvas.toDataURL('image/png');
+      img.width = 90;
+      img.height = 90;
+      img.style.cssText = 'display:block;border-radius:6px;';
+      canvas.parentNode?.replaceChild(img, canvas);
+    }
+  }
+
+  imprimer(): void {
+    const recu = document.querySelector('.recu-wrapper');
+    if (recu) this.convertirQrCanvasEnImg(recu);
+    window.print();
+  }
+
+  // ===== TÉLÉCHARGER PDF TEXTE COPIABLE (jsPDF) =====
+  async telechargerPdfTexte(): Promise<void> {
+    const fileName = this.normaliserNomFichier(`Facture_${this.numFact || 'export'}`, 'Facture_export');
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+    const v = this.vendeurSelectionne;
+    const a = this.acheteurSelectionne;
+    let y = 20;
+
+    // ── Logo PDF vectoriel (gauche), style proche du SVG de l'aperçu
+    doc.setFillColor(30, 64, 175);
+    doc.roundedRect(20, 14, 12, 12, 2, 2, 'F');
+
+    doc.setDrawColor(255, 255, 255);
+    doc.setLineWidth(0.5);
+    // Contour document
+    doc.roundedRect(23.2, 16.4, 5.6, 7.2, 0.7, 0.7, 'S');
+    // Coin plié
+    doc.line(27.2, 16.4, 28.8, 18);
+    doc.line(27.2, 18, 28.8, 18);
+    // Lignes de texte
+    doc.line(24.1, 19.2, 27.9, 19.2);
+    doc.line(24.1, 20.7, 27.4, 20.7);
+    doc.line(24.1, 22.2, 26.8, 22.2);
+
+    // ── En-tête vendeur (gauche)
+    doc.setFontSize(13); doc.setFont('helvetica', 'bold'); doc.setTextColor(30, 41, 59);
+    doc.text('FacturePro — Gestion & Facturation', 36, y); y += 6;
+    doc.setFontSize(9); doc.setFont('helvetica', 'normal'); doc.setTextColor(100, 116, 139);
+    doc.text(v?.raisonSociale ?? '', 36, y); y += 5;
+    if (v?.adresseComplete) { doc.text(v.adresseComplete, 36, y); y += 5; }
+    if (v?.telephone || v?.email) { doc.text(`${v?.telephone ?? ''} | ${v?.email ?? ''}`, 36, y); y += 5; }
+    doc.text(`MF : ${v?.matriculeFiscal ?? 'N/A'}`, 36, y);
+
+    // ── Titre FACTURE (droite)
+    doc.setFontSize(30); doc.setFont('helvetica', 'bold'); doc.setTextColor(30, 64, 175);
+    doc.text('FACTURE', 190, 22, { align: 'right' });
+    doc.setFontSize(10); doc.setFont('helvetica', 'normal'); doc.setTextColor(100, 116, 139);
+    doc.text(`N° ${this.numFact || '—'}`, 190, 30, { align: 'right' });
+
+    // ── QR Code (droite, sous le numéro)
+    const qrCanvas = document.querySelector('.recu-qr-block canvas') as HTMLCanvasElement;
+    if (qrCanvas) {
+      const qrImg = qrCanvas.toDataURL('image/png');
+      doc.addImage(qrImg, 'PNG', 165, 33, 25, 25);
+    }
+
+    y = 55;
+    doc.setDrawColor(226, 232, 240); doc.setLineWidth(0.3);
+    doc.line(20, y, 190, y); y += 8;
+
+    // ── Méta infos sur une ligne
+    doc.setFontSize(7); doc.setFont('helvetica', 'bold'); doc.setTextColor(100, 116, 139);
+    doc.text("DATE D'EMISSION", 20, y);
+    doc.text("DATE DE PAIEMENT", 75, y);
+    doc.text("MODE DE PAIEMENT", 130, y); y += 5;
+
+    doc.setFontSize(10); doc.setFont('helvetica', 'bold'); doc.setTextColor(30, 41, 59);
+    doc.text(this.dateEmission.toLocaleDateString('fr-TN'), 20, y);
+    doc.text(this.datePaiement.toLocaleDateString('fr-TN'), 75, y);
+    doc.text(this.formatModePaiement(this.modePaiement), 130, y); y += 10;
+
+    // ── Acheteur
+    doc.setFontSize(7); doc.setFont('helvetica', 'bold'); doc.setTextColor(100, 116, 139);
+    doc.text('FACTURE A', 20, y); y += 5;
+    doc.setFontSize(11); doc.setFont('helvetica', 'bold'); doc.setTextColor(30, 41, 59);
+    doc.text(a?.raisonSociale ?? '—', 20, y); y += 5;
+    doc.setFontSize(9); doc.setFont('helvetica', 'normal'); doc.setTextColor(100, 116, 139);
+    if (a?.adresseComplete) { doc.text(a.adresseComplete, 20, y); y += 5; }
+    if (a?.email) { doc.text(a.email, 20, y); y += 5; }
+    if ((a as any)?.telephone) { doc.text((a as any).telephone, 20, y); y += 5; }
+    y += 3;
+
+    doc.setDrawColor(226, 232, 240);
+    doc.line(20, y, 190, y); y += 8;
+
+    // ── En-tête tableau
+    doc.setFillColor(30, 41, 59);
+    doc.rect(20, y, 170, 8, 'F');
+    doc.setTextColor(255, 255, 255); doc.setFontSize(7.5); doc.setFont('helvetica', 'bold');
+    doc.text('#',          22,  y + 5.5);
+    doc.text('Designation',30,  y + 5.5);
+    doc.text('Qte',       100,  y + 5.5, { align: 'right' });
+    doc.text('Prix HT',   118,  y + 5.5, { align: 'right' });
+    doc.text('TVA%',      133,  y + 5.5, { align: 'right' });
+    doc.text('Mnt HT',    153,  y + 5.5, { align: 'right' });
+    doc.text('Total TTC', 190,  y + 5.5, { align: 'right' });
+    y += 8;
+
+    // ── Lignes tableau
+    doc.setFont('helvetica', 'normal'); doc.setTextColor(30, 41, 59);
+    this.lignes.forEach((ligne, i) => {
+      if (i % 2 === 0) { doc.setFillColor(250, 251, 252); doc.rect(20, y, 170, 7, 'F'); }
+      doc.setFontSize(8);
+      doc.text(`${i + 1}`,                           22,  y + 5);
+      doc.text(ligne.produitLabel.slice(0, 38),      30,  y + 5);
+      doc.text(`${ligne.quantite}`,                 100,  y + 5, { align: 'right' });
+      doc.text(this.formatPrix(ligne.prixUnitaire), 118,  y + 5, { align: 'right' });
+      doc.text(`${ligne.tauxTVA}%`,                 133,  y + 5, { align: 'right' });
+      doc.text(this.formatPrix(ligne.montantHT),    153,  y + 5, { align: 'right' });
+      doc.text(this.formatPrix(ligne.montantTTC),   190,  y + 5, { align: 'right' });
+      y += 7;
+    });
+
+    y += 5;
+    doc.setDrawColor(226, 232, 240);
+    doc.line(20, y, 190, y); y += 8;
+
+    // ── Mention vendeur (gauche)
+    doc.setFontSize(8); doc.setFont('helvetica', 'bold'); doc.setTextColor(30, 41, 59);
+    doc.text(v?.raisonSociale ?? '', 20, y); y += 5;
+    doc.setFont('helvetica', 'normal'); doc.setTextColor(100, 116, 139);
+    doc.text(`Matricule fiscal : ${v?.matriculeFiscal ?? 'N/A'}`, 20, y); y += 5;
+    doc.text('Merci pour votre confiance.', 20, y);
+
+    // ── Totaux (droite)
+    let ty = y - 10;
+    const totaux: [string, string][] = [
+      ['Total H.T.',      this.formatPrix(this.totalHT)],
+      ['TVA',             this.formatPrix(this.totalTVA)],
+      ['Droit de Timbre', this.formatPrix(this.droitTimbre)],
+    ];
+    totaux.forEach(([label, val]) => {
+      doc.setFontSize(9); doc.setFont('helvetica', 'normal'); doc.setTextColor(100, 116, 139);
+      doc.text(label, 130, ty);
+      doc.setFont('helvetica', 'bold'); doc.setTextColor(30, 41, 59);
+      doc.text(val, 190, ty, { align: 'right' });
+      ty += 7;
+    });
+
+    // ── Grand total
+    doc.setFillColor(30, 41, 59);
+    doc.rect(120, ty, 70, 10, 'F');
+    doc.setTextColor(255, 255, 255); doc.setFontSize(9); doc.setFont('helvetica', 'bold');
+    doc.text('TOTAL T.T.C', 124, ty + 7);
+    doc.text(this.formatPrix(this.totalTTC + this.droitTimbre), 190, ty + 7, { align: 'right' });
+    ty += 14;
+
+    // ── Montant en lettres
+    doc.setFontSize(8); doc.setFont('helvetica', 'italic'); doc.setTextColor(100, 116, 139);
+    const montantLettres = this.montantEnLettres(this.totalTTC + this.droitTimbre);
+    const lignesMontant = doc.splitTextToSize(montantLettres, 70);
+    doc.text(lignesMontant, 155, ty, { align: 'center' });
+
+    // ── Pied de page
+    doc.setFillColor(30, 41, 59);
+    doc.rect(0, 285, 210, 12, 'F');
+    doc.setTextColor(180, 180, 180); doc.setFontSize(7); doc.setFont('helvetica', 'normal');
+    doc.text(
+      `${v?.raisonSociale ?? ''} — MF : ${v?.matriculeFiscal ?? 'N/A'} — ${v?.email ?? ''}`,
+      105, 292, { align: 'center' }
+    );
+
+    const savedWithPicker = await this.enregistrerPdfAvecChoixEmplacement(doc, fileName);
+    if (!savedWithPicker) {
+      doc.save(fileName);
+    }
+  }
 
   // ===== HELPERS =====
-
   private formatDate(date: Date): string {
     return date.toISOString().split('T')[0];
+  }
+
+  private normaliserNomFichier(nomSaisi: string, fallback: string): string {
+    let nom = nomSaisi
+      .trim()
+      .replace(/[<>:"/\\|?*\x00-\x1F]/g, '')
+      .replace(/\s+/g, ' ');
+
+    if (!nom) {
+      nom = fallback;
+    }
+
+    if (!nom.toLowerCase().endsWith('.pdf')) {
+      nom += '.pdf';
+    }
+
+    return nom;
+  }
+
+  private async enregistrerPdfAvecChoixEmplacement(doc: jsPDF, fileName: string): Promise<boolean> {
+    const picker = (window as any).showSaveFilePicker;
+    if (typeof picker !== 'function') {
+      return false;
+    }
+
+    try {
+      const handle = await picker({
+        suggestedName: fileName,
+        types: [
+          {
+            description: 'Document PDF',
+            accept: { 'application/pdf': ['.pdf'] }
+          }
+        ]
+      });
+
+      const writable = await handle.createWritable();
+      await writable.write(doc.output('blob'));
+      await writable.close();
+      return true;
+    } catch (error: any) {
+      // AbortError = utilisateur a annulé la boîte "Enregistrer sous".
+      if (error?.name === 'AbortError') {
+        return true;
+      }
+      return false;
+    }
   }
 
   formatPrix(v: any): string {
@@ -414,26 +624,23 @@ export class FactureComponent implements OnInit {
 
   formatStatut(statut: string): string {
     const map: Record<string, string> = {
-      BROUILLON: 'Brouillon', EMISE: 'Émise',     PAYEE: 'Payée',
-      ANNULEE:   'Annulée',   EN_ATTENTE: 'En attente', EN_RETARD: 'En retard'
+      BROUILLON: 'Brouillon', EMISE: 'Emise', PAYEE: 'Payee',
+      ANNULEE: 'Annulee', EN_ATTENTE: 'En attente', EN_RETARD: 'En retard'
     };
     return map[statut] ?? statut;
   }
 
   getStatutSeverity(statut: string): 'success' | 'warning' | 'danger' | 'info' | 'secondary' {
     const map: Record<string, any> = {
-      PAYEE:      'success', EN_ATTENTE: 'warning', BROUILLON: 'warning',
-      EN_RETARD:  'danger',  ANNULEE:    'secondary', EMISE:   'info'
+      PAYEE: 'success', EN_ATTENTE: 'warning', BROUILLON: 'warning',
+      EN_RETARD: 'danger', ANNULEE: 'secondary', EMISE: 'info'
     };
     return map[statut] ?? 'info';
   }
 
   retourListe(): void { this.router.navigate(['/factures']); }
 
-  // =====================================================
-  // ===== MONTANT EN LETTRES (français / TND) =====
-  // =====================================================
-
+  // ===== MONTANT EN LETTRES =====
   montantEnLettres(valeur: number): string {
     if (isNaN(valeur) || valeur < 0) return '';
     const dinars   = Math.floor(valeur);
@@ -441,20 +648,16 @@ export class FactureComponent implements OnInit {
     const dinarStr   = dinars   > 0 ? `${this._nombreEnLettres(dinars)} ${dinars === 1 ? 'dinar' : 'dinars'}` : '';
     const millimeStr = millimes > 0 ? `${this._nombreEnLettres(millimes)} ${millimes === 1 ? 'millime' : 'millimes'}` : '';
     if (dinarStr && millimeStr) return `${dinarStr} et ${millimeStr}`;
-    if (dinarStr)               return dinarStr;
-    if (millimeStr)             return millimeStr;
-    return 'zéro dinar';
+    if (dinarStr)   return dinarStr;
+    if (millimeStr) return millimeStr;
+    return 'zero dinar';
   }
 
   private _nombreEnLettres(n: number): string {
-    if (n === 0) return 'zéro';
-    const unites = [
-      '', 'un', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf',
-      'dix', 'onze', 'douze', 'treize', 'quatorze', 'quinze', 'seize',
-      'dix-sept', 'dix-huit', 'dix-neuf'
-    ];
+    if (n === 0) return 'zero';
+    const unites = ['', 'un', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf',
+      'dix', 'onze', 'douze', 'treize', 'quatorze', 'quinze', 'seize', 'dix-sept', 'dix-huit', 'dix-neuf'];
     const dizaines = ['', '', 'vingt', 'trente', 'quarante', 'cinquante', 'soixante', 'soixante', 'quatre-vingt', 'quatre-vingt'];
-
     const _dizaine = (n: number): string => {
       if (n < 20) return unites[n];
       const d = Math.floor(n / 10); const u = n % 10;
@@ -464,14 +667,12 @@ export class FactureComponent implements OnInit {
       const liaison = (u === 1 && d !== 8) ? ' et ' : '-';
       return u === 0 ? dizaines[d] : `${dizaines[d]}${liaison}${unites[u]}`;
     };
-
     const _centaine = (n: number): string => {
       const c = Math.floor(n / 100); const r = n % 100;
       if (c === 0) return _dizaine(r);
       const centStr = c === 1 ? 'cent' : `${unites[c]} cent${r === 0 && c > 1 ? 's' : ''}`;
       return r === 0 ? centStr : `${centStr} ${_dizaine(r)}`;
     };
-
     const _millier = (n: number): string => {
       const m = Math.floor(n / 1000); const r = n % 1000;
       let result = '';
@@ -479,7 +680,6 @@ export class FactureComponent implements OnInit {
       if (r > 0) result = result ? `${result} ${_centaine(r)}` : _centaine(r);
       return result;
     };
-
     const _million = (n: number): string => {
       const m = Math.floor(n / 1_000_000); const r = n % 1_000_000;
       let result = '';
@@ -487,7 +687,6 @@ export class FactureComponent implements OnInit {
       if (r > 0) result = result ? `${result} ${_millier(r)}` : _millier(r);
       return result || _millier(n);
     };
-
     const lettres = n >= 1_000_000 ? _million(n) : _millier(n);
     return lettres.charAt(0).toUpperCase() + lettres.slice(1);
   }
