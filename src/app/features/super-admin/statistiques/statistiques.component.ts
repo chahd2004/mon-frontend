@@ -5,7 +5,8 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { ChartModule } from 'primeng/chart';
 import { SkeletonModule } from 'primeng/skeleton';
-import { DashboardService, DashboardStats } from '../../../core/services/dashboard.service';
+import { DashboardService, DashboardStats, SuperAdminStatsResponse } from '../../../core/services/dashboard.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-statistiques',
@@ -37,17 +38,17 @@ export class StatistiquesComponent implements OnInit {
 
   private loadStatistics(): void {
     this.isLoading = true;
-    
-    this.dashboardService.getDashboardStatsFromAPI().subscribe({
-      next: (stats: DashboardStats) => {
-        // Récupérer les données réelles
-        this.facturesCount = stats.factures.total;
-        this.clientsCount = stats.clients.total;
-        this.caTotalCount = this.formatCurrency(stats.chiffreAffaires.actuel);
-        
-        // Les données pour Users et Emetteurs peuvent nécessiter des appels API additionnels
-        // Pour l'instant, on met à jour avec les données disponibles
-        
+
+    forkJoin({
+      adminStats: this.dashboardService.getSuperAdminStatistics(),
+      dashboardStats: this.dashboardService.getDashboardStatsFromAPI()
+    }).subscribe({
+      next: ({ adminStats, dashboardStats }: { adminStats: SuperAdminStatsResponse; dashboardStats: DashboardStats }) => {
+        this.usersCount = adminStats.totalUsers ?? 0;
+        this.clientsCount = adminStats.totalClients ?? 0;
+        this.emetteursCount = adminStats.totalEmetteurs ?? 0;
+        this.facturesCount = adminStats.totalFactures ?? 0;
+        this.caTotalCount = this.formatCurrency(dashboardStats.chiffreAffaires.actuel);
         this.isLoading = false;
       },
       error: (error) => {

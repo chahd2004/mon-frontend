@@ -146,18 +146,16 @@
                 <span>Voir facture</span>
               </button>
 
-              <button class="action-btn edit-btn"
+              <button *ngIf="!isViewer" class="action-btn edit-btn"
                 (click)="modifierFacture(facture.id)"
-                [disabled]="isViewer"
                 pTooltip="Modifier cette facture"
                 tooltipPosition="top">
                 <i class="pi pi-pencil"></i>
                 <span>Modifier</span>
               </button>
 
-              <button class="action-btn delete-btn"
+              <button *ngIf="!isViewer" class="action-btn delete-btn"
                 (click)="supprimerFacture(facture.id)"
-                [disabled]="isViewer"
                 pTooltip="Supprimer cette facture"
                 tooltipPosition="top">
                 <i class="pi pi-trash"></i>
@@ -175,7 +173,7 @@
               <i class="pi pi-file" style="font-size: 3rem; color: #94a3b8;"></i>
               <h3>Aucune facture trouvée</h3>
               <p>Commencez par créer votre première facture.</p>
-              <button class="nouvelle-facture-btn" (click)="nouvelleFacture()">
+              <button *ngIf="!isViewer" class="nouvelle-facture-btn" (click)="nouvelleFacture()">
                 <i class="pi pi-plus"></i> Créer une facture
               </button>
             </div>

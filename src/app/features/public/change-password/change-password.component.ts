@@ -40,6 +40,18 @@ export class ChangePasswordComponent {
     return this.authService.currentUser()?.email?.trim().toLowerCase() || '';
   }
 
+  get passwordRules(): string[] {
+    return [
+      'Au moins 8 caracteres',
+      'Au moins 1 lettre minuscule',
+      'Au moins 1 lettre majuscule',
+      'Au moins 1 chiffre',
+      'Au moins 1 caractere special',
+      'Ne doit pas contenir d\'espaces',
+      'Doit etre different de l\'ancien mot de passe'
+    ];
+  }
+
   submit(): void {
     if (!this.email.trim() || !this.currentPassword.trim() || !this.newPassword.trim() || !this.confirmPassword.trim()) {
       this.messageService.add({
@@ -59,11 +71,12 @@ export class ChangePasswordComponent {
       return;
     }
 
-    if (this.newPassword.length < 8) {
+    const passwordValidationError = this.validateNewPassword(this.newPassword, this.currentPassword);
+    if (passwordValidationError) {
       this.messageService.add({
         severity: 'warn',
         summary: 'Validation',
-        detail: 'Le nouveau mot de passe doit contenir au moins 8 caractères.'
+        detail: passwordValidationError
       });
       return;
     }
@@ -109,5 +122,37 @@ export class ChangePasswordComponent {
         this.loading = false;
       }
     });
+  }
+
+  private validateNewPassword(newPassword: string, currentPassword: string): string | null {
+    if (newPassword.length < 8) {
+      return 'Le nouveau mot de passe doit contenir au moins 8 caracteres.';
+    }
+
+    if (!/[a-z]/.test(newPassword)) {
+      return 'Le nouveau mot de passe doit contenir au moins une lettre minuscule.';
+    }
+
+    if (!/[A-Z]/.test(newPassword)) {
+      return 'Le nouveau mot de passe doit contenir au moins une lettre majuscule.';
+    }
+
+    if (!/[0-9]/.test(newPassword)) {
+      return 'Le nouveau mot de passe doit contenir au moins un chiffre.';
+    }
+
+    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(newPassword)) {
+      return 'Le nouveau mot de passe doit contenir au moins un caractere special.';
+    }
+
+    if (/\s/.test(newPassword)) {
+      return 'Le nouveau mot de passe ne doit pas contenir d\'espaces.';
+    }
+
+    if (newPassword === currentPassword) {
+      return 'Le nouveau mot de passe doit etre different de l\'ancien mot de passe.';
+    }
+
+    return null;
   }
 }

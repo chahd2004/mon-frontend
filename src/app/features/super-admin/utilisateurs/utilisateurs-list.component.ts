@@ -1,14 +1,15 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
-import { UserDTO } from '../../../models';
+import { AccountStatus, UserDTO, UserResponseDTO } from '../../../models';
 import { RoleLabelPipe, StatusBadgePipe } from '../../../shared';
+import { SuperAdminUserService } from '../../../core/services/super-admin-user.service';
 
 @Component({
   selector: 'app-utilisateurs-list',
@@ -21,6 +22,9 @@ import { RoleLabelPipe, StatusBadgePipe } from '../../../shared';
   styleUrl: './utilisateurs-list.component.scss'
 })
 export class UtilisateursListComponent implements OnInit {
+  private readonly superAdminUserService = inject(SuperAdminUserService);
+  private readonly router = inject(Router);
+
   utilisateurs: UserDTO[] = [];
   filteredUtilisateurs: UserDTO[] = [];
   isLoading = false;
@@ -32,35 +36,23 @@ export class UtilisateursListComponent implements OnInit {
 
   loadUtilisateurs(): void {
     this.isLoading = true;
-    // Simulé - remplacer par appel service réel
-    this.utilisateurs = [
-      {
-        id: 1,
-        nom: 'Ahmed',
-        prenom: 'Ali',
-        email: 'admin@techcorp.tn',
-        telephone: '+216 20 123 456',
-        role: 'ENTREPRISE_ADMIN',
-        typeUser: undefined,
-        accountStatus: 'ACTIVE',
-        enabled: true,
-        firstLogin: false
+    this.superAdminUserService.getAllUsers().subscribe({
+      next: (users: UserResponseDTO[]) => {
+        this.utilisateurs = users.map((u) => ({
+          ...u,
+          createdAt: u.createdAt ? new Date(u.createdAt) : undefined,
+          updatedAt: u.updatedAt ? new Date(u.updatedAt) : undefined
+        }));
+        this.applyFilters();
+        this.isLoading = false;
       },
-      {
-        id: 2,
-        nom: 'Salah',
-        prenom: 'Mohamed',
-        email: 'viewer@techcorp.tn',
-        telephone: '+216 71 456 789',
-        role: 'ENTREPRISE_VIEWER',
-        typeUser: undefined,
-        accountStatus: 'ACTIVE',
-        enabled: true,
-        firstLogin: true
+      error: (error) => {
+        console.error('Erreur lors du chargement des utilisateurs:', error);
+        this.utilisateurs = [];
+        this.filteredUtilisateurs = [];
+        this.isLoading = false;
       }
-    ];
-    this.applyFilters();
-    this.isLoading = false;
+    });
   }
 
   applyFilters(): void {
@@ -78,22 +70,33 @@ export class UtilisateursListComponent implements OnInit {
   }
 
   editUser(id: number): void {
-    // Navigation vers édition
+    this.router.navigate(['/super-admin/utilisateurs', id, 'edit']);
   }
 
   disableUser(id: number): void {
-    const user = this.utilisateurs.find(u => u.id === id);
-    if (user) {
-      user.enabled = false;
-      user.accountStatus = 'DISABLED';
-    }
+    this.updateUserStatus(id, 'DISABLED');
   }
 
   enableUser(id: number): void {
-    const user = this.utilisateurs.find(u => u.id === id);
-    if (user) {
-      user.enabled = true;
-      user.accountStatus = 'ACTIVE';
-    }
+    this.updateUserStatus(id, 'ACTIVE');
+  }
+
+  private updateUserStatus(id: number, status: AccountStatus): void {
+    this.superAdminUserService.changeUserStatus(id, status).subscribe({
+      next: (updatedUser) => {
+        const index = this.utilisateurs.findIndex((u) => u.id === id);
+        if (index !== -1) {
+          this.utilisateurs[index] = {
+            ...this.utilisateurs[index],
+            accountStatus: updatedUser.accountStatus,
+            enabled: updatedUser.enabled
+          };
+          this.applyFilters();
+        }
+      },
+      error: (error) => {
+        console.error('Erreur lors de la mise a jour du statut utilisateur:', error);
+      }
+    });
   }
 }

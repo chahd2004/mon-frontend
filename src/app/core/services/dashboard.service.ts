@@ -50,6 +50,13 @@ export interface FactureBatch {
   montant: string;
 }
 
+export interface SuperAdminStatsResponse {
+  totalUsers: number;
+  totalClients: number;
+  totalEmetteurs: number;
+  totalFactures: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class DashboardService extends BaseService {
   private apiUrl = `${environment.apiUrl}`;
@@ -94,8 +101,14 @@ export class DashboardService extends BaseService {
   }
 
   getDashboardStatsFromAPI(): Observable<DashboardStats> {
-    return this.http.get<DashboardStats>(
-      `${this.apiUrl}/dashboard/stats`,
+    // Le backend actuel n'expose pas /dashboard/stats.
+    // On calcule les stats à partir des endpoints existants.
+    return this.getStats();
+  }
+
+  getSuperAdminStatistics(): Observable<SuperAdminStatsResponse> {
+    return this.http.get<SuperAdminStatsResponse>(
+      `${this.apiUrl}/super-admin/statistiques`,
       this.getHeaders()
     );
   }

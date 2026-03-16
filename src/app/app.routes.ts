@@ -174,6 +174,7 @@ export const routes: Routes = [
       { path: 'statistiques', component: StatistiquesComponent },
       { path: 'demandes', component: DemandesListComponent },
       { path: 'demandes/:id', component: DemandeDetailAdminComponent },
+      { path: 'users', component: UtilisateursListComponent },
       { path: 'utilisateurs', component: UtilisateursListComponent },
       { path: 'utilisateurs/new', component: UtilisateurEditComponent },
       { path: 'utilisateurs/:id/edit', component: UtilisateurEditComponent },

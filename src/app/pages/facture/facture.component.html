@@ -13,7 +13,7 @@
         <button class="pdf-btn" (click)="telechargerPdfTexte()">
           <i class="pi pi-download"></i> Télécharger PDF
         </button>
-        <button class="edit-action-btn" (click)="passerEnModeEdition()">
+        <button *ngIf="!isViewer" class="edit-action-btn" (click)="passerEnModeEdition()">
           <i class="pi pi-pencil"></i> Modifier
         </button>
       </div>
@@ -381,4 +381,4 @@
 
 </div>
 
-<p-toast></p-toast>s
+<p-toast></p-toast>

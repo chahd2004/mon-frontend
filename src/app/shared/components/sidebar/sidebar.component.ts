@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
@@ -21,17 +21,11 @@ interface SidebarMenuItem {
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss'
 })
-export class SidebarComponent implements OnInit {
+export class SidebarComponent {
   authService = inject(AuthService);
   
   isCollapsed = false;
-  sidebarItems: SidebarMenuItem[] = [];
-
-  ngOnInit(): void {
-    this.initializeMenu();
-  }
-
-  private initializeMenu(): void {
+  sidebarItems = computed<SidebarMenuItem[]>(() => {
     const userRole = this.authService.currentUser()?.role;
 
     const allItems: SidebarMenuItem[] = [
@@ -67,6 +61,12 @@ export class SidebarComponent implements OnInit {
         roles: ['SUPER_ADMIN', 'ENTREPRISE_ADMIN']
       },
       {
+        label: 'Users',
+        icon: 'pi pi-id-card',
+        route: '/super-admin/users',
+        roles: ['SUPER_ADMIN']
+      },
+      {
         label: 'Collaborateurs',
         icon: 'pi pi-users-alt',
         route: '/collaborateurs',
@@ -80,10 +80,10 @@ export class SidebarComponent implements OnInit {
       }
     ];
 
-    this.sidebarItems = allItems.filter(item =>
-      userRole && item.roles.includes(userRole)
+    return allItems.filter(item =>
+      !!userRole && item.roles.includes(userRole)
     );
-  }
+  });
 
   toggleSidebar(): void {
     this.isCollapsed = !this.isCollapsed;

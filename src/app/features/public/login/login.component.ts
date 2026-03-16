@@ -98,10 +98,6 @@ export class LoginComponent implements OnInit {
     this.router.navigate(['/register']);
   }
 
-  navigateToChangePassword(): void {
-    this.router.navigate(['/change-password']);
-  }
-
   navigateToHome(): void {
     this.router.navigate(['/']);
   }

@@ -13,7 +13,7 @@
 
   <nav class="sidebar-nav">
     <ul class="nav-list">
-      <li *ngFor="let item of sidebarItems" class="nav-item">
+      <li *ngFor="let item of sidebarItems()" class="nav-item">
         <a
           [routerLink]="item.route"
           routerLinkActive="active"

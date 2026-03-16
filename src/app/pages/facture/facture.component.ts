@@ -19,6 +19,7 @@ import { TableModule } from 'primeng/table';
 import { MessageService } from 'primeng/api';
 import { TagModule } from 'primeng/tag';
 import { DividerModule } from 'primeng/divider';
+import { AuthService } from '../../core/services/auth.service';
 
 // QR Code
 import { QRCodeComponent } from 'angularx-qrcode';
@@ -85,6 +86,7 @@ export class FactureComponent implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private messageService = inject(MessageService);
+  private authService = inject(AuthService);
 
   // ===== MODE =====
   mode: 'view' | 'edit' | 'create' = 'create';
@@ -93,6 +95,7 @@ export class FactureComponent implements OnInit {
   get isViewMode(): boolean { return this.mode === 'view'; }
   get isEditMode(): boolean { return this.mode === 'edit'; }
   get isCreateMode(): boolean { return this.mode === 'create'; }
+  get isViewer(): boolean { return this.authService.hasRole('ENTREPRISE_VIEWER'); }
 
   get pageTitle(): string {
     if (this.mode === 'view') return 'Détail de la facture';
@@ -157,6 +160,10 @@ export class FactureComponent implements OnInit {
     } else {
       this.factureId = Number(idParam);
       this.mode = modeParam === 'edit' ? 'edit' : 'view';
+    }
+
+    if (this.isViewer && this.mode === 'edit') {
+      this.mode = 'view';
     }
 
     this.loadEmetteurs();
@@ -372,6 +379,10 @@ export class FactureComponent implements OnInit {
   }
 
   passerEnModeEdition(): void {
+    if (this.isViewer) {
+      return;
+    }
+
     this.mode = 'edit';
     this.router.navigate([], {
       relativeTo: this.route,
