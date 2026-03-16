@@ -1,76 +1,75 @@
 <div class="statistiques-container">
   <div class="page-header">
-    <h1>Statistiques Globales</h1>
-    <p>Vue d'ensemble de la plateforme</p>
+    <h1>👑 SUPER ADMIN - Tableau de bord</h1>
   </div>
 
   <!-- KPI Cards Grid -->
   <div class="kpi-grid">
-    <app-stat-card
-      *ngFor="let kpi of kpiCards"
-      [data]="kpi"
-      [isLoading]="isLoading"
-      (cardClicked)="onKpiCardClick(kpi)"
-    ></app-stat-card>
+    <div class="kpi-card">
+      <div class="kpi-icon users">
+        <i class="pi pi-users"></i>
+      </div>
+      <div class="kpi-content">
+        <p class="kpi-label">USERS</p>
+        <p class="kpi-value" *ngIf="!isLoading">{{ usersCount | number }}</p>
+        <p-skeleton *ngIf="isLoading" width="80%" height="2rem"></p-skeleton>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-icon clients">
+        <i class="pi pi-users"></i>
+      </div>
+      <div class="kpi-content">
+        <p class="kpi-label">CLIENTS</p>
+        <p class="kpi-value" *ngIf="!isLoading">{{ clientsCount | number }}</p>
+        <p-skeleton *ngIf="isLoading" width="80%" height="2rem"></p-skeleton>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-icon emetteurs">
+        <i class="pi pi-briefcase"></i>
+      </div>
+      <div class="kpi-content">
+        <p class="kpi-label">EMETTEURS</p>
+        <p class="kpi-value" *ngIf="!isLoading">{{ emetteursCount | number }}</p>
+        <p-skeleton *ngIf="isLoading" width="80%" height="2rem"></p-skeleton>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-icon factures">
+        <i class="pi pi-file"></i>
+      </div>
+      <div class="kpi-content">
+        <p class="kpi-label">FACTURES</p>
+        <p class="kpi-value" *ngIf="!isLoading">{{ facturesCount | number }}</p>
+        <p-skeleton *ngIf="isLoading" width="80%" height="2rem"></p-skeleton>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-icon ca">
+        <i class="pi pi-wallet"></i>
+      </div>
+      <div class="kpi-content">
+        <p class="kpi-label">CA TOTAL</p>
+        <p class="kpi-value" *ngIf="!isLoading">{{ caTotalCount }}</p>
+        <p-skeleton *ngIf="isLoading" width="80%" height="2rem"></p-skeleton>
+      </div>
+    </div>
   </div>
 
   <!-- Charts -->
-  <div class="charts-grid">
+  <div class="charts-section">
     <p-card class="chart-card">
       <ng-template pTemplate="header">
         <div class="chart-header">
-          <h3>Répartition par rôle</h3>
-        </div>
-      </ng-template>
-      <p-chart type="doughnut" [data]="chartDataUsers" [options]="chartOptions"></p-chart>
-    </p-card>
-
-    <p-card class="chart-card">
-      <ng-template pTemplate="header">
-        <div class="chart-header">
-          <h3>Évolution des demandes</h3>
+          <h3>📊 ÉVOLUTION DES INSCRIPTIONS</h3>
         </div>
       </ng-template>
       <p-chart type="line" [data]="chartDataRequests" [options]="chartOptions"></p-chart>
     </p-card>
   </div>
-
-  <!-- Summary Section -->
-  <p-card class="summary-card">
-    <ng-template pTemplate="header">
-      <div class="chart-header">
-        <h3>Résumé du mois</h3>
-      </div>
-    </ng-template>
-    <div class="summary-grid">
-      <div class="summary-item">
-        <span class="icon"><i class="pi pi-user-plus"></i></span>
-        <div class="summary-info">
-          <p class="label">Nouveaux utilisateurs</p>
-          <p class="value">127</p>
-        </div>
-      </div>
-      <div class="summary-item">
-        <span class="icon"><i class="pi pi-building"></i></span>
-        <div class="summary-info">
-          <p class="label">Nouvelles entreprises</p>
-          <p class="value">23</p>
-        </div>
-      </div>
-      <div class="summary-item">
-        <span class="icon"><i class="pi pi-file-pdf"></i></span>
-        <div class="summary-info">
-          <p class="label">Factures générées</p>
-          <p class="value">890</p>
-        </div>
-      </div>
-      <div class="summary-item">
-        <span class="icon"><i class="pi pi-check-circle"></i></span>
-        <div class="summary-info">
-          <p class="label">Demandes approuvées</p>
-          <p class="value">18</p>
-        </div>
-      </div>
-    </div>
-  </p-card>
 </div>

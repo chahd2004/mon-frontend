@@ -7,7 +7,7 @@ import { BaseService } from './base.service';
 
 @Injectable({ providedIn: 'root' })
 export class EmetteurService extends BaseService {
-  private apiUrl = `${environment.apiUrl}/emetteurs`;
+  private apiUrl = `${environment.apiUrl}/entreprise-admin`;
 
   constructor(private http: HttpClient) { super(); }
 

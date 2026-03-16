@@ -62,10 +62,23 @@
       <div class="form-group">
         <label>🔒 Rôle</label>
         <div class="role-section">
-          <p class="role-description">
-            ○ Client <span class="role-default">(sélectionné par défaut)</span>
-          </p>
-          <p class="role-info">
+          <div class="role-option">
+            <input type="radio" id="roleClient" name="role" value="CLIENT"
+              [(ngModel)]="role" />
+            <label for="roleClient">
+              👤 <strong>Client</strong>
+              <span class="role-desc">Accès client standard</span>
+            </label>
+          </div>
+          <div class="role-option">
+            <input type="radio" id="roleSuperAdmin" name="role" value="SUPER_ADMIN"
+              [(ngModel)]="role" />
+            <label for="roleSuperAdmin">
+              👑 <strong>Super Admin</strong>
+              <span class="role-desc">Gestion complète de la plateforme</span>
+            </label>
+          </div>
+          <p class="role-info" *ngIf="role === 'CLIENT'">
             Pour devenir Émetteur, veuillez <a (click)="navigateToDemande()" class="link">soumettre une demande</a>
           </p>
         </div>

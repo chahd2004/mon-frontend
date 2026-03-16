@@ -90,8 +90,8 @@ export class FactureComponent implements OnInit {
   mode: 'view' | 'edit' | 'create' = 'create';
   factureId: number | null = null;
 
-  get isViewMode():   boolean { return this.mode === 'view'; }
-  get isEditMode():   boolean { return this.mode === 'edit'; }
+  get isViewMode(): boolean { return this.mode === 'view'; }
+  get isEditMode(): boolean { return this.mode === 'edit'; }
   get isCreateMode(): boolean { return this.mode === 'create'; }
 
   get pageTitle(): string {
@@ -129,27 +129,27 @@ export class FactureComponent implements OnInit {
 
   // ===== OPTIONS =====
   typeAcheteurOptions = [
-    { label: 'Client',   value: 'CLIENT' },
+    { label: 'Client', value: 'CLIENT' },
     { label: 'Émetteur', value: 'EMETTEUR' }
   ];
   modePaiementOptions = [
     { label: 'Virement bancaire', value: 'VIREMENT' },
-    { label: 'Chèque',           value: 'CHEQUE' },
-    { label: 'Espèces',          value: 'ESPECES' },
-    { label: 'Carte bancaire',   value: 'CARTE' }
+    { label: 'Chèque', value: 'CHEQUE' },
+    { label: 'Espèces', value: 'ESPECES' },
+    { label: 'Carte bancaire', value: 'CARTE' }
   ];
   statutOptions = [
     { label: 'Brouillon', value: 'BROUILLON' },
-    { label: 'Émise',     value: 'EMISE' },
-    { label: 'Payée',     value: 'PAYEE' },
-    { label: 'Annulée',   value: 'ANNULEE' }
+    { label: 'Émise', value: 'EMISE' },
+    { label: 'Payée', value: 'PAYEE' },
+    { label: 'Annulée', value: 'ANNULEE' }
   ];
 
   loading = false;
   minDatePaiement: Date = new Date();
 
   ngOnInit(): void {
-    const idParam   = this.route.snapshot.paramMap.get('id');
+    const idParam = this.route.snapshot.paramMap.get('id');
     const modeParam = this.route.snapshot.queryParamMap.get('mode');
 
     if (!idParam || idParam === 'nouvelle') {
@@ -197,12 +197,12 @@ export class FactureComponent implements OnInit {
     this.loading = true;
     this.http.get<any>(`${environment.apiUrl}/factures/${id}`).subscribe({
       next: (facture) => {
-        this.numFact      = facture.numFact ?? '';
-        this.statut       = facture.statut ?? 'BROUILLON';
+        this.numFact = facture.numFact ?? '';
+        this.statut = facture.statut ?? 'BROUILLON';
         this.modePaiement = facture.modePaiement ?? 'VIREMENT';
         this.typeAcheteur = facture.typeAcheteur ?? 'CLIENT';
-        this.vendeurId    = facture.vendeurId ?? DEFAULT_VENDEUR_ID;
-        this.acheteurId   = facture.acheteurId ?? null;
+        this.vendeurId = facture.vendeurId ?? DEFAULT_VENDEUR_ID;
+        this.acheteurId = facture.acheteurId ?? null;
 
         if (facture.dateEmission) this.dateEmission = new Date(facture.dateEmission);
         if (facture.datePaiement) this.datePaiement = new Date(facture.datePaiement);
@@ -224,25 +224,25 @@ export class FactureComponent implements OnInit {
   }
 
   private mapLigne(l: any): LigneFacture {
-    const produit  = this.produits.find(p => p.id === (l.produitId ?? l.produit?.id));
+    const produit = this.produits.find(p => p.id === (l.produitId ?? l.produit?.id));
     const prixUnit = this.safeNum(l.prixUnitaire ?? l.prix_unitaire ?? produit?.prixUnitaire);
     const quantite = this.safeNum(l.quantite ?? l.qte ?? 1);
-    const tauxTVA  = this.safeNum(l.tauxTVA ?? l.taux_tva ?? produit?.tauxTVA ?? 0);
-    const ht  = prixUnit * quantite;
+    const tauxTVA = this.safeNum(l.tauxTVA ?? l.taux_tva ?? produit?.tauxTVA ?? 0);
+    const ht = prixUnit * quantite;
     const tva = ht * (tauxTVA / 100);
     const ttc = ht + tva;
     const label = produit
       ? `${produit.reference} — ${produit.designation}`
       : (l.produitLabel ?? l.designation ?? l.libelle ?? `Produit #${l.produitId}`);
     return {
-      produitId:    l.produitId ?? l.produit?.id ?? 0,
+      produitId: l.produitId ?? l.produit?.id ?? 0,
       produitLabel: label,
       quantite,
       prixUnitaire: prixUnit,
       tauxTVA,
-      montantHT:    this.safeNum(l.montantHT  ?? l.montant_ht)  || ht,
-      montantTVA:   this.safeNum(l.montantTVA ?? l.montant_tva) || tva,
-      montantTTC:   this.safeNum(l.montantTTC ?? l.montant_ttc) || ttc,
+      montantHT: this.safeNum(l.montantHT ?? l.montant_ht) || ht,
+      montantTVA: this.safeNum(l.montantTVA ?? l.montant_tva) || tva,
+      montantTTC: this.safeNum(l.montantTTC ?? l.montant_ttc) || ttc,
     };
   }
 
@@ -285,7 +285,7 @@ export class FactureComponent implements OnInit {
 
   get produitOptions(): { label: string; value: number }[] {
     return this.produits.map(p => ({
-      label: `${p.reference} — ${p.designation} (${p.prixUnitaire.toFixed(3)} TND)`,
+      label: `${p.reference} — ${p.designation} (${this.formatPrix(p.prixUnitaire)})`,
       value: p.id
     }));
   }
@@ -299,18 +299,18 @@ export class FactureComponent implements OnInit {
       this.messageService.add({ severity: 'warn', summary: 'Produit requis', detail: 'Sélectionnez un produit' });
       return;
     }
-    const p   = this.produitSelectionne;
-    const ht  = this.safeNum(p.prixUnitaire) * this.safeNum(this.quantiteAjout);
+    const p = this.produitSelectionne;
+    const ht = this.safeNum(p.prixUnitaire) * this.safeNum(this.quantiteAjout);
     const tva = ht * (this.safeNum(p.tauxTVA) / 100);
     this.lignes.push({
-      produitId:    p.id,
+      produitId: p.id,
       produitLabel: `${p.reference} — ${p.designation}`,
-      quantite:     this.quantiteAjout,
+      quantite: this.quantiteAjout,
       prixUnitaire: p.prixUnitaire,
-      tauxTVA:      p.tauxTVA,
-      montantHT:    ht,
-      montantTVA:   tva,
-      montantTTC:   ht + tva
+      tauxTVA: p.tauxTVA,
+      montantHT: ht,
+      montantTVA: tva,
+      montantTTC: ht + tva
     });
     this.produitSelectionne = null;
     this.quantiteAjout = 1;
@@ -323,9 +323,9 @@ export class FactureComponent implements OnInit {
   }
 
   // ===== TOTAUX =====
-  get totalHT():     number { return this.lignes.reduce((s, l) => s + this.safeNum(l.montantHT),  0); }
-  get totalTVA():    number { return this.lignes.reduce((s, l) => s + this.safeNum(l.montantTVA), 0); }
-  get totalTTC():    number { return this.lignes.reduce((s, l) => s + this.safeNum(l.montantTTC), 0); }
+  get totalHT(): number { return this.lignes.reduce((s, l) => s + this.safeNum(l.montantHT), 0); }
+  get totalTVA(): number { return this.lignes.reduce((s, l) => s + this.safeNum(l.montantTVA), 0); }
+  get totalTTC(): number { return this.lignes.reduce((s, l) => s + this.safeNum(l.montantTTC), 0); }
   get droitTimbre(): number { return 0.500; }
 
   // ===== SAUVEGARDE =====
@@ -342,12 +342,12 @@ export class FactureComponent implements OnInit {
     const payload = {
       dateEmission: this.formatDate(this.dateEmission),
       datePaiement: this.formatDate(this.datePaiement),
-      acheteurId:   this.acheteurId,
+      acheteurId: this.acheteurId,
       typeAcheteur: this.typeAcheteur,
-      vendeurId:    this.vendeurId,
+      vendeurId: this.vendeurId,
       modePaiement: this.modePaiement,
-      statut:       this.statut,
-      lignes:       this.lignes.map(l => ({ produitId: l.produitId, quantite: l.quantite }))
+      statut: this.statut,
+      lignes: this.lignes.map(l => ({ produitId: l.produitId, quantite: l.quantite }))
     };
 
     const request$ = this.isEditMode && this.factureId
@@ -380,7 +380,7 @@ export class FactureComponent implements OnInit {
     });
   }
 
-  // ===== CONVERTIR CANVAS QR EN IMAGE (pour impression) =====
+  // ===== QR CANVAS → IMG =====
   private convertirQrCanvasEnImg(container: Element): void {
     const canvas = container.querySelector('canvas') as HTMLCanvasElement;
     if (canvas) {
@@ -399,7 +399,7 @@ export class FactureComponent implements OnInit {
     window.print();
   }
 
-  // ===== TÉLÉCHARGER PDF TEXTE COPIABLE (jsPDF) =====
+  // ===== TÉLÉCHARGER PDF =====
   async telechargerPdfTexte(): Promise<void> {
     const fileName = this.normaliserNomFichier(`Facture_${this.numFact || 'export'}`, 'Facture_export');
     const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
@@ -408,23 +408,17 @@ export class FactureComponent implements OnInit {
     const a = this.acheteurSelectionne;
     let y = 20;
 
-    // ── Logo PDF vectoriel (gauche), style proche du SVG de l'aperçu
     doc.setFillColor(30, 64, 175);
     doc.roundedRect(20, 14, 12, 12, 2, 2, 'F');
-
     doc.setDrawColor(255, 255, 255);
     doc.setLineWidth(0.5);
-    // Contour document
     doc.roundedRect(23.2, 16.4, 5.6, 7.2, 0.7, 0.7, 'S');
-    // Coin plié
     doc.line(27.2, 16.4, 28.8, 18);
     doc.line(27.2, 18, 28.8, 18);
-    // Lignes de texte
     doc.line(24.1, 19.2, 27.9, 19.2);
     doc.line(24.1, 20.7, 27.4, 20.7);
     doc.line(24.1, 22.2, 26.8, 22.2);
 
-    // ── En-tête vendeur (gauche)
     doc.setFontSize(13); doc.setFont('helvetica', 'bold'); doc.setTextColor(30, 41, 59);
     doc.text('FacturePro — Gestion & Facturation', 36, y); y += 6;
     doc.setFontSize(9); doc.setFont('helvetica', 'normal'); doc.setTextColor(100, 116, 139);
@@ -433,13 +427,11 @@ export class FactureComponent implements OnInit {
     if (v?.telephone || v?.email) { doc.text(`${v?.telephone ?? ''} | ${v?.email ?? ''}`, 36, y); y += 5; }
     doc.text(`MF : ${v?.matriculeFiscal ?? 'N/A'}`, 36, y);
 
-    // ── Titre FACTURE (droite)
     doc.setFontSize(30); doc.setFont('helvetica', 'bold'); doc.setTextColor(30, 64, 175);
     doc.text('FACTURE', 190, 22, { align: 'right' });
     doc.setFontSize(10); doc.setFont('helvetica', 'normal'); doc.setTextColor(100, 116, 139);
     doc.text(`N° ${this.numFact || '—'}`, 190, 30, { align: 'right' });
 
-    // ── QR Code (droite, sous le numéro)
     const qrCanvas = document.querySelector('.recu-qr-block canvas') as HTMLCanvasElement;
     if (qrCanvas) {
       const qrImg = qrCanvas.toDataURL('image/png');
@@ -450,7 +442,6 @@ export class FactureComponent implements OnInit {
     doc.setDrawColor(226, 232, 240); doc.setLineWidth(0.3);
     doc.line(20, y, 190, y); y += 8;
 
-    // ── Méta infos sur une ligne
     doc.setFontSize(7); doc.setFont('helvetica', 'bold'); doc.setTextColor(100, 116, 139);
     doc.text("DATE D'EMISSION", 20, y);
     doc.text("DATE DE PAIEMENT", 75, y);
@@ -461,7 +452,6 @@ export class FactureComponent implements OnInit {
     doc.text(this.datePaiement.toLocaleDateString('fr-TN'), 75, y);
     doc.text(this.formatModePaiement(this.modePaiement), 130, y); y += 10;
 
-    // ── Acheteur
     doc.setFontSize(7); doc.setFont('helvetica', 'bold'); doc.setTextColor(100, 116, 139);
     doc.text('FACTURE A', 20, y); y += 5;
     doc.setFontSize(11); doc.setFont('helvetica', 'bold'); doc.setTextColor(30, 41, 59);
@@ -475,31 +465,29 @@ export class FactureComponent implements OnInit {
     doc.setDrawColor(226, 232, 240);
     doc.line(20, y, 190, y); y += 8;
 
-    // ── En-tête tableau
     doc.setFillColor(30, 41, 59);
     doc.rect(20, y, 170, 8, 'F');
     doc.setTextColor(255, 255, 255); doc.setFontSize(7.5); doc.setFont('helvetica', 'bold');
-    doc.text('#',          22,  y + 5.5);
-    doc.text('Designation',30,  y + 5.5);
-    doc.text('Qte',       100,  y + 5.5, { align: 'right' });
-    doc.text('Prix HT',   118,  y + 5.5, { align: 'right' });
-    doc.text('TVA%',      133,  y + 5.5, { align: 'right' });
-    doc.text('Mnt HT',    153,  y + 5.5, { align: 'right' });
-    doc.text('Total TTC', 190,  y + 5.5, { align: 'right' });
+    doc.text('#', 22, y + 5.5);
+    doc.text('Designation', 30, y + 5.5);
+    doc.text('Qte', 100, y + 5.5, { align: 'right' });
+    doc.text('Prix HT', 118, y + 5.5, { align: 'right' });
+    doc.text('TVA%', 133, y + 5.5, { align: 'right' });
+    doc.text('Mnt HT', 153, y + 5.5, { align: 'right' });
+    doc.text('Total TTC', 190, y + 5.5, { align: 'right' });
     y += 8;
 
-    // ── Lignes tableau
     doc.setFont('helvetica', 'normal'); doc.setTextColor(30, 41, 59);
     this.lignes.forEach((ligne, i) => {
       if (i % 2 === 0) { doc.setFillColor(250, 251, 252); doc.rect(20, y, 170, 7, 'F'); }
       doc.setFontSize(8);
-      doc.text(`${i + 1}`,                           22,  y + 5);
-      doc.text(ligne.produitLabel.slice(0, 38),      30,  y + 5);
-      doc.text(`${ligne.quantite}`,                 100,  y + 5, { align: 'right' });
-      doc.text(this.formatPrix(ligne.prixUnitaire), 118,  y + 5, { align: 'right' });
-      doc.text(`${ligne.tauxTVA}%`,                 133,  y + 5, { align: 'right' });
-      doc.text(this.formatPrix(ligne.montantHT),    153,  y + 5, { align: 'right' });
-      doc.text(this.formatPrix(ligne.montantTTC),   190,  y + 5, { align: 'right' });
+      doc.text(`${i + 1}`, 22, y + 5);
+      doc.text(ligne.produitLabel.slice(0, 38), 30, y + 5);
+      doc.text(`${ligne.quantite}`, 100, y + 5, { align: 'right' });
+      doc.text(this.formatPrix(ligne.prixUnitaire), 118, y + 5, { align: 'right' });
+      doc.text(`${ligne.tauxTVA}%`, 133, y + 5, { align: 'right' });
+      doc.text(this.formatPrix(ligne.montantHT), 153, y + 5, { align: 'right' });
+      doc.text(this.formatPrix(ligne.montantTTC), 190, y + 5, { align: 'right' });
       y += 7;
     });
 
@@ -507,18 +495,16 @@ export class FactureComponent implements OnInit {
     doc.setDrawColor(226, 232, 240);
     doc.line(20, y, 190, y); y += 8;
 
-    // ── Mention vendeur (gauche)
     doc.setFontSize(8); doc.setFont('helvetica', 'bold'); doc.setTextColor(30, 41, 59);
     doc.text(v?.raisonSociale ?? '', 20, y); y += 5;
     doc.setFont('helvetica', 'normal'); doc.setTextColor(100, 116, 139);
     doc.text(`Matricule fiscal : ${v?.matriculeFiscal ?? 'N/A'}`, 20, y); y += 5;
     doc.text('Merci pour votre confiance.', 20, y);
 
-    // ── Totaux (droite)
     let ty = y - 10;
     const totaux: [string, string][] = [
-      ['Total H.T.',      this.formatPrix(this.totalHT)],
-      ['TVA',             this.formatPrix(this.totalTVA)],
+      ['Total H.T.', this.formatPrix(this.totalHT)],
+      ['TVA', this.formatPrix(this.totalTVA)],
       ['Droit de Timbre', this.formatPrix(this.droitTimbre)],
     ];
     totaux.forEach(([label, val]) => {
@@ -529,7 +515,6 @@ export class FactureComponent implements OnInit {
       ty += 7;
     });
 
-    // ── Grand total
     doc.setFillColor(30, 41, 59);
     doc.rect(120, ty, 70, 10, 'F');
     doc.setTextColor(255, 255, 255); doc.setFontSize(9); doc.setFont('helvetica', 'bold');
@@ -537,13 +522,11 @@ export class FactureComponent implements OnInit {
     doc.text(this.formatPrix(this.totalTTC + this.droitTimbre), 190, ty + 7, { align: 'right' });
     ty += 14;
 
-    // ── Montant en lettres
     doc.setFontSize(8); doc.setFont('helvetica', 'italic'); doc.setTextColor(100, 116, 139);
     const montantLettres = this.montantEnLettres(this.totalTTC + this.droitTimbre);
     const lignesMontant = doc.splitTextToSize(montantLettres, 70);
     doc.text(lignesMontant, 155, ty, { align: 'center' });
 
-    // ── Pied de page
     doc.setFillColor(30, 41, 59);
     doc.rect(0, 285, 210, 12, 'F');
     doc.setTextColor(180, 180, 180); doc.setFontSize(7); doc.setFont('helvetica', 'normal');
@@ -564,58 +547,38 @@ export class FactureComponent implements OnInit {
   }
 
   private normaliserNomFichier(nomSaisi: string, fallback: string): string {
-    let nom = nomSaisi
-      .trim()
+    let nom = nomSaisi.trim()
       .replace(/[<>:"/\\|?*\x00-\x1F]/g, '')
       .replace(/\s+/g, ' ');
-
-    if (!nom) {
-      nom = fallback;
-    }
-
-    if (!nom.toLowerCase().endsWith('.pdf')) {
-      nom += '.pdf';
-    }
-
+    if (!nom) nom = fallback;
+    if (!nom.toLowerCase().endsWith('.pdf')) nom += '.pdf';
     return nom;
   }
 
   private async enregistrerPdfAvecChoixEmplacement(doc: jsPDF, fileName: string): Promise<boolean> {
     const picker = (window as any).showSaveFilePicker;
-    if (typeof picker !== 'function') {
-      return false;
-    }
-
+    if (typeof picker !== 'function') return false;
     try {
       const handle = await picker({
         suggestedName: fileName,
-        types: [
-          {
-            description: 'Document PDF',
-            accept: { 'application/pdf': ['.pdf'] }
-          }
-        ]
+        types: [{ description: 'Document PDF', accept: { 'application/pdf': ['.pdf'] } }]
       });
-
       const writable = await handle.createWritable();
       await writable.write(doc.output('blob'));
       await writable.close();
       return true;
     } catch (error: any) {
-      // AbortError = utilisateur a annulé la boîte "Enregistrer sous".
-      if (error?.name === 'AbortError') {
-        return true;
-      }
+      if (error?.name === 'AbortError') return true;
       return false;
     }
   }
 
+  // ✅ FIX PRINCIPAL — formatPrix sans espace insécable
   formatPrix(v: any): string {
     const n = this.safeNum(v);
-    return new Intl.NumberFormat('fr-TN', {
-      minimumFractionDigits: 3,
-      maximumFractionDigits: 3
-    }).format(n) + ' TND';
+    const parts = n.toFixed(3).split('.');
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    return parts.join(',') + ' TND';
   }
 
   formatModePaiement(mode: string): string {
@@ -643,12 +606,12 @@ export class FactureComponent implements OnInit {
   // ===== MONTANT EN LETTRES =====
   montantEnLettres(valeur: number): string {
     if (isNaN(valeur) || valeur < 0) return '';
-    const dinars   = Math.floor(valeur);
+    const dinars = Math.floor(valeur);
     const millimes = Math.round((valeur - dinars) * 1000);
-    const dinarStr   = dinars   > 0 ? `${this._nombreEnLettres(dinars)} ${dinars === 1 ? 'dinar' : 'dinars'}` : '';
+    const dinarStr = dinars > 0 ? `${this._nombreEnLettres(dinars)} ${dinars === 1 ? 'dinar' : 'dinars'}` : '';
     const millimeStr = millimes > 0 ? `${this._nombreEnLettres(millimes)} ${millimes === 1 ? 'millime' : 'millimes'}` : '';
     if (dinarStr && millimeStr) return `${dinarStr} et ${millimeStr}`;
-    if (dinarStr)   return dinarStr;
+    if (dinarStr) return dinarStr;
     if (millimeStr) return millimeStr;
     return 'zero dinar';
   }

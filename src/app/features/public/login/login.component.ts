@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
@@ -29,6 +29,7 @@ import { LoginRequest } from '../../../models';
 })
 export class LoginComponent implements OnInit {
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private messageService = inject(MessageService);
   private authService = inject(AuthService);
 
@@ -38,9 +39,7 @@ export class LoginComponent implements OnInit {
   loading: boolean = false;
 
   ngOnInit(): void {
-    if (this.authService.isLoggedIn()) {
-      this.router.navigate(['/dashboard']);
-    }
+    // Permet l'accès au login même si connecté
   }
 
   login(): void {
@@ -70,13 +69,14 @@ export class LoginComponent implements OnInit {
 
     this.authService.login(request).subscribe({
       next: () => {
+        const redirectUrl = this.getPostLoginRedirectUrl();
         this.messageService.add({
           severity: 'success',
           summary: 'Connexion réussie',
           detail: 'Redirection vers le tableau de bord...'
         });
         setTimeout(() => {
-          this.router.navigate(['/dashboard']);
+          this.router.navigateByUrl(redirectUrl);
         }, 1500);
       },
       error: (err) => {
@@ -100,5 +100,14 @@ export class LoginComponent implements OnInit {
 
   navigateToHome(): void {
     this.router.navigate(['/']);
+  }
+
+  private getPostLoginRedirectUrl(): string {
+    const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+    if (returnUrl?.startsWith('/super-admin')) {
+      return this.authService.hasRole('SUPER_ADMIN') ? returnUrl : '/dashboard';
+    }
+
+    return returnUrl || '/dashboard';
   }
 }

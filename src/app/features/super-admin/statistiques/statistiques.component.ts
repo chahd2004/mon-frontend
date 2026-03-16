@@ -4,23 +4,29 @@ import { RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { ChartModule } from 'primeng/chart';
-import { StatCardComponent, type KPIData } from '../../../shared';
+import { SkeletonModule } from 'primeng/skeleton';
+import { DashboardService, DashboardStats } from '../../../core/services/dashboard.service';
 
 @Component({
   selector: 'app-statistiques',
   standalone: true,
-  imports: [CommonModule, RouterModule, ButtonModule, CardModule, ChartModule, StatCardComponent],
+  imports: [CommonModule, RouterModule, ButtonModule, CardModule, ChartModule, SkeletonModule],
   templateUrl: './statistiques.component.html',
   styleUrl: './statistiques.component.scss'
 })
 export class StatistiquesComponent implements OnInit {
-  isLoading = false;
+  private dashboardService = inject(DashboardService);
+  
+  isLoading = true;
 
-  // KPIs
-  kpiCards: KPIData[] = [];
+  // KPI Data
+  usersCount = 0;
+  clientsCount = 0;
+  emetteursCount = 0;
+  facturesCount = 0;
+  caTotalCount = '0 TND';
 
   // Charts
-  chartDataUsers: any;
   chartDataRequests: any;
   chartOptions: any;
 
@@ -31,59 +37,33 @@ export class StatistiquesComponent implements OnInit {
 
   private loadStatistics(): void {
     this.isLoading = true;
-
-    this.kpiCards = [
-      {
-        title: 'Utilisateurs Totaux',
-        value: 1234,
-        icon: 'pi pi-users',
-        color: 'blue',
-        trend: 'up',
-        trendValue: 12
+    
+    this.dashboardService.getDashboardStatsFromAPI().subscribe({
+      next: (stats: DashboardStats) => {
+        // Récupérer les données réelles
+        this.facturesCount = stats.factures.total;
+        this.clientsCount = stats.clients.total;
+        this.caTotalCount = this.formatCurrency(stats.chiffreAffaires.actuel);
+        
+        // Les données pour Users et Emetteurs peuvent nécessiter des appels API additionnels
+        // Pour l'instant, on met à jour avec les données disponibles
+        
+        this.isLoading = false;
       },
-      {
-        title: 'Entreprises Actives',
-        value: 456,
-        icon: 'pi pi-briefcase',
-        color: 'purple',
-        trend: 'up',
-        trendValue: 8
-      },
-      {
-        title: 'Demandes en Attente',
-        value: 23,
-        icon: 'pi pi-inbox',
-        color: 'orange',
-        trend: 'down',
-        trendValue: 5
-      },
-      {
-        title: 'Factures Ce Mois',
-        value: 890,
-        icon: 'pi pi-file',
-        color: 'green',
-        trend: 'up',
-        trendValue: 15
-      },
-      {
-        title: 'Total Collecté',
-        value: '1.2M TND',
-        icon: 'pi pi-wallet',
-        color: 'green',
-        trend: 'up',
-        trendValue: 22
-      },
-      {
-        title: 'Taux d\'Activation',
-        value: '87.3%',
-        icon: 'pi pi-percentage',
-        color: 'blue',
-        trend: 'stable',
-        trendValue: 0
+      error: (error) => {
+        console.error('Erreur lors du chargement des statistiques:', error);
+        this.isLoading = false;
       }
-    ];
+    });
+  }
 
-    this.isLoading = false;
+  private formatCurrency(value: number): string {
+    if (value >= 1000000) {
+      return (value / 1000000).toFixed(1) + 'M TND';
+    } else if (value >= 1000) {
+      return (value / 1000).toFixed(1) + 'K TND';
+    }
+    return value + ' TND';
   }
 
   private initCharts(): void {
@@ -111,55 +91,25 @@ export class StatistiquesComponent implements OnInit {
       }
     };
 
-    // Chart Utilisateurs par rôle
-    this.chartDataUsers = {
-      labels: ['Super Admin', 'Admin Ent.', 'Lecteur', 'Clients', 'Émetteurs'],
-      datasets: [
-        {
-          label: 'Nombre d\'utilisateurs',
-          data: [5, 45, 89, 234, 567],
-          backgroundColor: ['#667eea', '#764ba2', '#f59e0b', '#10b981', '#ef4444'],
-          borderColor: 'white',
-          borderWidth: 2
-        }
-      ]
-    };
-
-    // Chart Demandes par statut
-    this.chartDataRequests = {
-      labels: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin'],
-      datasets: [
-        {
-          label: 'Approuvées',
-          data: [12, 19, 23, 18, 25, 30],
-          borderColor: '#10b981',
-          backgroundColor: 'rgba(16, 185, 129, 0.1)',
-          fill: true,
-          tension: 0.4
-        },
-        {
-          label: 'Rejetées',
-          data: [3, 5, 2, 4, 3, 2],
-          borderColor: '#ef4444',
-          backgroundColor: 'rgba(239, 68, 68, 0.1)',
-          fill: true,
-          tension: 0.4
-        },
-        {
-          label: 'En attente',
-          data: [8, 6, 5, 7, 4, 3],
-          borderColor: '#f59e0b',
-          backgroundColor: 'rgba(245, 158, 11, 0.1)',
-          fill: true,
-          tension: 0.4
-        }
-      ]
-    };
-
     this.chartOptions = chartOptions;
-  }
 
-  onKpiCardClick(kpi: KPIData): void {
-    console.log('KPI clicked:', kpi);
+    // Chart Évolution des inscriptions par mois
+    this.chartDataRequests = {
+      labels: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'],
+      datasets: [
+        {
+          label: 'Inscriptions',
+          data: [150, 120, 100, 95, 50, 55, 60, 70, 65, 75, 80, 90],
+          borderColor: '#667eea',
+          backgroundColor: 'rgba(102, 126, 234, 0.1)',
+          fill: true,
+          tension: 0.4,
+          pointBackgroundColor: '#667eea',
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2,
+          pointRadius: 4
+        }
+      ]
+    };
   }
 }

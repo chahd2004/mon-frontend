@@ -1,128 +1,107 @@
-<div class="demande-detail-container" *ngIf="demande; else loading">
-  <div class="header">
-    <div class="header-content">
-      <h1>{{ demande.raisonSociale }}</h1>
-      <p-tag
-        [value]="(demande.statut | statusBadge)?.label"
-        [severity]="(demande.statut | statusBadge)?.severity"
-        [icon]="(demande.statut | statusBadge)?.icon"
-      ></p-tag>
-    </div>
-    <div class="actions" *ngIf="canApprove() || canReject()">
-      <button
-        pButton
-        label="Approuver"
-        icon="pi pi-check"
-        (click)="approveDemande()"
-        [disabled]="!canApprove() || isLoading"
-        [loading]="isLoading"
-        class="action-btn approve"
-      ></button>
-      <button
-        pButton
-        label="Rejeter"
-        icon="pi pi-times"
-        (click)="showRejection()"
-        [disabled]="!canReject()"
-        text
-        class="action-btn reject"
-      ></button>
-    </div>
+<div class="detail-container">
+  <p-toast></p-toast>
+  <p-confirmDialog></p-confirmDialog>
+
+  <div class="page-header">
+    <button pButton icon="pi pi-arrow-left" label="Retour à la liste"
+      class="p-button-text" (click)="retourListe()"></button>
+    <h1>👑 Détail de la demande</h1>
   </div>
 
-  <p-tabView>
-    <p-tabPanel header="Informations Entreprise" [selected]="true">
-      <div class="info-grid">
-        <div class="info-item">
-          <label>Raison Sociale</label>
-          <span>{{ demande.raisonSociale }}</span>
-        </div>
-        <div class="info-item">
-          <label>Email</label>
-          <span>{{ demande.email }}</span>
-        </div>
-        <div class="info-item">
-          <label>Téléphone</label>
-          <span>{{ demande.telephone }}</span>
-        </div>
-        <div class="info-item">
-          <label>Région</label>
-          <span>{{ demande.region }}</span>
-        </div>
-        <div class="info-item full">
-          <label>Adresse Complète</label>
-          <span>{{ demande.adresseComplete }}</span>
-        </div>
-      </div>
-    </p-tabPanel>
+  <!-- Chargement -->
+  <div *ngIf="isLoading" class="loading-container">
+    <p-progressSpinner strokeWidth="4"></p-progressSpinner>
+    <p>Chargement des détails...</p>
+  </div>
 
-    <p-tabPanel header="Représentant">
-      <div class="info-grid">
-        <div class="info-item">
-          <label>Prénom</label>
-          <span>{{ demande.prenomRepresentant }}</span>
-        </div>
-        <div class="info-item">
-          <label>Nom</label>
-          <span>{{ demande.nomRepresentant }}</span>
-        </div>
-      </div>
-    </p-tabPanel>
+  <div *ngIf="!isLoading && demande">
 
-    <p-tabPanel header="Historique">
-      <div class="timeline">
-        <div class="timeline-item">
-          <div class="timeline-marker created"></div>
-          <div class="timeline-content">
-            <p class="label">Demande créée</p>
-            <p class="date">{{ demande.dateCreation | date: 'dd/MM/yyyy HH:mm' }}</p>
-          </div>
-        </div>
-        <div class="timeline-item" *ngIf="demande.statut !== 'PENDING'">
-          <div class="timeline-marker" [class]="demande.statut === 'APPROVED' ? 'approved' : 'rejected'"></div>
-          <div class="timeline-content">
-            <p class="label">{{ demande.statut === 'APPROVED' ? 'Approuvée' : 'Rejetée' }}</p>
-            <p class="date">{{ demande.dateModification | date: 'dd/MM/yyyy HH:mm' }}</p>
-          </div>
-        </div>
-      </div>
-    </p-tabPanel>
-  </p-tabView>
+    <!-- Statut actuel -->
+    <div class="status-banner">
+      <span>Statut actuel :</span>
+      <p-tag [value]="getStatusLabel()" [severity]="getStatusSeverity()" styleClass="large-tag"></p-tag>
+      <span class="date-info" *ngIf="demande.dateSoumission">
+        Soumise le {{ demande.dateSoumission | date: 'dd/MM/yyyy à HH:mm' }}
+      </span>
+    </div>
 
-  <div class="rejection-form" *ngIf="showRejectionForm">
-    <div class="form-overlay">
-      <div class="form-card">
-        <h3>Raison du rejet</h3>
+    <div class="cards-grid">
+
+      <!-- Informations entreprise -->
+      <p-card>
+        <ng-template pTemplate="header">
+          <div class="card-title"><i class="pi pi-building"></i> Informations entreprise</div>
+        </ng-template>
+        <div class="info-grid">
+          <div class="info-row"><label>Code</label><span>{{ demande.code }}</span></div>
+          <div class="info-row"><label>Raison Sociale</label><span>{{ demande.raisonSociale }}</span></div>
+          <div class="info-row"><label>Matricule Fiscal</label><span>{{ demande.matriculeFiscal }}</span></div>
+          <div class="info-row"><label>Forme Juridique</label><span>{{ demande.formeJuridique || '—' }}</span></div>
+          <div class="info-row"><label>Adresse</label><span>{{ demande.adresseComplete }}</span></div>
+          <div class="info-row"><label>Région</label><span>{{ demande.region }}</span></div>
+          <div class="info-row"><label>Email</label><span>{{ demande.email }}</span></div>
+          <div class="info-row"><label>Téléphone</label><span>{{ demande.telephone || '—' }}</span></div>
+          <div class="info-row" *ngIf="demande.siteWeb"><label>Site Web</label><span>{{ demande.siteWeb }}</span></div>
+          <div class="info-row" *ngIf="demande.banque"><label>Banque</label><span>{{ demande.banque }}</span></div>
+          <div class="info-row" *ngIf="demande.iban"><label>IBAN</label><span>{{ demande.iban }}</span></div>
+        </div>
+      </p-card>
+
+      <!-- Informations responsable -->
+      <p-card>
+        <ng-template pTemplate="header">
+          <div class="card-title"><i class="pi pi-user"></i> Responsable</div>
+        </ng-template>
+        <div class="info-grid">
+          <div class="info-row"><label>Nom</label><span>{{ demande.nomResponsable }}</span></div>
+          <div class="info-row"><label>Prénom</label><span>{{ demande.prenomResponsable }}</span></div>
+          <div class="info-row"><label>Fonction</label><span>{{ demande.fonctionResponsable }}</span></div>
+        </div>
+      </p-card>
+
+    </div>
+
+    <!-- Commentaire de traitement (si rejetée) -->
+    <div class="commentaire-section" *ngIf="demande.commentaireTraitement">
+      <h3>💬 Commentaire de traitement</h3>
+      <p>{{ demande.commentaireTraitement }}</p>
+    </div>
+
+    <!-- Actions (Approuver / Rejeter) — uniquement si en attente -->
+    <div class="actions-section" *ngIf="isPending()">
+
+      <!-- Formulaire de rejet -->
+      <div class="rejection-form" *ngIf="showRejectionForm">
+        <h3>❌ Raison du rejet</h3>
         <textarea
           pInputTextarea
           [(ngModel)]="rejectionReason"
-          placeholder="Expliquez pourquoi cette demande est rejetée..."
-          rows="5"
-          class="rejection-textarea"
+          placeholder="Expliquez la raison du rejet (obligatoire)..."
+          rows="4"
+          class="w-full"
         ></textarea>
-        <div class="form-actions">
-          <button
-            pButton
-            label="Annuler"
-            (click)="showRejectionForm = false"
-            text
-          ></button>
-          <button
-            pButton
-            label="Confirmer le rejet"
-            (click)="rejectDemande()"
-            [disabled]="!rejectionReason.trim() || isLoading"
-            [loading]="isLoading"
-            class="p-button-danger"
-          ></button>
+        <div class="rejection-buttons">
+          <button pButton label="Annuler" icon="pi pi-times"
+            class="p-button-text" (click)="annulerRejet()"></button>
+          <button pButton label="Confirmer le rejet" icon="pi pi-times-circle"
+            class="p-button-danger" [loading]="actionLoading" (click)="rejeter()"></button>
         </div>
       </div>
+
+      <!-- Boutons principaux -->
+      <div class="main-actions" *ngIf="!showRejectionForm">
+        <button pButton label="Rejeter" icon="pi pi-times"
+          class="p-button-danger p-button-outlined"
+          [disabled]="actionLoading"
+          (click)="ouvrirRejet()">
+        </button>
+        <button pButton label="Approuver" icon="pi pi-check"
+          class="p-button-success"
+          [loading]="actionLoading"
+          (click)="confirmerApprobation()">
+        </button>
+      </div>
     </div>
+
   </div>
 </div>
-
-<ng-template #loading>
-  <div class="loading-container">
-    <div class="spinner"></div>
-  </div>
-</ng-template>

@@ -159,6 +159,7 @@ export class DashboardComponent implements OnInit {
   naviguerVersFactures(): void  { this.router.navigate(['/factures']); }
   naviguerVersClients():  void  { this.router.navigate(['/clients']);  }
   voirFacture(id: number): void { this.router.navigate(['/factures', id]); }
+  retourAccueil():        void  { this.router.navigate(['/']); }
 
   rafraichir(): void {
     this.loadData();

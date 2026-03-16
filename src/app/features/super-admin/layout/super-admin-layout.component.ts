@@ -1,12 +1,12 @@
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { HeaderComponent, SidebarComponent } from '../../../shared';
+import { SidebarComponent } from '../../../shared';
 
 @Component({
   selector: 'app-super-admin-layout',
   standalone: true,
-  imports: [CommonModule, RouterModule, HeaderComponent, SidebarComponent],
+  imports: [CommonModule, RouterModule, SidebarComponent],
   templateUrl: './super-admin-layout.component.html',
   styleUrl: './super-admin-layout.component.scss'
 })

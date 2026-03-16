@@ -38,7 +38,7 @@ export class SidebarComponent implements OnInit {
       {
         label: 'Tableau de bord',
         icon: 'pi pi-home',
-        route: '/accueil',
+        route: userRole === 'SUPER_ADMIN' ? '/super-admin/statistiques' : '/accueil',
         roles: ['SUPER_ADMIN', 'ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER', 'CLIENT', 'EMETTEUR']
       },
       {
@@ -63,7 +63,7 @@ export class SidebarComponent implements OnInit {
       {
         label: 'Demandes',
         icon: 'pi pi-inbox',
-        route: '/demandes',
+        route: userRole === 'SUPER_ADMIN' ? '/super-admin/demandes' : '/demandes',
         roles: ['SUPER_ADMIN', 'ENTREPRISE_ADMIN']
       },
       {
@@ -75,8 +75,8 @@ export class SidebarComponent implements OnInit {
       {
         label: 'Paramètres',
         icon: 'pi pi-cog',
-        route: '/parametres',
-        roles: ['SUPER_ADMIN', 'ENTREPRISE_ADMIN', 'EMETTEUR']
+        route: this.getParametresRoute(userRole),
+        roles: ['SUPER_ADMIN', 'ENTREPRISE_ADMIN', 'EMETTEUR', 'CLIENT']
       }
     ];
 
@@ -87,6 +87,19 @@ export class SidebarComponent implements OnInit {
 
   toggleSidebar(): void {
     this.isCollapsed = !this.isCollapsed;
+  }
+
+  private getParametresRoute(userRole: UserRole | undefined | null): string {
+    switch (userRole) {
+      case 'SUPER_ADMIN':
+        return '/super-admin/parametres';
+      case 'EMETTEUR':
+        return '/emetteur/profil';
+      case 'CLIENT':
+        return '/client/profil';
+      default:
+        return '/parametres';
+    }
   }
 
   hasAnyRole(roles: UserRole[]): boolean {

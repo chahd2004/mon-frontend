@@ -175,14 +175,6 @@ export class DemandeFormComponent {
 
     this.demandeService.soumettreDemande(request).subscribe({
       next: (response) => {
-        // Sauvegarder les données pour la page de statut
-        localStorage.setItem('demande_soumise', JSON.stringify({
-          email: request.email,
-          raisonSociale: request.raisonSociale,
-          code: request.code,
-          dateSoumission: new Date().toISOString()
-        }));
-
         this.messageService.add({
           severity: 'success',
           summary: 'Demande soumise',
@@ -191,11 +183,7 @@ export class DemandeFormComponent {
 
         setTimeout(() => {
           this.router.navigate(['/demande/statut'], {
-            queryParams: {
-              email: request.email,
-              entreprise: request.raisonSociale,
-              code: request.code
-            }
+            queryParams: { email: this.email }
           });
         }, 2000);
       },

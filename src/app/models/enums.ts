@@ -123,7 +123,11 @@ export function isRegionTunisie(value: string | null | undefined): value is Regi
 export function normalizeUserRole(role: string | null | undefined): UserRole {
   if (!role) return 'CLIENT';
   if (isUserRole(role)) return role;
-  if (role === 'ADMIN') return 'SUPER_ADMIN';
-  if (role === 'USER') return 'CLIENT';
+
+  const normalized = role.trim().toUpperCase().replace(/^ROLE_/, '');
+  if (isUserRole(normalized)) return normalized;
+
+  if (normalized === 'ADMIN') return 'SUPER_ADMIN';
+  if (normalized === 'USER') return 'CLIENT';
   return 'CLIENT';
 }

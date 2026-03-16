@@ -22,7 +22,7 @@ export interface DemandeStatusResponse {
 export class DemandeService {
   private readonly API_URL = 'http://localhost:8080/api/public/demandes';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   /**
    * Soumettre une demande de création d'entreprise
@@ -47,5 +47,41 @@ export class DemandeService {
     return this.http.get<{ existe: boolean }>(`${this.API_URL}/existe`, {
       params: { email }
     });
+  }
+
+  // ── SUPER ADMIN ──────────────────────────────────────────────
+
+  /**
+   * Récupérer toutes les demandes en attente (SUPER_ADMIN)
+   */
+  getDemandesEnAttente(): Observable<any[]> {
+    return this.http.get<any[]>('http://localhost:8080/api/super-admin/demandes/en-attente');
+  }
+
+  /**
+   * Récupérer le détail d'une demande par ID (SUPER_ADMIN)
+   */
+  getDemandeDetails(id: number): Observable<any> {
+    return this.http.get<any>(`http://localhost:8080/api/super-admin/demandes/${id}`);
+  }
+
+  /**
+   * Approuver une demande (SUPER_ADMIN)
+   */
+  approuverDemande(id: number, commentaire?: string): Observable<any> {
+    return this.http.post<any>(
+      `http://localhost:8080/api/super-admin/demandes/${id}/approuver`,
+      commentaire ? { commentaire } : {}
+    );
+  }
+
+  /**
+   * Rejeter une demande (SUPER_ADMIN)
+   */
+  rejeterDemande(id: number, commentaire: string): Observable<any> {
+    return this.http.post<any>(
+      `http://localhost:8080/api/super-admin/demandes/${id}/rejeter`,
+      { commentaire }
+    );
   }
 }

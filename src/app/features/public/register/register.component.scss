@@ -130,25 +130,50 @@
       border-radius: 8px;
       padding: 1rem;
       margin-top: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
 
-      .role-description {
-        margin: 0 0 0.5rem 0;
-        color: #1e293b;
-        font-size: 0.95rem;
-        font-weight: 500;
-      }
+      .role-option {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.6rem 0.8rem;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.2s;
 
-      .role-default {
-        color: #64748b;
-        font-size: 0.85rem;
-        font-weight: 400;
+        &:hover { background: #e8eeff; }
+
+        input[type="radio"] {
+          width: 16px;
+          height: 16px;
+          accent-color: #667eea;
+          cursor: pointer;
+          flex-shrink: 0;
+        }
+
+        label {
+          display: flex;
+          flex-direction: column;
+          gap: 0.1rem;
+          cursor: pointer;
+          margin: 0;
+          font-weight: normal;
+
+          .role-desc {
+            font-size: 0.8rem;
+            color: #64748b;
+            font-weight: 400;
+          }
+        }
       }
 
       .role-info {
-        margin: 0.5rem 0 0 0;
+        margin: 0.2rem 0 0 0;
         color: #475569;
         font-size: 0.9rem;
-        line-height: 1.4;
+        padding: 0 0.8rem;
 
         .link {
           color: #667eea;
@@ -156,9 +181,7 @@
           cursor: pointer;
           font-weight: 600;
 
-          &:hover {
-            color: #764ba2;
-          }
+          &:hover { color: #764ba2; }
         }
       }
     }

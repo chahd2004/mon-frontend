@@ -1,105 +1,156 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
-import { TabViewModule } from 'primeng/tabview';
-import { InputTextModule } from 'primeng/inputtext';
-import { InputTextareaModule } from 'primeng/inputtextarea';
-import { TagModule } from 'primeng/tag';
 import { CardModule } from 'primeng/card';
-import { DemandeDetailResponse } from '../../../models';
-import { StatusBadgePipe } from '../../../shared';
+import { TagModule } from 'primeng/tag';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { ToastModule } from 'primeng/toast';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { MessageService, ConfirmationService } from 'primeng/api';
+import { DemandeService } from '../../../core/services/demande.service';
 
 @Component({
   selector: 'app-demande-detail',
   standalone: true,
   imports: [
-    CommonModule, FormsModule, RouterModule, ButtonModule, TabViewModule,
-    InputTextModule, InputTextareaModule, TagModule, CardModule, StatusBadgePipe
+    CommonModule, FormsModule, ButtonModule, CardModule, TagModule,
+    InputTextareaModule, ToastModule, ConfirmDialogModule, ProgressSpinnerModule
   ],
+  providers: [MessageService, ConfirmationService],
   templateUrl: './demande-detail.component.html',
   styleUrl: './demande-detail.component.scss'
 })
 export class DemandeDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private demandeService = inject(DemandeService);
+  private messageService = inject(MessageService);
+  private confirmationService = inject(ConfirmationService);
 
   demande: any = null;
-  rejectionReason = '';
   isLoading = false;
+  actionLoading = false;
+  rejectionReason = '';
   showRejectionForm = false;
 
   ngOnInit(): void {
-    this.loadDemandeDetail();
-  }
-
-  loadDemandeDetail(): void {
-    this.isLoading = true;
     const id = this.route.snapshot.paramMap.get('id');
-    // Simulé - remplacer par appel service réel
-    this.demande = {
-      id: parseInt(id || '1'),
-      raisonSociale: 'TechCorp Tunisia',
-      email: 'admin@techcorp.tn',
-      telephone: '+216 20 123 456',
-      region: 'TUNIS',
-      adresseComplete: 'Avenue Bourguiba, Tunis',
-      nomRepresentant: 'Ahmed',
-      prenomRepresentant: 'Ali',
-      status: 'PENDING',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
-    this.isLoading = false;
+    if (id) {
+      this.loadDetail(+id);
+    }
   }
 
-  approveDemande(): void {
+  loadDetail(id: number): void {
     this.isLoading = true;
-    // Appel service pour approuver
-    setTimeout(() => {
-      if (this.demande) {
-        this.demande.status = 'APPROVED';
+    this.demandeService.getDemandeDetails(id).subscribe({
+      next: (data) => {
+        this.demande = data;
+        this.isLoading = false;
+      },
+      error: () => {
+        this.isLoading = false;
+        this.messageService.add({
+          severity: 'error', summary: 'Erreur',
+          detail: 'Impossible de charger les détails de cette demande.'
+        });
       }
-      this.isLoading = false;
-    }, 1000);
+    });
   }
 
-  showRejection(): void {
+  confirmerApprobation(): void {
+    this.confirmationService.confirm({
+      message: `Approuver la demande de "${this.demande?.raisonSociale}" ? Un email avec les identifiants sera envoyé automatiquement.`,
+      header: 'Confirmation d\'approbation',
+      icon: 'pi pi-check-circle',
+      acceptLabel: 'Approuver',
+      rejectLabel: 'Annuler',
+      acceptButtonStyleClass: 'p-button-success',
+      accept: () => this.approuver()
+    });
+  }
+
+  approuver(): void {
+    this.actionLoading = true;
+    this.demandeService.approuverDemande(this.demande.id).subscribe({
+      next: () => {
+        this.actionLoading = false;
+        this.demande.status = 'APPROVED';
+        this.messageService.add({
+          severity: 'success', summary: 'Demande approuvée',
+          detail: 'Le compte a été créé et un email envoyé au responsable.'
+        });
+        setTimeout(() => this.router.navigate(['/super-admin/demandes']), 2500);
+      },
+      error: (err) => {
+        this.actionLoading = false;
+        const msg = err?.error?.message || 'Erreur lors de l\'approbation.';
+        this.messageService.add({ severity: 'error', summary: 'Erreur', detail: msg });
+      }
+    });
+  }
+
+  ouvrirRejet(): void {
     this.showRejectionForm = true;
+    this.rejectionReason = '';
   }
 
-  rejectDemande(): void {
+  annulerRejet(): void {
+    this.showRejectionForm = false;
+    this.rejectionReason = '';
+  }
+
+  rejeter(): void {
     if (!this.rejectionReason.trim()) {
+      this.messageService.add({
+        severity: 'warn', summary: 'Validation',
+        detail: 'Veuillez entrer une raison de rejet.'
+      });
       return;
     }
-    this.isLoading = true;
-    // Appel service pour rejeter
-    setTimeout(() => {
-      if (this.demande) {
+    this.actionLoading = true;
+    this.demandeService.rejeterDemande(this.demande.id, this.rejectionReason).subscribe({
+      next: () => {
+        this.actionLoading = false;
         this.demande.status = 'REJECTED';
+        this.showRejectionForm = false;
+        this.messageService.add({
+          severity: 'info', summary: 'Demande rejetée',
+          detail: 'La demande a été rejetée et un email a été envoyé.'
+        });
+        setTimeout(() => this.router.navigate(['/super-admin/demandes']), 2500);
+      },
+      error: (err) => {
+        this.actionLoading = false;
+        const msg = err?.error?.message || 'Erreur lors du rejet.';
+        this.messageService.add({ severity: 'error', summary: 'Erreur', detail: msg });
       }
-      this.showRejectionForm = false;
-      this.rejectionReason = '';
-      this.isLoading = false;
-    }, 1000);
+    });
   }
 
-  getStatusColor(): string {
-    switch (this.demande?.status) {
-      case 'APPROVED':
-        return 'success';
-      case 'REJECTED':
-        return 'danger';
-      default:
-        return 'warning';
-    }
+  retourListe(): void {
+    this.router.navigate(['/super-admin/demandes']);
   }
 
-  canApprove(): boolean {
-    return this.demande?.status === 'PENDING';
+  getStatusLabel(): string {
+    const labels: Record<string, string> = {
+      REQUESTED: '⏳ En attente',
+      APPROVED: '✅ Approuvée',
+      REJECTED: '❌ Rejetée'
+    };
+    return labels[this.demande?.status] || this.demande?.status || '';
   }
 
-  canReject(): boolean {
-    return this.demande?.status === 'PENDING';
+  getStatusSeverity(): 'warning' | 'success' | 'danger' | 'info' {
+    const map: Record<string, 'warning' | 'success' | 'danger' | 'info'> = {
+      REQUESTED: 'warning', APPROVED: 'success', REJECTED: 'danger'
+    };
+    return map[this.demande?.status] || 'info';
+  }
+
+  isPending(): boolean {
+    return this.demande?.status === 'REQUESTED' || this.demande?.status === 'PENDING';
   }
 }

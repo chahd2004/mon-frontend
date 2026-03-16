@@ -1,24 +1,47 @@
+<p-toast></p-toast>
+
 <section class="page">
   <header class="page-header">
     <h1>Demandes</h1>
     <span class="badge">{{ pendingCount }} en attente</span>
+    <button class="btn-refresh" (click)="loadDemandes()">↻ Actualiser</button>
   </header>
 
+  <!-- Chargement -->
+  <div class="loading" *ngIf="isLoading">
+    <p-progressSpinner strokeWidth="4" styleClass="spinner-sm"></p-progressSpinner>
+    <p>Chargement...</p>
+  </div>
+
+  <!-- Liste vide -->
+  <div class="empty" *ngIf="!isLoading && demandes.length === 0">
+    <p>📭 Aucune demande trouvée.</p>
+  </div>
+
+  <!-- Cartes des demandes -->
   <div class="card" *ngFor="let d of demandes">
     <div class="row">
       <div>
-        <h3>{{ d.entreprise }}</h3>
-        <p>{{ d.email }} • {{ d.date }}</p>
+        <h3>{{ d.raisonSociale }}</h3>
+        <p>{{ d.email }} • {{ d.dateSoumission | date:'yyyy-MM-dd' }}</p>
       </div>
-      <span class="status" [class.pending]="d.statut === 'EN_ATTENTE'" [class.ok]="d.statut === 'APPROUVEE'" [class.ko]="d.statut === 'REJETEE'">
-        {{ d.statut }}
+      <span class="status" [class]="getStatutClass(d.status)">
+        {{ getStatutLabel(d.status) }}
       </span>
     </div>
 
     <div class="actions">
-      <a [routerLink]="['/demandes', d.id]" class="btn secondary">Détail</a>
-      <button class="btn success" (click)="approuver(d)" [disabled]="d.statut !== 'EN_ATTENTE'">Approuver</button>
-      <button class="btn danger" (click)="rejeter(d)" [disabled]="d.statut !== 'EN_ATTENTE'">Rejeter</button>
+      <button class="btn secondary" (click)="voirDetail(d.id)">Détail</button>
+      <button
+        class="btn success"
+        (click)="approuver(d)"
+        [disabled]="!isPending(d.status) || actionLoadingId === d.id"
+      >{{ actionLoadingId === d.id ? '...' : 'Approuver' }}</button>
+      <button
+        class="btn danger"
+        (click)="rejeter(d)"
+        [disabled]="!isPending(d.status) || actionLoadingId === d.id"
+      >Rejeter</button>
     </div>
   </div>
 </section>

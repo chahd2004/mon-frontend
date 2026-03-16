@@ -3,22 +3,26 @@ import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { ADMIN_ROLES, UserRole } from '../../models/enums';
 
-export const authGuard: CanActivateFn = () => {
+export const authGuard: CanActivateFn = (_route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
   if (authService.isLoggedIn()) return true;
 
-  router.navigate(['/login']);
+  router.navigate(['/login'], {
+    queryParams: { returnUrl: state.url }
+  });
   return false;
 };
 
-export const roleGuard: CanActivateFn = (route) => {
+export const roleGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
   if (!authService.isLoggedIn()) {
-    router.navigate(['/login']);
+    router.navigate(['/login'], {
+      queryParams: { returnUrl: state.url }
+    });
     return false;
   }
 
@@ -62,11 +66,6 @@ export const emetteurGuard: CanActivateFn = () => {
 };
 
 export const guestGuard: CanActivateFn = () => {
-  const authService = inject(AuthService);
-  const router = inject(Router);
-
-  if (!authService.isLoggedIn()) return true;
-
-  router.navigate(['/dashboard']);
-  return false;
+  // Permet l'accès à login/register pour tous (connectés ou pas)
+  return true;
 };

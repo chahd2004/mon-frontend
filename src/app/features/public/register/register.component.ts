@@ -40,6 +40,7 @@ export class RegisterComponent implements OnInit {
   telephone: string = '';
   acceptConditions: boolean = false;
   loading: boolean = false;
+  role: string = 'CLIENT';
 
   ngOnInit(): void {
     if (this.authService.isLoggedIn()) {
@@ -105,8 +106,8 @@ export class RegisterComponent implements OnInit {
       email: this.email.trim(),
       password: this.password,
       telephone: this.telephone?.trim() || undefined,
-      role: 'CLIENT',
-      typeUser: 'CLIENT'
+      role: this.role as any,
+      typeUser: this.role as any
     };
 
     this.authService.register(request).subscribe({

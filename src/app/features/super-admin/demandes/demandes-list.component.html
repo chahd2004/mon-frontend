@@ -1,7 +1,9 @@
 <div class="demandes-container">
+  <p-toast></p-toast>
+
   <div class="page-header">
-    <h1>Gestion des demandes</h1>
-    <p>Gérez les demandes de création d'entreprise</p>
+    <h1>👑 Gestion des demandes d'inscription</h1>
+    <p>Approuvez ou rejetez les demandes d'entreprise</p>
   </div>
 
   <div class="filter-section">
@@ -10,9 +12,9 @@
       <input
         pInputText
         type="text"
-        placeholder="Rechercher par raison sociale ou email..."
+        placeholder="Rechercher par entreprise ou email..."
         [(ngModel)]="searchTerm"
-        (input)="onSearch(searchTerm)"
+        (input)="onSearch()"
         class="search-input"
       />
     </div>
@@ -21,10 +23,12 @@
       optionLabel="label"
       optionValue="value"
       [(ngModel)]="selectedStatus"
-      (onChange)="onStatusChange(selectedStatus)"
+      (onChange)="onStatusChange()"
       placeholder="Filtrer par statut"
       class="status-dropdown"
     ></p-dropdown>
+    <button pButton icon="pi pi-home" label="Accueil" class="p-button-outlined" routerLink="/"></button>
+    <button pButton icon="pi pi-refresh" label="Actualiser" class="p-button-outlined" (click)="loadDemandes()"></button>
   </div>
 
   <div class="table-container">
@@ -35,52 +39,46 @@
       [rows]="10"
       [showCurrentPageReport]="true"
       currentPageReportTemplate="Affichage {first} à {last} sur {totalRecords} demandes"
-      [globalFilterFields]="['raisonSociale', 'email']"
       responsiveLayout="scroll"
       styleClass="p-datatable-striped"
     >
       <ng-template pTemplate="header">
         <tr class="table-header">
-          <th pSortableColumn="raisonSociale">Raison Social <p-sortIcon field="raisonSociale"></p-sortIcon></th>
+          <th pSortableColumn="raisonSociale">Entreprise <p-sortIcon field="raisonSociale"></p-sortIcon></th>
           <th pSortableColumn="email">Email <p-sortIcon field="email"></p-sortIcon></th>
           <th pSortableColumn="region">Région <p-sortIcon field="region"></p-sortIcon></th>
           <th pSortableColumn="status">Statut <p-sortIcon field="status"></p-sortIcon></th>
-          <th pSortableColumn="createdAt">Date <p-sortIcon field="createdAt"></p-sortIcon></th>
-          <th style="width: 100px">Actions</th>
+          <th pSortableColumn="dateSoumission">Date <p-sortIcon field="dateSoumission"></p-sortIcon></th>
+          <th style="width: 150px; text-align: center;">Actions</th>
         </tr>
       </ng-template>
 
       <ng-template pTemplate="body" let-demande>
         <tr>
           <td>
-            <strong>{{ demande.raisonSociale }}</strong>
+            <strong>{{ demande.raisonSociale }}</strong><br/>
+            <small class="text-muted">{{ demande.code }}</small>
           </td>
-          <td>
-            <span class="email">{{ demande.email }}</span>
-          </td>
-          <td>
-            <span class="region">{{ demande.region }}</span>
-          </td>
+          <td>{{ demande.email }}</td>
+          <td>{{ demande.region }}</td>
           <td>
             <p-tag
-              [value]="(demande.status | statusBadge)?.label"
-              [severity]="(demande.status | statusBadge)?.severity"
-              [icon]="(demande.status | statusBadge)?.icon"
+              [value]="getStatusLabel(demande.status)"
+              [severity]="getStatusSeverity(demande.status)"
             ></p-tag>
           </td>
+          <td>{{ demande.dateSoumission | date: 'dd/MM/yyyy' }}</td>
           <td>
-            <span class="date">{{ demande.createdAt | date: 'dd/MM/yyyy' }}</span>
-          </td>
-          <td>
-            <button
-              pButton
-              icon="pi pi-eye"
-              rounded
-              text
-              (click)="viewDetails(demande.id)"
-              pTooltip="Voir détails"
-              tooltipPosition="top"
-            ></button>
+            <div class="action-buttons">
+              <button
+                pButton
+                icon="pi pi-eye"
+                pTooltip="Voir détails"
+                tooltipPosition="top"
+                class="p-button-text p-button-info"
+                (click)="viewDetails(demande.id)"
+              ></button>
+            </div>
           </td>
         </tr>
       </ng-template>

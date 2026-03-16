@@ -1,38 +1,121 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
-
-interface Demande {
-  id: number;
-  entreprise: string;
-  email: string;
-  statut: 'EN_ATTENTE' | 'APPROUVEE' | 'REJETEE';
-  date: string;
-}
+import { Component, OnInit, inject } from '@angular/core';
+import { RouterModule, Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { DemandeService } from '../../core/services/demande.service';
 
 @Component({
   selector: 'app-demandes',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, ToastModule, ProgressSpinnerModule],
+  providers: [MessageService],
   templateUrl: './demandes.component.html',
   styleUrl: './demandes.component.scss'
 })
-export class DemandesComponent {
-  demandes: Demande[] = [
-    { id: 101, entreprise: 'NovaTech', email: 'admin@novatech.tn', statut: 'EN_ATTENTE', date: '2026-03-10' },
-    { id: 102, entreprise: 'Atlas Consulting', email: 'contact@atlas.tn', statut: 'EN_ATTENTE', date: '2026-03-12' },
-    { id: 103, entreprise: 'Sahara Trade', email: 'hello@sahara.tn', statut: 'EN_ATTENTE', date: '2026-03-13' }
-  ];
+export class DemandesComponent implements OnInit {
+  private demandeService = inject(DemandeService);
+  private messageService = inject(MessageService);
+  private router = inject(Router);
+
+  demandes: any[] = [];
+  isLoading = false;
+  actionLoadingId: number | null = null;
 
   get pendingCount(): number {
-    return this.demandes.filter(d => d.statut === 'EN_ATTENTE').length;
+    return this.demandes.filter(d =>
+      d.status === 'REQUESTED' || d.status === 'PENDING'
+    ).length;
   }
 
-  approuver(demande: Demande): void {
-    demande.statut = 'APPROUVEE';
+  ngOnInit(): void {
+    this.loadDemandes();
   }
 
-  rejeter(demande: Demande): void {
-    demande.statut = 'REJETEE';
+  loadDemandes(): void {
+    this.isLoading = true;
+    this.demandeService.getDemandesEnAttente().subscribe({
+      next: (data) => {
+        this.demandes = data;
+        this.isLoading = false;
+      },
+      error: () => {
+        this.isLoading = false;
+        this.messageService.add({
+          severity: 'error', summary: 'Erreur',
+          detail: 'Impossible de charger les demandes.'
+        });
+      }
+    });
+  }
+
+  voirDetail(id: number): void {
+    this.router.navigate(['/super-admin/demandes', id]);
+  }
+
+  approuver(demande: any): void {
+    this.actionLoadingId = demande.id;
+    this.demandeService.approuverDemande(demande.id).subscribe({
+      next: () => {
+        demande.status = 'APPROVED';
+        this.actionLoadingId = null;
+        this.messageService.add({
+          severity: 'success', summary: 'Approuvée',
+          detail: `La demande de "${demande.raisonSociale}" a été approuvée.`
+        });
+      },
+      error: (err) => {
+        this.actionLoadingId = null;
+        this.messageService.add({
+          severity: 'error', summary: 'Erreur',
+          detail: err?.error?.message || 'Erreur lors de l\'approbation.'
+        });
+      }
+    });
+  }
+
+  rejeter(demande: any): void {
+    const raison = prompt('Raison du rejet (obligatoire) :');
+    if (!raison?.trim()) return;
+
+    this.actionLoadingId = demande.id;
+    this.demandeService.rejeterDemande(demande.id, raison).subscribe({
+      next: () => {
+        demande.status = 'REJECTED';
+        this.actionLoadingId = null;
+        this.messageService.add({
+          severity: 'info', summary: 'Rejetée',
+          detail: `La demande de "${demande.raisonSociale}" a été rejetée.`
+        });
+      },
+      error: (err) => {
+        this.actionLoadingId = null;
+        this.messageService.add({
+          severity: 'error', summary: 'Erreur',
+          detail: err?.error?.message || 'Erreur lors du rejet.'
+        });
+      }
+    });
+  }
+
+  isPending(status: string): boolean {
+    return status === 'REQUESTED' || status === 'PENDING';
+  }
+
+  getStatutLabel(status: string): string {
+    const labels: Record<string, string> = {
+      REQUESTED: 'EN ATTENTE',
+      PENDING: 'EN ATTENTE',
+      APPROVED: 'APPROUVÉE',
+      REJECTED: 'REJETÉE'
+    };
+    return labels[status] || status;
+  }
+
+  getStatutClass(status: string): string {
+    if (status === 'APPROVED') return 'ok';
+    if (status === 'REJECTED') return 'ko';
+    return 'pending';
   }
 }

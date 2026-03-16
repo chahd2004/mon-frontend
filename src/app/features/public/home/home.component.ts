@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-home',
@@ -13,6 +14,7 @@ import { CardModule } from 'primeng/card';
 })
 export class HomeComponent {
   private router = inject(Router);
+  private authService = inject(AuthService);
 
   navigateToLogin(): void {
     this.router.navigate(['/login']);
@@ -24,5 +26,16 @@ export class HomeComponent {
 
   navigateToDemande(): void {
     this.router.navigate(['/demande']);
+  }
+
+  navigateToAdmin(): void {
+    if (this.authService.isLoggedIn() && this.authService.hasRole('SUPER_ADMIN')) {
+      this.router.navigate(['/super-admin/statistiques']);
+      return;
+    }
+
+    this.router.navigate(['/login'], {
+      queryParams: { returnUrl: '/super-admin/statistiques' }
+    });
   }
 }

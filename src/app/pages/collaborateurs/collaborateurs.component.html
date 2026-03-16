@@ -1,10 +1,55 @@
 <section class="page">
-  <h1>Collaborateurs</h1>
+  <div class="page-header">
+    <h1>Collaborateurs</h1>
+    <button class="primary" (click)="ouvrirFormulaire()">Ajouter</button>
+  </div>
 
-  <div class="form">
-    <input [(ngModel)]="nom" placeholder="Nom collaborateur" />
-    <input [(ngModel)]="email" placeholder="Email" />
-    <button (click)="ajouter()">Ajouter</button>
+  <p class="status" *ngIf="isLoading">Chargement des collaborateurs...</p>
+  <p class="status error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+  <div class="form-card" *ngIf="showForm">
+    <h2>Ajouter un collaborateur</h2>
+
+    <div class="form-grid">
+      <label>
+        <span>Email *</span>
+        <input [(ngModel)]="email" type="email" placeholder="collaborateur@ent.com" />
+      </label>
+
+      <label>
+        <span>Prénom *</span>
+        <input [(ngModel)]="prenom" placeholder="Ahmed" />
+      </label>
+
+      <label>
+        <span>Nom *</span>
+        <input [(ngModel)]="nom" placeholder="Ben Salem" />
+      </label>
+
+      <label>
+        <span>Rôle</span>
+        <select [(ngModel)]="role">
+          <option value="ENTREPRISE_VIEWER">ENTREPRISE_VIEWER</option>
+        </select>
+      </label>
+
+      <label>
+        <span>Fonction *</span>
+        <input [(ngModel)]="fonction" placeholder="Comptable" />
+      </label>
+
+      <label>
+        <span>Téléphone</span>
+        <input [(ngModel)]="telephone" placeholder="12345678" />
+      </label>
+    </div>
+
+    <p class="info">Un email sera envoyé avec le mot de passe temporaire.</p>
+
+    <div class="form-actions">
+      <button class="ghost" (click)="annulerFormulaire()">Annuler</button>
+      <button class="primary" (click)="creerCollaborateur()">Créer</button>
+    </div>
   </div>
 
   <table>
@@ -13,7 +58,7 @@
     </thead>
     <tbody>
       <tr *ngFor="let c of collaborateurs">
-        <td>{{ c.nom }}</td>
+        <td>{{ c.prenom }} {{ c.nom }}</td>
         <td>{{ c.email }}</td>
         <td>{{ c.role }}</td>
       </tr>
