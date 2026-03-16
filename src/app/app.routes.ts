@@ -126,9 +126,7 @@ export const routes: Routes = [
       },
       {
         path: 'users',
-        component: UsersComponent,
-        canActivate: [roleGuard],
-        data: { roles: ['SUPER_ADMIN'] }
+        redirectTo: '/super-admin/users'
       },
       {
         path: 'collaborateurs',
@@ -170,7 +168,7 @@ export const routes: Routes = [
     canActivate: [authGuard, roleGuard],
     data: { roles: ['SUPER_ADMIN'] },
     children: [
-      { path: '', redirectTo: 'statistiques', pathMatch: 'full' },
+      { path: '', redirectTo: 'users', pathMatch: 'full' },
       { path: 'statistiques', component: StatistiquesComponent },
       { path: 'demandes', component: DemandesListComponent },
       { path: 'demandes/:id', component: DemandeDetailAdminComponent },

@@ -112,6 +112,10 @@ export class LoginComponent implements OnInit {
       return this.authService.hasRole('SUPER_ADMIN') ? returnUrl : '/dashboard';
     }
 
+    if (this.authService.hasRole('SUPER_ADMIN')) {
+      return '/super-admin/users';
+    }
+
     return returnUrl || '/dashboard';
   }
 }

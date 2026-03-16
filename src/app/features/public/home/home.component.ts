@@ -30,12 +30,12 @@ export class HomeComponent {
 
   navigateToAdmin(): void {
     if (this.authService.isLoggedIn() && this.authService.hasRole('SUPER_ADMIN')) {
-      this.router.navigate(['/super-admin/statistiques']);
+      this.router.navigate(['/super-admin/users']);
       return;
     }
 
     this.router.navigate(['/login'], {
-      queryParams: { returnUrl: '/super-admin/statistiques' }
+      queryParams: { returnUrl: '/super-admin/users' }
     });
   }
 }
