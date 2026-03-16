@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { AuthResponse, LoginRequest, RegisterRequest } from '../../models/auth.models';
+import { UpdatePasswordRequest } from '../../models/user.models';
 import { UserDTO } from '../../models/user.models';
 import { ADMIN_ROLES, UserRole, normalizeUserRole } from '../../models/enums';
 
@@ -41,6 +42,12 @@ export class AuthService {
     );
   }
 
+  updatePassword(request: UpdatePasswordRequest): Observable<void> {
+    return this.http.post<void>(`${this.API_URL}/change-password`, request).pipe(
+      tap(() => this.markFirstLoginAsCompleted())
+    );
+  }
+
   // ── LOGOUT ──────────────────────────────────────────────
   logout(): void {
     localStorage.removeItem(this.TOKEN_KEY);
@@ -61,6 +68,10 @@ export class AuthService {
   hasAnyRole(roles: readonly UserRole[]): boolean {
     const role = this._currentUser()?.role;
     return !!role && roles.includes(role);
+  }
+
+  requiresPasswordChange(): boolean {
+    return this._currentUser()?.firstLogin === true;
   }
 
   // ── PRIVÉS ──────────────────────────────────────────────
@@ -106,6 +117,19 @@ export class AuthService {
     } catch {
       return null;
     }
+  }
+
+  private markFirstLoginAsCompleted(): void {
+    const user = this._currentUser();
+    if (!user) return;
+
+    const updatedUser: UserDTO = {
+      ...user,
+      firstLogin: false
+    };
+
+    localStorage.setItem(this.USER_KEY, JSON.stringify(updatedUser));
+    this._currentUser.set(updatedUser);
   }
 
   private checkTokenExpiry(): void {

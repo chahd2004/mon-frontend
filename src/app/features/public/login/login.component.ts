@@ -98,11 +98,19 @@ export class LoginComponent implements OnInit {
     this.router.navigate(['/register']);
   }
 
+  navigateToChangePassword(): void {
+    this.router.navigate(['/change-password']);
+  }
+
   navigateToHome(): void {
     this.router.navigate(['/']);
   }
 
   private getPostLoginRedirectUrl(): string {
+    if (this.authService.requiresPasswordChange()) {
+      return '/change-password';
+    }
+
     const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
     if (returnUrl?.startsWith('/super-admin')) {
       return this.authService.hasRole('SUPER_ADMIN') ? returnUrl : '/dashboard';

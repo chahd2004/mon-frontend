@@ -7,12 +7,20 @@ export const authGuard: CanActivateFn = (_route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  if (authService.isLoggedIn()) return true;
+  if (!authService.isLoggedIn()) {
+    router.navigate(['/login'], {
+      queryParams: { returnUrl: state.url }
+    });
+    return false;
+  }
 
-  router.navigate(['/login'], {
-    queryParams: { returnUrl: state.url }
-  });
-  return false;
+  if (authService.requiresPasswordChange() && state.url !== '/change-password') {
+    router.navigate(['/change-password']);
+    return false;
+  }
+
+  return true;
+
 };
 
 export const roleGuard: CanActivateFn = (route, state) => {
@@ -23,6 +31,11 @@ export const roleGuard: CanActivateFn = (route, state) => {
     router.navigate(['/login'], {
       queryParams: { returnUrl: state.url }
     });
+    return false;
+  }
+
+  if (authService.requiresPasswordChange() && state.url !== '/change-password') {
+    router.navigate(['/change-password']);
     return false;
   }
 
@@ -67,5 +80,19 @@ export const emetteurGuard: CanActivateFn = () => {
 
 export const guestGuard: CanActivateFn = () => {
   // Permet l'accès à login/register pour tous (connectés ou pas)
+  return true;
+};
+
+export const firstLoginGuard: CanActivateFn = (_route, state) => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+
+  if (!authService.isLoggedIn()) {
+    router.navigate(['/login'], {
+      queryParams: { returnUrl: state.url }
+    });
+    return false;
+  }
+
   return true;
 };

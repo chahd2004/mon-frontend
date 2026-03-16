@@ -82,7 +82,7 @@ export interface UpdateProfileRequest {
 }
 
 export interface UpdatePasswordRequest {
-  currentPassword: string;
+  oldPassword: string;
   newPassword: string;
   confirmPassword: string;
 }

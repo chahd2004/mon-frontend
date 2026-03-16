@@ -4,6 +4,7 @@ import { Routes } from '@angular/router';
 import { HomeComponent } from './features/public/home/home.component';
 import { LoginComponent } from './features/public/login/login.component';
 import { RegisterComponent } from './features/public/register/register.component';
+import { ChangePasswordComponent } from './features/public/change-password/change-password.component';
 import { DemandeFormComponent } from './features/public/demande-form/demande-form.component';
 import { DemandeStatutComponent } from './features/public/demande-statut/demande-statut.component';
 
@@ -67,7 +68,7 @@ import { MesAchatsComponent } from './pages/mes-achats/mes-achats.component';
 import { MonProfilComponent } from './pages/mon-profil/mon-profil.component';
 import { DashboardEmetteurComponent } from './pages/dashboard-emetteur/dashboard-emetteur.component';
 import { ProfilEmetteurComponent } from './pages/profil-emetteur/profil-emetteur.component';
-import { authGuard, guestGuard, roleGuard } from './core/guards/auth.guard';
+import { authGuard, firstLoginGuard, guestGuard, roleGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
 
@@ -75,6 +76,7 @@ export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'login', component: LoginComponent, canActivate: [guestGuard] },
   { path: 'register', component: RegisterComponent, canActivate: [guestGuard] },
+  { path: 'change-password', component: ChangePasswordComponent, canActivate: [firstLoginGuard] },
   { path: 'demande', component: DemandeFormComponent },
   { path: 'demande/statut', component: DemandeStatutComponent },
 
