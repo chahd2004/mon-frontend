@@ -155,6 +155,10 @@ export class ProduitsComponent implements OnInit {
   }
 
   ajouterProduit(): void {
+    if (this.isViewer) {
+      return;
+    }
+
     this.dialogMode = 'add';
     this.selectedProduit = null;
     this.resetForm();
@@ -162,6 +166,10 @@ export class ProduitsComponent implements OnInit {
   }
 
   modifierProduit(produit: Produit): void {
+    if (this.isViewer) {
+      return;
+    }
+
     this.dialogMode = 'edit';
     this.selectedProduit = produit;
     this.produitForm = {
@@ -185,6 +193,10 @@ export class ProduitsComponent implements OnInit {
   }
 
   sauvegarderProduit(): void {
+    if (this.isViewer) {
+      return;
+    }
+
     if (!this.produitForm.reference?.trim() || !this.produitForm.designation?.trim()) {
       this.messageService.add({
         severity: 'warn',
@@ -253,6 +265,10 @@ export class ProduitsComponent implements OnInit {
   }
 
   supprimerProduit(id: number): void {
+    if (this.isViewer) {
+      return;
+    }
+
     this.confirmationService.confirm({
       message: 'Êtes-vous sûr de vouloir supprimer ce produit ?',
 

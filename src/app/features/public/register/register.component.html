@@ -2,41 +2,39 @@
   <p-toast></p-toast>
 
   <p-card class="register-card">
-    <ng-template pTemplate="header">
+    <ng-template pTemplate="header" *ngIf="!isRegisterClientMode">
       <div class="card-header">
-        <h1>📝 Inscription</h1>
+        <h1>Inscription</h1>
       </div>
     </ng-template>
 
     <div class="form-container">
-      <div class="form-row">
-        <div class="form-group">
-          <label for="prenom">👤 Prénom</label>
-          <input
-            pInputText
-            id="prenom"
-            [(ngModel)]="prenom"
-            type="text"
-            placeholder="Votre prénom"
-            [disabled]="loading"
-          />
-        </div>
-
-        <div class="form-group">
-          <label for="nom">👤 Nom</label>
-          <input
-            pInputText
-            id="nom"
-            [(ngModel)]="nom"
-            type="text"
-            placeholder="Votre nom"
-            [disabled]="loading"
-          />
-        </div>
+      <div class="form-group">
+        <label for="prenom">Prénom</label>
+        <input
+          pInputText
+          id="prenom"
+          [(ngModel)]="prenom"
+          type="text"
+          placeholder="Votre prénom"
+          [disabled]="loading"
+        />
       </div>
 
       <div class="form-group">
-        <label for="email">📧 Email</label>
+        <label for="nom">Nom</label>
+        <input
+          pInputText
+          id="nom"
+          [(ngModel)]="nom"
+          type="text"
+          placeholder="Votre nom"
+          [disabled]="loading"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
         <input
           pInputText
           id="email"
@@ -48,7 +46,7 @@
       </div>
 
       <div class="form-group">
-        <label for="telephone">📱 Téléphone (optionnel)</label>
+        <label for="telephone">Téléphone (optionnel)</label>
         <input
           pInputText
           id="telephone"
@@ -60,54 +58,27 @@
       </div>
 
       <div class="form-group">
-        <label>🔒 Rôle</label>
-        <div class="role-section">
-          <div class="role-option">
-            <input type="radio" id="roleClient" name="role" value="CLIENT"
-              [(ngModel)]="role" />
-            <label for="roleClient">
-              👤 <strong>Client</strong>
-              <span class="role-desc">Accès client standard</span>
-            </label>
-          </div>
-          <div class="role-option">
-            <input type="radio" id="roleSuperAdmin" name="role" value="SUPER_ADMIN"
-              [(ngModel)]="role" />
-            <label for="roleSuperAdmin">
-              👑 <strong>Super Admin</strong>
-              <span class="role-desc">Gestion complète de la plateforme</span>
-            </label>
-          </div>
-          <p class="role-info" *ngIf="role === 'CLIENT'">
-            Pour devenir Émetteur, veuillez <a (click)="navigateToDemande()" class="link">soumettre une demande</a>
-          </p>
-        </div>
+        <label for="password">Mot de passe</label>
+        <input
+          pInputText
+          id="password"
+          [(ngModel)]="password"
+          type="password"
+          placeholder="Entrez un mot de passe"
+          [disabled]="loading"
+        />
       </div>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label for="password">🔒 Mot de passe</label>
-          <input
-            pInputText
-            id="password"
-            [(ngModel)]="password"
-            type="password"
-            placeholder="Entrez un mot de passe"
-            [disabled]="loading"
-          />
-        </div>
-
-        <div class="form-group">
-          <label for="confirmPassword">🔒 Confirmer mot de passe</label>
-          <input
-            pInputText
-            id="confirmPassword"
-            [(ngModel)]="confirmPassword"
-            type="password"
-            placeholder="Confirmez votre mot de passe"
-            [disabled]="loading"
-          />
-        </div>
+      <div class="form-group">
+        <label for="confirmPassword">Confirmer mot de passe</label>
+        <input
+          pInputText
+          id="confirmPassword"
+          [(ngModel)]="confirmPassword"
+          type="password"
+          placeholder="Confirmez votre mot de passe"
+          [disabled]="loading"
+        />
       </div>
 
       <div class="form-group checkbox">
@@ -118,17 +89,27 @@
         </label>
       </div>
 
-      <p-button
-        label="S'inscrire"
-        icon="pi pi-user-plus"
-        (click)="register()"
-        [loading]="loading"
-        [disabled]="loading"
-        styleClass="w-full p-button-success"
-      ></p-button>
+      <div class="form-actions">
+        <p-button
+          label="S'inscrire"
+          icon="pi pi-user-plus"
+          (click)="register()"
+          [loading]="loading"
+          [disabled]="loading"
+          styleClass="w-full p-button-primary"
+        ></p-button>
+
+        <p-button
+          label="Se connecter"
+          icon="pi pi-sign-in"
+          (click)="navigateToLogin()"
+          [disabled]="loading"
+          styleClass="w-full p-button-outlined"
+        ></p-button>
+      </div>
     </div>
 
-    <ng-template pTemplate="footer">
+    <ng-template pTemplate="footer" *ngIf="!isRegisterClientMode">
       <div class="card-footer">
         <p>
           Vous avez déjà un compte?

@@ -12,7 +12,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { RegisterRequest } from '../../../models';
 
 @Component({
-  selector: 'app-register',
+  selector: 'app-register-entreprise',
   standalone: true,
   imports: [
     CommonModule,
@@ -24,10 +24,10 @@ import { RegisterRequest } from '../../../models';
     ToastModule
   ],
   providers: [MessageService],
-  templateUrl: './register.component.html',
-  styleUrls: ['./register.component.scss']
+  templateUrl: './register-entreprise.component.html',
+  styleUrls: ['./register-entreprise.component.scss']
 })
-export class RegisterComponent implements OnInit {
+export class RegisterEntrepriseComponent implements OnInit {
   private router = inject(Router);
   private messageService = inject(MessageService);
   private authService = inject(AuthService);
@@ -40,68 +40,37 @@ export class RegisterComponent implements OnInit {
   telephone: string = '';
   acceptConditions: boolean = false;
   loading: boolean = false;
-
-  private isRegisterClientFlow(): boolean {
-    return this.router.url === '/registerclient' || this.router.url.startsWith('/registerclient?');
-  }
-
-  get isRegisterClientMode(): boolean {
-    return this.isRegisterClientFlow();
-  }
+  role: 'ENTREPRISE_ADMIN' | 'ENTREPRISE_VIEWER' = 'ENTREPRISE_ADMIN';
 
   ngOnInit(): void {
-    if (this.authService.isLoggedIn() && !this.isRegisterClientFlow()) {
+    if (this.authService.isLoggedIn()) {
       this.router.navigate(['/dashboard']);
     }
   }
 
   register(): void {
     if (!this.nom?.trim()) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Validation',
-        detail: 'Veuillez entrer votre nom.'
-      });
+      this.messageService.add({ severity: 'warn', summary: 'Validation', detail: 'Veuillez entrer votre nom.' });
       return;
     }
     if (!this.prenom?.trim()) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Validation',
-        detail: 'Veuillez entrer votre prénom.'
-      });
+      this.messageService.add({ severity: 'warn', summary: 'Validation', detail: 'Veuillez entrer votre prénom.' });
       return;
     }
     if (!this.email?.trim()) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Validation',
-        detail: 'Veuillez entrer votre email.'
-      });
+      this.messageService.add({ severity: 'warn', summary: 'Validation', detail: 'Veuillez entrer votre email.' });
       return;
     }
     if (!this.password?.trim()) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Validation',
-        detail: 'Veuillez entrer votre mot de passe.'
-      });
+      this.messageService.add({ severity: 'warn', summary: 'Validation', detail: 'Veuillez entrer votre mot de passe.' });
       return;
     }
     if (this.password !== this.confirmPassword) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Validation',
-        detail: 'Les mots de passe ne correspondent pas.'
-      });
+      this.messageService.add({ severity: 'error', summary: 'Validation', detail: 'Les mots de passe ne correspondent pas.' });
       return;
     }
     if (!this.acceptConditions) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Validation',
-        detail: 'Vous devez accepter les conditions d\'utilisation.'
-      });
+      this.messageService.add({ severity: 'warn', summary: 'Validation', detail: 'Vous devez accepter les conditions d\'utilisation.' });
       return;
     }
 
@@ -113,8 +82,8 @@ export class RegisterComponent implements OnInit {
       email: this.email.trim(),
       password: this.password,
       telephone: this.telephone?.trim() || undefined,
-      role: 'CLIENT' as any,
-      typeUser: 'CLIENT' as any
+      role: this.role,
+      typeUser: null
     };
 
     this.authService.register(request).subscribe({
@@ -122,20 +91,14 @@ export class RegisterComponent implements OnInit {
         this.messageService.add({
           severity: 'success',
           summary: 'Inscription réussie',
-          detail: 'Redirection vers le tableau de bord...'
+          detail: 'Compte entreprise créé avec succès.'
         });
-        setTimeout(() => {
-          this.router.navigate([this.isRegisterClientFlow() ? '/clients' : '/dashboard']);
-        }, 1500);
+        setTimeout(() => this.router.navigate(['/dashboard']), 1200);
       },
       error: (err) => {
         this.loading = false;
         const message = err?.error?.message || 'Une erreur est survenue lors de l\'inscription.';
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Erreur d\'inscription',
-          detail: message
-        });
+        this.messageService.add({ severity: 'error', summary: 'Erreur d\'inscription', detail: message });
       },
       complete: () => {
         this.loading = false;
@@ -149,9 +112,5 @@ export class RegisterComponent implements OnInit {
 
   navigateToHome(): void {
     this.router.navigate(['/']);
-  }
-
-  navigateToDemande(): void {
-    this.router.navigate(['/demande']);
   }
 }

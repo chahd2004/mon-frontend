@@ -121,7 +121,8 @@ export class RegisterComponent {
       prenom: this.prenom.trim(),
       email: this.email.trim(),
       password: this.password,
-      role: 'CLIENT',
+      role: 'SUPER_ADMIN',
+      typeUser: null,
       telephone: undefined
     }).subscribe({
       next: (response) => {

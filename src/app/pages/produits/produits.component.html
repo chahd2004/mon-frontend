@@ -54,7 +54,7 @@
           <th>Prix unitaire HT</th>
           <th>TVA %</th>
           <th>Prix TTC</th>
-          <th style="text-align: center; min-width: 160px;">Actions</th>
+          <th *ngIf="!isViewer" style="text-align: center; min-width: 160px;">Actions</th>
         </tr>
       </ng-template>
 
@@ -66,12 +66,11 @@
           <td class="text-right">{{ formatPrix(produit.prixUnitaire) }}</td>
           <td class="text-right">{{ formatTVA(produit.tauxTVA) }}</td>
           <td class="text-right font-bold">{{ formatPrix(produit.prixUnitaire * (1 + produit.tauxTVA/100)) }}</td>
-          <td>
+          <td *ngIf="!isViewer">
             <div class="actions-cell">
               <button
                 class="action-btn edit-btn"
                 (click)="modifierProduit(produit)"
-                [disabled]="isViewer"
                 pTooltip="Modifier ce produit"
                 tooltipPosition="top">
                 <i class="pi pi-pencil"></i>
@@ -80,7 +79,6 @@
               <button
                 class="action-btn delete-btn"
                 (click)="supprimerProduit(produit.id)"
-                [disabled]="isViewer"
                 pTooltip="Supprimer ce produit"
                 tooltipPosition="top">
                 <i class="pi pi-trash"></i>
@@ -93,11 +91,12 @@
 
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="7" style="text-align: center; padding: 3rem;">
+          <td [attr.colspan]="isViewer ? 6 : 7" style="text-align: center; padding: 3rem;">
             <i class="pi pi-box" style="font-size: 3rem; color: #94a3b8; display:block; margin-bottom:1rem;"></i>
             <h3 style="color:#1e293b; margin:0.5rem 0;">Aucun produit trouvé</h3>
-            <p style="color:#64748b; margin-bottom:1.5rem;">Commencez par ajouter votre premier produit.</p>
-            <button class="add-btn" (click)="ajouterProduit()">
+            <p *ngIf="!isViewer" style="color:#64748b; margin-bottom:1.5rem;">Commencez par ajouter votre premier produit.</p>
+            <p *ngIf="isViewer" style="color:#64748b; margin-bottom:1.5rem;">Aucun produit disponible pour le moment.</p>
+            <button *ngIf="!isViewer" class="add-btn" (click)="ajouterProduit()">
               <i class="pi pi-plus"></i> Nouveau produit
             </button>
           </td>

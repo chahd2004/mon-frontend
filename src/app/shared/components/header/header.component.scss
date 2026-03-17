@@ -1,6 +1,6 @@
 .header-container {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+  background: var(--brand-primary);
+  box-shadow: 0 4px 12px rgba(11, 22, 63, 0.35);
   padding: 1rem 2rem;
   position: sticky;
   top: 0;

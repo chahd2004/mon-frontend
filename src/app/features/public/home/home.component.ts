@@ -21,6 +21,11 @@ export class HomeComponent {
   }
 
   navigateToRegister(): void {
+    if (this.authService.isLoggedIn() && this.authService.hasAnyRole(['SUPER_ADMIN', 'ENTREPRISE_ADMIN', 'EMETTEUR'])) {
+      this.router.navigate(['/registerclient']);
+      return;
+    }
+
     this.router.navigate(['/register']);
   }
 

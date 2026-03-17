@@ -38,6 +38,11 @@ export class LoginComponent implements OnInit {
   rememberMe: boolean = false;
   loading: boolean = false;
 
+  get isAdminContext(): boolean {
+    const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+    return !!returnUrl && returnUrl.startsWith('/super-admin');
+  }
+
   ngOnInit(): void {
     // Permet l'accès au login même si connecté
   }
@@ -95,6 +100,10 @@ export class LoginComponent implements OnInit {
   }
 
   navigateToRegister(): void {
+    if (this.isAdminContext) {
+      this.router.navigate(['/super-admin/register']);
+      return;
+    }
     this.router.navigate(['/register']);
   }
 

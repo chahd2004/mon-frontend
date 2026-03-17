@@ -8,7 +8,7 @@
 
   .register-card {
     width: 100%;
-    max-width: 400px;
+    max-width: 500px;
     border-radius: 14px;
     overflow: hidden;
     box-shadow: 0 18px 42px rgba(11, 22, 63, 0.35);
@@ -40,8 +40,18 @@
     }
 
     .form-container {
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+
+        @media (max-width: 576px) {
+          grid-template-columns: 1fr;
+        }
+      }
+
       .form-group {
-        margin-bottom: 1.25rem;
+        margin-bottom: 1.5rem;
 
         label {
           display: block;
@@ -50,11 +60,9 @@
           color: #1e293b;
         }
 
-        input,
-        ::ng-deep .p-dropdown {
+        input {
           width: 100%;
           padding: 0.75rem;
-          min-height: 44px;
           border: 1px solid #e0e0e0;
           border-radius: 6px;
           font-size: 0.95rem;
@@ -93,32 +101,17 @@
         }
       }
 
-      .form-actions {
-        display: grid;
-        gap: 0.75rem;
-        margin-top: 0.25rem;
-      }
-
       ::ng-deep p-button {
         width: 100%;
 
         .p-button {
           background: var(--brand-primary);
           border-color: var(--brand-primary);
-          min-height: 44px;
-          border-radius: 8px;
-          font-weight: 600;
         }
 
         .p-button:hover {
           background: #102452;
           border-color: #102452;
-        }
-
-        .p-button.p-button-outlined {
-          background: transparent;
-          color: var(--brand-primary);
-          border-color: var(--brand-primary);
         }
       }
     }
@@ -143,6 +136,53 @@
       }
     }
 
+    .role-section {
+      background: #eef2ff;
+      border: 1px solid #dbe4ff;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+
+      .role-option {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.6rem 0.8rem;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.2s;
+
+        &:hover {
+          background: #e2e9ff;
+        }
+
+        input[type="radio"] {
+          width: 16px;
+          height: 16px;
+          accent-color: var(--brand-primary);
+          cursor: pointer;
+          flex-shrink: 0;
+        }
+
+        label {
+          display: flex;
+          flex-direction: column;
+          gap: 0.1rem;
+          cursor: pointer;
+          margin: 0;
+          font-weight: normal;
+
+          .role-desc {
+            font-size: 0.8rem;
+            color: #64748b;
+            font-weight: 400;
+          }
+        }
+      }
+    }
   }
 }
 

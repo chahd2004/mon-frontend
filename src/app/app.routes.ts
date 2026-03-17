@@ -4,6 +4,8 @@ import { Routes } from '@angular/router';
 import { HomeComponent } from './features/public/home/home.component';
 import { LoginComponent } from './features/public/login/login.component';
 import { RegisterComponent } from './features/public/register/register.component';
+import { RegisterEntrepriseComponent } from './features/public/register-entreprise/register-entreprise.component';
+import { RegisterComponent as SuperAdminRegisterComponent } from './pages/register/register.component';
 import { ChangePasswordComponent } from './features/public/change-password/change-password.component';
 import { DemandeFormComponent } from './features/public/demande-form/demande-form.component';
 import { DemandeStatutComponent } from './features/public/demande-statut/demande-statut.component';
@@ -73,9 +75,17 @@ import { authGuard, firstLoginGuard, guestGuard, roleGuard } from './core/guards
 export const routes: Routes = [
 
   // ── PHASE 1: PAGES PUBLIQUES (Sans authentification) ───────────
-  { path: '', component: HomeComponent },
+  { path: '', component: HomeComponent, pathMatch: 'full' },
   { path: 'login', component: LoginComponent, canActivate: [guestGuard] },
   { path: 'register', component: RegisterComponent, canActivate: [guestGuard] },
+  {
+    path: 'registerclient',
+    component: RegisterComponent,
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['SUPER_ADMIN', 'ENTREPRISE_ADMIN', 'EMETTEUR'] }
+  },
+  { path: 'register-entreprise', component: RegisterEntrepriseComponent, canActivate: [guestGuard] },
+  { path: 'super-admin/register', component: SuperAdminRegisterComponent, canActivate: [guestGuard] },
   { path: 'change-password', component: ChangePasswordComponent, canActivate: [firstLoginGuard] },
   { path: 'demande', component: DemandeFormComponent },
   { path: 'demande/statut', component: DemandeStatutComponent },
@@ -98,7 +108,7 @@ export const routes: Routes = [
         path: 'clients',
         component: ClientsComponent,
         canActivate: [roleGuard],
-        data: { roles: ['SUPER_ADMIN'] }
+        data: { roles: ['SUPER_ADMIN', 'ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER', 'EMETTEUR'] }
       },
       {
         path: 'emetteurs',
@@ -110,7 +120,7 @@ export const routes: Routes = [
         path: 'produits',
         component: ProduitsComponent,
         canActivate: [roleGuard],
-        data: { roles: ['SUPER_ADMIN', 'ENTREPRISE_ADMIN'] }
+        data: { roles: ['SUPER_ADMIN', 'ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER', 'EMETTEUR'] }
       },
       {
         path: 'demandes',

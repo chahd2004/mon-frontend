@@ -158,13 +158,18 @@ export class ClientsComponent implements OnInit {
   }
 
   ajouterClient(): void {
-    this.dialogMode = 'add';
-    this.selectedClient = null;
-    this.resetForm();
-    this.displayDialog = true;
+    if (this.isViewer) {
+      return;
+    }
+
+    this.router.navigate(['/registerclient']);
   }
 
   modifierClient(client: Client): void {
+    if (this.isViewer) {
+      return;
+    }
+
     this.dialogMode = 'edit';
     this.selectedClient = client;
     this.clientForm = {
@@ -190,6 +195,10 @@ export class ClientsComponent implements OnInit {
   }
 
   sauvegarderClient(): void {
+    if (this.isViewer) {
+      return;
+    }
+
     if (!this.clientForm.raisonSociale?.trim() || !this.clientForm.email?.trim() || !this.clientForm.telephone?.trim()) {
       this.messageService.add({
         severity: 'warn',
@@ -280,6 +289,10 @@ export class ClientsComponent implements OnInit {
   }
 
   supprimerClient(id: number): void {
+    if (this.isViewer) {
+      return;
+    }
+
     this.confirmationService.confirm({
       message: 'Supprimer ce client ?',
       

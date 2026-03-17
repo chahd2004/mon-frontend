@@ -1,6 +1,6 @@
 .home-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--brand-gradient-diagonal);
   padding: 2rem;
   display: flex;
   flex-direction: column;
@@ -46,7 +46,7 @@
       background: white;
       padding: 2rem;
       border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 12px 28px rgba(11, 22, 63, 0.28);
       text-align: center;
       transition: transform 0.3s ease;
 
@@ -67,6 +67,16 @@
 
       ::ng-deep p-button {
         width: 100%;
+
+        .p-button {
+          background: var(--brand-primary);
+          border-color: var(--brand-primary);
+        }
+
+        .p-button:hover {
+          background: #102452;
+          border-color: #102452;
+        }
       }
     }
   }

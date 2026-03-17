@@ -4,13 +4,13 @@
   <p-card class="login-card">
     <ng-template pTemplate="header">
       <div class="card-header">
-        <h1>🔐 Connexion</h1>
+        <h1>Connexion</h1>
       </div>
     </ng-template>
 
     <div class="form-container">
       <div class="form-group">
-        <label for="email">📧 Email</label>
+        <label for="email">Email</label>
         <input
           pInputText
           id="email"
@@ -23,7 +23,7 @@
       </div>
 
       <div class="form-group">
-        <label for="password">🔒 Mot de passe</label>
+        <label for="password">Mot de passe</label>
         <input
           pInputText
           id="password"
@@ -52,7 +52,7 @@
 
     <ng-template pTemplate="footer">
       <div class="card-footer">
-        <p>
+        <p *ngIf="isAdminContext">
           Pas encore inscrit?
           <a (click)="navigateToRegister()" class="link">Créer un compte</a>
         </p>
