@@ -7,6 +7,14 @@ export interface Produit {
   tauxTVA: number;
   emetteurId?: number;
   emetteurRaisonSociale?: string;
+
+  // Gestion de stock
+  quantiteStock?: number;
+  stockIllimite?: boolean;
+  seuilAlerteStock?: number;
+  disponible?: boolean;
+  stockFaible?: boolean;
+  ruptureStock?: boolean;
 }
 
 export interface ProduitRequest {
@@ -15,4 +23,9 @@ export interface ProduitRequest {
   prixUnitaire: number;
   tauxTVA: number;
   emetteurId?: number;
+
+  // Gestion de stock
+  quantiteStock?: number;
+  stockIllimite?: boolean;
+  seuilAlerteStock?: number;
 }

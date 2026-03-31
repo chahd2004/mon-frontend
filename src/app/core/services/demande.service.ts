@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CreateDemandeRequest } from '../../models/demande.models';
+import { environment } from '../../../environments/environment';
 
 export interface DemandeResponse {
   id: number;
@@ -20,7 +21,8 @@ export interface DemandeStatusResponse {
 
 @Injectable({ providedIn: 'root' })
 export class DemandeService {
-  private readonly API_URL = 'http://localhost:8080/api/public/demandes';
+  private readonly API_URL = `${environment.apiUrl}/public/demandes`;
+  private readonly SUPER_ADMIN_URL = `${environment.apiUrl}/super-admin/demandes`;
 
   constructor(private http: HttpClient) { }
 
@@ -55,14 +57,14 @@ export class DemandeService {
    * Récupérer toutes les demandes en attente (SUPER_ADMIN)
    */
   getDemandesEnAttente(): Observable<any[]> {
-    return this.http.get<any[]>('http://localhost:8080/api/super-admin/demandes/en-attente');
+    return this.http.get<any[]>(`${this.SUPER_ADMIN_URL}/en-attente`);
   }
 
   /**
    * Récupérer le détail d'une demande par ID (SUPER_ADMIN)
    */
   getDemandeDetails(id: number): Observable<any> {
-    return this.http.get<any>(`http://localhost:8080/api/super-admin/demandes/${id}`);
+    return this.http.get<any>(`${this.SUPER_ADMIN_URL}/${id}`);
   }
 
   /**
@@ -70,8 +72,8 @@ export class DemandeService {
    */
   approuverDemande(id: number, commentaire?: string): Observable<any> {
     return this.http.post<any>(
-      `http://localhost:8080/api/super-admin/demandes/${id}/approuver`,
-      commentaire ? { commentaire } : {}
+      `${this.SUPER_ADMIN_URL}/${id}/approuver`,
+      { commentaire: commentaire ?? '' }
     );
   }
 
@@ -80,7 +82,7 @@ export class DemandeService {
    */
   rejeterDemande(id: number, commentaire: string): Observable<any> {
     return this.http.post<any>(
-      `http://localhost:8080/api/super-admin/demandes/${id}/rejeter`,
+      `${this.SUPER_ADMIN_URL}/${id}/rejeter`,
       { commentaire }
     );
   }

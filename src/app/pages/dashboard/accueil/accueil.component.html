@@ -36,12 +36,6 @@
           <span class="nav-label">Clients</span>
         </a>
 
-        <!-- Émetteurs : entreprise -->
-        <a *ngIf="hasRole('SUPER_ADMIN')" routerLink="/emetteurs" routerLinkActive="active" class="nav-item">
-          <i class="pi pi-building"></i>
-          <span class="nav-label">Émetteurs</span>
-        </a>
-
         <!-- Produits : article/tag -->
           <a *ngIf="hasAnyRole(['SUPER_ADMIN', 'ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER', 'EMETTEUR'])"
             routerLink="/produits"
@@ -71,23 +65,9 @@
         </a>
 
         <!-- Client -->
-        <a *ngIf="hasRole('CLIENT')" routerLink="/mes-achats" routerLinkActive="active" class="nav-item">
-          <i class="pi pi-shopping-bag"></i>
-          <span class="nav-label">Mes achats</span>
-        </a>
         <a *ngIf="hasRole('CLIENT')" routerLink="/mon-profil" routerLinkActive="active" class="nav-item">
           <i class="pi pi-user-edit"></i>
           <span class="nav-label">Mon profil</span>
-        </a>
-
-        <!-- Emetteur -->
-        <a *ngIf="hasRole('EMETTEUR')" routerLink="/dashboard-emetteur" routerLinkActive="active" class="nav-item">
-          <i class="pi pi-chart-line"></i>
-          <span class="nav-label">Dashboard Émetteur</span>
-        </a>
-        <a *ngIf="hasRole('EMETTEUR')" routerLink="/profil-emetteur" routerLinkActive="active" class="nav-item">
-          <i class="pi pi-briefcase"></i>
-          <span class="nav-label">Profil émetteur</span>
         </a>
       </div>
 

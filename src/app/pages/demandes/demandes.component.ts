@@ -69,7 +69,7 @@ export class DemandesComponent implements OnInit {
         this.actionLoadingId = null;
         this.messageService.add({
           severity: 'error', summary: 'Erreur',
-          detail: err?.error?.message || 'Erreur lors de l\'approbation.'
+          detail: this.extractApiError(err, 'Erreur lors de l\'approbation.')
         });
       }
     });
@@ -93,7 +93,7 @@ export class DemandesComponent implements OnInit {
         this.actionLoadingId = null;
         this.messageService.add({
           severity: 'error', summary: 'Erreur',
-          detail: err?.error?.message || 'Erreur lors du rejet.'
+          detail: this.extractApiError(err, 'Erreur lors du rejet.')
         });
       }
     });
@@ -117,5 +117,22 @@ export class DemandesComponent implements OnInit {
     if (status === 'APPROVED') return 'ok';
     if (status === 'REJECTED') return 'ko';
     return 'pending';
+  }
+
+  private extractApiError(err: any, fallback: string): string {
+    const payload = err?.error;
+    if (typeof payload === 'string' && payload.trim()) {
+      return payload;
+    }
+    if (payload?.message) {
+      return payload.message;
+    }
+    if (payload?.error) {
+      return payload.error;
+    }
+    if (err?.message) {
+      return err.message;
+    }
+    return fallback;
   }
 }

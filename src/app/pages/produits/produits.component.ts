@@ -14,6 +14,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { DialogModule } from 'primeng/dialog';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { TooltipModule } from 'primeng/tooltip';
+import { CheckboxModule } from 'primeng/checkbox';
 import { MessageService } from 'primeng/api';
 import { ConfirmationService } from 'primeng/api';
 
@@ -38,7 +39,8 @@ const DEFAULT_EMETTEUR_ID = 1;
     InputTextModule,
     DialogModule,
     InputNumberModule,
-    TooltipModule
+    TooltipModule,
+    CheckboxModule
   ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './produits.component.html',
@@ -79,12 +81,18 @@ export class ProduitsComponent implements OnInit {
     prixUnitaire: number;
     tauxTVA: number;
     emetteurId: number;
+    quantiteStock: number;
+    stockIllimite: boolean;
+    seuilAlerteStock: number;
   } = {
       reference: '',
       designation: '',
       prixUnitaire: 0,
       tauxTVA: 19,
-      emetteurId: DEFAULT_EMETTEUR_ID
+      emetteurId: DEFAULT_EMETTEUR_ID,
+      quantiteStock: 0,
+      stockIllimite: false,
+      seuilAlerteStock: 5
     };
 
   ngOnInit(): void {
@@ -177,7 +185,10 @@ export class ProduitsComponent implements OnInit {
       designation: produit.designation,
       prixUnitaire: produit.prixUnitaire,
       tauxTVA: produit.tauxTVA,
-      emetteurId: (produit as any).emetteurId ?? this.resolveEmetteurId()
+      emetteurId: (produit as any).emetteurId ?? this.resolveEmetteurId(),
+      quantiteStock: produit.quantiteStock ?? 0,
+      stockIllimite: produit.stockIllimite ?? false,
+      seuilAlerteStock: produit.seuilAlerteStock ?? 5
     };
     this.displayDialog = true;
   }
@@ -188,7 +199,10 @@ export class ProduitsComponent implements OnInit {
       designation: '',
       prixUnitaire: 0,
       tauxTVA: 19,
-      emetteurId: this.resolveEmetteurId() // ✅ toujours résolu
+      emetteurId: this.resolveEmetteurId(),
+      quantiteStock: 0,
+      stockIllimite: false,
+      seuilAlerteStock: 5
     };
   }
 
@@ -222,7 +236,10 @@ export class ProduitsComponent implements OnInit {
       designation: this.produitForm.designation.trim(),
       prixUnitaire: Number(this.produitForm.prixUnitaire) || 0,
       tauxTVA: Number(this.produitForm.tauxTVA) || 19,
-      emetteurId: this.produitForm.emetteurId // ✅ toujours présent
+      emetteurId: this.produitForm.emetteurId,
+      quantiteStock: this.produitForm.stockIllimite ? 0 : (Number(this.produitForm.quantiteStock) || 0),
+      stockIllimite: this.produitForm.stockIllimite,
+      seuilAlerteStock: Number(this.produitForm.seuilAlerteStock) || 5
     };
 
     if (this.dialogMode === 'add') {
@@ -286,6 +303,31 @@ export class ProduitsComponent implements OnInit {
         });
       }
     });
+  }
+
+  /**
+   * Retourne le statut du stock d'un produit
+   */
+  getStockStatut(produit: Produit): { label: string; classe: string; icon: string } {
+    if (produit.stockIllimite) {
+      return { label: 'Illimité', classe: 'statut-illimite', icon: '∞' };
+    }
+    if (produit.ruptureStock || (produit.quantiteStock != null && produit.quantiteStock <= 0)) {
+      return { label: 'Rupture', classe: 'statut-rupture', icon: '🔴' };
+    }
+    if (produit.stockFaible) {
+      return { label: 'Stock faible', classe: 'statut-faible', icon: '⚠️' };
+    }
+    return { label: 'Disponible', classe: 'statut-disponible', icon: '✅' };
+  }
+
+  /**
+   * Affiche la quantité de stock
+   */
+  getStockDisplay(produit: Produit): string {
+    if (produit.stockIllimite) return '∞';
+    if (produit.quantiteStock == null) return '-';
+    return produit.quantiteStock.toString();
   }
 
   formatPrix(prix: number | undefined): string {

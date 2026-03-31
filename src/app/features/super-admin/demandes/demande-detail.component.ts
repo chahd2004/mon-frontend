@@ -86,7 +86,7 @@ export class DemandeDetailComponent implements OnInit {
       },
       error: (err) => {
         this.actionLoading = false;
-        const msg = err?.error?.message || 'Erreur lors de l\'approbation.';
+        const msg = this.extractApiError(err, 'Erreur lors de l\'approbation.');
         this.messageService.add({ severity: 'error', summary: 'Erreur', detail: msg });
       }
     });
@@ -124,7 +124,7 @@ export class DemandeDetailComponent implements OnInit {
       },
       error: (err) => {
         this.actionLoading = false;
-        const msg = err?.error?.message || 'Erreur lors du rejet.';
+        const msg = this.extractApiError(err, 'Erreur lors du rejet.');
         this.messageService.add({ severity: 'error', summary: 'Erreur', detail: msg });
       }
     });
@@ -152,5 +152,22 @@ export class DemandeDetailComponent implements OnInit {
 
   isPending(): boolean {
     return this.demande?.status === 'REQUESTED' || this.demande?.status === 'PENDING';
+  }
+
+  private extractApiError(err: any, fallback: string): string {
+    const payload = err?.error;
+    if (typeof payload === 'string' && payload.trim()) {
+      return payload;
+    }
+    if (payload?.message) {
+      return payload.message;
+    }
+    if (payload?.error) {
+      return payload.error;
+    }
+    if (err?.message) {
+      return err.message;
+    }
+    return fallback;
   }
 }

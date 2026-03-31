@@ -47,11 +47,6 @@ import { AchatsListComponent } from './features/client/achats/achats-list.compon
 import { ProfilComponent } from './features/client/profil/profil.component';
 
 // ✅ PHASE 7 - EMETTEUR Pages
-import { EmetteurLayoutComponent } from './features/emetteur/layout/emetteur-layout.component';
-import { EmetteurDashboardComponent } from './features/emetteur/dashboard/dashboard.component';
-import { EmetteurProfilComponent } from './features/emetteur/profil/profil.component';
-import { EmetteurProduitsListComponent } from './features/emetteur/produits/produits-list.component';
-import { EmetteurFacturesListComponent } from './features/emetteur/factures/factures-list.component';
 
 import { AccueilComponent } from './pages/dashboard/accueil/accueil.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
@@ -59,17 +54,13 @@ import { ClientsComponent } from './pages/clients/clients.component';
 import { FacturesComponent } from './pages/factures/factures.component';
 import { FactureComponent } from './pages/facture/facture.component';
 import { ProduitsComponent } from './pages/produits/produits.component';
-import { EmetteursComponent } from './pages/emetteurs/emetteurs.component';
 import { ParametresComponent } from './pages/parametres/parametres.component';
 import { DeviseComponent } from './pages/devise/devise.component';
 import { DemandesComponent } from './pages/demandes/demandes.component';
 import { DemandeDetailComponent } from './pages/demandes/demande-detail.component';
 import { UsersComponent } from './pages/users/users.component';
 import { CollaborateursComponent } from './pages/collaborateurs/collaborateurs.component';
-import { MesAchatsComponent } from './pages/mes-achats/mes-achats.component';
 import { MonProfilComponent } from './pages/mon-profil/mon-profil.component';
-import { DashboardEmetteurComponent } from './pages/dashboard-emetteur/dashboard-emetteur.component';
-import { ProfilEmetteurComponent } from './pages/profil-emetteur/profil-emetteur.component';
 import { authGuard, firstLoginGuard, guestGuard, roleGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
@@ -82,7 +73,7 @@ export const routes: Routes = [
     path: 'registerclient',
     component: RegisterComponent,
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['SUPER_ADMIN', 'ENTREPRISE_ADMIN', 'EMETTEUR'] }
+    data: { roles: ['SUPER_ADMIN', 'ENTREPRISE_ADMIN'] }
   },
   { path: 'register-entreprise', component: RegisterEntrepriseComponent, canActivate: [guestGuard] },
   { path: 'super-admin/register', component: SuperAdminRegisterComponent, canActivate: [guestGuard] },
@@ -109,12 +100,6 @@ export const routes: Routes = [
         component: ClientsComponent,
         canActivate: [roleGuard],
         data: { roles: ['SUPER_ADMIN', 'ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER', 'EMETTEUR'] }
-      },
-      {
-        path: 'emetteurs',
-        component: EmetteursComponent,
-        canActivate: [roleGuard],
-        data: { roles: ['SUPER_ADMIN'] }
       },
       {
         path: 'produits',
@@ -145,28 +130,10 @@ export const routes: Routes = [
         data: { roles: ['ENTREPRISE_ADMIN'] }
       },
       {
-        path: 'mes-achats',
-        component: MesAchatsComponent,
-        canActivate: [roleGuard],
-        data: { roles: ['CLIENT'] }
-      },
-      {
         path: 'mon-profil',
         component: MonProfilComponent,
         canActivate: [roleGuard],
         data: { roles: ['CLIENT'] }
-      },
-      {
-        path: 'dashboard-emetteur',
-        component: DashboardEmetteurComponent,
-        canActivate: [roleGuard],
-        data: { roles: ['EMETTEUR'] }
-      },
-      {
-        path: 'profil-emetteur',
-        component: ProfilEmetteurComponent,
-        canActivate: [roleGuard],
-        data: { roles: ['EMETTEUR'] }
       },
     ]
   },
@@ -242,21 +209,6 @@ export const routes: Routes = [
       { path: '', redirectTo: 'achats', pathMatch: 'full' },
       { path: 'achats', component: AchatsListComponent },
       { path: 'profil', component: ProfilComponent }
-    ]
-  },
-
-  // ── PHASE 7: EMETTEUR PAGES ──────────────────────────────────
-  {
-    path: 'emetteur',
-    component: EmetteurLayoutComponent,
-    canActivate: [authGuard, roleGuard],
-    data: { roles: ['EMETTEUR'] },
-    children: [
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      { path: 'dashboard', component: EmetteurDashboardComponent },
-      { path: 'factures', component: EmetteurFacturesListComponent },
-      { path: 'produits', component: EmetteurProduitsListComponent },
-      { path: 'profil', component: EmetteurProfilComponent }
     ]
   },
 

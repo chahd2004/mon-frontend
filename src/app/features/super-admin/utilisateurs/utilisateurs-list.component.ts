@@ -7,7 +7,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
-import { AccountStatus, UserDTO, UserResponseDTO } from '../../../models';
+import { AccountStatus, ADMIN_ROLES, UserDTO, UserResponseDTO, normalizeUserRole } from '../../../models';
 import { RoleLabelPipe, StatusBadgePipe } from '../../../shared';
 import { SuperAdminUserService } from '../../../core/services/super-admin-user.service';
 
@@ -40,6 +40,7 @@ export class UtilisateursListComponent implements OnInit {
       next: (users: UserResponseDTO[]) => {
         this.utilisateurs = users.map((u) => ({
           ...u,
+          role: normalizeUserRole(u.role),
           createdAt: u.createdAt ? new Date(u.createdAt) : undefined,
           updatedAt: u.updatedAt ? new Date(u.updatedAt) : undefined
         }));
@@ -56,11 +57,17 @@ export class UtilisateursListComponent implements OnInit {
   }
 
   applyFilters(): void {
+    const normalizedSearchTerm = this.searchTerm.trim().toLowerCase();
+
     this.filteredUtilisateurs = this.utilisateurs.filter(u => {
-      return !this.searchTerm ||
-        u.nom?.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        u.prenom?.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        u.email?.toLowerCase().includes(this.searchTerm.toLowerCase());
+      if (!ADMIN_ROLES.includes(u.role)) {
+        return false;
+      }
+
+      return !normalizedSearchTerm ||
+        u.nom?.toLowerCase().includes(normalizedSearchTerm) ||
+        u.prenom?.toLowerCase().includes(normalizedSearchTerm) ||
+        u.email?.toLowerCase().includes(normalizedSearchTerm);
     });
   }
 
