@@ -1,123 +1,93 @@
-<div class="devise-container">
-  <h1>Gestion des devises</h1>
-  <form class="devise-form" (submit)="onSubmit($event)">
-    <div class="form-row">
-      <div class="form-group">
-        <label for="code">Code devise</label>
-        <select id="code" name="code" class="form-control" [(ngModel)]="code" (change)="onCodeChange()" required>
-          <option value="">-- Choisir une devise --</option>
-          <option value="USD">Dollar américain (USD)</option>
-          <option value="EUR">Euro (EUR)</option>
-          <option value="GBP">Livre sterling (GBP)</option>
-          <option value="JPY">Yen japonais (JPY)</option>
-          <option value="CAD">Dollar canadien (CAD)</option>
-          <option value="AUD">Dollar australien (AUD)</option>
-          <option value="CHF">Franc suisse (CHF)</option>
-          <option value="MAD">Dirham marocain (MAD)</option>
-          <option value="TND">Dinar tunisien (TND)</option>
-          <option value="DZD">Dinar algérien (DZD)</option>
-          <option value="">Autre (saisir manuellement)</option>
-        </select>
-        <input *ngIf="code === ''" id="code-manuel" name="code-manuel" type="text" class="form-control" [(ngModel)]="code" placeholder="Ex: EUR" required />
-      </div>
-      <div class="form-group">
-        <label for="libelle">Libellé</label>
-        <input id="libelle" name="libelle" type="text" class="form-control" [(ngModel)]="libelle" placeholder="Ex: Euro" required />
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label for="symbole">Symbole</label>
-        <input id="symbole" name="symbole" type="text" class="form-control" [(ngModel)]="symbole" placeholder="Ex: €" required />
-      </div>
-      <div class="form-group">
-        <label for="pays">Pays</label>
-        <select id="pays" name="pays" class="form-control" [(ngModel)]="pays" required>
-          <option value="">-- Choisir un pays --</option>
-          <option value="France">France</option>
-          <option value="Tunisie">Tunisie</option>
-          <option value="Maroc">Maroc</option>
-          <option value="Algérie">Algérie</option>
-          <option value="États-Unis">États-Unis</option>
-          <option value="Canada">Canada</option>
-          <option value="Royaume-Uni">Royaume-Uni</option>
-          <option value="Japon">Japon</option>
-          <option value="Australie">Australie</option>
-          <option value="Suisse">Suisse</option>
-          <option value="Union européenne">Union européenne</option>
-          <option value="Chine">Chine</option>
-          <option value="Espagne">Espagne</option>
-          <option value="Italie">Italie</option>
-          <option value="Allemagne">Allemagne</option>
-          <option value="Russie">Russie</option>
-          <option value="Brésil">Brésil</option>
-          <option value="Inde">Inde</option>
-          <option value="Turquie">Turquie</option>
-          <option value="Égypte">Égypte</option>
-          <option value="Afrique du Sud">Afrique du Sud</option>
-          <option value="Mexique">Mexique</option>
-          <option value="Arabie Saoudite">Arabie Saoudite</option>
-          <option value="Corée du Sud">Corée du Sud</option>
-          <option value="Pays-Bas">Pays-Bas</option>
-          <option value="Belgique">Belgique</option>
-          <option value="Autre">Autre (saisir manuellement)</option>
-        </select>
-        <input *ngIf="pays === 'Autre'" id="pays-manuel" name="pays-manuel" type="text" class="form-control" [(ngModel)]="pays" placeholder="Saisir le pays" required />
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label for="taux">Taux de change</label>
-        <input id="taux" name="taux" type="number" step="0.0001" class="form-control" [(ngModel)]="taux" placeholder="Ex: 3.2500" required />
-      </div>
-      <div class="form-group">
-        <label for="precision">Précision décimale</label>
-        <input id="precision" name="precision" type="number" min="0" max="4" class="form-control" [(ngModel)]="precision" placeholder="Ex: 2" required />
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label for="utilisable">Utilisable</label>
-        <select id="utilisable" name="utilisable" class="form-control" [(ngModel)]="utilisable" required>
-          <option value="true">Oui</option>
-          <option value="false">Non</option>
-        </select>
-      </div>
-    </div>
-    <button type="submit" class="btn btn-primary">Enregistrer</button>
-  </form>
-  <div *ngIf="message" class="alert alert-info" style="margin-top:1rem;">{{ message }}</div>
+<div class="devis-page">
+  <h1 class="title">Devis</h1>
 
-  <div class="devises-list" *ngIf="devises.length">
-    <h2 style="margin-top:2rem;">Liste des devises enregistrées</h2>
-    <table class="devises-table">
+  <div class="action-bar">
+    <button class="btn btn-primary" (click)="nouveauDevis()">+ Nouveau devis</button>
+    <button class="btn btn-neutral" (click)="toggleStats()">Statistiques</button>
+    <button class="btn btn-neutral" (click)="exporterCsv()">Exporter</button>
+  </div>
+
+  <div *ngIf="errorMessage" class="error-box">{{ errorMessage }}</div>
+
+  <div class="table-wrapper" *ngIf="!loading; else loadingTpl">
+    <table>
       <thead>
         <tr>
-          <th>Code</th>
-          <th>Libellé</th>
-          <th>Symbole</th>
-          <th>Pays</th>
-          <th>Taux</th>
-          <th>Précision</th>
-          <th>Utilisable</th>
+          <th>N°</th>
+          <th>Client</th>
+          <th>Date d'emission</th>
+          <th>Date validite</th>
+          <th>Total TTC</th>
+          <th>Statut</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let d of devises; let i = index">
-          <td>{{ d.code }}</td>
-          <td>{{ d.libelle }}</td>
-          <td>{{ d.symbole }}</td>
-          <td>{{ d.pays }}</td>
-          <td>{{ d.taux }}</td>
-          <td>{{ d.precision }}</td>
-          <td>{{ d.utilisable ? 'Oui' : 'Non' }}</td>
+        <tr *ngFor="let d of devis">
+          <td class="strong">{{ d.numDevis }}</td>
+          <td>{{ d.acheteurNom || '-' }}</td>
+          <td>{{ d.dateCreation | date:'dd/MM/yyyy' }}</td>
+          <td>{{ d.dateValidite ? (d.dateValidite | date:'dd/MM/yyyy') : '-' }}</td>
+          <td class="strong">{{ d.totalTTC | number:'1.3-3' }} TND</td>
           <td>
-            <button class="btn-editer" (click)="editDevise(i)">Éditer</button>
-            <button class="btn-supprimer" (click)="supprimerDevise(i)">Supprimer</button>
+            <span class="status" [ngClass]="getStatutClass(d.statut)">{{ d.statut }}</span>
           </td>
+          <td>
+            <div class="row-actions">
+              <button class="icon-btn icon-btn-view" (click)="voirDevis(d.id)" title="Voir"><i class="pi pi-eye"></i></button>
+              <button class="icon-btn icon-btn-edit" (click)="modifierDevis(d.id)" title="Modifier"><i class="pi pi-pencil"></i></button>
+              <button class="icon-btn icon-btn-send" (click)="envoyerDevis(d.id)" [disabled]="d.statut !== 'DRAFT'" title="Envoyer">
+                <i class="pi pi-send"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="!devis.length">
+          <td colspan="7" class="empty">Aucun devis trouve.</td>
         </tr>
       </tbody>
     </table>
   </div>
-  <div *ngIf="message" class="alert alert-info" style="margin-top:1rem;">{{ message }}</div>
+
+  <div class="stats-card" *ngIf="showStats">
+    <h2>Statistiques devis</h2>
+    <div class="stats-grid">
+      <div class="stat-item">
+        <span>Total devis</span>
+        <strong>{{ totalDevis }}</strong>
+      </div>
+      <div class="stat-item">
+        <span>Acceptes</span>
+        <strong>{{ acceptedCount }}</strong>
+      </div>
+      <div class="stat-item">
+        <span>En attente</span>
+        <strong>{{ pendingCount }}</strong>
+      </div>
+      <div class="stat-item">
+        <span>Expires</span>
+        <strong>{{ expiredCount }}</strong>
+      </div>
+      <div class="stat-item">
+        <span>Montant total</span>
+        <strong>{{ totalMontant | number:'1.3-3' }} TND</strong>
+      </div>
+      <div class="stat-item">
+        <span>Taux d'acceptation</span>
+        <strong>{{ acceptanceRate | number:'1.0-0' }}%</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="details-card" *ngIf="selectedDevis">
+    <h3>Details devis: {{ selectedDevis.numDevis }}</h3>
+    <p><strong>Client:</strong> {{ selectedDevis.acheteurNom }}</p>
+    <p><strong>Vendeur:</strong> {{ selectedDevis.vendeurNom }}</p>
+    <p><strong>Statut:</strong> {{ selectedDevis.statut }}</p>
+    <p><strong>Total TTC:</strong> {{ selectedDevis.totalTTC | number:'1.3-3' }} TND</p>
+  </div>
+
+  <ng-template #loadingTpl>
+    <div class="loading">Chargement des devis...</div>
+  </ng-template>
 </div>

@@ -5,7 +5,7 @@
   <div class="page-header">
     <button pButton icon="pi pi-arrow-left" label="Retour à la liste"
       class="p-button-text" (click)="retourListe()"></button>
-    <h1>👑 Détail de la demande</h1>
+    <h1>Détail de la demande</h1>
   </div>
 
   <!-- Chargement -->
@@ -63,7 +63,7 @@
 
     <!-- Commentaire de traitement (si rejetée) -->
     <div class="commentaire-section" *ngIf="demande.commentaireTraitement">
-      <h3>💬 Commentaire de traitement</h3>
+      <h3>Commentaire de traitement</h3>
       <p>{{ demande.commentaireTraitement }}</p>
     </div>
 
@@ -72,7 +72,7 @@
 
       <!-- Formulaire de rejet -->
       <div class="rejection-form" *ngIf="showRejectionForm">
-        <h3>❌ Raison du rejet</h3>
+        <h3>Raison du rejet</h3>
         <textarea
           pInputTextarea
           [(ngModel)]="rejectionReason"

@@ -1,0 +1,117 @@
+<div class="commande-detail-page" *ngIf="!loading && commande; else loadingOrError">
+  <button class="back-link" (click)="retourAuxCommandes()">&larr; Retour aux commandes</button>
+
+  <section class="header-card">
+    <h1>COMMANDE #{{ formatCommandeReference() }}</h1>
+    <div class="status-pill" [ngClass]="getStatusClass(commande.statut)">
+      Statut: {{ getStatusLabel(commande.statut) }}
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Informations</h2>
+
+    <div class="info-grid">
+      <div class="mini-card">
+        <h3>Client</h3>
+        <p class="strong">{{ client?.raisonSociale || commande.acheteurNom }}</p>
+        <p>{{ client?.adresseComplete || '-' }}</p>
+        <p>{{ client?.email || '-' }}</p>
+        <p>{{ client?.telephone || '-' }}</p>
+        <p>MF: {{ client?.code || '-' }}</p>
+      </div>
+
+      <div class="mini-card">
+        <h3>Commande</h3>
+        <p><strong>Date commande:</strong> {{ commande.dateCreation | date:'dd/MM/yyyy' }}</p>
+        <p><strong>Date livraison prevue:</strong> {{ dateLivraisonPrevue ? (dateLivraisonPrevue | date:'dd/MM/yyyy') : '-' }}</p>
+        <p><strong>Mode paiement:</strong> {{ formatModePaiement(commande.modePaiement) }}</p>
+        <p><strong>Priorite:</strong> {{ priorite }}</p>
+      </div>
+    </div>
+
+    <div class="linked-bc">
+      Bon de commande lie: <strong>{{ bonCommandeLieReference }}</strong>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Produits</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Designation</th>
+            <th>Qte</th>
+            <th>Prix HT</th>
+            <th>TVA %</th>
+            <th>Total TTC</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let ligne of lignes; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ ligne.produitDesignation || '-' }}</td>
+            <td>{{ ligne.quantite || 0 }}</td>
+            <td>{{ (ligne.prixUnitaire || 0) | number:'1.3-3' }}</td>
+            <td>{{ getLigneTauxTVA(ligne) | number:'1.0-2' }}%</td>
+            <td>{{ getLigneMontantTTC(ligne) | number:'1.3-3' }}</td>
+          </tr>
+          <tr *ngIf="!lignes.length">
+            <td colspan="6" class="empty">Aucune ligne dans cette commande.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card actions-card">
+    <h2>Actions - Changement de statut</h2>
+    <div class="actions-grid">
+      <!-- DRAFT → CONFIRMED -->
+      <button class="action-btn confirm-btn" *ngIf="statutNormalise === 'DRAFT'" (click)="confirmerCommande()" [disabled]="actionLoading">
+        <i class="pi pi-check"></i> CONFIRMER
+      </button>
+      
+      <!-- CONFIRMED → IN_PROGRESS -->
+      <button class="action-btn start-btn" *ngIf="statutNormalise === 'CONFIRMED'" (click)="demarrerProduction()" [disabled]="actionLoading">
+        <i class="pi pi-play"></i> EN PROGRES
+      </button>
+      
+      <!-- IN_PROGRESS → DELIVERED -->
+      <button class="action-btn deliver-btn" *ngIf="statutNormalise === 'IN_PROGRESS'" (click)="livrerCommande()" [disabled]="actionLoading">
+        <i class="pi pi-check-circle"></i> LIVRER
+      </button>
+
+      <!-- Annuler (disponible pour tous les statuts sauf DELIVERED) -->
+      <button class="action-btn cancel-btn" *ngIf="statutNormalise !== 'DELIVERED' && statutNormalise !== 'CLOSED'" (click)="annulerCommande()" [disabled]="actionLoading">
+        <i class="pi pi-times"></i> ANNULER
+      </button>
+    </div>
+  </section>
+
+  <section class="card total-card">
+    <h2>Total</h2>
+    <div class="totals-row">
+      <span>Total HT: {{ commande.totalHT | number:'1.3-3' }} TND</span>
+      <span>TVA: {{ commande.montantTVA | number:'1.3-3' }} TND</span>
+      <span class="ttc">TOTAL TTC: {{ commande.totalTTC | number:'1.3-3' }} TND</span>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Historique</h2>
+    <div class="history-list">
+      <p *ngFor="let item of historique">{{ item }}</p>
+    </div>
+  </section>
+
+  <div class="message error" *ngIf="errorMessage">{{ errorMessage }}</div>
+  <div class="message info" *ngIf="infoMessage">{{ infoMessage }}</div>
+</div>
+
+<ng-template #loadingOrError>
+  <div class="loading" *ngIf="loading">Chargement de la commande...</div>
+  <div class="message error" *ngIf="!loading && errorMessage">{{ errorMessage }}</div>
+</ng-template>

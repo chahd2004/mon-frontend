@@ -39,6 +39,10 @@ export class FactureService {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
+  signerFacture(id: number): Observable<Facture> {
+    return this.http.put<Facture>(`${this.apiUrl}/${id}/signer`, {});
+  }
+
   getFactures(
     page: number = 1,
     limit: number = 10,

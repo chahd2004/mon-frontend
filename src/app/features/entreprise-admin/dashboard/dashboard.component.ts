@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StatCardComponent } from '../../../shared';
 import { ChartModule } from 'primeng/chart';
+import { AuthService } from '../../../core/services/auth.service';
+import { EmetteurService } from '../../../core/services/emetteur.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,13 +13,61 @@ import { ChartModule } from 'primeng/chart';
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent implements OnInit {
+  private authService = inject(AuthService);
+  private emetteurService = inject(EmetteurService);
+
   kpiData: any[] = [];
   chartData: any = null;
   chartOptions: any = null;
+  enterpriseName: string | null = null;
 
   ngOnInit(): void {
+    console.log('DashboardComponent initialized');
+    this.loadEnterpriseName();
     this.initKpis();
     this.initCharts();
+  }
+
+  private loadEnterpriseName(): void {
+    try {
+      const currentUser = this.authService.currentUser();
+      console.log('🔍 Current user:', currentUser);
+      
+      if (!currentUser) {
+        console.log('❌ No current user found');
+        this.enterpriseName = 'Entreprise';
+        return;
+      }
+      
+      if (!currentUser.emetteurId) {
+        console.log('⚠️  No emetteurId found in user:', { 
+          id: currentUser.id, 
+          email: currentUser.email,
+          role: currentUser.role
+        });
+        this.enterpriseName = 'Entreprise';
+        return;
+      }
+
+      console.log('📡 Fetching emetteur with ID:', currentUser.emetteurId);
+      this.emetteurService.getEmetteurById(currentUser.emetteurId).subscribe({
+        next: (emetteur) => {
+          console.log('✅ Emetteur loaded:', emetteur);
+          this.enterpriseName = emetteur?.raisonSociale || 'Entreprise';
+          console.log('📝 Enterprise name set to:', this.enterpriseName);
+        },
+        error: (err) => {
+          console.error('❌ Error fetching emetteur:', err);
+          this.enterpriseName = 'Entreprise';
+        },
+        complete: () => {
+          console.log('✔️  Emetteur subscription completed');
+        }
+      });
+    } catch (error) {
+      console.error('❌ Exception in loadEnterpriseName:', error);
+      this.enterpriseName = 'Entreprise';
+    }
   }
 
   private initKpis(): void {

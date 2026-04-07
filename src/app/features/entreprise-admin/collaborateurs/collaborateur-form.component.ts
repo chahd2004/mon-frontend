@@ -33,7 +33,7 @@ export class CollaborateurFormComponent implements OnInit {
     { label: 'Viewer', value: 'VIEWER' }
   ];
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder) { }
 
   ngOnInit(): void {
     this.initForm();

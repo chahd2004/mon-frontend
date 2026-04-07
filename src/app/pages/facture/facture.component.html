@@ -4,18 +4,52 @@
   <!-- ===================== MODE VUE REÇU ===================== -->
   <ng-container *ngIf="isViewMode">
 
-    <!-- Barre du haut — bouton Imprimer supprimé -->
+    <!-- Barre du haut -->
     <div class="top-bar no-print">
       <button class="back-btn" (click)="retourListe()">
         <i class="pi pi-arrow-left"></i> Retour à la liste
       </button>
       <div class="top-actions">
+
+        <!-- DRAFT → Signer -->
+        <button *ngIf="!isViewer && statut === 'DRAFT'" class="action-btn sign-btn" (click)="signerFacture()">
+          <i class="pi pi-lock"></i> Signer
+        </button>
+
+        <!-- SIGNED → Envoyer / Annuler -->
+        <button *ngIf="!isViewer && statut === 'SIGNED'" class="action-btn send-btn" (click)="envoyerFacture()">
+          <i class="pi pi-send"></i> Émettre
+        </button>
+        <button *ngIf="!isViewer && statut === 'SIGNED'" class="action-btn cancel-btn" (click)="annulerFacture()">
+          <i class="pi pi-ban"></i> Annuler
+        </button>
+
+        <!-- SENT → Payer / Rejeter / Annuler -->
+        <button *ngIf="!isViewer && statut === 'SENT'" class="action-btn pay-btn" (click)="marquerPayee()">
+          <i class="pi pi-wallet"></i> Marquer payée
+        </button>
+        <button *ngIf="!isViewer && statut === 'SENT'" class="action-btn reject-btn" (click)="rejeterFacture()">
+          <i class="pi pi-times-circle"></i> Rejeter
+        </button>
+        <button *ngIf="!isViewer && statut === 'SENT'" class="action-btn cancel-btn" (click)="annulerFacture()">
+          <i class="pi pi-ban"></i> Annuler
+        </button>
+
+        <!-- REJECTED → Retour brouillon -->
+        <button *ngIf="!isViewer && statut === 'REJECTED'" class="action-btn draft-btn" (click)="retourBrouillon()">
+          <i class="pi pi-replay"></i> Retour brouillon
+        </button>
+
+        <!-- PDF -->
         <button class="pdf-btn" (click)="telechargerPdfTexte()">
           <i class="pi pi-download"></i> Télécharger PDF
         </button>
-        <button *ngIf="!isViewer" class="edit-action-btn" (click)="passerEnModeEdition()">
+
+        <!-- Modifier (seulement si DRAFT) -->
+        <button *ngIf="!isViewer && statut === 'DRAFT'" class="edit-action-btn" (click)="passerEnModeEdition()">
           <i class="pi pi-pencil"></i> Modifier
         </button>
+
       </div>
     </div>
 
@@ -58,8 +92,10 @@
 
           <!-- Titre + QR -->
           <div class="recu-title-block">
-            <div class="recu-title">FACTURE</div>
-            <div class="recu-num">N° {{ numFact || '—' }}</div>
+            <div class="recu-title-row">
+              <span class="recu-title">FACTURE</span>
+              <span class="recu-num">N° {{ numFact || '—' }}</span>
+            </div>
             <div class="recu-qr-block">
               <div class="recu-qr-label">
                 <i class="pi pi-qrcode"></i> Scanner pour consulter le statut en temps réel
@@ -204,10 +240,7 @@
         <i class="pi pi-arrow-left"></i> Retour à la liste
       </button>
       <div class="top-actions">
-        <p-tag [value]="formatStatut(statut)" [severity]="getStatutSeverity(statut)" class="statut-tag"></p-tag>
-        <button class="save-btn" (click)="sauvegarder()" [disabled]="loading">
-          <i class="pi pi-save"></i> {{ isEditMode ? 'Mettre à jour' : 'Sauvegarder' }}
-        </button>
+        <!-- Status tag removed from top -->
       </div>
     </div>
 
@@ -237,10 +270,12 @@
 
     <div class="section facture-header">
       <div class="facture-title-block">
-        <h1 class="facture-title">FACTURE</h1>
-        <div class="form-row">
-          <label>N°</label>
-          <input type="text" pInputText [(ngModel)]="numFact" placeholder="Numéro facture (auto-généré)" class="num-input" readonly>
+        <div class="title-inline">
+          <h1 class="facture-title">FACTURE</h1>
+          <div class="form-row">
+            <label>N°</label>
+            <input type="text" pInputText [(ngModel)]="numFact" placeholder="Numéro facture (auto-généré)" class="num-input" readonly>
+          </div>
         </div>
       </div>
       <div class="facture-dates">
@@ -256,10 +291,16 @@
           <label>Mode de paiement <span class="required">*</span></label>
           <p-dropdown [options]="modePaiementOptions" [(ngModel)]="modePaiement" optionLabel="label" optionValue="value"></p-dropdown>
         </div>
+
+        <!-- Statut en lecture seule (transitions via les boutons dédiés) -->
         <div class="date-block">
           <label>Statut</label>
-          <p-dropdown [options]="statutOptions" [(ngModel)]="statut" optionLabel="label" optionValue="value"></p-dropdown>
+          <div class="statut-readonly">
+            <p-tag [value]="formatStatut(statut)" [severity]="getStatutSeverity(statut)"></p-tag>
+            <small class="statut-hint">Utilisez les boutons d'action pour changer le statut</small>
+          </div>
         </div>
+
       </div>
     </div>
 
@@ -369,7 +410,6 @@
         Facture N° {{ numFact || 'Non généré' }} &nbsp;|&nbsp; Date {{ dateEmission | date:'dd/MM/yyyy' }}
       </span>
       <div class="bottom-actions">
-        <p-tag [value]="formatStatut(statut)" [severity]="getStatutSeverity(statut)"></p-tag>
         <button class="save-btn secondary" (click)="sauvegarder()" [disabled]="loading">
           <i class="pi pi-save"></i>
           {{ loading ? 'Enregistrement...' : (isEditMode ? 'Mettre à jour' : 'Sauvegarder') }}

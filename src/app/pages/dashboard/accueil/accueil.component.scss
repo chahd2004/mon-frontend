@@ -24,23 +24,23 @@
     padding: 1.3rem 1.1rem 1rem;
     border-bottom: 1px solid rgba(255,255,255,0.07);
 
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
 
-      i {
-        font-size: 1.3rem;
-        color: rgba(255,255,255,0.85);
-      }
+        i {
+          font-size: 1.3rem;
+          color: rgba(255, 255, 255, 0.85);
+        }
 
-      span {
-        font-size: 1rem;
-        font-weight: 800;
-        color: #fff;
-        letter-spacing: 2.5px;
+        span {
+          font-size: 1.1rem;
+          font-weight: 800;
+          color: #ffffff;
+          letter-spacing: 2.5px;
+        }
       }
-    }
   }
 
   // ─── NAV ───
@@ -179,12 +179,12 @@
 // =====================================================
 // ===== MAIN CONTENT =====
 // =====================================================
-.main-content {
-  flex: 1;
-  margin-left: 210px;
-  padding: 2rem;
-  min-height: 100vh;
-  background: #f8fafc;
+  .main-content {
+    flex: 1;
+    margin-left: 210px;
+    padding: 2rem;
+    min-height: 100vh;
+    background: #f8fafc;
 
   .viewer-banner {
     margin-bottom: 1rem;

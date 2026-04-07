@@ -74,14 +74,33 @@ button.primary {
 	color: #fff;
 }
 
+button:disabled {
+	opacity: 0.55;
+	cursor: not-allowed;
+}
+
 button.ghost {
 	background: #fff;
 	color: #0f172a;
 	border: 1px solid #cbd5e1;
 }
 
+button.danger {
+	background: #fee2e2;
+	color: #991b1b;
+	border: 1px solid #fecaca;
+}
+
 table { width: 100%; border-collapse: collapse; }
 th, td { border-bottom: 1px solid #e5e7eb; text-align: left; padding: 0.6rem; }
+
+.actions {
+	white-space: nowrap;
+}
+
+.action-btn {
+	margin-right: 0.4rem;
+}
 
 @media (max-width: 700px) {
 	.form-grid {

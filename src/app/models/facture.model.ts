@@ -43,12 +43,23 @@ export interface FactureRequest {
 }
 
 export enum StatutFacture {
-  BROUILLON = 'BROUILLON',
-  EN_ATTENTE = 'EN_ATTENTE',
-  PAYEE = 'PAYEE',
-  ANNULEE = 'ANNULEE',
-  EN_RETARD = 'EN_RETARD'
+  DRAFT     = 'DRAFT',
+  SIGNED    = 'SIGNED',
+  SENT      = 'SENT',
+  PAID      = 'PAID',
+  REJECTED  = 'REJECTED',
+  CANCELLED = 'CANCELLED'
 }
+
+/** Libellés français pour chaque statut */
+export const StatutFactureLabel: Record<string, string> = {
+  DRAFT:     'Brouillon',
+  SIGNED:    'Signée',
+  SENT:      'Émise',
+  PAID:      'Payée',
+  REJECTED:  'Rejetée',
+  CANCELLED: 'Annulée'
+};
 
 /** Aligné avec le backend (ModePaiement.java) */
 export enum ModePaiement {

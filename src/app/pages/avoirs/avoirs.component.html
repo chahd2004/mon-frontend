@@ -1,0 +1,120 @@
+<div class="avoirs-container" [class.loading-state]="loading">
+  <!-- Header Section -->
+  <header class="page-header">
+    <div class="header-left">
+      <button class="back-btn" (click)="goBack()" title="Retour">
+        <i class="pi pi-arrow-left"></i>
+      </button>
+      <div class="title-group">
+        <h1>{{ 'AVOIRS.TITLE' | translate }}</h1>
+        <p class="subtitle">{{ 'AVOIRS.SUBTITLE' | translate }} — {{ (avoirs.length > 1 ? 'AVOIRS.DOC_COUNT_PLURAL' : 'AVOIRS.DOC_COUNT') | translate:{ count: avoirs.length } }}</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <!-- Removed bell and user info -->
+    </div>
+  </header>
+
+  <hr class="section-divider">
+
+  <!-- Summary Cards -->
+  <section class="summary-section">
+    <div class="summary-card total" [class.active]="typeFilter === 'TOTAL'" (click)="typeFilter = (typeFilter === 'TOTAL' ? 'ALL' : 'TOTAL')">
+      <div class="card-icon"><i class="pi pi-file"></i></div>
+      <div class="card-content">
+        <h3>{{ 'AVOIRS.TYPE_TOTAL_TITLE' | translate }}</h3>
+        <p>{{ 'AVOIRS.TYPE_TOTAL_DESC' | translate }}</p>
+        <span class="detail">{{ 'AVOIRS.TYPE_TOTAL_DETAIL' | translate }} ({{ totalAvoirsCount }})</span>
+      </div>
+    </div>
+    <div class="summary-card partiel" [class.active]="typeFilter === 'PARTIEL'" (click)="typeFilter = (typeFilter === 'PARTIEL' ? 'ALL' : 'PARTIEL')">
+      <div class="card-icon"><i class="pi pi-clone"></i></div>
+      <div class="card-content">
+        <h3>{{ 'AVOIRS.TYPE_PARTIEL_TITLE' | translate }}</h3>
+        <p>{{ 'AVOIRS.TYPE_PARTIEL_DESC' | translate }}</p>
+        <span class="detail">{{ 'AVOIRS.TYPE_PARTIEL_DETAIL' | translate }} ({{ partielAvoirsCount }})</span>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- Filters Section -->
+  <section class="filters-section">
+    <div class="search-box">
+      <i class="pi pi-search"></i>
+      <input type="text" [(ngModel)]="searchQuery" [placeholder]="'AVOIRS.SEARCH_PLACEHOLDER' | translate">
+    </div>
+    <div class="filter-controls">
+      <select class="filter-select" [(ngModel)]="statusFilter">
+        <option value="ALL">{{ 'AVOIRS.STATUS.ALL' | translate }}</option>
+        <option value="DRAFT">{{ 'STATUS.DRAFT' | translate }}</option>
+        <option value="VALIDATED">{{ 'STATUS.VALIDATED' | translate }}</option>
+        <option value="SENT">{{ 'STATUS.SENT' | translate }}</option>
+        <option value="APPLIED">{{ 'AVOIRS.STATUS.APPLIED' | translate }}</option>
+      </select>
+      <div class="filter-pill active">{{ (statusFilter === 'ALL' ? 'AVOIRS.STATUS.ALL' : (statusFilter === 'APPLIED' ? 'AVOIRS.STATUS.APPLIED' : 'STATUS.' + statusFilter)) | translate }} <i class="pi pi-chevron-down"></i></div>
+    </div>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- List Section -->
+  <section class="list-section" *ngIf="!loading; else loadingBlock">
+    <div class="avoir-list" *ngIf="filteredAvoirs.length; else emptyBlock">
+      <div class="avoir-item" *ngFor="let avoir of filteredAvoirs">
+        <div class="avoir-main-info">
+          <span class="avoir-id">{{ avoir.numAvoir }}</span>
+          <span class="separator">·</span>
+          <span class="avoir-amount">{{ avoir.totalTTC | number:'1.2-2' }} TND</span>
+          <span class="separator">·</span>
+          <span class="avoir-type" [class.total]="avoir.type === 'TOTAL'">{{ ('AVOIRS.TYPE_' + avoir.type + '_TITLE') | translate }}</span>
+          <span class="separator">·</span>
+          <span class="status-indicator" [ngClass]="getStatusClass(avoir.statut)">
+            {{ (avoir.statut === 'APPLIED' ? 'AVOIRS.STATUS.APPLIED' : 'STATUS.' + avoir.statut) | translate }}
+          </span>
+        </div>
+        
+        <div class="avoir-secondary-info">
+          <span class="linked-invoice">{{ 'AVOIRS.LINKED_INVOICE' | translate }} {{ avoir.factureSourceNum }}</span>
+          <span class="separator">·</span>
+          <span class="avoir-date">{{ avoir.dateCreation | date:'dd/MM/yyyy' }}</span>
+          <span class="buyer-name" *ngIf="avoir.nomAcheteur">· {{ avoir.nomAcheteur }}</span>
+        </div>
+
+        <div class="avoir-actions">
+          <button class="action-btn view-btn" (click)="voirAvoir(avoir)">
+            <i class="pi pi-eye"></i> {{ 'COMMON.EDIT' | translate }}
+          </button>
+          <button class="action-btn edit-btn" *ngIf="avoir.statut === 'DRAFT'" (click)="modifierAvoir(avoir)">
+            <i class="pi pi-pencil"></i> {{ 'COMMON.EDIT' | translate }}
+          </button>
+          <button class="action-btn send-btn" *ngIf="avoir.statut === 'VALIDATED'" (click)="envoyerAvoir(avoir)">
+            <i class="pi pi-send"></i> Envoyer
+          </button>
+        </div>
+        <hr class="item-divider">
+      </div>
+    </div>
+  </section>
+
+  <!-- Cycle de vie Section -->
+  <!-- Lifecycle legend removed -->
+
+  <div class="message error" *ngIf="errorMessage">{{ errorMessage }}</div>
+  <div class="message info" *ngIf="infoMessage">{{ infoMessage }}</div>
+</div>
+
+<ng-template #loadingBlock>
+  <div class="loading-overlay">
+    <i class="pi pi-spin pi-spinner"></i>
+    <span>{{ 'AVOIRS.LOADING_MESSAGE' | translate }}</span>
+  </div>
+</ng-template>
+
+<ng-template #emptyBlock>
+  <div class="empty-state">
+    <i class="pi pi-folder-open"></i>
+    <p>{{ 'AVOIRS.EMPTY_MESSAGE' | translate }}</p>
+  </div>
+</ng-template>

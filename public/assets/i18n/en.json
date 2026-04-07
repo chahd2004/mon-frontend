@@ -1,0 +1,195 @@
+{
+  "FACTURATION": "Billing",
+  "DASHBOARD": {
+    "TITLE": "Dashboard",
+    "SUBTITLE": "Welcome to your management space",
+    "HOME": "Home",
+    "REFRESH": "Refresh",
+    "TOTAL_FACTURES": "Total Invoices",
+    "TOTAL_CLIENTS": "Total Clients",
+    "REVENUE": "Revenue",
+    "UNPAID_INVOICES": "Unpaid Invoices",
+    "CHART_TITLE": "Monthly Evolution",
+    "NO_DATA": "No data available"
+  },
+  "FACTURES": {
+    "TITLE": "Invoices Management",
+    "NEW": "New Invoice",
+    "SEARCH_PLACEHOLDER": "Search by Invoice N° or client...",
+    "TABLE": {
+      "NUM": "Invoice N°",
+      "CLIENT": "Client",
+      "DATE_EMISSION": "Issue Date",
+      "DATE_ECHEANCE": "Due Date",
+      "STATUS": "Status",
+      "ACTIONS": "Actions",
+      "NOT_DEFINED": "Not defined"
+    },
+    "ACTIONS": {
+      "VIEW": "View",
+      "SIGN": "Sign",
+      "EDIT": "Edit",
+      "DELETE": "Delete"
+    },
+    "EMPTY": {
+      "TITLE": "No invoices found",
+      "SUBTITLE": "Start by creating your first invoice.",
+      "BUTTON": "Create an invoice"
+    },
+    "CHART_HEADER": "Invoices Evolution"
+  },
+  "STATUS": {
+    "DRAFT": "Draft",
+    "SENT": "Sent",
+    "PAID": "Paid",
+    "PARTIAL": "Partial",
+    "CANCELLED": "Cancelled",
+    "VALIDATED": "Validated"
+  },
+  "CLIENTS": {
+    "TITLE": "Client List",
+    "NEW": "New Client",
+    "SEARCH_PLACEHOLDER": "Search by company name, email...",
+    "TABLE": {
+      "RAISON_SOCIALE": "Company Name",
+      "EMAIL": "Email",
+      "TELEPHONE": "Phone",
+      "ADRESSE": "Address",
+      "PAYS": "Country",
+      "REGION": "Region",
+      "ACTIONS": "Actions"
+    },
+    "ACTIONS": {
+      "EDIT_TOOLTIP": "Edit this client",
+      "DELETE_TOOLTIP": "Delete this client"
+    },
+    "EMPTY": {
+      "MESSAGE": "No clients",
+      "SUBTITLE_ADD": "Start by adding your first client using the \"New Client\" button.",
+      "SUBTITLE_VIEW": "No clients available at the moment."
+    },
+    "DIALOG": {
+      "ADD_TITLE": "New Client",
+      "EDIT_TITLE": "Edit Client"
+    },
+    "FORM": {
+      "RAISON_SOCIALE": "Company Name",
+      "EMAIL": "Email",
+      "TELEPHONE": "Phone",
+      "ADRESSE": "Address",
+      "PAYS": "Country",
+      "REGION": "Region",
+      "PLACEHOLDERS": {
+        "RAISON_SOCIALE": "Company name",
+        "EMAIL": "example@email.com",
+        "TELEPHONE": "71 234 567",
+        "ADRESSE": "Street, city, postal code",
+        "PAYS": "TUNISIA",
+        "REGION_SELECT": "Select"
+      }
+    }
+  },
+  "PRODUITS": {
+    "TITLE": "Product Management",
+    "NEW": "New Product",
+    "SEARCH_PLACEHOLDER": "Search by reference or designation...",
+    "TABLE": {
+      "REF": "Reference",
+      "DESIGNATION": "Designation",
+      "PRIX_HT": "Unit Price (Excl. Tax)",
+      "TVA": "VAT %",
+      "PRIX_TTC": "Price (Incl. Tax)",
+      "STOCK": "Stock",
+      "STATUS": "Status",
+      "ACTIONS": "Actions"
+    },
+    "ACTIONS": {
+      "EDIT_TOOLTIP": "Edit this product",
+      "DELETE_TOOLTIP": "Delete this product"
+    },
+    "EMPTY": {
+      "TITLE": "No products found",
+      "SUBTITLE_ADD": "Start by adding your first product.",
+      "SUBTITLE_VIEW": "No products available at the moment."
+    },
+    "DIALOG": {
+      "ADD_TITLE": "New Product",
+      "EDIT_TITLE": "Edit Product"
+    },
+    "FORM": {
+      "REF": "Reference",
+      "DESIGNATION": "Designation",
+      "PRIX_HT": "Unit Price (Excl. Tax)",
+      "TVA": "VAT %",
+      "STOCK_TITLE": "Stock Management",
+      "STOCK_UNLIMITED": "Unlimited stock (services / digital products)",
+      "STOCK_QTY": "Quantity in stock",
+      "STOCK_ALERT": "Alert threshold",
+      "STOCK_PREVIEW": "Expected status:",
+      "EMETTEUR_ID": "Issuer ID",
+      "PREVIEW_TITLE": "Price Preview",
+      "PREVIEW_HT": "Price (Excl. Tax)",
+      "PREVIEW_VAT": "VAT Amount",
+      "PREVIEW_TTC": "Price (Incl. Tax)"
+    },
+    "STOCK_STATUS": {
+      "AVAILABLE": "Available",
+      "LOW": "Low stock",
+      "OUT": "Out of stock",
+      "UNLIMITED": "Unlimited"
+    }
+  },
+  "AVOIRS": {
+    "TITLE": "Credit Notes",
+    "SUBTITLE": "Notes of credit",
+    "DOC_COUNT": "{{count}} document",
+    "DOC_COUNT_PLURAL": "{{count}} documents",
+    "TYPE_TOTAL_TITLE": "TOTAL",
+    "TYPE_TOTAL_DESC": "Full cancellation",
+    "TYPE_TOTAL_DETAIL": "All lines",
+    "TYPE_PARTIEL_TITLE": "PARTIAL",
+    "TYPE_PARTIEL_DESC": "Partial correction",
+    "TYPE_PARTIEL_DETAIL": "Adjustable lines",
+    "SEARCH_PLACEHOLDER": "Search by number, client, or invoice...",
+    "STATUS": {
+      "ALL": "All",
+      "APPLIED": "Applied"
+    },
+    "LINKED_INVOICE": "Invoice",
+    "EMPTY_MESSAGE": "No credit notes found.",
+    "LOADING_MESSAGE": "Loading credit notes..."
+  },
+  "PARAMETRES": {
+    "TITLE": "Settings",
+    "PROFIL": "Profile",
+    "PREFERENCES": "Preferences",
+    "LANGUE": "Language",
+    "THEME": "Theme",
+    "SAVE_SUCCESS": "Preferences saved"
+  },
+  "COMMON": {
+    "SAVE": "Save",
+    "CANCEL": "Cancel",
+    "DELETE": "Delete",
+    "EDIT": "Edit"
+  },
+  "SIDEBAR": {
+    "GENERAL": "GENERAL",
+    "DASHBOARD": "Dashboard",
+    "CLIENTS": "Clients",
+    "PRODUITS": "Products",
+    "DEMANDES": "Requests",
+    "UTILISATEURS": "Users",
+    "COLLABORATEURS": "Collaborators",
+    "PROFIL": "My profile",
+    "FACTURATION": "BILLING",
+    "FACTURES": "Invoices",
+    "DEVIS": "Quotes",
+    "BON_COMMANDES": "Purchase Orders",
+    "COMMANDES": "Orders",
+    "BON_LIVRAISON": "Delivery Notes",
+    "AVOIRS": "Credit Notes",
+    "PARAMETRES": "Settings",
+    "LOGOUT": "Logout"
+  }
+}

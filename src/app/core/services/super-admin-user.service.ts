@@ -5,6 +5,14 @@ import { environment } from '../../../environments/environment';
 import { UserResponseDTO, AccountStatus } from '../../models';
 import { BaseService } from './base.service';
 
+export interface CreateSuperAdminRequest {
+  prenom: string;
+  nom: string;
+  email: string;
+  telephone: string;
+  password?: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class SuperAdminUserService extends BaseService {
   private readonly apiUrl = `${environment.apiUrl}/super-admin/users`;
@@ -21,6 +29,14 @@ export class SuperAdminUserService extends BaseService {
     return this.http.patch<UserResponseDTO>(
       `${this.apiUrl}/${id}/status?status=${status}`,
       {},
+      this.getHeaders()
+    );
+  }
+
+  createSuperAdmin(request: CreateSuperAdminRequest): Observable<UserResponseDTO> {
+    return this.http.post<UserResponseDTO>(
+      `${this.apiUrl}/create-super-admin`,
+      request,
       this.getHeaders()
     );
   }

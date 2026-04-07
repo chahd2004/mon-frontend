@@ -28,9 +28,7 @@
 
       <label>
         <span>Rôle</span>
-        <select [(ngModel)]="role">
-          <option value="ENTREPRISE_VIEWER">ENTREPRISE_VIEWER</option>
-        </select>
+        <input value="Viewer d'entreprise" disabled />
       </label>
 
       <label>
@@ -48,19 +46,30 @@
 
     <div class="form-actions">
       <button class="ghost" (click)="annulerFormulaire()">Annuler</button>
-      <button class="primary" (click)="creerCollaborateur()">Créer</button>
+      <button class="primary" [disabled]="!canSubmit" (click)="creerCollaborateur()">Créer</button>
     </div>
   </div>
 
   <table>
     <thead>
-      <tr><th>Nom</th><th>Email</th><th>Rôle</th></tr>
+      <tr>
+        <th>Nom</th>
+        <th>Email</th>
+        <th>Rôle</th>
+        <th>Actions</th>
+      </tr>
     </thead>
     <tbody>
       <tr *ngFor="let c of collaborateurs">
         <td>{{ c.prenom }} {{ c.nom }}</td>
         <td>{{ c.email }}</td>
         <td>{{ c.role }}</td>
+        <td class="actions">
+          <button *ngIf="c.role !== 'ENTREPRISE_ADMIN'" class="danger action-btn" (click)="supprimerCollaborateur(c)">Supprimer</button>
+        </td>
+      </tr>
+      <tr *ngIf="!isLoading && !collaborateurs.length">
+        <td colspan="4">Aucun membre d'entreprise trouvé.</td>
       </tr>
     </tbody>
   </table>

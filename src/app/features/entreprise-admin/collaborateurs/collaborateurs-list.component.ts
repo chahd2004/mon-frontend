@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -8,6 +8,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
 import { TooltipModule } from 'primeng/tooltip';
 import { TagModule } from 'primeng/tag';
+import { AuthService } from '../../../core/services/auth.service';
+import { EmetteurService } from '../../../core/services/emetteur.service';
 
 interface Collaborateur {
   id: string;
@@ -28,11 +30,15 @@ interface Collaborateur {
   styleUrl: './collaborateurs-list.component.scss'
 })
 export class CollaborateursListComponent implements OnInit {
+  private authService = inject(AuthService);
+  private emetteurService = inject(EmetteurService);
+
   collaborateurs: Collaborateur[] = [];
   filteredCollaborateurs: Collaborateur[] = [];
   isLoading = false;
   searchTerm = '';
   selectedRole = '';
+  enterpriseName = 'Entreprise';
 
   roleOptions = [
     { label: 'Tous', value: '' },
@@ -43,7 +49,50 @@ export class CollaborateursListComponent implements OnInit {
   ];
 
   ngOnInit(): void {
+    this.loadEnterpriseName();
     this.loadCollaborateurs();
+  }
+
+  private loadEnterpriseName(): void {
+    try {
+      const currentUser = this.authService.currentUser();
+      console.log('🔍 Current user (Collaborateurs):', currentUser);
+      
+      if (!currentUser) {
+        console.log('❌ No current user found');
+        this.enterpriseName = 'Entreprise';
+        return;
+      }
+      
+      if (!currentUser.emetteurId) {
+        console.log('⚠️  No emetteurId found in user:', { 
+          id: currentUser.id, 
+          email: currentUser.email,
+          role: currentUser.role
+        });
+        this.enterpriseName = 'Entreprise';
+        return;
+      }
+
+      console.log('📡 Fetching emetteur with ID:', currentUser.emetteurId);
+      this.emetteurService.getEmetteurById(currentUser.emetteurId).subscribe({
+        next: (emetteur) => {
+          console.log('✅ Emetteur loaded:', emetteur);
+          this.enterpriseName = emetteur?.raisonSociale || 'Entreprise';
+          console.log('📝 Enterprise name set to:', this.enterpriseName);
+        },
+        error: (err) => {
+          console.error('❌ Error fetching emetteur:', err);
+          this.enterpriseName = 'Entreprise';
+        },
+        complete: () => {
+          console.log('✔️  Emetteur subscription completed');
+        }
+      });
+    } catch (error) {
+      console.error('❌ Exception in loadEnterpriseName:', error);
+      this.enterpriseName = 'Entreprise';
+    }
   }
 
   private loadCollaborateurs(): void {

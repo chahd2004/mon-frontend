@@ -1,6 +1,6 @@
 import { Component, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
 import { AuthService } from '../../../core/services/auth.service';
@@ -9,9 +9,10 @@ import { UserRole } from '../../../models';
 interface SidebarMenuItem {
   label: string;
   icon: string;
-  route: string;
+  route?: string;
   roles: UserRole[];
   badge?: number;
+  action?: 'logout';
 }
 
 @Component({
@@ -23,7 +24,8 @@ interface SidebarMenuItem {
 })
 export class SidebarComponent {
   authService = inject(AuthService);
-  
+  private router = inject(Router);
+
   isCollapsed = false;
   sidebarItems = computed<SidebarMenuItem[]>(() => {
     const userRole = this.authService.currentUser()?.role;
@@ -61,7 +63,7 @@ export class SidebarComponent {
         roles: ['SUPER_ADMIN', 'ENTREPRISE_ADMIN']
       },
       {
-        label: 'Users',
+        label: 'Utilisateurs',
         icon: 'pi pi-id-card',
         route: '/super-admin/users',
         roles: ['SUPER_ADMIN']
@@ -77,6 +79,12 @@ export class SidebarComponent {
         icon: 'pi pi-cog',
         route: this.getParametresRoute(userRole),
         roles: ['SUPER_ADMIN', 'ENTREPRISE_ADMIN', 'EMETTEUR', 'CLIENT']
+      },
+      {
+        label: 'Déconnexion',
+        icon: 'pi pi-sign-out',
+        roles: ['SUPER_ADMIN', 'ENTREPRISE_ADMIN', 'EMETTEUR', 'CLIENT'],
+        action: 'logout'
       }
     ];
 
@@ -87,6 +95,18 @@ export class SidebarComponent {
 
   toggleSidebar(): void {
     this.isCollapsed = !this.isCollapsed;
+  }
+
+  onItemClick(event: Event, item: SidebarMenuItem): void {
+    if (item.action === 'logout') {
+      event.preventDefault();
+      this.logout();
+    }
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 
   private getParametresRoute(userRole: UserRole | undefined | null): string {

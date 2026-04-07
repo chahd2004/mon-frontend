@@ -3,6 +3,7 @@
   <!-- En-tête -->
   <div class="header-section">
     <div>
+      <h2 class="enterprise-name" *ngIf="raisonSociale">{{ raisonSociale }}</h2>
       <h1>Tableau de bord</h1>
       <p class="subtitle">Bienvenue sur votre espace de gestion</p>
     </div>
@@ -67,70 +68,8 @@
       </div>
     </div>
 
-    <div class="table-card">
-      <div class="card-header">
-        <h3><i class="pi pi-list"></i> Dernières factures</h3>
-        <button class="voir-tout-btn" (click)="naviguerVersFactures()">
-          Voir tout <i class="pi pi-arrow-right"></i>
-        </button>
-      </div>
-      <div class="card-body">
-        <div *ngIf="dernieresFactures.length === 0" class="empty-state">
-          <i class="pi pi-file"></i>
-          <p>Aucune facture disponible</p>
-        </div>
-        <p-table *ngIf="dernieresFactures.length > 0" [value]="dernieresFactures" [paginator]="false" responsiveLayout="scroll">
-          <ng-template pTemplate="header">
-            <tr>
-              <th>N° Facture</th><th>Client</th><th>Montant TTC</th><th>Statut</th><th>Action</th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-facture>
-            <tr>
-              <td class="num-fact">{{ facture.num_fact }}</td>
-              <td>{{ facture.nom_client }}</td>
-              <td class="montant">{{ formatMontant(facture.totalttc) }}</td>
-              <td>
-                <p-tag [value]="formatStatut(facture.statut)" [severity]="getStatutSeverity(facture.statut)"></p-tag>
-              </td>
-              <td>
-                <button class="voir-btn" (click)="voirFacture(facture.id)" pTooltip="Voir la facture" tooltipPosition="top">
-                  <i class="pi pi-eye"></i>
-                </button>
-              </td>
-            </tr>
-          </ng-template>
-        </p-table>
-      </div>
-    </div>
+
   </div>
 
-  <!-- SECTION CHIFFRE D'AFFAIRES -->
-  <div class="section-title">
-    <i class="pi pi-chart-line"></i>
-    <h2>Chiffre d'affaires</h2>
-  </div>
 
-  <div class="ca-section" *ngIf="!loading">
-    <div class="ca-card">
-      <div class="ca-header">
-        <span class="ca-label">Chiffre d'affaires de l'exercice</span>
-        <span class="ca-year">{{ stats.exercice }}</span>
-      </div>
-      <div class="ca-value">{{ formatMontant(chiffreAffaires) }}</div>
-      <div class="ca-evolution" [class.negative]="stats.evolution < 0">
-        <i class="pi" [ngClass]="stats.evolution >= 0 ? 'pi-arrow-up' : 'pi-arrow-down'"></i>
-        {{ stats.evolution | number:'1.2-2' }}% vs N-1
-      </div>
-    </div>
-    <div class="ca-annees">
-      <div *ngIf="stats.annees.length === 0" class="annee-card empty">
-        <p>Aucune donnée annuelle</p>
-      </div>
-      <div class="annee-card" *ngFor="let annee of stats.annees">
-        <div class="annee-periode">Du {{ annee.debut }} au {{ annee.fin }}</div>
-        <div class="annee-montant">{{ formatMontant(annee.montant) }}</div>
-      </div>
-    </div>
-  </div>
 </div>

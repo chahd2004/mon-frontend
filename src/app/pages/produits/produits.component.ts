@@ -17,6 +17,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { CheckboxModule } from 'primeng/checkbox';
 import { MessageService } from 'primeng/api';
 import { ConfirmationService } from 'primeng/api';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { ProduitService } from '../../core/services/produit.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -40,7 +41,8 @@ const DEFAULT_EMETTEUR_ID = 1;
     DialogModule,
     InputNumberModule,
     TooltipModule,
-    CheckboxModule
+    CheckboxModule,
+    TranslateModule
   ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './produits.component.html',
@@ -310,15 +312,15 @@ export class ProduitsComponent implements OnInit {
    */
   getStockStatut(produit: Produit): { label: string; classe: string; icon: string } {
     if (produit.stockIllimite) {
-      return { label: 'Illimité', classe: 'statut-illimite', icon: '∞' };
+      return { label: 'PRODUITS.STOCK_STATUS.UNLIMITED', classe: 'statut-illimite', icon: '∞' };
     }
     if (produit.ruptureStock || (produit.quantiteStock != null && produit.quantiteStock <= 0)) {
-      return { label: 'Rupture', classe: 'statut-rupture', icon: '🔴' };
+      return { label: 'PRODUITS.STOCK_STATUS.OUT', classe: 'statut-rupture', icon: '🔴' };
     }
     if (produit.stockFaible) {
-      return { label: 'Stock faible', classe: 'statut-faible', icon: '⚠️' };
+      return { label: 'PRODUITS.STOCK_STATUS.LOW', classe: 'statut-faible', icon: '⚠️' };
     }
-    return { label: 'Disponible', classe: 'statut-disponible', icon: '✅' };
+    return { label: 'PRODUITS.STOCK_STATUS.AVAILABLE', classe: 'statut-disponible', icon: '✅' };
   }
 
   /**
@@ -342,7 +344,4 @@ export class ProduitsComponent implements OnInit {
     return tva.toFixed(2) + '%';
   }
 
-  retourListe(): void {
-    this.router.navigate(['/dashboard']);
-  }
 }

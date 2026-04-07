@@ -1,0 +1,148 @@
+<div class="create-super-admin-container" [class.loading]="isLoading">
+  <p-toast></p-toast>
+
+  <div class="page-header">
+    <h1>Créer un Super Admin</h1>
+  </div>
+
+  <p-card class="create-card">
+    <form [formGroup]="createForm">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="prenom">Prénom *</label>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-user"></i>
+            <input
+              pInputText
+              id="prenom"
+              formControlName="prenom"
+              placeholder="Prénom du Super Admin"
+              [class.ng-invalid]="createForm.get('prenom')?.invalid && createForm.get('prenom')?.touched"
+            />
+          </span>
+          <small *ngIf="createForm.get('prenom')?.invalid && createForm.get('prenom')?.touched" class="error">
+            Prénom requis (min 2 caractères)
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label for="nom">Nom *</label>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-user"></i>
+            <input
+              pInputText
+              id="nom"
+              formControlName="nom"
+              placeholder="Nom du Super Admin"
+              [class.ng-invalid]="createForm.get('nom')?.invalid && createForm.get('nom')?.touched"
+            />
+          </span>
+          <small *ngIf="createForm.get('nom')?.invalid && createForm.get('nom')?.touched" class="error">
+            Nom requis (min 2 caractères)
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email *</label>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-envelope"></i>
+            <input
+              pInputText
+              id="email"
+              type="email"
+              formControlName="email"
+              placeholder="email@exemple.com"
+              [class.ng-invalid]="createForm.get('email')?.invalid && createForm.get('email')?.touched"
+            />
+          </span>
+          <small *ngIf="createForm.get('email')?.invalid && createForm.get('email')?.touched" class="error">
+            Email valide requis
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label for="telephone">Téléphone *</label>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-phone"></i>
+            <input
+              pInputText
+              id="telephone"
+              formControlName="telephone"
+              placeholder="+216 XX XXX XXX"
+              [class.ng-invalid]="createForm.get('telephone')?.invalid && createForm.get('telephone')?.touched"
+            />
+          </span>
+          <small *ngIf="createForm.get('telephone')?.invalid && createForm.get('telephone')?.touched" class="error">
+            Téléphone requis (min 8 caractères)
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label for="motDePasse">Mot de passe *</label>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-lock"></i>
+            <input
+              pInputText
+              id="motDePasse"
+              type="password"
+              formControlName="motDePasse"
+              placeholder="Entrez le mot de passe"
+              [class.ng-invalid]="createForm.get('motDePasse')?.invalid && createForm.get('motDePasse')?.touched"
+            />
+          </span>
+          <small *ngIf="createForm.get('motDePasse')?.invalid && createForm.get('motDePasse')?.touched" class="error">
+            Mot de passe requis (min 8 caractères)
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label for="confirmationMotDePasse">Confirmer le mot de passe *</label>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-lock"></i>
+            <input
+              pInputText
+              id="confirmationMotDePasse"
+              type="password"
+              formControlName="confirmationMotDePasse"
+              placeholder="Confirmez le mot de passe"
+              [class.ng-invalid]="(createForm.get('confirmationMotDePasse')?.invalid || (createForm.errors?.['passwordMismatch'] && createForm.get('confirmationMotDePasse')?.touched)) && createForm.get('confirmationMotDePasse')?.touched"
+            />
+          </span>
+          <small *ngIf="createForm.get('confirmationMotDePasse')?.invalid && createForm.get('confirmationMotDePasse')?.touched" class="error">
+            Confirmation du mot de passe requise
+          </small>
+          <small *ngIf="createForm.errors?.['passwordMismatch'] && createForm.get('confirmationMotDePasse')?.touched" class="error">
+            Les mots de passe ne correspondent pas
+          </small>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <i class="pi pi-info-circle"></i>
+        <span>Veuillez entrer un mot de passe sécurisé (minimum 8 caractères) pour ce Super Admin.</span>
+      </div>
+
+      <div class="form-actions">
+        <button
+          pButton
+          type="button"
+          label="Annuler"
+          icon="pi pi-times"
+          class="p-button-text"
+          (click)="cancel()"
+          [disabled]="isLoading"
+        ></button>
+        <button
+          pButton
+          type="button"
+          label="Créer le Super Admin"
+          icon="pi pi-check"
+          class="p-button-success"
+          (click)="save()"
+          [loading]="isLoading"
+          [disabled]="!createForm.valid || isLoading"
+        ></button>
+      </div>
+    </form>
+  </p-card>
+</div>

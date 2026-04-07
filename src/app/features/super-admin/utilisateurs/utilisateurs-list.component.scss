@@ -1,153 +1,426 @@
 .utilisateurs-container {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.5rem;
+  padding: 0;
 }
 
+// ─── En-tête avec titre et bouton ───
 .page-header {
-  h1 {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #111827;
-    margin: 0;
-  }
-
-  p {
-    color: #6b7280;
-    margin: 0.5rem 0 0 0;
-  }
-}
-
-.filter-section {
   display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid #f3f4f6;
+
+  .header-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    h1 {
+      font-size: 1.875rem;
+      font-weight: 700;
+      color: #111827;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+
+      i {
+        color: #667eea;
+        font-size: 2rem;
+      }
+    }
+
+    p {
+      color: #6b7280;
+      margin: 0;
+      font-size: 0.95rem;
+    }
+  }
+
+  .create-btn {
+    white-space: nowrap;
+    height: fit-content;
+    padding: 0.75rem 1.5rem;
+  }
 }
 
-.search-container {
-  flex: 1;
-  min-width: 250px;
+// ─── Barre de filtres ───
+.filters-bar {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  background: white;
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
+  gap: 1rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+  border-radius: 10px;
   border: 1px solid #e5e7eb;
-  transition: all 0.2s ease;
+  flex-wrap: wrap;
 
-  &:focus-within {
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-  }
-
-  i {
-    color: #9ca3af;
-  }
-
-  .search-input {
+  .search-section {
     flex: 1;
-    border: none;
-    outline: none;
-    font-size: 0.95rem;
-    background: transparent;
+    min-width: 250px;
+    display: flex;
+    align-items: center;
 
-    &::placeholder {
-      color: #d1d5db;
+    .search-wrapper {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      position: relative;
+
+      i {
+        color: #9ca3af;
+        position: absolute;
+        left: 0.75rem;
+        pointer-events: none;
+      }
+
+      .search-input {
+        width: 100%;
+        padding: 0.75rem 1rem 0.75rem 2.5rem;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        background: white;
+        transition: all 0.2s ease;
+
+        &:focus {
+          outline: none;
+          border-color: #667eea;
+          box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        &::placeholder {
+          color: #d1d5db;
+        }
+      }
+    }
+  }
+
+  .filter-controls {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    flex-wrap: wrap;
+
+    .role-filter,
+    .status-filter {
+      min-width: 180px;
+      height: 2.5rem;
+    }
+
+    .reset-btn {
+      padding: 0.5rem 0.75rem;
     }
   }
 }
 
+// ─── Container de la table ───
 .table-container {
   background: white;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   overflow: hidden;
+  border: 1px solid #e5e7eb;
 
-  ::ng-deep .p-datatable {
-    .p-datatable-thead > tr > th {
-      background: linear-gradient(135deg, rgba(102, 126, 234, 0.08), rgba(118, 75, 162, 0.08));
-      border: none;
-      padding: 1rem;
-      font-weight: 600;
-      color: #111827;
-      border-bottom: 2px solid #e5e7eb;
-    }
-
-    .p-datatable-tbody > tr {
-      border-bottom: 1px solid #f3f4f6;
-
-      &:hover {
-        background: #f9fafb;
+  ::ng-deep {
+    .p-datatable {
+      .p-datatable-thead > tr > th {
+        background: #1e293b;
+        color: white;
+        padding: 0.75rem 1rem;
+        font-weight: 600;
+        border: none;
+        font-size: 0.85rem;
+        white-space: nowrap;
       }
 
-      > td {
-        padding: 1rem;
-        vertical-align: middle;
+      .p-datatable-tbody > tr {
+        background: white;
+        td {
+          padding: 0.65rem 1rem;
+          border-bottom: 1px solid #f1f5f9;
+          color: #334155;
+        }
+        &:hover { background: #f8fafc; }
+      }
+
+      // Colonnes
+      .col-nom {
+        min-width: 140px;
+      }
+
+      .col-email {
+        min-width: 200px;
+      }
+
+      .col-role {
+        min-width: 160px;
+      }
+
+      .col-entreprise {
+        min-width: 120px;
+      }
+
+      .col-statut {
+        min-width: 130px;
+      }
+
+      .col-actions {
+        min-width: 160px;
+        text-align: center;
+      }
+    }
+
+    // Paginator
+    .p-paginator {
+      background: #f9fafb;
+      border-top: 1px solid #e5e7eb;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .p-paginator-current {
+        color: #6b7280;
+        font-size: 0.9rem;
+      }
+
+      .p-paginator-pages {
+        color: #6b7280;
+      }
+
+      .p-paginator-rpp-options {
+        color: #6b7280;
+      }
+    }
+
+    // Dropdown styles
+    .p-dropdown {
+      width: 100%;
+      height: 2.5rem;
+      border-radius: 8px;
+
+      .p-dropdown-label {
+        padding: 0.5rem 1rem;
+      }
+
+      &:focus {
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        border-color: #667eea;
       }
     }
   }
 }
 
-.email {
-  color: #667eea;
-  font-size: 0.875rem;
+// ─── Contenu des cellules ───
+.user-name {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+
+  .name-text {
+    font-weight: 500;
+    color: #111827;
+
+    &:first-child {
+      font-size: 0.95rem;
+    }
+
+    &:last-child {
+      font-size: 0.9rem;
+      color: #6b7280;
+    }
+  }
 }
 
-.role {
-  background: rgba(102, 126, 234, 0.1);
+.email-text {
   color: #667eea;
-  padding: 0.25rem 0.75rem;
-  border-radius: 6px;
-  font-size: 0.875rem;
+  font-weight: 500;
+  word-break: break-word;
+}
+
+.entreprise-text {
+  color: #374151;
   font-weight: 500;
 }
 
-::ng-deep {
-  .action-edit {
-    color: #3b82f6 !important;
+// ─── Badges de rôle ───
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+  border: none;
+  box-shadow: none !important;
+  background: none !important;
+  color: #667eea;
 
-    &:hover {
-      background: rgba(59, 130, 246, 0.1) !important;
-    }
+  i {
+    font-size: 1rem;
   }
 
-  .action-disable {
-    color: #ef4444 !important;
-
-    &:hover {
-      background: rgba(239, 68, 68, 0.1) !important;
-    }
+  &.role-super_admin {
+    color: #667eea;
   }
 
-  .action-enable {
-    color: #10b981 !important;
-
-    &:hover {
-      background: rgba(16, 185, 129, 0.1) !important;
-    }
+  &.role-entreprise_admin {
+    color: #3b82f6;
   }
 
-  .p-paginator {
-    background: #f9fafb;
-    border-top: 1px solid #e5e7eb;
-    padding: 1rem;
+  &.role-entreprise_viewer {
+    color: #22c55e;
+  }
+
+  &.role-client {
+    color: #ef4444;
+  }
+
+  &.role-emetteur {
+    color: #fb923c;
   }
 }
 
+// ─── Badges de statut ───
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+  border: none;
+  box-shadow: none !important;
+  background: none !important;
+  color: #10b981;
+
+  i {
+    font-size: 1rem;
+  }
+
+  &.status-active {
+    color: #10b981;
+  }
+
+  &.status-disabled {
+    color: #ef4444;
+  }
+
+  &.status-pending {
+    color: #fb923c;
+  }
+}
+
+// ─── Boutons d'actions ───
+.action-buttons {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+
+  .action-btn {
+    padding: 0.5rem !important;
+    width: 2.5rem !important;
+    height: 2.5rem !important;
+    border-radius: 8px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    border: 1.5px solid #d1d5db;
+    background: #ffffff !important;
+    color: #6b7280 !important;
+    cursor: pointer;
+
+    i {
+      font-size: 1.1rem;
+    }
+
+    &:hover {
+      background: #f3f4f6 !important;
+      border-color: #9ca3af;
+      color: #374151 !important;
+    }
+
+    &:active {
+      background: #e5e7eb !important;
+    }
+  }
+}
+
+// ─── Message vide ───
 .empty-message {
   text-align: center;
   padding: 3rem 1rem !important;
-  color: #9ca3af;
 
-  i {
-    font-size: 3rem;
-    color: #d1d5db;
-    margin-bottom: 1rem;
+  .empty-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    color: #9ca3af;
+
+    i {
+      font-size: 3rem;
+      color: #d1d5db;
+    }
+
+    p {
+      margin: 0;
+      font-size: 1rem;
+    }
+  }
+}
+
+// ─── Responsive ───
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+
+    .create-btn {
+      width: 100%;
+    }
   }
 
-  p {
-    margin: 0;
-    font-size: 1rem;
+  .filters-bar {
+    flex-direction: column;
+
+    .search-section {
+      width: 100%;
+    }
+
+    .filter-controls {
+      width: 100%;
+
+      .role-filter,
+      .status-filter,
+      .reset-btn {
+        flex: 1;
+        min-width: 120px;
+      }
+    }
+  }
+
+  ::ng-deep {
+    .p-datatable {
+      .p-datatable-thead > tr > th {
+        padding: 0.75rem 0.5rem !important;
+        font-size: 0.85rem;
+      }
+
+      .p-datatable-tbody > tr > td {
+        padding: 0.75rem 0.5rem !important;
+        font-size: 0.85rem;
+      }
+    }
   }
 }

@@ -17,10 +17,12 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ChartModule } from 'primeng/chart';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { MessageService, ConfirmationService } from 'primeng/api';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { FactureService } from '../../core/services/facture.service';
 import { AuthService } from '../../core/services/auth.service';
-import { Facture, StatutFacture } from '../../models/facture.model';
+import { ErrorHandlerService } from '../../core/services/error-handler.service';
+import { Facture, StatutFacture, StatutFactureLabel } from '../../models/facture.model';
 
 @Component({
   selector: 'app-factures',
@@ -28,7 +30,8 @@ import { Facture, StatutFacture } from '../../models/facture.model';
   imports: [
     CommonModule, FormsModule, TableModule, ButtonModule, CardModule,
     ToastModule, ConfirmDialogModule, TagModule, TooltipModule,
-    DropdownModule, CalendarModule, InputTextModule, ChartModule, ProgressSpinnerModule
+    DropdownModule, CalendarModule, InputTextModule, ChartModule, 
+    ProgressSpinnerModule, TranslateModule
   ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './factures.component.html',
@@ -37,6 +40,7 @@ import { Facture, StatutFacture } from '../../models/facture.model';
 export class FacturesComponent implements OnInit {
   private factureService       = inject(FactureService);
   private authService          = inject(AuthService);
+  private errorHandler         = inject(ErrorHandlerService);
   private router               = inject(Router);
   private messageService       = inject(MessageService);
   private confirmationService  = inject(ConfirmationService);
@@ -87,8 +91,8 @@ export class FacturesComponent implements OnInit {
         this.totalRecords = response.total;
         this.loading      = false;
       },
-      error: () => {
-        this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Impossible de charger la liste des factures' });
+      error: (err) => {
+        this.messageService.add({ severity: 'error', summary: 'Erreur', detail: this.errorHandler.extractErrorMessage(err) });
         this.loading = false;
       }
     });
@@ -106,8 +110,8 @@ export class FacturesComponent implements OnInit {
     this.chartData = {
       labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'],
       datasets: [
-        { label: 'Factures émises', data: [65,59,80,81,56,55,40,45,38,50,60,70], fill: false, borderColor: '#3b82f6', tension: 0.4 },
-        { label: 'Factures payées', data: [45,40,60,70,45,40,30,35,28,40,45,55], fill: false, borderColor: '#10b981', tension: 0.4 }
+        { label: 'Factures émises', data: this.stats.factuResEmises || [], fill: false, borderColor: '#3b82f6', tension: 0.4 },
+        { label: 'Factures payées', data: this.stats.factuResPaye || [], fill: false, borderColor: '#10b981', tension: 0.4 }
       ]
     };
   }
@@ -132,20 +136,18 @@ export class FacturesComponent implements OnInit {
 
   getStatutSeverity(statut: string): 'success' | 'info' | 'warning' | 'danger' | 'secondary' {
     const map: Record<string, any> = {
-      [StatutFacture.PAYEE]: 'success', [StatutFacture.EN_ATTENTE]: 'warning',
-      [StatutFacture.EN_RETARD]: 'danger', [StatutFacture.ANNULEE]: 'secondary',
-      [StatutFacture.BROUILLON]: 'info'
+      [StatutFacture.PAID]:      'success',
+      [StatutFacture.SIGNED]:    'success',
+      [StatutFacture.SENT]:      'info',
+      [StatutFacture.DRAFT]:     'warning',
+      [StatutFacture.REJECTED]:  'danger',
+      [StatutFacture.CANCELLED]: 'secondary'
     };
     return map[statut] ?? 'info';
   }
 
   formatStatut(statut: string): string {
-    const map: Record<string, string> = {
-      [StatutFacture.PAYEE]: 'Payée', [StatutFacture.EN_ATTENTE]: 'En attente',
-      [StatutFacture.EN_RETARD]: 'En retard', [StatutFacture.ANNULEE]: 'Annulée',
-      [StatutFacture.BROUILLON]: 'Brouillon'
-    };
-    return map[statut] ?? statut;
+    return StatutFactureLabel[statut] ?? statut;
   }
 
   // ===== NAVIGATION CORRIGÉE =====
@@ -159,6 +161,27 @@ export class FacturesComponent implements OnInit {
 
   nouvelleFacture(): void {
     this.router.navigate(['/factures', 'nouvelle']);
+  }
+
+  signerFacture(id: number): void {
+    this.confirmationService.confirm({
+      message: 'Êtes-vous sûr de vouloir signer cette facture ?',
+      header: 'Confirmation',
+      icon: 'pi pi-check',
+      accept: () => {
+        this.factureService.signerFacture(id).subscribe({
+          next: (response: any) => {
+            console.log('Facture signée:', response);
+            console.log('Statut après signature:', response.statut);
+            this.messageService.add({ severity: 'success', summary: 'Succès', detail: 'Facture signée avec succès' });
+            this.loadFactures();
+          },
+          error: (err: any) => {
+            this.messageService.add({ severity: 'error', summary: 'Erreur', detail: this.errorHandler.extractErrorMessage(err) });
+          }
+        });
+      }
+    });
   }
 
   supprimerFacture(id: number): void {

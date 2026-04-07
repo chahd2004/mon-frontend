@@ -1,6 +1,11 @@
 <div class="statistiques-container">
   <div class="page-header">
-    <h1>👑 SUPER ADMIN - Tableau de bord</h1>
+    <div class="welcome-section">
+      <div>
+        <h1 class="welcome-title">Bienvenue <span class="admin-name">{{ userFullName() }}</span></h1>
+        <h2>SUPER ADMIN - Tableau de bord</h2>
+      </div>
+    </div>
   </div>
 
   <!-- KPI Cards Grid -->
@@ -12,28 +17,6 @@
       <div class="kpi-content">
         <p class="kpi-label">USERS</p>
         <p class="kpi-value" *ngIf="!isLoading">{{ usersCount | number }}</p>
-        <p-skeleton *ngIf="isLoading" width="80%" height="2rem"></p-skeleton>
-      </div>
-    </div>
-
-    <div class="kpi-card">
-      <div class="kpi-icon clients">
-        <i class="pi pi-users"></i>
-      </div>
-      <div class="kpi-content">
-        <p class="kpi-label">CLIENTS</p>
-        <p class="kpi-value" *ngIf="!isLoading">{{ clientsCount | number }}</p>
-        <p-skeleton *ngIf="isLoading" width="80%" height="2rem"></p-skeleton>
-      </div>
-    </div>
-
-    <div class="kpi-card">
-      <div class="kpi-icon emetteurs">
-        <i class="pi pi-briefcase"></i>
-      </div>
-      <div class="kpi-content">
-        <p class="kpi-label">EMETTEURS</p>
-        <p class="kpi-value" *ngIf="!isLoading">{{ emetteursCount | number }}</p>
         <p-skeleton *ngIf="isLoading" width="80%" height="2rem"></p-skeleton>
       </div>
     </div>
@@ -61,15 +44,4 @@
     </div>
   </div>
 
-  <!-- Charts -->
-  <div class="charts-section">
-    <p-card class="chart-card">
-      <ng-template pTemplate="header">
-        <div class="chart-header">
-          <h3>📊 ÉVOLUTION DES INSCRIPTIONS</h3>
-        </div>
-      </ng-template>
-      <p-chart type="line" [data]="chartDataRequests" [options]="chartOptions"></p-chart>
-    </p-card>
-  </div>
 </div>

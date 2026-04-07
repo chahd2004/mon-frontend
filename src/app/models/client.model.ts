@@ -3,6 +3,7 @@ export type RegionTunisie = 'ARIANA' | 'BEJA' | 'BEN_AROUS' | 'BIZERTE' | 'GABES
 
 export interface Client {
   id: number;
+  code?: string;
   raisonSociale: string;
   email: string;
   telephone: string;
@@ -12,6 +13,7 @@ export interface Client {
 }
 
 export interface ClientRequest {
+  code: string;
   raisonSociale: string;
   email: string;
   telephone: string;

@@ -14,12 +14,14 @@ import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { InputSwitchModule } from 'primeng/inputswitch';
-import { DropdownModule } from 'primeng/dropdown';
 import { AvatarModule } from 'primeng/avatar';
 import { FileUploadModule } from 'primeng/fileupload';
 import { TabViewModule } from 'primeng/tabview';
 import { TooltipModule } from 'primeng/tooltip';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MessageService, ConfirmationService } from 'primeng/api';
+import { AuthService } from '../../core/services/auth.service';
+import { EmetteurService } from '../../core/services/emetteur.service';
 
 @Component({
   selector: 'app-parametres',
@@ -28,8 +30,9 @@ import { MessageService, ConfirmationService } from 'primeng/api';
     CommonModule, FormsModule,
     CardModule, ButtonModule, InputTextModule, PasswordModule,
     DividerModule, ToastModule, ConfirmDialogModule,
-    SelectButtonModule, InputSwitchModule, DropdownModule,
-    AvatarModule, FileUploadModule, TabViewModule, TooltipModule
+    SelectButtonModule, InputSwitchModule,
+    AvatarModule, FileUploadModule, TabViewModule, TooltipModule,
+    TranslateModule
   ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './parametres.component.html',
@@ -40,12 +43,15 @@ export class ParametresComponent implements OnInit {
   private renderer            = inject(Renderer2);
   private messageService      = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
+  private translate: TranslateService = inject(TranslateService);
+  private authService         = inject(AuthService);
+  private emetteurService     = inject(EmetteurService);
 
   // ===== PROFIL =====
   userProfile = {
-    nom: 'Admin', prenom: '', email: 'admin@example.com',
-    avatar: '', role: 'Administrateur',
-    dateCreation: '01/01/2024', derniereConnexion: new Date()
+    nom: '', prenom: '', email: '',
+    avatar: '', role: '',
+    dateCreation: '', derniereConnexion: new Date()
   };
 
   // ===== SÉCURITÉ =====
@@ -76,17 +82,47 @@ export class ParametresComponent implements OnInit {
   };
 
   // ===== OPTIONS =====
-  langues     = [{ label: 'Français', value: 'fr' }, { label: 'العربية', value: 'ar' }, { label: 'English', value: 'en' }];
-  devises     = [{ label: 'TND', value: 'TND' }, { label: 'EUR', value: 'EUR' }, { label: 'USD', value: 'USD' }];
-  formatsDate = [{ label: 'DD/MM/YYYY', value: 'dd/MM/yyyy' }, { label: 'MM/DD/YYYY', value: 'MM/dd/yyyy' }, { label: 'YYYY-MM-DD', value: 'yyyy-MM-dd' }];
+  langues     = [{ label: 'Français', value: 'fr' }, { label: 'English', value: 'en' }];
   themes      = [{ label: 'Clair', value: 'clair' }, { label: 'Sombre', value: 'sombre' }, { label: 'Système', value: 'systeme' }];
+  // formatsDate removed from UI
 
   // ===== INIT =====
   ngOnInit(): void {
+    this.translate.addLangs(['fr', 'en']);
+    this.translate.setDefaultLang('fr');
     this.loadPreferences();
+    this.loadUserData();
   }
 
-  loadUserData(): void { /* future API */ }
+  loadUserData(): void {
+    const user = this.authService.currentUser();
+    if (user) {
+      this.userProfile.nom    = user.nom    || '';
+      this.userProfile.prenom = user.prenom || '';
+      this.userProfile.email  = user.email  || '';
+      this.userProfile.role   = user.role   || '';
+
+      // Charger les données de l'émetteur depuis l'API
+      const emetteurId = user.emetteurId;
+      if (emetteurId) {
+        this.emetteurService.getEmetteurById(Number(emetteurId)).subscribe({
+          next: (emetteur) => {
+            this.societeInfo.raison_sociale = emetteur.raisonSociale || '';
+            this.societeInfo.telephone      = emetteur.telephone      || '';
+            this.societeInfo.adresse        = emetteur.adresseComplete || '';
+            this.societeInfo.iban           = emetteur.iban            || '';
+            this.societeInfo.email          = emetteur.email           || '';
+          },
+          error: () => {
+            // Fallback silencieux si l'API n'est pas disponible
+            if (user.telephone) this.societeInfo.telephone = user.telephone;
+          }
+        });
+      } else if (user.telephone) {
+        this.societeInfo.telephone = user.telephone;
+      }
+    }
+  }
 
   // ===== CHARGER DEPUIS LOCALSTORAGE =====
   private loadPreferences(): void {
@@ -98,35 +134,40 @@ export class ParametresComponent implements OnInit {
       } catch {}
     }
     // Appliquer au démarrage
+    this.translate.use(this.preferences.langue).subscribe({
+      error: () => console.error('Erreur de chargement de la langue au démarrage')
+    });
     this.applyLangue(this.preferences.langue, false);
     this.applyTheme(this.preferences.theme, false);
   }
 
   // ===== LANGUE — appliquée immédiatement =====
   onLangueChange(): void {
-    this.applyLangue(this.preferences.langue, true);
-    this.savePreferences();
+    this.translate.use(this.preferences.langue).subscribe({
+      next: () => {
+        this.applyLangue(this.preferences.langue, true);
+        this.savePreferences();
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erreur',
+          detail: `Impossible de charger la langue : ${this.preferences.langue === 'en' ? 'English' : 'Français'}`
+        });
+      }
+    });
   }
 
   private applyLangue(langue: string, showToast: boolean): void {
     const html = document.documentElement;
 
-    if (langue === 'ar') {
-      this.renderer.setAttribute(html, 'dir', 'rtl');
-      this.renderer.setAttribute(html, 'lang', 'ar');
-      this.renderer.addClass(document.body, 'rtl');
-      document.body.style.fontFamily = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
-    } else {
-      this.renderer.setAttribute(html, 'dir', 'ltr');
-      this.renderer.setAttribute(html, 'lang', langue);
-      this.renderer.removeClass(document.body, 'rtl');
-      document.body.style.fontFamily = '';
-    }
+    this.renderer.setAttribute(html, 'dir', 'ltr');
+    this.renderer.setAttribute(html, 'lang', langue);
+    this.renderer.removeClass(document.body, 'rtl');
+    document.body.style.fontFamily = '';
 
     if (showToast) {
-      const detail = langue === 'ar'
-        ? '🇹🇳 تم تغيير اللغة إلى العربية'
-        : langue === 'en'
+      const detail = langue === 'en'
           ? '🇬🇧 Language changed to English'
           : '🇫🇷 Langue changée en Français';
       this.messageService.add({ severity: 'success', summary: 'Langue', detail, life: 3000 });
@@ -159,21 +200,18 @@ export class ParametresComponent implements OnInit {
     }
   }
 
-  // ===== DEVISE =====
-  onDeviseChange(): void {
-    this.savePreferences();
-    this.messageService.add({ severity: 'success', summary: 'Devise', detail: `Devise changée en ${this.preferences.devise}`, life: 2500 });
-  }
+  // Devise change removed
 
-  // ===== FORMAT DATE =====
-  onFormatDateChange(): void {
-    this.savePreferences();
-    this.messageService.add({ severity: 'success', summary: 'Format de date', detail: `Format : ${this.preferences.formatDate}`, life: 2500 });
-  }
+  // Format date change removed
 
   // ===== SAVE TO LOCALSTORAGE =====
   private savePreferences(): void {
     localStorage.setItem('app_preferences', JSON.stringify(this.preferences));
+  }
+
+  // ===== HELPERS =====
+  isSuperAdmin(): boolean {
+    return this.userProfile.role === 'SUPER_ADMIN';
   }
 
   // ===== PROFIL =====

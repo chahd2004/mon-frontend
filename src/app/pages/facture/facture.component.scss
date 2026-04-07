@@ -80,6 +80,48 @@ $white: #ffffff;
   &:hover { background: #d97706; transform: translateY(-2px); box-shadow: 0 6px 16px rgba($warning, 0.4); }
 }
 
+// ===== BOUTONS D'ACTION (Signer, Envoyer, Payer, etc.) =====
+.action-btn {
+  border: none; color: white; font-weight: 700;
+  padding: 0.7rem 1.4rem; border-radius: 20px;
+  display: flex; align-items: center; gap: 0.5rem; cursor: pointer; transition: all 0.2s; font-size: 0.9rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+  &.sign-btn {
+    background: #8b5cf6;
+    &:hover { background: #7c3aed; transform: translateY(-2px); box-shadow: 0 6px 16px rgba(#8b5cf6, 0.4); }
+  }
+
+  &.send-btn {
+    background: #06b6d4;
+    &:hover { background: #0891b2; transform: translateY(-2px); box-shadow: 0 6px 16px rgba(#06b6d4, 0.4); }
+  }
+
+  &.pay-btn {
+    background: $success;
+    &:hover { background: #0d9668; transform: translateY(-2px); box-shadow: 0 6px 16px rgba($success, 0.4); }
+  }
+
+  &.reject-btn {
+    background: $danger;
+    &:hover { background: #dc2626; transform: translateY(-2px); box-shadow: 0 6px 16px rgba($danger, 0.4); }
+  }
+
+  &.cancel-btn {
+    background: #f97316;
+    &:hover { background: #ea580c; transform: translateY(-2px); box-shadow: 0 6px 16px rgba(#f97316, 0.4); }
+  }
+
+  &.draft-btn {
+    background: $blue;
+    &:hover { background: #1e3a8a; transform: translateY(-2px); box-shadow: 0 6px 16px rgba($blue, 0.4); }
+  }
+
+  &:disabled {
+    opacity: 0.6; cursor: not-allowed; transform: none;
+  }
+}
+
 // ===== SECTIONS (formulaire) =====
 .section {
   background: $white; border-radius: 16px; padding: 1.5rem 2rem;
@@ -120,7 +162,8 @@ $white: #ffffff;
 .facture-header {
   display: flex; justify-content: space-between; align-items: flex-start; gap: 2rem;
   .facture-title-block {
-    .facture-title { color: $blue; font-size: 2.5rem; font-weight: 900; margin: 0 0 1rem 0; letter-spacing: 3px; }
+    .title-inline { display: flex; align-items: center; gap: 1rem; }
+    .facture-title { color: $blue; font-size: 1rem; font-weight: 800; margin: 0; letter-spacing: 1px; }
     .form-row {
       display: flex; align-items: center; gap: 0.8rem;
       label { font-weight: 700; color: $dark; font-size: 1rem; }
@@ -305,7 +348,8 @@ $white: #ffffff;
 // ─── TITRE + QR ───
 .recu-title-block {
   text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 0.4rem;
-  .recu-title { font-size: 3rem; font-weight: 900; color: $blue; letter-spacing: 6px; line-height: 1; text-transform: uppercase; }
+  .recu-title-row { display: flex; align-items: baseline; justify-content: flex-end; gap: 0.8rem; }
+  .recu-title { font-size: 0.9rem; font-weight: 800; color: $blue; letter-spacing: 2px; line-height: 1; text-transform: uppercase; }
   .recu-num   { font-size: 0.9rem; font-weight: 600; color: $gray; letter-spacing: 0.5px; }
 
   .recu-qr-block {
@@ -541,6 +585,21 @@ $white: #ffffff;
 
 // ===== REQUIRED =====
 .required { color: $danger; margin-left: 2px; }
+
+// ===== STATUT READONLY =====
+.statut-readonly {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.5rem 0;
+
+  .statut-hint {
+    font-size: 0.75rem;
+    color: $gray;
+    font-style: italic;
+    line-height: 1.4;
+  }
+}
 
 // ===== PRIMENG OVERRIDES =====
 ::ng-deep {

@@ -16,6 +16,7 @@ import { DemandesListComponent } from './features/super-admin/demandes/demandes-
 import { DemandeDetailComponent as DemandeDetailAdminComponent } from './features/super-admin/demandes/demande-detail.component';
 import { UtilisateursListComponent } from './features/super-admin/utilisateurs/utilisateurs-list.component';
 import { UtilisateurEditComponent } from './features/super-admin/utilisateurs/utilisateur-edit.component';
+import { SuperAdminCreateComponent } from './features/super-admin/utilisateurs/super-admin-create.component';
 import { StatistiquesComponent } from './features/super-admin/statistiques/statistiques.component';
 
 // ✅ PHASE 4 - ENTREPRISE_ADMIN Pages
@@ -53,9 +54,21 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { ClientsComponent } from './pages/clients/clients.component';
 import { FacturesComponent } from './pages/factures/factures.component';
 import { FactureComponent } from './pages/facture/facture.component';
+import { AvoirsComponent } from './pages/avoirs/avoirs.component';
+import { AvoirDetailComponent } from './pages/avoirs/avoir-detail.component';
 import { ProduitsComponent } from './pages/produits/produits.component';
 import { ParametresComponent } from './pages/parametres/parametres.component';
-import { DeviseComponent } from './pages/devise/devise.component';
+import { DevisComponent } from './pages/devis/devis.component';
+import { DevisDetailComponent } from './pages/devis/devis-detail.component';
+import { DevisCreateComponent } from './pages/devis/devis-create.component';
+import { BonCommandesComponent } from './pages/bon-commandes/bon-commandes.component';
+import { BonCommandeCreateComponent } from './pages/bon-commandes/bon-commande-create.component';
+import { BonCommandeDetailComponent } from './pages/bon-commandes/bon-commande-detail.component';
+import { CommandesComponent } from './pages/commandes/commandes.component';
+import { CommandeCreateComponent } from './pages/commandes/commande-create.component';
+import { BonsLivraisonComponent } from './pages/bons-livraison/bons-livraison.component';
+import { BonsLivraisonCreateComponent } from './pages/bons-livraison/bons-livraison-create.component';
+import { BonsLivraisonDetailComponent } from './pages/bons-livraison/bons-livraison-detail.component';
 import { DemandesComponent } from './pages/demandes/demandes.component';
 import { DemandeDetailComponent } from './pages/demandes/demande-detail.component';
 import { UsersComponent } from './pages/users/users.component';
@@ -91,7 +104,27 @@ export const routes: Routes = [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'factures', component: FacturesComponent },
       { path: 'factures/:id', component: FactureComponent },
-      { path: 'devise', component: DeviseComponent },
+      { path: 'avoirs', component: AvoirsComponent },
+      { path: 'avoirs/view/:id', component: AvoirDetailComponent },
+      { path: 'avoirs/edit/:id', component: AvoirDetailComponent }, // Reusing Detail for now or placeholder
+      { path: 'devis', component: DevisComponent },
+      { path: 'devis/nouveau', component: DevisCreateComponent },
+      { path: 'devis/view/:id', component: DevisDetailComponent },
+      { path: 'devis/:ref', component: DevisDetailComponent },
+      { path: 'bons-commandes', component: BonCommandesComponent },
+      { path: 'bons-commandes/nouveau', component: BonCommandeCreateComponent },
+      { path: 'bons-commandes/view/:id', component: BonCommandeDetailComponent },
+      { path: 'bon-commande/:ref', component: BonCommandeDetailComponent },
+      { path: 'commandes', component: CommandesComponent },
+      { path: 'commandes/nouveau', component: CommandeCreateComponent },
+      { path: 'bons-livraison', component: BonsLivraisonComponent },
+      { path: 'bons-livraison/nouveau', component: BonsLivraisonCreateComponent },
+      { path: 'bons-livraison/view/:id', component: BonsLivraisonDetailComponent },
+      { path: 'bon-livraison/:ref', component: BonsLivraisonDetailComponent },
+      {
+        path: 'commandes/view/:id',
+        loadComponent: () => import('./pages/commandes/commande-detail.component').then(m => m.CommandeDetailComponent)
+      },
       { path: 'parametres', component: ParametresComponent },
 
       // ── Admin seulement ───────────────────────────────────────
@@ -151,6 +184,7 @@ export const routes: Routes = [
       { path: 'demandes/:id', component: DemandeDetailAdminComponent },
       { path: 'users', component: UtilisateursListComponent },
       { path: 'utilisateurs', component: UtilisateursListComponent },
+      { path: 'utilisateurs/nouveau', component: SuperAdminCreateComponent },
       { path: 'utilisateurs/new', component: UtilisateurEditComponent },
       { path: 'utilisateurs/:id/edit', component: UtilisateurEditComponent },
       { path: 'parametres', component: ParametresComponent }

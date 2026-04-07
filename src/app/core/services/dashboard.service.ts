@@ -113,6 +113,37 @@ export class DashboardService extends BaseService {
     );
   }
 
+  getEntreprisesInscritesParMois(): Observable<{ mois: string[]; valeurs: number[] }> {
+    return this.http.get<any[]>(
+      `${this.apiUrl}/emetteurs`,
+      this.getHeaders()
+    ).pipe(
+      map((emetteurs: any[]) => {
+        const mois = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
+        const anneeCible = 2026;
+        const compteurParMois = new Array(12).fill(0);
+
+        console.log('📊 Emetteurs reçus:', emetteurs);
+        emetteurs.forEach((em: any) => {
+          // Robustité sur les noms de champs de date
+          const dateStr = em.dateCreation || em.createdAt || em.date_creation || em.created_date;
+          if (dateStr) {
+            const dateObj = new Date(dateStr);
+            if (dateObj.getFullYear() === anneeCible) {
+              const moisIndex = dateObj.getMonth();
+              compteurParMois[moisIndex]++;
+            }
+          }
+        });
+
+        return {
+          mois,
+          valeurs: compteurParMois
+        };
+      })
+    );
+  }
+
   private calculerStats(factures: any[], clients: any[]): DashboardStats {
     const anneeActuelle = new Date().getFullYear();
     const caParAnneeMap = new Map<number, number>();

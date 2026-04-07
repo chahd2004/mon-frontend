@@ -32,26 +32,6 @@ $border-color: #e2e8f0;
     align-items: center;
     gap: 1rem;
 
-    .back-btn {
-      width: 38px; height: 38px;
-      border-radius: 10px;
-      border: none;
-      background: white;
-      color: $dark-blue;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer;
-      transition: all 0.2s;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      flex-shrink: 0;
-
-      i { font-size: 1.1rem; }
-
-      &:hover {
-        background: $dark-blue;
-        color: white;
-        transform: translateX(-3px);
-      }
-    }
 
     h2 {
       color: $dark-blue;
@@ -149,74 +129,92 @@ $border-color: #e2e8f0;
   }
 }
 
-// ===== TABLEAU =====
+// ===== TABLEAU (Design moderne unifié) =====
 ::ng-deep .p-card {
-  border-radius: 20px;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 2rem;
+  border: 1px solid #e5e7eb;
   .p-card-body { padding: 0; }
+  .p-card-content { padding: 0; }
 }
 
 ::ng-deep .p-datatable {
   .p-datatable-thead > tr > th {
-    background: $dark-blue;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-    padding: 0.75rem 1rem;
+    padding: 1.25rem 1rem;
     font-weight: 600;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    border: none;
+    text-align: left;
+    font-size: 0.95rem;
+    white-space: nowrap;
+
+    .p-sortable-column-icon {
+      color: rgba(255, 255, 255, 0.7);
+      margin-left: 0.5rem;
+    }
+
+    &:hover {
+      background: linear-gradient(135deg, #5468d3 0%, #653a86 100%);
+    }
   }
 
   .p-datatable-tbody > tr {
-    background: white;
+    border-bottom: 1px solid #f3f4f6;
+    transition: all 0.2s ease;
 
-    td {
-      padding: 0.65rem 1rem;
-      border-bottom: 1px solid $border-color;
-      color: $dark-blue;
-      font-size: 0.9rem;
-
-      &.text-right { text-align: right; }
-      &.font-bold   { font-weight: 600; }
+    &:hover {
+      background-color: #f9fafb;
     }
 
-    &:hover { background: $gray-light; }
+    > td {
+      padding: 1rem;
+      vertical-align: middle;
+      font-size: 0.95rem;
+      color: #374151;
+
+      &.text-right { text-align: right; }
+      &.font-bold   { font-weight: 600; color: $dark-blue; }
+    }
+  }
+
+  .p-paginator {
+    background: #f9fafb;
+    border-top: 1px solid #e5e7eb;
+    padding: 1rem;
   }
 }
 
-// ===== BOUTONS D'ACTION =====
 .actions-cell {
   display: flex;
-  gap: 0.4rem;
+  gap: 0.5rem;
   justify-content: center;
-  flex-wrap: wrap;
 }
 
-.action-btn {
-  display: inline-flex;
+.icon-btn {
+  border: 1px solid #e5e7eb;
+  background: transparent;
+  color: #666666;
+  border-radius: 8px;
+  display: flex;
   align-items: center;
-  gap: 0.3rem;
-  padding: 0.35rem 0.75rem;
-  border: none;
-  border-radius: 6px;
-  font-size: 0.78rem;
-  font-weight: 600;
+  justify-content: center;
   cursor: pointer;
-  color: white;
-  white-space: nowrap;
-  transition: all 0.2s;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: all 0.2s ease;
 
-  i { font-size: 0.85rem; }
+  i { font-size: 1rem; }
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    border-color: #d1d5db;
+    background: #f9fafb;
   }
 
-  &.edit-btn   { background: $warning; &:hover { background: #d97706; } }
-  &.delete-btn { background: $danger;  &:hover { background: #dc2626; } }
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
 }
 
 // ===== DIALOGUE =====
@@ -376,11 +374,11 @@ $border-color: #e2e8f0;
 
 ::ng-deep .p-dialog-mask { background: rgba(0,0,0,0.5) !important; }
 
+// ===== PAGINATION (Harmonisé avec Factures) =====
 ::ng-deep .p-paginator {
   background: white;
   padding: 0.75rem 1rem;
-  border-top: 1px solid $border-color;
-
+  border-top: 1px solid #f1f5f9;
   .p-paginator-page.p-highlight {
     background: $primary-blue;
     color: white;

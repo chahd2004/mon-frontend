@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 
 export interface CollaborateurApiItem {
@@ -8,7 +9,7 @@ export interface CollaborateurApiItem {
   prenom: string;
   nom: string;
   email: string;
-  role: 'ENTREPRISE_VIEWER' | 'EMETTEUR';
+  role: 'ENTREPRISE_VIEWER' | 'ENTREPRISE_ADMIN' | 'EMETTEUR';
   fonction?: string;
   telephone?: string;
 }
@@ -17,7 +18,7 @@ export interface CreateCollaborateurPayload {
   email: string;
   prenom: string;
   nom: string;
-  role: 'ENTREPRISE_VIEWER' | 'EMETTEUR';
+  role: 'ENTREPRISE_VIEWER' | 'ENTREPRISE_ADMIN' | 'EMETTEUR';
   fonction: string;
   telephone?: string;
 }
@@ -26,7 +27,7 @@ interface CreateCollaborateurApiPayload {
   email: string;
   firstName: string;
   lastName: string;
-  role: 'ENTREPRISE_VIEWER' | 'EMETTEUR';
+  role: 'ENTREPRISE_VIEWER' | 'ENTREPRISE_ADMIN' | 'EMETTEUR';
   fonction: string;
   telephone?: string;
 }
@@ -63,5 +64,9 @@ export class CollaborateurService {
       fonction: payload.fonction,
       role: payload.role
     });
+  }
+
+  deleteCollaborateur(id: number | string): Observable<void> {
+    return this.http.patch<void>(`${this.apiUrl}/${id}/desactiver`, {});
   }
 }

@@ -1,24 +1,40 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { ChartModule } from 'primeng/chart';
 import { SkeletonModule } from 'primeng/skeleton';
+import { TableModule } from 'primeng/table';
+import { TagModule } from 'primeng/tag';
 import { DashboardService, DashboardStats, SuperAdminStatsResponse } from '../../../core/services/dashboard.service';
+import { SuperAdminUserService } from '../../../core/services/super-admin-user.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { UserDTO, normalizeUserRole } from '../../../models';
 import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-statistiques',
   standalone: true,
-  imports: [CommonModule, RouterModule, ButtonModule, CardModule, ChartModule, SkeletonModule],
+  imports: [CommonModule, RouterModule, ButtonModule, CardModule, SkeletonModule, TableModule, TagModule],
   templateUrl: './statistiques.component.html',
   styleUrl: './statistiques.component.scss'
 })
 export class StatistiquesComponent implements OnInit {
   private dashboardService = inject(DashboardService);
+  private superAdminUserService = inject(SuperAdminUserService);
+  private authService = inject(AuthService);
   
   isLoading = true;
+
+  // Current user
+  currentUser = this.authService.currentUser;
+  userFullName = computed(() => {
+    const user = this.currentUser();
+    if (!user) return 'Administrateur';
+    const firstName = user.prenom || '';
+    const lastName = user.nom || '';
+    return `${firstName} ${lastName}`.trim() || 'Administrateur';
+  });
 
   // KPI Data
   usersCount = 0;
@@ -27,13 +43,8 @@ export class StatistiquesComponent implements OnInit {
   facturesCount = 0;
   caTotalCount = '0 TND';
 
-  // Charts
-  chartDataRequests: any;
-  chartOptions: any;
-
   ngOnInit(): void {
     this.loadStatistics();
-    this.initCharts();
   }
 
   private loadStatistics(): void {
@@ -65,52 +76,5 @@ export class StatistiquesComponent implements OnInit {
       return (value / 1000).toFixed(1) + 'K TND';
     }
     return value + ' TND';
-  }
-
-  private initCharts(): void {
-    const chartOptions = {
-      plugins: {
-        legend: {
-          display: true,
-          labels: {
-            usePointStyle: true
-          }
-        }
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-          grid: {
-            color: '#e5e7eb'
-          }
-        },
-        x: {
-          grid: {
-            display: false
-          }
-        }
-      }
-    };
-
-    this.chartOptions = chartOptions;
-
-    // Chart Évolution des inscriptions par mois
-    this.chartDataRequests = {
-      labels: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'],
-      datasets: [
-        {
-          label: 'Inscriptions',
-          data: [150, 120, 100, 95, 50, 55, 60, 70, 65, 75, 80, 90],
-          borderColor: '#667eea',
-          backgroundColor: 'rgba(102, 126, 234, 0.1)',
-          fill: true,
-          tension: 0.4,
-          pointBackgroundColor: '#667eea',
-          pointBorderColor: '#fff',
-          pointBorderWidth: 2,
-          pointRadius: 4
-        }
-      ]
-    };
   }
 }

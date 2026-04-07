@@ -17,14 +17,14 @@
       <div class="nav-section">
         <div class="section-title">
           <i class="pi pi-home"></i>
-          GÉNÉRAL
+          {{ 'SIDEBAR.GENERAL' | translate }}
         </div>
 
         <!-- Tableau de bord : vue d'ensemble -->
         <a routerLink="/dashboard" routerLinkActive="active"
            [routerLinkActiveOptions]="{exact: true}" class="nav-item">
           <i class="pi pi-gauge"></i>
-          <span class="nav-label">Tableau de bord</span>
+          <span class="nav-label">{{ 'SIDEBAR.DASHBOARD' | translate }}</span>
         </a>
 
         <!-- Clients : personnes -->
@@ -33,7 +33,7 @@
             routerLinkActive="active"
             class="nav-item">
           <i class="pi pi-users"></i>
-          <span class="nav-label">Clients</span>
+          <span class="nav-label">{{ 'SIDEBAR.CLIENTS' | translate }}</span>
         </a>
 
         <!-- Produits : article/tag -->
@@ -42,32 +42,32 @@
             routerLinkActive="active"
             class="nav-item">
           <i class="pi pi-tag"></i>
-          <span class="nav-label">Produits</span>
+          <span class="nav-label">{{ 'SIDEBAR.PRODUITS' | translate }}</span>
         </a>
 
         <!-- Demandes super-admin -->
         <a *ngIf="hasRole('SUPER_ADMIN')" routerLink="/demandes" routerLinkActive="active" class="nav-item">
           <i class="pi pi-inbox"></i>
-          <span class="nav-label">Demandes</span>
+          <span class="nav-label">{{ 'SIDEBAR.DEMANDES' | translate }}</span>
           <span class="nav-badge">{{ pendingDemandes }}</span>
         </a>
 
         <!-- Utilisateurs super-admin -->
         <a *ngIf="hasRole('SUPER_ADMIN')" routerLink="/users" routerLinkActive="active" class="nav-item">
           <i class="pi pi-users"></i>
-          <span class="nav-label">Utilisateurs</span>
+          <span class="nav-label">{{ 'SIDEBAR.UTILISATEURS' | translate }}</span>
         </a>
 
         <!-- Collaborateurs entreprise-admin -->
         <a *ngIf="hasRole('ENTREPRISE_ADMIN')" routerLink="/collaborateurs" routerLinkActive="active" class="nav-item">
           <i class="pi pi-id-card"></i>
-          <span class="nav-label">Collaborateurs</span>
+          <span class="nav-label">{{ 'SIDEBAR.COLLABORATEURS' | translate }}</span>
         </a>
 
         <!-- Client -->
         <a *ngIf="hasRole('CLIENT')" routerLink="/mon-profil" routerLinkActive="active" class="nav-item">
           <i class="pi pi-user-edit"></i>
-          <span class="nav-label">Mon profil</span>
+          <span class="nav-label">{{ 'SIDEBAR.PROFIL' | translate }}</span>
         </a>
       </div>
 
@@ -75,27 +75,45 @@
       <div class="nav-section">
         <div class="section-title">
           <i class="pi pi-receipt"></i>
-          FACTURATION
+          {{ 'SIDEBAR.FACTURATION' | translate }}
         </div>
 
         <!-- Factures : document texte -->
         <a *ngIf="hasAnyRole(['SUPER_ADMIN', 'ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER', 'CLIENT', 'EMETTEUR'])" routerLink="/factures" routerLinkActive="active" class="nav-item">
           <i class="pi pi-file-edit"></i>
-          <span class="nav-label">Factures</span>
+          <span class="nav-label">{{ 'SIDEBAR.FACTURES' | translate }}</span>
           <span class="nav-badge">{{ totalFactures }}</span>
         </a>
 
         <!-- Devis : document avec loupe -->
-        <a *ngIf="hasAnyRole(['SUPER_ADMIN', 'ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER'])" routerLink="/devise" routerLinkActive="active" class="nav-item">
+        <a *ngIf="hasAnyRole(['SUPER_ADMIN', 'ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER'])" routerLink="/devis" routerLinkActive="active" class="nav-item">
           <i class="pi pi-file-export"></i>
-          <span class="nav-label">Devis</span>
+          <span class="nav-label">{{ 'SIDEBAR.DEVIS' | translate }}</span>
+          <span class="nav-badge">0</span>
+        </a>
+
+        <a *ngIf="hasAnyRole(['SUPER_ADMIN', 'ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER'])" routerLink="/bons-commandes" routerLinkActive="active" class="nav-item">
+          <i class="pi pi-file"></i>
+          <span class="nav-label">{{ 'SIDEBAR.BON_COMMANDES' | translate }}</span>
+          <span class="nav-badge">0</span>
+        </a>
+
+        <a *ngIf="hasAnyRole(['SUPER_ADMIN', 'ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER'])" routerLink="/commandes" routerLinkActive="active" class="nav-item">
+          <i class="pi pi-briefcase"></i>
+          <span class="nav-label">{{ 'SIDEBAR.COMMANDES' | translate }}</span>
+          <span class="nav-badge">0</span>
+        </a>
+
+        <a *ngIf="hasAnyRole(['SUPER_ADMIN', 'ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER'])" routerLink="/bons-livraison" routerLinkActive="active" class="nav-item">
+          <i class="pi pi-truck"></i>
+          <span class="nav-label">{{ 'SIDEBAR.BON_LIVRAISON' | translate }}</span>
           <span class="nav-badge">0</span>
         </a>
 
         <!-- Avoirs : remboursement/retour -->
         <a *ngIf="hasAnyRole(['SUPER_ADMIN', 'ENTREPRISE_ADMIN'])" routerLink="/avoirs" routerLinkActive="active" class="nav-item">
           <i class="pi pi-arrow-right-arrow-left"></i>
-          <span class="nav-label">Avoirs</span>
+          <span class="nav-label">{{ 'SIDEBAR.AVOIRS' | translate }}</span>
           <span class="nav-badge">0</span>
         </a>
       </div>
@@ -104,19 +122,19 @@
       <div class="nav-section">
         <div class="section-title">
           <i class="pi pi-cog"></i>
-          PARAMÈTRES
+          {{ 'SIDEBAR.PARAMETRES' | translate }}
         </div>
 
         <!-- Paramètres : réglages -->
         <a routerLink="/parametres" routerLinkActive="active" class="nav-item">
           <i class="pi pi-sliders-h"></i>
-          <span class="nav-label">Paramètres</span>
+          <span class="nav-label">{{ 'SIDEBAR.PARAMETRES' | translate }}</span>
         </a>
 
         <!-- Déconnexion : sortie -->
         <a class="nav-item logout" (click)="logout()">
           <i class="pi pi-sign-out"></i>
-          <span class="nav-label">Déconnexion</span>
+          <span class="nav-label">{{ 'SIDEBAR.LOGOUT' | translate }}</span>
         </a>
       </div>
 
@@ -137,6 +155,7 @@
 
   <!-- CONTENU -->
   <main class="main-content">
+
     <div *ngIf="isViewer" class="viewer-banner">
       Mode consultation: vous êtes en lecture seule (pas de boutons Ajouter/Modifier).
     </div>

@@ -4,16 +4,13 @@
   <!-- En-tête -->
   <div class="header-section">
     <div class="header-left">
-      <button class="back-btn" (click)="retourListe()" pTooltip="Retour au dashboard">
-        <i class="pi pi-arrow-left"></i>
-      </button>
       <h2>
         <i class="pi pi-box"></i>
-        Gestion des produits
+        {{ 'PRODUITS.TITLE' | translate }}
       </h2>
     </div>
     <button *ngIf="!isViewer" class="add-btn" (click)="ajouterProduit()">
-      <i class="pi pi-plus"></i> Nouveau produit
+      <i class="pi pi-plus"></i> {{ 'PRODUITS.NEW' | translate }}
     </button>
   </div>
 
@@ -24,7 +21,7 @@
       <input
         type="text"
         pInputText
-        placeholder="Rechercher par référence ou désignation..."
+        [placeholder]="'PRODUITS.SEARCH_PLACEHOLDER' | translate"
         [(ngModel)]="searchText"
         (keyup.enter)="onSearch()"
       >
@@ -38,7 +35,6 @@
   <p-card>
     <p-table
       [value]="produitsFiltered"
-      [paginator]="true"
       [rows]="rowsPerPage"
       [totalRecords]="produitsFiltered.length"
       [loading]="loading"
@@ -49,14 +45,14 @@
       <ng-template pTemplate="header">
         <tr>
           <th>ID</th>
-          <th>Référence</th>
-          <th>Désignation</th>
-          <th>Prix unitaire HT</th>
-          <th>TVA %</th>
-          <th>Prix TTC</th>
-          <th>Stock</th>
-          <th>Statut</th>
-          <th *ngIf="!isViewer" style="text-align: center; min-width: 160px;">Actions</th>
+          <th>{{ 'PRODUITS.TABLE.REF' | translate }}</th>
+          <th>{{ 'PRODUITS.TABLE.DESIGNATION' | translate }}</th>
+          <th>{{ 'PRODUITS.TABLE.PRIX_HT' | translate }}</th>
+          <th>{{ 'PRODUITS.TABLE.TVA' | translate }}</th>
+          <th>{{ 'PRODUITS.TABLE.PRIX_TTC' | translate }}</th>
+          <th>{{ 'PRODUITS.TABLE.STOCK' | translate }}</th>
+          <th>{{ 'PRODUITS.TABLE.STATUS' | translate }}</th>
+          <th *ngIf="!isViewer" style="text-align: center; min-width: 160px;">{{ 'PRODUITS.TABLE.ACTIONS' | translate }}</th>
         </tr>
       </ng-template>
 
@@ -72,27 +68,25 @@
           <td>
             <ng-container *ngIf="getStockStatut(produit) as statut">
               <span class="stock-badge" [ngClass]="statut.classe">
-                {{ statut.icon }} {{ statut.label }}
+                {{ statut.icon }} {{ statut.label | translate }}
               </span>
             </ng-container>
           </td>
           <td *ngIf="!isViewer">
             <div class="actions-cell">
               <button
-                class="action-btn edit-btn"
+                class="icon-btn icon-btn-edit"
                 (click)="modifierProduit(produit)"
-                pTooltip="Modifier ce produit"
+                [pTooltip]="'PRODUITS.ACTIONS.EDIT_TOOLTIP' | translate"
                 tooltipPosition="top">
                 <i class="pi pi-pencil"></i>
-                <span>Modifier</span>
               </button>
               <button
-                class="action-btn delete-btn"
+                class="icon-btn icon-btn-delete"
                 (click)="supprimerProduit(produit.id)"
-                pTooltip="Supprimer ce produit"
+                [pTooltip]="'PRODUITS.ACTIONS.DELETE_TOOLTIP' | translate"
                 tooltipPosition="top">
                 <i class="pi pi-trash"></i>
-                <span>Supprimer</span>
               </button>
             </div>
           </td>
@@ -103,11 +97,11 @@
         <tr>
           <td [attr.colspan]="isViewer ? 8 : 9" style="text-align: center; padding: 3rem;">
             <i class="pi pi-box" style="font-size: 3rem; color: #94a3b8; display:block; margin-bottom:1rem;"></i>
-            <h3 style="color:#1e293b; margin:0.5rem 0;">Aucun produit trouvé</h3>
-            <p *ngIf="!isViewer" style="color:#64748b; margin-bottom:1.5rem;">Commencez par ajouter votre premier produit.</p>
-            <p *ngIf="isViewer" style="color:#64748b; margin-bottom:1.5rem;">Aucun produit disponible pour le moment.</p>
+            <h3 style="color:#1e293b; margin:0.5rem 0;">{{ 'PRODUITS.EMPTY.TITLE' | translate }}</h3>
+            <p *ngIf="!isViewer" style="color:#64748b; margin-bottom:1.5rem;">{{ 'PRODUITS.EMPTY.SUBTITLE_ADD' | translate }}</p>
+            <p *ngIf="isViewer" style="color:#64748b; margin-bottom:1.5rem;">{{ 'PRODUITS.EMPTY.SUBTITLE_VIEW' | translate }}</p>
             <button *ngIf="!isViewer" class="add-btn" (click)="ajouterProduit()">
-              <i class="pi pi-plus"></i> Nouveau produit
+              <i class="pi pi-plus"></i> {{ 'PRODUITS.NEW' | translate }}
             </button>
           </td>
         </tr>
@@ -118,7 +112,7 @@
   <!-- Dialogue d'ajout/modification -->
   <p-dialog
     [(visible)]="displayDialog"
-    [header]="dialogMode === 'add' ? 'Nouveau produit' : 'Modifier le produit'"
+    [header]="dialogMode === 'add' ? ('PRODUITS.DIALOG.ADD_TITLE' | translate) : ('PRODUITS.DIALOG.EDIT_TITLE' | translate)"
     [style]="{width: '540px'}"
     [modal]="true"
     [draggable]="false"
@@ -127,20 +121,20 @@
     <div class="dialog-content">
 
       <div class="form-group">
-        <label>Référence <span class="required">*</span></label>
+        <label>{{ 'PRODUITS.FORM.REF' | translate }} <span class="required">*</span></label>
         <input type="text" pInputText [(ngModel)]="produitForm.reference"
                placeholder="Ex: PROD-001" autofocus>
       </div>
 
       <div class="form-group">
-        <label>Désignation <span class="required">*</span></label>
+        <label>{{ 'PRODUITS.FORM.DESIGNATION' | translate }} <span class="required">*</span></label>
         <input type="text" pInputText [(ngModel)]="produitForm.designation"
                placeholder="Nom du produit">
       </div>
 
       <div class="form-row">
         <div class="form-group half">
-          <label>Prix unitaire HT <span class="required">*</span></label>
+          <label>{{ 'PRODUITS.FORM.PRIX_HT' | translate }} <span class="required">*</span></label>
           <p-inputNumber [(ngModel)]="produitForm.prixUnitaire"
                         mode="decimal"
                         [min]="0"
@@ -151,7 +145,7 @@
           </p-inputNumber>
         </div>
         <div class="form-group half">
-          <label>TVA % <span class="required">*</span></label>
+          <label>{{ 'PRODUITS.FORM.TVA' | translate }} <span class="required">*</span></label>
           <p-inputNumber [(ngModel)]="produitForm.tauxTVA"
                         [min]="0"
                         [max]="100"
@@ -165,7 +159,7 @@
       <!-- ===== SECTION STOCK ===== -->
       <div class="stock-section">
         <h4 class="stock-section-title">
-          <i class="pi pi-warehouse"></i> Gestion du stock
+          <i class="pi pi-warehouse"></i> {{ 'PRODUITS.FORM.STOCK_TITLE' | translate }}
         </h4>
 
         <!-- Stock illimité toggle -->
@@ -174,13 +168,13 @@
             [(ngModel)]="produitForm.stockIllimite"
             [binary]="true"
             inputId="stockIllimite"
-            label="Stock illimité (services / produits numériques)">
+            [label]="'PRODUITS.FORM.STOCK_UNLIMITED' | translate">
           </p-checkbox>
         </div>
 
         <div class="form-row" *ngIf="!produitForm.stockIllimite">
           <div class="form-group half">
-            <label>Quantité en stock</label>
+            <label>{{ 'PRODUITS.FORM.STOCK_QTY' | translate }}</label>
             <p-inputNumber
               [(ngModel)]="produitForm.quantiteStock"
               [min]="0"
@@ -189,7 +183,7 @@
             </p-inputNumber>
           </div>
           <div class="form-group half">
-            <label>Seuil d'alerte</label>
+            <label>{{ 'PRODUITS.FORM.STOCK_ALERT' | translate }}</label>
             <p-inputNumber
               [(ngModel)]="produitForm.seuilAlerteStock"
               [min]="0"
@@ -201,45 +195,45 @@
 
         <!-- Aperçu statut stock -->
         <div class="stock-preview" *ngIf="!produitForm.stockIllimite">
-          <span class="stock-preview-label">Statut prévu :</span>
+          <span class="stock-preview-label">{{ 'PRODUITS.FORM.STOCK_PREVIEW' | translate }}</span>
           <span class="stock-badge"
             [ngClass]="{
               'statut-disponible': produitForm.quantiteStock > produitForm.seuilAlerteStock,
               'statut-faible': produitForm.quantiteStock > 0 && produitForm.quantiteStock <= produitForm.seuilAlerteStock,
               'statut-rupture': produitForm.quantiteStock <= 0
             }">
-            <ng-container *ngIf="produitForm.quantiteStock <= 0">🔴 Rupture</ng-container>
-            <ng-container *ngIf="produitForm.quantiteStock > 0 && produitForm.quantiteStock <= produitForm.seuilAlerteStock">⚠️ Stock faible</ng-container>
-            <ng-container *ngIf="produitForm.quantiteStock > produitForm.seuilAlerteStock">✅ Disponible</ng-container>
+            <ng-container *ngIf="produitForm.quantiteStock <= 0">🔴 {{ 'PRODUITS.STOCK_STATUS.OUT' | translate }}</ng-container>
+            <ng-container *ngIf="produitForm.quantiteStock > 0 && produitForm.quantiteStock <= produitForm.seuilAlerteStock">⚠️ {{ 'PRODUITS.STOCK_STATUS.LOW' | translate }}</ng-container>
+            <ng-container *ngIf="produitForm.quantiteStock > produitForm.seuilAlerteStock">✅ {{ 'PRODUITS.STOCK_STATUS.AVAILABLE' | translate }}</ng-container>
           </span>
         </div>
         <div class="stock-preview" *ngIf="produitForm.stockIllimite">
-          <span class="stock-preview-label">Statut prévu :</span>
-          <span class="stock-badge statut-illimite">∞ Illimité</span>
+          <span class="stock-preview-label">{{ 'PRODUITS.FORM.STOCK_PREVIEW' | translate }}</span>
+          <span class="stock-badge statut-illimite">∞ {{ 'PRODUITS.STOCK_STATUS.UNLIMITED' | translate }}</span>
         </div>
       </div>
 
       <div class="form-group test-mode-field">
         <label>
           <i class="pi pi-info-circle" style="color: #f59e0b;"></i>
-          ID Émetteur <span class="required">*</span>
+          {{ 'PRODUITS.FORM.EMETTEUR_ID' | translate }} <span class="required">*</span>
           <small style="color: #94a3b8; font-weight: 400;"> (mode test)</small>
         </label>
         <p-inputNumber [(ngModel)]="produitForm.emetteurId" [min]="1" placeholder="Ex: 1"></p-inputNumber>
       </div>
 
       <div class="preview-section" *ngIf="produitForm.prixUnitaire > 0">
-        <h4>Aperçu prix</h4>
+        <h4>{{ 'PRODUITS.FORM.PREVIEW_TITLE' | translate }}</h4>
         <div class="preview-item">
-          <span>Prix HT :</span>
+          <span>{{ 'PRODUITS.FORM.PREVIEW_HT' | translate }} :</span>
           <strong>{{ formatPrix(produitForm.prixUnitaire) }}</strong>
         </div>
         <div class="preview-item">
-          <span>Montant TVA ({{ produitForm.tauxTVA }}%) :</span>
+          <span>{{ 'PRODUITS.FORM.PREVIEW_VAT' | translate }} ({{ produitForm.tauxTVA }}%) :</span>
           <strong>{{ formatPrix(produitForm.prixUnitaire * produitForm.tauxTVA / 100) }}</strong>
         </div>
         <div class="preview-item total">
-          <span>Prix TTC :</span>
+          <span>{{ 'PRODUITS.FORM.PREVIEW_TTC' | translate }} :</span>
           <strong>{{ formatPrix(produitForm.prixUnitaire * (1 + produitForm.tauxTVA/100)) }}</strong>
         </div>
       </div>
@@ -249,10 +243,10 @@
     <ng-template pTemplate="footer">
       <div class="dialog-footer">
         <button type="button" class="dialog-footer-btn cancel" (click)="displayDialog = false">
-          <i class="pi pi-times"></i> Annuler
+          <i class="pi pi-times"></i> {{ 'COMMON.CANCEL' | translate }}
         </button>
         <button type="button" class="dialog-footer-btn" (click)="sauvegarderProduit()" [disabled]="loading">
-          <i class="pi pi-check"></i> {{ dialogMode === 'add' ? 'Ajouter' : 'Modifier' }}
+          <i class="pi pi-check"></i> {{ (dialogMode === 'add' ? 'COMMON.SAVE' : 'COMMON.SAVE') | translate }}
         </button>
       </div>
     </ng-template>

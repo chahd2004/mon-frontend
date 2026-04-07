@@ -1,8 +1,9 @@
 .layout-container {
   display: flex;
-  flex-direction: column;
   height: 100vh;
   background: var(--app-surface);
+  margin: 0;
+  padding: 0;
 }
 
 .layout-body {

@@ -111,6 +111,17 @@ export class ChangePasswordComponent {
       },
       error: (err) => {
         this.loading = false;
+        
+        // Vérifier si le compte est expiré
+        if (err?.error?.accountStatus === 'EXPIRED' || err?.error?.message?.includes('expiré') || err?.status === 403) {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Compte expiré',
+            detail: 'Votre compte a expiré. Veuillez contacter l\'administrateur.'
+          });
+          return;
+        }
+        
         const message = err?.error?.message || 'Impossible de modifier le mot de passe.';
         this.messageService.add({
           severity: 'error',

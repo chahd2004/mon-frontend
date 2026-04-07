@@ -1,0 +1,80 @@
+<div class="devis-detail-page" *ngIf="!loading && devis; else loadingOrError">
+  <button class="back-link" (click)="retourAuxDevis()">&larr; Retour aux devis</button>
+
+  <div class="header-card">
+    <h1>{{ formatDevisReference() }}</h1>
+    <div class="status-pill">Statut: {{ getEffectiveStatut() }}</div>
+  </div>
+
+  <div class="infos-grid">
+    <section class="party-card">
+      <h3>{{ client?.raisonSociale || devis.acheteurNom }}</h3>
+      <p>{{ client?.adresseComplete || '-' }}</p>
+      <p>{{ client?.email || '-' }}</p>
+      <p>{{ client?.telephone || '-' }}</p>
+    </section>
+
+    <section class="meta-card">
+      <p><strong>Date d'emission:</strong> {{ devis.dateCreation | date:'dd/MM/yyyy' }}</p>
+      <p><strong>Date validite:</strong> {{ devis.dateValidite ? (devis.dateValidite | date:'dd/MM/yyyy') : '-' }}</p>
+      <p><strong>Mode de paiement:</strong> {{ formatModePaiement(devis.modePaiement) }}</p>
+      <p><strong>Vendeur:</strong> {{ vendeur?.raisonSociale || devis.vendeurNom }}</p>
+      <p><strong>MF:</strong> {{ vendeur?.matriculeFiscal || '-' }}</p>
+    </section>
+  </div>
+
+  <h2 class="section-title">Detail des prestations</h2>
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Designation</th>
+          <th>Qte</th>
+          <th>Prix HT</th>
+          <th>TVA %</th>
+          <th>Montant</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let ligne of lignes; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ ligne.produitDesignation || '-' }}</td>
+          <td>{{ ligne.quantite || 0 }}</td>
+          <td>{{ (ligne.prixUnitaire || 0) | number:'1.3-3' }}</td>
+          <td>{{ getLigneTauxTVA(ligne) | number:'1.0-2' }}%</td>
+          <td>{{ (ligne.montantHT || 0) | number:'1.3-3' }}</td>
+          <td>{{ getLigneMontantTTC(ligne) | number:'1.3-3' }}</td>
+        </tr>
+        <tr *ngIf="!lignes.length">
+          <td colspan="7" class="empty">Aucune ligne dans ce devis.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="totals-card">
+    <span>Total HT: {{ devis.totalHT | number:'1.3-3' }} TND</span>
+    <span>TVA: {{ devis.montantTVA | number:'1.3-3' }} TND</span>
+    <span>Timbre: {{ timbreFiscal | number:'1.3-3' }} TND</span>
+    <span class="ttc">TOTAL TTC: {{ totalTTCAvecTimbre | number:'1.3-3' }} TND</span>
+  </div>
+
+  <div class="actions-card">
+    <button class="action-btn" [disabled]="!canEnvoyer()" (click)="envoyerAuClient()">Envoyer au client</button>
+    <button class="action-btn" [disabled]="!canAccepterOuRejeter()" (click)="accepterDevis()">Accepter</button>
+    <button class="action-btn danger" [disabled]="!canAccepterOuRejeter()" (click)="rejeterDevis()">Rejeter</button>
+    <button class="action-btn" [disabled]="!canConvertir()" (click)="convertirEnBonCommande()">Convertir en bon commande</button>
+    <button class="action-btn secondary" [disabled]="!canConvertirDirectement() || convertingDirect" (click)="convertirEnFactureDirecte()">
+      {{ convertingDirect ? 'Conversion en cours...' : 'Convertir en facture directe' }}
+    </button>
+  </div>
+
+  <div class="error" *ngIf="errorMessage">{{ errorMessage }}</div>
+</div>
+
+<ng-template #loadingOrError>
+  <div class="loading" *ngIf="loading">Chargement du devis...</div>
+  <div class="error" *ngIf="!loading && errorMessage">{{ errorMessage }}</div>
+</ng-template>

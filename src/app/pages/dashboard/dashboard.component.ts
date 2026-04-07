@@ -12,7 +12,10 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TooltipModule } from 'primeng/tooltip';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
+import { signal, effect } from '@angular/core';
 
+import { AuthService } from '../../core/services/auth.service';
+import { EmetteurService } from '../../core/services/emetteur.service';
 import { FactureService } from '../../core/services/facture.service';
 import { ClientService } from '../../core/services/client.service';
 import { DashboardService } from '../../core/services/dashboard.service';
@@ -34,13 +37,15 @@ export class DashboardComponent implements OnInit {
   private dashboardService = inject(DashboardService);
   private router           = inject(Router);
   private messageService   = inject(MessageService);
+  private authService      = inject(AuthService);
+  private emetteurService  = inject(EmetteurService);
 
   totalFactures: number    = 0;
   totalClients: number     = 0;
   chiffreAffaires: number  = 0;
   facturesImpayees: number = 0;
   loading: boolean         = true;
-  dernieresFactures: any[] = [];
+  raisonSociale: string | null = null;
 
   chartData: any = {
     labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'],
@@ -65,15 +70,20 @@ export class DashboardComponent implements OnInit {
 
   chartOptions: any;
 
-  stats: any = {
-    evolution: 0,
-    exercice: new Date().getFullYear().toString(),
-    annees: []
-  };
-
   ngOnInit(): void {
     this.initChartOptions();
     this.loadData();
+    this.fetchEnterpriseName();
+  }
+
+  private fetchEnterpriseName(): void {
+    const user = this.authService.currentUser();
+    if (user?.emetteurId) {
+      this.emetteurService.getEmetteurById(user.emetteurId).subscribe({
+        next: (emetteur) => this.raisonSociale = emetteur?.raisonSociale || null,
+        error: () => this.raisonSociale = null
+      });
+    }
   }
 
   initChartOptions(): void {
@@ -112,8 +122,6 @@ export class DashboardComponent implements OnInit {
         this.totalClients     = data.clients?.total          || 0;
         this.chiffreAffaires  = data.chiffreAffaires?.actuel || 0;
         this.facturesImpayees = data.factures?.enRetard      || 0;
-        this.stats.evolution  = data.chiffreAffaires?.evolution || 0;
-        this.stats.annees     = data.chiffreAffaires?.parAnnee  || [];
         if (data.graphiques?.caMensuel) {
           this.chartData.datasets[0].data = data.graphiques.caMensuel.valeurs || [];
         }
@@ -125,10 +133,7 @@ export class DashboardComponent implements OnInit {
       }
     });
 
-    this.dashboardService.getDernieresFactures(5).subscribe({
-      next: (f: any[]) => { this.dernieresFactures = f || []; },
-      error: () => { this.dernieresFactures = []; }
-    });
+
 
     this.clientService.getClients().subscribe({
       next: (clients) => { this.totalClients = clients.length; },
@@ -156,10 +161,9 @@ export class DashboardComponent implements OnInit {
     return map[statut] ?? statut;
   }
 
-  naviguerVersFactures(): void  { this.router.navigate(['/factures']); }
-  naviguerVersClients():  void  { this.router.navigate(['/clients']);  }
-  voirFacture(id: number): void { this.router.navigate(['/factures', id]); }
-  retourAccueil():        void  { this.router.navigate(['/']); }
+  naviguerVersFactures(): void { this.router.navigate(['/factures']); }
+  naviguerVersClients(): void { this.router.navigate(['/clients']); }
+  retourAccueil(): void { this.router.navigate(['/']); }
 
   rafraichir(): void {
     this.loadData();

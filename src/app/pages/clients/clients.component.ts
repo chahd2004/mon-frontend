@@ -20,6 +20,7 @@ import { ConfirmationService } from 'primeng/api';
 import { ClientService } from '../../core/services/client.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Client, ClientRequest, RegionTunisie } from '../../models/client.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-clients',
@@ -35,7 +36,8 @@ import { Client, ClientRequest, RegionTunisie } from '../../models/client.model'
     InputTextModule,
     DialogModule,
     DropdownModule,
-    TooltipModule
+    TooltipModule,
+    TranslateModule
   ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './clients.component.html',
@@ -162,7 +164,10 @@ export class ClientsComponent implements OnInit {
       return;
     }
 
-    this.router.navigate(['/registerclient']);
+    this.dialogMode = 'add';
+    this.selectedClient = null;
+    this.resetForm();
+    this.displayDialog = true;
   }
 
   modifierClient(client: Client): void {
@@ -234,6 +239,7 @@ export class ClientsComponent implements OnInit {
 
     this.loading = true;
     const request: ClientRequest = {
+      code: this.generateClientCode(),
       raisonSociale: this.clientForm.raisonSociale!.trim(),
       email: this.clientForm.email!.trim(),
       telephone: this.clientForm.telephone!.trim(),
@@ -327,5 +333,9 @@ export class ClientsComponent implements OnInit {
 
   voirFactures(clientId: number): void {
     this.router.navigate(['/clients', clientId, 'factures']);
+  }
+
+  private generateClientCode(): string {
+    return `CL-${Date.now().toString().slice(-8)}`;
   }
 }

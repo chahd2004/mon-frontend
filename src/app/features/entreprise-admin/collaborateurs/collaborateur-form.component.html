@@ -40,14 +40,8 @@
 
         <div class="form-group">
           <label for="role">Rôle *</label>
-          <p-dropdown
-            id="role"
-            [options]="roleOptions"
-            formControlName="role"
-            optionLabel="label"
-            optionValue="value"
-            placeholder="Sélectionner un rôle"
-          ></p-dropdown>
+          <p-dropdown id="role" [options]="roleOptions" formControlName="role" optionLabel="label" optionValue="value"
+            placeholder="Sélectionner un rôle"></p-dropdown>
           <small class="error" *ngIf="form.get('role')?.invalid && form.get('role')?.touched">
             Rôle est requis
           </small>
@@ -55,7 +49,8 @@
 
         <div class="form-group">
           <label for="permissions">Permissions</label>
-          <input id="permissions" type="text" pInputText formControlName="permissions" placeholder="Admin, User, etc." />
+          <input id="permissions" type="text" pInputText formControlName="permissions"
+            placeholder="Admin, User, etc." />
         </div>
       </div>
 
@@ -65,15 +60,8 @@
 
       <div class="form-actions">
         <button pButton type="button" label="Annuler" class="p-button-text" (click)="cancel()"></button>
-        <button
-          pButton
-          type="button"
-          label="Ajouter"
-          icon="pi pi-check"
-          [loading]="isSubmitting"
-          [disabled]="!form.valid || isSubmitting"
-          (click)="save()"
-        ></button>
+        <button pButton type="button" label="Ajouter" icon="pi pi-check" [loading]="isSubmitting"
+          [disabled]="!form.valid || isSubmitting" (click)="save()"></button>
       </div>
     </form>
   </p-card>

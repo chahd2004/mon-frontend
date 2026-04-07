@@ -14,17 +14,28 @@
   <nav class="sidebar-nav">
     <ul class="nav-list">
       <li *ngFor="let item of sidebarItems()" class="nav-item">
-        <a
-          [routerLink]="item.route"
-          routerLinkActive="active"
-          class="nav-link"
-          [routerLinkActiveOptions]="{ exact: true }"
-        >
+        <!-- Navigation classique -->
+        <a *ngIf="!item.action"
+           [routerLink]="item.route"
+           routerLinkActive="active"
+           class="nav-link"
+           [routerLinkActiveOptions]="{ exact: true }">
           <span class="nav-icon">
             <i [class]="item.icon"></i>
           </span>
           <span class="nav-label">{{ item.label }}</span>
           <span *ngIf="item.badge" class="badge">{{ item.badge }}</span>
+        </a>
+
+        <!-- Action spéciale (Déconnexion) -->
+        <a *ngIf="item.action === 'logout'"
+           href="javascript:void(0)"
+           (click)="onItemClick($event, item)"
+           class="nav-link logout-link">
+          <span class="nav-icon">
+            <i [class]="item.icon"></i>
+          </span>
+          <span class="nav-label">{{ item.label }}</span>
         </a>
       </li>
     </ul>

@@ -1,0 +1,129 @@
+<div class="commandes-page">
+  <h1 class="title">Commandes</h1>
+
+  <div class="action-bar">
+    <button class="btn btn-primary" *ngIf="!isViewer" (click)="nouvelleCommande()">+ Nouvelle commande</button>
+    <button class="btn btn-neutral" (click)="depuisBC()">Depuis BC</button>
+    <button class="btn btn-neutral" (click)="toggleStats()">Statistiques</button>
+  </div>
+
+  <div *ngIf="errorMessage" class="message error">{{ errorMessage }}</div>
+  <div *ngIf="successMessage" class="message success">{{ successMessage }}</div>
+
+  <div class="filters-row">
+    <select [(ngModel)]="selectedStatus" [ngModelOptions]="{ standalone: true }">
+      <option value="ALL">Filtrer par statut</option>
+      <option *ngFor="let status of availableStatuses" [ngValue]="status">{{ getStatusLabel(status) }}</option>
+    </select>
+  </div>
+
+  <div class="table-wrapper" *ngIf="!loading; else loadingTpl">
+    <table>
+      <thead>
+        <tr>
+          <th>N°</th>
+          <th>Client</th>
+          <th>Date commande</th>
+          <th>Total TTC</th>
+          <th>Statut</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of filteredCommandes" [ngClass]="'status-' + getStatusClass(item.statut)">
+          <td class="strong">{{ item.numero }}</td>
+          <td>{{ item.client }}</td>
+          <td>{{ item.dateCommande | date:'dd/MM/yyyy' }}</td>
+          <td class="strong">{{ item.totalTTC | number:'1.3-3' }} TND</td>
+          <td>
+            <span class="status" [ngClass]="getStatusClass(item.statut)">{{ getStatusLabel(item.statut) }}</span>
+          </td>
+          <td>
+            <div class="row-actions">
+              <button class="icon-btn icon-btn-view" (click)="voirCommande(item)"><i class="pi pi-eye"></i></button>
+              <button class="icon-btn icon-btn-edit" *ngIf="item.statut === 'DRAFT' && !isViewer"
+                (click)="modifierCommande(item)"><i class="pi pi-pencil"></i></button>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="!filteredCommandes.length">
+          <td colspan="6" class="empty">Aucune commande trouvee.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="stats-card" *ngIf="showStats">
+    <h2>Statuts commandes</h2>
+    <div class="stats-line"></div>
+    <div class="stats-container">
+      <div *ngFor="let stat of statusStats" class="stat-badge" [ngClass]="getStatusClass(stat.status)">
+        <span class="stat-label">{{ getStatusLabel(stat.status) }}</span>
+        <span class="stat-count">{{ stat.count }}</span>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #loadingTpl>
+    <div class="loading">Chargement des commandes...</div>
+  </ng-template>
+</div>
+
+<div class="modal-backdrop" *ngIf="displayConvertModal" (click)="closeConvertModal()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Convertir un bon de commande en commande</h3>
+      <button type="button" class="modal-close" (click)="closeConvertModal()">x</button>
+    </div>
+
+    <p class="modal-subtitle">Selectionnez un bon de commande confirme a convertir :</p>
+
+    <input type="text" class="search-input" placeholder="Rechercher un bon de commande..."
+      [(ngModel)]="conversionSearch" [ngModelOptions]="{ standalone: true }" />
+
+    <div class="table-wrapper modal-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Selection</th>
+            <th>N° BC</th>
+            <th>Client</th>
+            <th>Date</th>
+            <th>Montant TTC</th>
+            <th>Statut</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let bc of filteredConfirmedBonCommandes" (click)="selectedBCId = bc.id" class="selectable-row">
+            <td>
+              <input type="radio" name="selectedBC" [value]="bc.id" [(ngModel)]="selectedBCId"
+                [ngModelOptions]="{ standalone: true }" />
+            </td>
+            <td>{{ formatBonCommandeReference(bc) }}</td>
+            <td>{{ bc.acheteurNom || '-' }}</td>
+            <td>{{ bc.dateCreation | date:'dd/MM/yyyy' }}</td>
+            <td>{{ (bc.totalTTC || 0) | number:'1.3-3' }} TND</td>
+            <td><span class="status confirmed">CONFIRMED</span></td>
+          </tr>
+          <tr *ngIf="!filteredConfirmedBonCommandes.length">
+            <td colspan="6" class="empty">Aucun bon de commande confirme trouve.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="field">
+      <label>Notes (optionnel)</label>
+      <textarea rows="3" [(ngModel)]="conversionNotes" [ngModelOptions]="{ standalone: true }"
+        placeholder="Ajouter une note..."></textarea>
+    </div>
+
+    <div class="modal-actions">
+      <button type="button" class="btn btn-neutral" (click)="closeConvertModal()">Annuler</button>
+      <button type="button" class="btn btn-primary" [disabled]="converting || !selectedBCId"
+        (click)="convertirBCSelectionne()">
+        {{ converting ? 'Conversion...' : 'Convertir' }}
+      </button>
+    </div>
+  </div>
+</div>

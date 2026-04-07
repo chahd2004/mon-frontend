@@ -1,0 +1,195 @@
+{
+  "FACTURATION": "Facturation",
+  "DASHBOARD": {
+    "TITLE": "Tableau de bord",
+    "SUBTITLE": "Bienvenue sur votre espace de gestion",
+    "HOME": "Accueil",
+    "REFRESH": "Actualiser",
+    "TOTAL_FACTURES": "Total Factures",
+    "TOTAL_CLIENTS": "Total Clients",
+    "REVENUE": "Chiffre d'affaires",
+    "UNPAID_INVOICES": "Factures impayées",
+    "CHART_TITLE": "Évolution mensuelle",
+    "NO_DATA": "Aucune donnée disponible"
+  },
+  "FACTURES": {
+    "TITLE": "Gestion des factures",
+    "NEW": "Nouvelle facture",
+    "SEARCH_PLACEHOLDER": "Rechercher par N° facture ou client...",
+    "TABLE": {
+      "NUM": "N° Facture",
+      "CLIENT": "Client",
+      "DATE_EMISSION": "Date d'émission",
+      "DATE_ECHEANCE": "Échéance",
+      "STATUS": "Statut",
+      "ACTIONS": "Actions",
+      "NOT_DEFINED": "Non définie"
+    },
+    "ACTIONS": {
+      "VIEW": "Voir",
+      "SIGN": "Signer",
+      "EDIT": "Modifier",
+      "DELETE": "Supprimer"
+    },
+    "EMPTY": {
+      "TITLE": "Aucune facture trouvée",
+      "SUBTITLE": "Commencez par créer votre première facture.",
+      "BUTTON": "Créer une facture"
+    },
+    "CHART_HEADER": "Évolution des factures"
+  },
+  "STATUS": {
+    "DRAFT": "Brouillon",
+    "SENT": "Envoyée",
+    "PAID": "Payée",
+    "PARTIAL": "Partielle",
+    "CANCELLED": "Annulée",
+    "VALIDATED": "Validée"
+  },
+  "CLIENTS": {
+    "TITLE": "Liste des clients",
+    "NEW": "Nouveau client",
+    "SEARCH_PLACEHOLDER": "Rechercher par raison sociale, email...",
+    "TABLE": {
+      "RAISON_SOCIALE": "Raison Sociale",
+      "EMAIL": "Email",
+      "TELEPHONE": "Téléphone",
+      "ADRESSE": "Adresse",
+      "PAYS": "Pays",
+      "REGION": "Région",
+      "ACTIONS": "Actions"
+    },
+    "ACTIONS": {
+      "EDIT_TOOLTIP": "Modifier ce client",
+      "DELETE_TOOLTIP": "Supprimer ce client"
+    },
+    "EMPTY": {
+      "MESSAGE": "Aucun client",
+      "SUBTITLE_ADD": "Commencez par ajouter votre premier client via le bouton \"Nouveau client\".",
+      "SUBTITLE_VIEW": "Aucun client disponible pour le moment."
+    },
+    "DIALOG": {
+      "ADD_TITLE": "Nouveau client",
+      "EDIT_TITLE": "Modifier le client"
+    },
+    "FORM": {
+      "RAISON_SOCIALE": "Raison sociale",
+      "EMAIL": "Email",
+      "TELEPHONE": "Téléphone",
+      "ADRESSE": "Adresse",
+      "PAYS": "Pays",
+      "REGION": "Région",
+      "PLACEHOLDERS": {
+        "RAISON_SOCIALE": "Nom de l'entreprise",
+        "EMAIL": "exemple@email.com",
+        "TELEPHONE": "71 234 567",
+        "ADRESSE": "Rue, ville, code postal",
+        "PAYS": "TUNISIE",
+        "REGION_SELECT": "Sélectionner"
+      }
+    }
+  },
+  "PRODUITS": {
+    "TITLE": "Gestion des produits",
+    "NEW": "Nouveau produit",
+    "SEARCH_PLACEHOLDER": "Rechercher par référence ou désignation...",
+    "TABLE": {
+      "REF": "Référence",
+      "DESIGNATION": "Désignation",
+      "PRIX_HT": "Prix unitaire HT",
+      "TVA": "TVA %",
+      "PRIX_TTC": "Prix TTC",
+      "STOCK": "Stock",
+      "STATUS": "Statut",
+      "ACTIONS": "Actions"
+    },
+    "ACTIONS": {
+      "EDIT_TOOLTIP": "Modifier ce produit",
+      "DELETE_TOOLTIP": "Supprimer ce produit"
+    },
+    "EMPTY": {
+      "TITLE": "Aucun produit trouvé",
+      "SUBTITLE_ADD": "Commencez par ajouter votre premier produit.",
+      "SUBTITLE_VIEW": "Aucun produit disponible pour le moment."
+    },
+    "DIALOG": {
+      "ADD_TITLE": "Nouveau produit",
+      "EDIT_TITLE": "Modifier le produit"
+    },
+    "FORM": {
+      "REF": "Référence",
+      "DESIGNATION": "Désignation",
+      "PRIX_HT": "Prix unitaire HT",
+      "TVA": "TVA %",
+      "STOCK_TITLE": "Gestion du stock",
+      "STOCK_UNLIMITED": "Stock illimité (services / produits numériques)",
+      "STOCK_QTY": "Quantité en stock",
+      "STOCK_ALERT": "Seuil d'alerte",
+      "STOCK_PREVIEW": "Statut prévu :",
+      "EMETTEUR_ID": "ID Émetteur",
+      "PREVIEW_TITLE": "Aperçu prix",
+      "PREVIEW_HT": "Prix HT",
+      "PREVIEW_VAT": "Montant TVA",
+      "PREVIEW_TTC": "Prix TTC"
+    },
+    "STOCK_STATUS": {
+      "AVAILABLE": "Disponible",
+      "LOW": "Stock faible",
+      "OUT": "Rupture",
+      "UNLIMITED": "Illimité"
+    }
+  },
+  "AVOIRS": {
+    "TITLE": "Avoirs",
+    "SUBTITLE": "Notes de crédit",
+    "DOC_COUNT": "{{count}} document",
+    "DOC_COUNT_PLURAL": "{{count}} documents",
+    "TYPE_TOTAL_TITLE": "TOTAL",
+    "TYPE_TOTAL_DESC": "Annulation complète",
+    "TYPE_TOTAL_DETAIL": "Toutes les lignes",
+    "TYPE_PARTIEL_TITLE": "PARTIEL",
+    "TYPE_PARTIEL_DESC": "Correction partielle",
+    "TYPE_PARTIEL_DETAIL": "Lignes ajustables",
+    "SEARCH_PLACEHOLDER": "Rechercher par numéro, client ou facture...",
+    "STATUS": {
+      "ALL": "Tous",
+      "APPLIED": "Appliqué"
+    },
+    "LINKED_INVOICE": "Facture",
+    "EMPTY_MESSAGE": "Aucun avoir trouvé.",
+    "LOADING_MESSAGE": "Chargement des avoirs..."
+  },
+  "PARAMETRES": {
+    "TITLE": "Paramètres",
+    "PROFIL": "Profil",
+    "PREFERENCES": "Préférences",
+    "LANGUE": "Langue",
+    "THEME": "Thème",
+    "SAVE_SUCCESS": "Préférences enregistrées"
+  },
+  "COMMON": {
+    "SAVE": "Enregistrer",
+    "CANCEL": "Annuler",
+    "DELETE": "Supprimer",
+    "EDIT": "Modifier"
+  },
+  "SIDEBAR": {
+    "GENERAL": "GÉNÉRAL",
+    "DASHBOARD": "Tableau de bord",
+    "CLIENTS": "Clients",
+    "PRODUITS": "Produits",
+    "DEMANDES": "Demandes",
+    "UTILISATEURS": "Utilisateurs",
+    "COLLABORATEURS": "Collaborateurs",
+    "PROFIL": "Mon profil",
+    "FACTURATION": "FACTURATION",
+    "FACTURES": "Factures",
+    "DEVIS": "Devis",
+    "BON_COMMANDES": "Bons de commande",
+    "COMMANDES": "Commandes",
+    "BON_LIVRAISON": "Bons de livraison",
+    "AVOIRS": "Avoirs",
+    "PARAMETRES": "Paramètres",
+    "LOGOUT": "Déconnexion"
+  }
+}

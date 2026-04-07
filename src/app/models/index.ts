@@ -27,6 +27,9 @@ export * from './produit.models';
 // Factures
 export * from './facture.models';
 
+// Avoirs (Credit Notes)
+export * from './avoir.model';
+
 // Émetteurs
 export * from './emetteur.models';
 

@@ -110,6 +110,79 @@ $border:       #e2e8f0;
   }
 }
 
+// ===== PROFIL TAB LAYOUT =====
+.profile-tab-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.profile-card {
+  background: white;
+  border-radius: 14px;
+  border: 1px solid $border;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+  overflow: hidden;
+
+  .profile-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    border-bottom: 2px solid $border;
+
+    .header-icon {
+      font-size: 1.2rem;
+      color: $primary-blue;
+      background: rgba($primary-blue, 0.1);
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    h3 {
+      margin: 0;
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: $dark-blue;
+      letter-spacing: 0.05em;
+      border: none;
+      padding: 0;
+    }
+  }
+
+  .profile-card-body {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+  }
+}
+
+// Email field with lock icon
+.email-field {
+  position: relative;
+
+  .lock-icon {
+    position: absolute;
+    right: 0.9rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: $gray-text;
+    font-size: 0.9rem;
+  }
+
+  input { padding-right: 2.5rem; }
+}
+
+// Profile save button
+.profile-save-btn {
+  align-self: flex-end;
+  min-width: 160px;
+  font-weight: 600;
+}
+
 // ===== PROFIL HEADER =====
 .profile-header {
   display: flex;

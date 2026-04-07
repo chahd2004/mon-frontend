@@ -16,11 +16,26 @@
 }
 
 .header-brand {
-  h1 {
-    color: white;
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin: 0;
+  .brand-titles {
+    display: flex;
+    flex-direction: column;
+    
+    h1 {
+      color: white;
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin: 0;
+      line-height: 1;
+    }
+
+    .enterprise-tag {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.85rem;
+      font-weight: 400;
+      margin-top: 0.25rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
   }
 }
 

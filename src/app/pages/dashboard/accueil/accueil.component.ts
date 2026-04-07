@@ -10,12 +10,16 @@ import { MessageService } from 'primeng/api';
 
 import { FactureService } from '../../../core/services/facture.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { EmetteurService } from '../../../core/services/emetteur.service';
 import { UserRole } from '../../../models/enums';
+import { signal, effect } from '@angular/core';
+
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-accueil',
   standalone: true,
-  imports: [CommonModule, RouterModule, ButtonModule, TooltipModule, ToastModule],
+  imports: [CommonModule, RouterModule, ButtonModule, TooltipModule, ToastModule, TranslateModule],
   providers: [MessageService],
   templateUrl: './accueil.component.html',
   styleUrls: ['./accueil.component.scss']
@@ -23,10 +27,12 @@ import { UserRole } from '../../../models/enums';
 export class AccueilComponent {
   private factureService = inject(FactureService);
   private authService    = inject(AuthService);
+  private emetteurService = inject(EmetteurService);
   private messageService = inject(MessageService);
 
   totalFactures: number = 0;
   pendingDemandes: number = 3;
+  raisonSociale = signal<string | null>(null);
 
   get role(): UserRole | null {
     return this.authService.currentUser()?.role ?? null;
@@ -64,6 +70,17 @@ export class AccueilComponent {
 
   constructor() {
     this.loadTotalFactures();
+    effect(() => {
+      const user = this.authService.currentUser();
+      if (user?.emetteurId) {
+        this.emetteurService.getEmetteurById(user.emetteurId).subscribe({
+          next: (emetteur) => this.raisonSociale.set(emetteur?.raisonSociale || null),
+          error: () => this.raisonSociale.set(null)
+        });
+      } else {
+        this.raisonSociale.set(null);
+      }
+    });
   }
 
   loadTotalFactures(): void {

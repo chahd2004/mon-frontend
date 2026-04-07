@@ -1,104 +1,147 @@
 <div class="utilisateurs-container">
+  <!-- En-tête amélioré -->
   <div class="page-header">
-    <h1>Gestion des utilisateurs</h1>
-    <p>Gérez tous les utilisateurs de la plateforme</p>
-  </div>
-
-  <div class="filter-section">
-    <div class="search-container">
-      <i class="pi pi-search"></i>
-      <input
-        pInputText
-        type="text"
-        placeholder="Rechercher par nom, prénom ou email..."
-        [(ngModel)]="searchTerm"
-        (input)="onSearch(searchTerm)"
-        class="search-input"
-      />
+    <div class="header-content">
+      <h1>
+        <i class="pi pi-users"></i> Gestion des utilisateurs
+      </h1>
+      <p>Gérez tous les utilisateurs de la plateforme</p>
     </div>
+    <button
+      pButton
+      type="button"
+      icon="pi pi-plus"
+      label="Créer Super Admin"
+      class="p-button-success create-btn"
+      routerLink="/super-admin/utilisateurs/nouveau"
+    ></button>
   </div>
 
+  <!-- Barre de recherche et filtres -->
+  <div class="filters-bar">
+    <div class="search-section">
+      <span class="p-input-icon-left search-wrapper">
+        <i class="pi pi-search"></i>
+        <input
+          pInputText
+          type="text"
+          placeholder="Rechercher par nom, prénom ou email..."
+          [(ngModel)]="searchTerm"
+          (input)="onSearch(searchTerm)"
+          class="search-input"
+        />
+      </span>
+    </div>
+
+
+  </div>
+
+  <!-- Table des utilisateurs -->
   <div class="table-container">
     <p-table
       [value]="filteredUtilisateurs"
       [loading]="isLoading"
-      [paginator]="true"
-      [rows]="10"
-      [showCurrentPageReport]="true"
-      currentPageReportTemplate="Affichage {first} à {last} sur {totalRecords} utilisateurs"
+      [paginator]="false"
       responsiveLayout="scroll"
-      styleClass="p-datatable-striped"
+      styleClass="p-datatable-striped users-table"
+      [tableStyle]="{ 'min-width': '50rem' }"
     >
+      <!-- En-tête -->
       <ng-template pTemplate="header">
-        <tr class="table-header">
-          <th pSortableColumn="prenom">Nom <p-sortIcon field="prenom"></p-sortIcon></th>
-          <th pSortableColumn="email">Email <p-sortIcon field="email"></p-sortIcon></th>
-          <th pSortableColumn="role">Rôle <p-sortIcon field="role"></p-sortIcon></th>
-          <th pSortableColumn="accountStatus">Statut <p-sortIcon field="accountStatus"></p-sortIcon></th>
-          <th style="width: 150px">Actions</th>
+        <tr>
+          <th pSortableColumn="prenom" class="col-nom">
+            Nom <p-sortIcon field="prenom"></p-sortIcon>
+          </th>
+          <th pSortableColumn="email" class="col-email">
+            Email <p-sortIcon field="email"></p-sortIcon>
+          </th>
+          <th pSortableColumn="role" class="col-role">
+            Rôle <p-sortIcon field="role"></p-sortIcon>
+          </th>
+          <th class="col-entreprise">Entreprise</th>
+          <th pSortableColumn="accountStatus" class="col-statut">
+            Statut <p-sortIcon field="accountStatus"></p-sortIcon>
+          </th>
+          <th class="col-actions">Actions</th>
         </tr>
       </ng-template>
 
+      <!-- Lignes -->
       <ng-template pTemplate="body" let-user>
         <tr>
-          <td>
-            <strong>{{ user.prenom }} {{ user.nom }}</strong>
+          <!-- Nom -->
+          <td class="col-nom">
+            <div class="user-name">
+              <span class="name-text"><strong>{{ user.prenom }}</strong></span>
+              <span class="name-text"><strong>{{ user.nom }}</strong></span>
+            </div>
           </td>
-          <td>
-            <span class="email">{{ user.email }}</span>
+
+          <!-- Email -->
+          <td class="col-email">
+            <span class="email-text">{{ user.email }}</span>
           </td>
-          <td>
-            <span class="role">{{ user.role | roleLabel }}</span>
+
+          <!-- Rôle -->
+          <td class="col-role">
+            <span [ngClass]="'role-badge role-' + user.role?.toLowerCase()">
+              {{ user.role | roleLabel }}
+            </span>
           </td>
-          <td>
-            <p-tag
-              [value]="(user.accountStatus | statusBadge)?.label"
-              [severity]="(user.accountStatus | statusBadge)?.severity"
-              [icon]="(user.accountStatus | statusBadge)?.icon"
-            ></p-tag>
+
+          <!-- Entreprise -->
+          <td class="col-entreprise">
+            <span class="entreprise-text">{{ getEntrepriseName(user) || '-' }}</span>
           </td>
-          <td>
-            <button
-              pButton
-              icon="pi pi-pencil"
-              rounded
-              text
-              (click)="editUser(user.id)"
-              pTooltip="Modifier"
-              tooltipPosition="top"
-              class="action-edit"
-            ></button>
-            <button
-              *ngIf="user.enabled"
-              pButton
-              icon="pi pi-ban"
-              rounded
-              text
-              (click)="disableUser(user.id)"
-              pTooltip="Désactiver"
-              tooltipPosition="top"
-              class="action-disable"
-            ></button>
-            <button
-              *ngIf="!user.enabled"
-              pButton
-              icon="pi pi-check"
-              rounded
-              text
-              (click)="enableUser(user.id)"
-              pTooltip="Activer"
-              tooltipPosition="top"
-              class="action-enable"
-            ></button>
+
+          <!-- Statut -->
+          <td class="col-statut">
+            <span [ngClass]="'status-badge status-' + getStatusClass(user.accountStatus)">
+              {{ getStatusLabel(user.accountStatus) }}
+            </span>
+          </td>
+
+          <!-- Actions -->
+          <td class="col-actions">
+            <div class="action-buttons">
+              <button
+                pButton
+                icon="pi pi-pencil"
+                class="action-btn action-edit"
+                pTooltip="Modifier"
+                tooltipPosition="top"
+                (click)="editUser(user.id)"
+              ></button>
+              <button
+                pButton
+                [icon]="user.enabled ? 'pi pi-ban' : 'pi pi-check'"
+                [class]="user.enabled ? 'action-btn action-delete' : 'action-btn action-enable'"
+                [pTooltip]="user.enabled ? 'Désactiver' : 'Activer'"
+                tooltipPosition="top"
+                (click)="user.enabled ? disableUser(user.id) : enableUser(user.id)"
+              ></button>
+            </div>
           </td>
         </tr>
       </ng-template>
 
+      <!-- Message vide -->
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="5" class="empty-message">
-            <i class="pi pi-users"></i>
-            <p>Aucun utilisateur trouvé</p>
+          <td colspan="6" class="empty-message">
+            <div class="empty-content">
+              <i class="pi pi-inbox"></i>
+              <p>Aucun utilisateur trouvé</p>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+
+      <!-- Loading -->
+      <ng-template pTemplate="loadingbody">
+        <tr *ngFor="let i of [1, 2, 3, 4, 5]">
+          <td colspan="6">
+            <p-skeleton height="2rem"></p-skeleton>
           </td>
         </tr>
       </ng-template>
