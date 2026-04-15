@@ -32,45 +32,47 @@ import { DashboardService } from '../../core/services/dashboard.service';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
-  private factureService   = inject(FactureService);
-  private clientService    = inject(ClientService);
+  private factureService = inject(FactureService);
+  private clientService = inject(ClientService);
   private dashboardService = inject(DashboardService);
-  private router           = inject(Router);
-  private messageService   = inject(MessageService);
-  private authService      = inject(AuthService);
-  private emetteurService  = inject(EmetteurService);
+  private router = inject(Router);
+  private messageService = inject(MessageService);
+  private authService = inject(AuthService);
+  private emetteurService = inject(EmetteurService);
 
-  totalFactures: number    = 0;
-  totalClients: number     = 0;
-  chiffreAffaires: number  = 0;
+  totalFactures: number = 0;
+  totalClients: number = 0;
+  totalCollaborateurs: number = 0;
+  chiffreAffaires: number = 0;
   facturesImpayees: number = 0;
-  loading: boolean         = true;
+  loading: boolean = true;
   raisonSociale: string | null = null;
 
   chartData: any = {
-    labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'],
+    labels: ['Signée', 'Payée', 'Brouillon', 'Annulée'],
     datasets: [
       {
-        label: 'Chiffre d\'affaires (TND)',
         data: [],
-        borderColor: '#3b82f6',
-        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-        tension: 0.4,
-        fill: true
-      },
-      {
-        label: 'Factures payées',
-        data: [],
-        borderColor: '#10b981',
-        backgroundColor: 'rgba(16, 185, 129, 0.1)',
-        tension: 0.4
+        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444'],
+        hoverBackgroundColor: ['#2563eb', '#059669', '#d97706', '#dc2626'],
+        borderWidth: 0
       }
     ]
   };
 
+  ventesProduitsData: any = {
+    labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'],
+    datasets: []
+  };
+
   chartOptions: any;
+  ventesProduitsOptions: any;
 
   ngOnInit(): void {
+    if (this.authService.hasRole('SUPER_ADMIN')) {
+      this.router.navigate(['/super-admin/statistiques']);
+      return;
+    }
     this.initChartOptions();
     this.loadData();
     this.fetchEnterpriseName();
@@ -89,26 +91,43 @@ export class DashboardComponent implements OnInit {
   initChartOptions(): void {
     this.chartOptions = {
       plugins: {
-        legend: { labels: { color: '#495057' } },
+        legend: {
+          position: 'right',
+          labels: {
+            usePointStyle: true,
+            font: { size: 14, weight: '600' },
+            padding: 20
+          }
+        },
         tooltip: {
           callbacks: {
             label: (context: any) => {
-              let label = context.dataset.label || '';
-              if (label) label += ': ';
-              if (context.parsed.y !== null) label += this.formatMontant(context.parsed.y);
-              return label;
+              const label = context.label || '';
+              const value = context.raw || 0;
+              return `${label}: ${value}`;
             }
           }
         }
       },
-      scales: {
-        x: { ticks: { color: '#495057' }, grid: { color: '#ebedef' } },
-        y: {
-          ticks: { color: '#495057', callback: (v: any) => this.formatMontant(v, true) },
-          grid: { color: '#ebedef' }
+      cutout: '70%',
+      maintainAspectRatio: false
+    };
+
+    this.ventesProduitsOptions = {
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { usePointStyle: true, boxWidth: 10 }
+        },
+        tooltip: {
+          mode: 'index',
+          intersect: false
         }
       },
-      responsive: true,
+      scales: {
+        x: { stacked: true, grid: { display: false } },
+        y: { stacked: true, beginAtZero: true }
+      },
       maintainAspectRatio: false
     };
   }
@@ -118,13 +137,37 @@ export class DashboardComponent implements OnInit {
 
     this.dashboardService.getStats().subscribe({
       next: (data: any) => {
-        this.totalFactures    = data.factures?.total         || 0;
-        this.totalClients     = data.clients?.total          || 0;
-        this.chiffreAffaires  = data.chiffreAffaires?.actuel || 0;
-        this.facturesImpayees = data.factures?.enRetard      || 0;
-        if (data.graphiques?.caMensuel) {
-          this.chartData.datasets[0].data = data.graphiques.caMensuel.valeurs || [];
+        this.totalFactures = data.factures?.total || 0;
+        this.totalClients = data.clients?.total || 0;
+        this.totalCollaborateurs = data.collaborateurs?.total || 0;
+        this.chiffreAffaires = data.chiffreAffaires?.actuel || 0;
+        this.facturesImpayees = data.factures?.enRetard || 0;
+        if (data.graphiques?.factureRepartition) {
+          const valeurs = data.graphiques.factureRepartition.valeurs;
+          const labels = data.graphiques.factureRepartition.labels;
+          const total = valeurs.reduce((a: number, b: number) => a + b, 0);
+
+          this.chartData.labels = labels.map((label: string, i: number) => {
+            const pct = total > 0 ? Math.round((valeurs[i] / total) * 100) : 0;
+            return `${label} ${pct}%`;
+          });
+          this.chartData.datasets[0].data = valeurs;
+          this.chartData = { ...this.chartData };
         }
+
+        if (data.graphiques?.ventesParProduit) {
+          const colors = ['#8b5cf6', '#6366f1', '#3b82f6', '#0ea5e9', '#06b6d4', '#14b8a6', '#10b981', '#84cc16'];
+          this.ventesProduitsData.labels = data.graphiques.ventesParProduit.mois;
+          this.ventesProduitsData.datasets = data.graphiques.ventesParProduit.produits.map((prod: any, idx: number) => ({
+            type: 'bar',
+            label: prod.label,
+            backgroundColor: colors[idx % colors.length],
+            data: prod.data,
+            borderRadius: 4
+          }));
+          this.ventesProduitsData = { ...this.ventesProduitsData };
+        }
+
         this.loading = false;
       },
       error: () => {
@@ -137,7 +180,7 @@ export class DashboardComponent implements OnInit {
 
     this.clientService.getClients().subscribe({
       next: (clients) => { this.totalClients = clients.length; },
-      error: () => {}
+      error: () => { }
     });
   }
 

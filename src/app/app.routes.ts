@@ -9,6 +9,7 @@ import { RegisterComponent as SuperAdminRegisterComponent } from './pages/regist
 import { ChangePasswordComponent } from './features/public/change-password/change-password.component';
 import { DemandeFormComponent } from './features/public/demande-form/demande-form.component';
 import { DemandeStatutComponent } from './features/public/demande-statut/demande-statut.component';
+import { BonCommandeSignatureComponent } from './features/public/bon-commande-signature/bon-commande-signature.component';
 
 // ✅ PHASE 3 - SUPER_ADMIN Pages
 import { SuperAdminLayoutComponent } from './features/super-admin/layout/super-admin-layout.component';
@@ -93,6 +94,8 @@ export const routes: Routes = [
   { path: 'change-password', component: ChangePasswordComponent, canActivate: [firstLoginGuard] },
   { path: 'demande', component: DemandeFormComponent },
   { path: 'demande/statut', component: DemandeStatutComponent },
+  // Route publique accessible depuis le lien email du bon de commande
+  { path: 'bon-commande/:ref', component: BonCommandeSignatureComponent },
 
   // ── Protégées : faut être connecté ─────────────────────────────
   {

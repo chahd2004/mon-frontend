@@ -21,10 +21,7 @@
           [disabled]="loading" (keyup.enter)="login()" />
       </div>
 
-      <div class="form-group checkbox">
-        <p-checkbox [(ngModel)]="rememberMe" [binary]="true"></p-checkbox>
-        <label>Se souvenir de moi</label>
-      </div>
+
 
       <p-button label="Se connecter" icon="pi pi-sign-in" (click)="login()" [loading]="loading" [disabled]="loading"
         styleClass="w-full p-button-primary"></p-button>

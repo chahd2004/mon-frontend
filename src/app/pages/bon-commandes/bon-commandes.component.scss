@@ -161,28 +161,23 @@ th {
 // Row status coloring
 tr.status-draft {
   background-color: rgba(224, 242, 254, 0.5);
-  border-left: 4px solid #0c4a6e;
 }
 
 tr.status-sent {
   background-color: rgba(254, 243, 199, 0.5);
-  border-left: 4px solid #92400e;
 }
 
 tr.status-signed,
 tr.status-confirmed {
   background-color: rgba(220, 252, 231, 0.5);
-  border-left: 4px solid #166534;
 }
 
 tr.status-cancelled {
   background-color: rgba(254, 226, 226, 0.5);
-  border-left: 4px solid #991b1b;
 }
 
 tr.status-converted {
   background-color: rgba(237, 233, 254, 0.5);
-  border-left: 4px solid #5b21b6;
 }
 
 .stats-card {
@@ -198,12 +193,7 @@ tr.status-converted {
   color: #102a43;
 }
 
-.stats-line {
-  height: 10px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, #2563eb 0%, #10b981 50%, #f59e0b 100%);
-  margin-bottom: 0.6rem;
-}
+
 
 .stats-text {
   color: #243b53;

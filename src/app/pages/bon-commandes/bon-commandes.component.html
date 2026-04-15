@@ -57,7 +57,6 @@
 
   <div class="stats-card" *ngIf="showStats">
     <h2>Statuts bons de commande</h2>
-    <div class="stats-line"></div>
     <div class="stats-container">
       <div *ngFor="let stat of statusStats" class="stat-badge" [ngClass]="getStatutClass(stat.status)">
         <span class="stat-label">{{ getStatutLabel(stat.status) }}</span>

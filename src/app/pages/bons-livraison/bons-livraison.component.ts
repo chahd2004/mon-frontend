@@ -123,8 +123,8 @@ export class BonsLivraisonComponent implements OnInit {
 
   get confirmedCommandes(): BonCommande[] {
     const term = this.conversionSearch.trim().toLowerCase();
-    // Filter for LIVREE (DELIVERED) commandes
-    const list = this.rawCommandes.filter(item => (item.statut || '').toUpperCase() === 'LIVREE' || (item.statut || '').toUpperCase() === 'DELIVERED');
+    // Filter for IN_PROGRESS commandes
+    const list = this.rawCommandes.filter(item => (item.statut || '').toUpperCase() === 'IN_PROGRESS');
 
     if (!term) {
       return list;

@@ -55,7 +55,6 @@
 
   <div class="stats-card" *ngIf="showStats">
     <h2>Statuts commandes</h2>
-    <div class="stats-line"></div>
     <div class="stats-container">
       <div *ngFor="let stat of statusStats" class="stat-badge" [ngClass]="getStatusClass(stat.status)">
         <span class="stat-label">{{ getStatusLabel(stat.status) }}</span>

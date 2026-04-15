@@ -44,7 +44,8 @@
     "PAID": "Payée",
     "PARTIAL": "Partielle",
     "CANCELLED": "Annulée",
-    "VALIDATED": "Validée"
+    "VALIDATED": "Validée",
+    "SIGNED": "Signée"
   },
   "CLIENTS": {
     "TITLE": "Liste des clients",

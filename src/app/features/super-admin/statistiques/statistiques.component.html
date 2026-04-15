@@ -33,12 +33,12 @@
     </div>
 
     <div class="kpi-card">
-      <div class="kpi-icon ca">
-        <i class="pi pi-wallet"></i>
+      <div class="kpi-icon emetteurs">
+        <i class="pi pi-building"></i>
       </div>
       <div class="kpi-content">
-        <p class="kpi-label">CA TOTAL</p>
-        <p class="kpi-value" *ngIf="!isLoading">{{ caTotalCount }}</p>
+        <p class="kpi-label">ENTREPRISES</p>
+        <p class="kpi-value" *ngIf="!isLoading">{{ emetteursCount | number }}</p>
         <p-skeleton *ngIf="isLoading" width="80%" height="2rem"></p-skeleton>
       </div>
     </div>

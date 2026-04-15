@@ -53,8 +53,7 @@ export class SidebarComponent {
         label: 'Factures',
         icon: 'pi pi-file',
         route: '/factures',
-        roles: ['ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER', 'CLIENT', 'EMETTEUR'],
-        badge: 5
+        roles: ['ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER', 'CLIENT', 'EMETTEUR']
       },
       {
         label: 'Demandes',

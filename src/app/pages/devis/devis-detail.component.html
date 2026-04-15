@@ -65,7 +65,7 @@
     <button class="action-btn" [disabled]="!canEnvoyer()" (click)="envoyerAuClient()">Envoyer au client</button>
     <button class="action-btn" [disabled]="!canAccepterOuRejeter()" (click)="accepterDevis()">Accepter</button>
     <button class="action-btn danger" [disabled]="!canAccepterOuRejeter()" (click)="rejeterDevis()">Rejeter</button>
-    <button class="action-btn" [disabled]="!canConvertir()" (click)="convertirEnBonCommande()">Convertir en bon commande</button>
+
     <button class="action-btn secondary" [disabled]="!canConvertirDirectement() || convertingDirect" (click)="convertirEnFactureDirecte()">
       {{ convertingDirect ? 'Conversion en cours...' : 'Convertir en facture directe' }}
     </button>

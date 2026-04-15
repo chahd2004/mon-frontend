@@ -568,7 +568,7 @@ export class CommandeDetailComponent implements OnInit {
       return 'CONFIRMED';
     }
 
-    if (value === 'CONVERTED') {
+    if (value === 'DELIVERED') {
       return 'DELIVERED';
     }
 

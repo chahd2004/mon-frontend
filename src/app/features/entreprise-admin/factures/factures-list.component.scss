@@ -51,7 +51,7 @@
 ::ng-deep {
   .p-datatable {
     .p-datatable-thead > tr > th {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: #1a202c;
       color: white;
       padding: 1.25rem 1rem;
       font-weight: 600;
@@ -64,7 +64,7 @@
       }
 
       &:hover {
-        background: linear-gradient(135deg, #5468d3 0%, #653a86 100%);
+        background: #0f1419;
       }
     }
 

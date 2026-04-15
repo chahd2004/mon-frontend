@@ -43,6 +43,15 @@ export class FactureService {
     return this.http.put<Facture>(`${this.apiUrl}/${id}/signer`, {});
   }
 
+  signerFactureWithCertificate(factureId: number, file: File, password: string): Observable<any> {
+    const formData = new FormData();
+    formData.append('p12File', file);
+    formData.append('password', password);
+    formData.append('factureId', factureId.toString());
+
+    return this.http.post(`${environment.apiUrl}/signature/signer`, formData);
+  }
+
   getFactures(
     page: number = 1,
     limit: number = 10,

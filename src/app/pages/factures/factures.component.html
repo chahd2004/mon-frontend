@@ -18,13 +18,8 @@
   <div class="filters-section">
     <div class="search-box">
       <i class="pi pi-search"></i>
-      <input
-        type="text"
-        pInputText
-        [placeholder]="'FACTURES.SEARCH_PLACEHOLDER' | translate"
-        [(ngModel)]="searchText"
-        (keyup.enter)="onSearch()"
-      >
+      <input type="text" pInputText [placeholder]="'FACTURES.SEARCH_PLACEHOLDER' | translate" [(ngModel)]="searchText"
+        (keyup.enter)="onSearch()" autocomplete="off" name="facture-search-field" id="facture-search-field">
       <button *ngIf="searchText" class="clear-search" (click)="resetFilters()">
         <i class="pi pi-times"></i>
       </button>
@@ -33,15 +28,8 @@
 
   <!-- Tableau -->
   <p-card>
-    <p-table
-      [value]="factures"
-      [rows]="rowsPerPage"
-      [totalRecords]="totalRecords"
-      [loading]="loading"
-      [lazy]="true"
-      (onPageChange)="onPageChange($event)"
-      responsiveLayout="scroll"
-    >
+    <p-table [value]="factures" [rows]="rowsPerPage" [totalRecords]="totalRecords" [loading]="loading" [lazy]="true"
+      (onPageChange)="onPageChange($event)" responsiveLayout="scroll">
       <ng-template pTemplate="header">
         <tr>
           <th>{{ 'FACTURES.TABLE.NUM' | translate }}</th>
@@ -62,40 +50,31 @@
             </div>
           </td>
           <td>{{ facture.dateEmission | date:'dd/MM/yyyy' }}</td>
-          <td>{{ facture.datePaiement ? (facture.datePaiement | date:'dd/MM/yyyy') : ('FACTURES.TABLE.NOT_DEFINED' | translate) }}</td>
+          <td>{{ facture.datePaiement ? (facture.datePaiement | date:'dd/MM/yyyy') : ('FACTURES.TABLE.NOT_DEFINED' |
+            translate) }}</td>
           <td>
-            <p-tag
-              [severity]="getStatutSeverity(facture.statut)"
-              [value]="'STATUS.' + facture.statut | translate"
-            ></p-tag>
+            <p-tag [severity]="getStatutSeverity(facture.statut)"
+              [value]="'STATUS.' + facture.statut | translate"></p-tag>
           </td>
           <td>
             <div class="actions-cell">
-              <button class="icon-btn icon-btn-view"
-                (click)="voirFacture(facture.id)"
-                [pTooltip]="'FACTURES.ACTIONS.VIEW' | translate"
-                tooltipPosition="top">
+              <button class="icon-btn icon-btn-view" (click)="voirFacture(facture.id)"
+                [pTooltip]="'FACTURES.ACTIONS.VIEW' | translate" tooltipPosition="top">
                 <i class="pi pi-eye"></i>
               </button>
- 
-              <button class="icon-btn icon-btn-sign"
-                (click)="signerFacture(facture.id)"
-                [pTooltip]="'FACTURES.ACTIONS.SIGN' | translate"
-                tooltipPosition="top">
+
+              <button class="icon-btn icon-btn-sign" (click)="signerFacture(facture.id)"
+                [pTooltip]="'FACTURES.ACTIONS.SIGN' | translate" tooltipPosition="top">
                 <i class="pi pi-check-circle"></i>
               </button>
- 
-              <button *ngIf="!isViewer" class="icon-btn icon-btn-edit"
-                (click)="modifierFacture(facture.id)"
-                [pTooltip]="'FACTURES.ACTIONS.EDIT' | translate"
-                tooltipPosition="top">
+
+              <button *ngIf="!isViewer" class="icon-btn icon-btn-edit" (click)="modifierFacture(facture.id)"
+                [pTooltip]="'FACTURES.ACTIONS.EDIT' | translate" tooltipPosition="top">
                 <i class="pi pi-pencil"></i>
               </button>
- 
-              <button *ngIf="!isViewer" class="icon-btn icon-btn-delete"
-                (click)="supprimerFacture(facture.id)"
-                [pTooltip]="'FACTURES.ACTIONS.DELETE' | translate"
-                tooltipPosition="top">
+
+              <button *ngIf="!isViewer" class="icon-btn icon-btn-delete" (click)="supprimerFacture(facture.id)"
+                [pTooltip]="'FACTURES.ACTIONS.DELETE' | translate" tooltipPosition="top">
                 <i class="pi pi-trash"></i>
               </button>
             </div>
@@ -120,13 +99,71 @@
     </p-table>
   </p-card>
 
-  <!-- Graphique -->
-  <div class="chart-section" *ngIf="chartData">
-    <p-card [header]="'FACTURES.CHART_HEADER' | translate">
-      <p-chart type="line" [data]="chartData" [options]="chartOptions" style="height: 300px;"></p-chart>
-    </p-card>
-  </div>
+
 
   <p-toast></p-toast>
   <p-confirmDialog></p-confirmDialog>
+
+  <!-- Popup Signature Électronique -->
+  <p-dialog [(visible)]="showSignatureModal" [modal]="true" [header]="' '" [style]="{width: '500px'}"
+    [closable]="!isSigning" (onHide)="closeSignatureModal()" styleClass="signature-dialog">
+    <div class="signature-popup-content">
+
+      <!-- Étape 1 : Formulaire de Signature -->
+      <ng-container *ngIf="!signatureSuccess">
+        <div class="signature-header">
+          <h3>SIGNATURE ÉLECTRONIQUE</h3>
+          <div class="divider"></div>
+        </div>
+
+        <div class="signature-body">
+          <div class="input-group">
+            <label>Fichier .p12 :</label>
+            <div class="file-picker-wrapper">
+              <p-fileUpload mode="basic" name="p12File" accept=".p12,.pfx" [auto]="true" [chooseLabel]="'Parcourir'"
+                (onSelect)="onFileSelect($event)" styleClass="custom-file-upload"></p-fileUpload>
+              <span class="selected-filename" *ngIf="selectedP12File">{{ selectedP12File.name }}</span>
+              <span class="placeholder-filename" *ngIf="!selectedP12File">virtualtoken.p12</span>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Mot de passe :</label>
+            <div class="password-wrapper">
+              <!-- Input fantôme pour perturber l'autofill -->
+              <input type="text" name="hp_field" style="position: absolute; opacity: 0; pointer-events: none;">
+              
+              <input type="text" pInputText [(ngModel)]="signaturePassword" placeholder="• • • • • • • • • • • • •"
+                [disabled]="isSigning" class="masked-password-input" 
+                name="sig_token_field" id="sig_token_field" autocomplete="off">
+            </div>
+          </div>
+
+          <button class="btn-signer" (click)="confirmSignature()"
+            [disabled]="isSigning || !selectedP12File || !signaturePassword">
+            <i class="pi pi-check-circle" *ngIf="!isSigning"></i>
+            <i class="pi pi-spin pi-spinner" *ngIf="isSigning"></i>
+            SIGNER
+          </button>
+
+          <button class="btn-annuler" (click)="closeSignatureModal()" [disabled]="isSigning">
+            Annuler
+          </button>
+        </div>
+      </ng-container>
+
+      <!-- Étape 2 : Succès -->
+      <ng-container *ngIf="signatureSuccess">
+        <div class="signature-success-state">
+          <h3>SIGNATURE RÉUSSIE !</h3>
+          <div class="divider"></div>
+
+          <button class="btn-fermer" (click)="closeSignatureModal()">
+            Fermer
+          </button>
+        </div>
+      </ng-container>
+
+    </div>
+  </p-dialog>
 </div>

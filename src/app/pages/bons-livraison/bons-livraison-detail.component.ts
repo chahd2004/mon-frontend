@@ -232,7 +232,7 @@ export class BonsLivraisonDetailComponent implements OnInit {
 
   get actionStatutLabel(): string {
     if (this.statusValue === 'DRAFT') {
-      return 'MARQUER COMME LIVRE';
+      return 'LIVRER';
     }
 
     if (this.statusValue === 'DELIVERED') {

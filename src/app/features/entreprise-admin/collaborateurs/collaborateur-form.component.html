@@ -54,13 +54,11 @@
         </div>
       </div>
 
-      <div class="checkbox-section">
-        <p-checkbox formControlName="actif" [binary]="true" label="Actif"></p-checkbox>
-      </div>
+
 
       <div class="form-actions">
         <button pButton type="button" label="Annuler" class="p-button-text" (click)="cancel()"></button>
-        <button pButton type="button" label="Ajouter" icon="pi pi-check" [loading]="isSubmitting"
+        <button pButton type="button" label="Sauvegarder" icon="pi pi-check" class="btn-green" [loading]="isSubmitting"
           [disabled]="!form.valid || isSubmitting" (click)="save()"></button>
       </div>
     </form>

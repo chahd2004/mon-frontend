@@ -162,17 +162,7 @@
           <i class="pi pi-warehouse"></i> {{ 'PRODUITS.FORM.STOCK_TITLE' | translate }}
         </h4>
 
-        <!-- Stock illimité toggle -->
-        <div class="form-group checkbox-group">
-          <p-checkbox
-            [(ngModel)]="produitForm.stockIllimite"
-            [binary]="true"
-            inputId="stockIllimite"
-            [label]="'PRODUITS.FORM.STOCK_UNLIMITED' | translate">
-          </p-checkbox>
-        </div>
-
-        <div class="form-row" *ngIf="!produitForm.stockIllimite">
+        <div class="form-row">
           <div class="form-group half">
             <label>{{ 'PRODUITS.FORM.STOCK_QTY' | translate }}</label>
             <p-inputNumber
@@ -194,7 +184,7 @@
         </div>
 
         <!-- Aperçu statut stock -->
-        <div class="stock-preview" *ngIf="!produitForm.stockIllimite">
+        <div class="stock-preview">
           <span class="stock-preview-label">{{ 'PRODUITS.FORM.STOCK_PREVIEW' | translate }}</span>
           <span class="stock-badge"
             [ngClass]="{
@@ -206,10 +196,6 @@
             <ng-container *ngIf="produitForm.quantiteStock > 0 && produitForm.quantiteStock <= produitForm.seuilAlerteStock">⚠️ {{ 'PRODUITS.STOCK_STATUS.LOW' | translate }}</ng-container>
             <ng-container *ngIf="produitForm.quantiteStock > produitForm.seuilAlerteStock">✅ {{ 'PRODUITS.STOCK_STATUS.AVAILABLE' | translate }}</ng-container>
           </span>
-        </div>
-        <div class="stock-preview" *ngIf="produitForm.stockIllimite">
-          <span class="stock-preview-label">{{ 'PRODUITS.FORM.STOCK_PREVIEW' | translate }}</span>
-          <span class="stock-badge statut-illimite">∞ {{ 'PRODUITS.STOCK_STATUS.UNLIMITED' | translate }}</span>
         </div>
       </div>
 

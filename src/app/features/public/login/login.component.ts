@@ -35,7 +35,6 @@ export class LoginComponent implements OnInit {
 
   email: string = '';
   password: string = '';
-  rememberMe: boolean = false;
   loading: boolean = false;
 
   get isAdminContext(): boolean {

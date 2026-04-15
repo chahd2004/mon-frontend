@@ -16,6 +16,9 @@ export interface DashboardStats {
   clients: {
     total: number;
   };
+  collaborateurs: {
+    total: number;
+  };
   chiffreAffaires: {
     actuel: number;
     evolution: number;
@@ -31,6 +34,19 @@ export interface DashboardStats {
     caMensuel: {
       mois: string[];
       valeurs: number[];
+    };
+    factureEvolution: {
+      mois: string[];
+      emises: number[];
+      payees: number[];
+    };
+    factureRepartition: {
+      labels: string[];
+      valeurs: number[];
+    };
+    ventesParProduit: {
+      mois: string[];
+      produits: { label: string; data: number[] }[];
     };
   };
 }
@@ -70,9 +86,13 @@ export class DashboardService extends BaseService {
   getStats(): Observable<DashboardStats> {
     return forkJoin({
       factures: this.factureService.getFactures(1, 1000),
-      clients: this.clientService.getClients()
+      clients: this.clientService.getClients(),
+      collaborateurs: this.http.get<any[] | { content: any[] }>(`${this.apiUrl}/entreprise-admin/collaborateurs`, this.getHeaders())
     }).pipe(
-      map(({ factures, clients }) => this.calculerStats(factures.data, clients))
+      map(({ factures, clients, collaborateurs }) => {
+        const collabList = Array.isArray(collaborateurs) ? collaborateurs : (collaborateurs as any).content || [];
+        return this.calculerStats(factures.data, clients, collabList);
+      })
     );
   }
 
@@ -144,14 +164,18 @@ export class DashboardService extends BaseService {
     );
   }
 
-  private calculerStats(factures: any[], clients: any[]): DashboardStats {
+  private calculerStats(factures: any[], clients: any[], collaborateurs: any[]): DashboardStats {
     const anneeActuelle = new Date().getFullYear();
     const caParAnneeMap = new Map<number, number>();
 
     factures.forEach(f => {
-      if (f.date_emission && f.totalttc) {
-        const annee = new Date(f.date_emission).getFullYear();
-        caParAnneeMap.set(annee, (caParAnneeMap.get(annee) || 0) + f.totalttc);
+      if (f.dateEmission && f.totalTTC) {
+        const annee = new Date(f.dateEmission).getFullYear();
+        // On ne compte dans le CA que les factures payées (ou signées/émises si on veut le CA prévisionnel)
+        // Ici on va prendre PAYE, SIGNED, SENT pour avoir une vue globale de l'activité validée
+        if (['PAID', 'SIGNED', 'SENT'].includes(f.statut)) {
+          caParAnneeMap.set(annee, (caParAnneeMap.get(annee) || 0) + f.totalTTC);
+        }
       }
     });
 
@@ -171,12 +195,15 @@ export class DashboardService extends BaseService {
     return {
       factures: {
         total: factures.length,
-        enAttente: factures.filter(f => f.statut === 'EN_ATTENTE').length,
-        payees: factures.filter(f => f.statut === 'PAYEE').length,
-        enRetard: factures.filter(f => f.statut === 'EN_RETARD').length
+        enAttente: factures.filter(f => f.statut === 'SENT' || f.statut === 'SIGNED').length,
+        payees: factures.filter(f => f.statut === 'PAID').length,
+        enRetard: factures.length - factures.filter(f => f.statut === 'PAID').length
       },
       clients: {
         total: clients.length
+      },
+      collaborateurs: {
+        total: collaborateurs.length
       },
       chiffreAffaires: {
         actuel: caActuel,
@@ -192,13 +219,68 @@ export class DashboardService extends BaseService {
           valeurs: mois.map((_, i) =>
             factures
               .filter(f =>
-                f.date_emission &&
-                new Date(f.date_emission).getFullYear() === anneeActuelle &&
-                new Date(f.date_emission).getMonth() === i
+                f.dateEmission &&
+                new Date(f.dateEmission).getFullYear() === anneeActuelle &&
+                new Date(f.dateEmission).getMonth() === i &&
+                ['PAID', 'SIGNED', 'SENT'].includes(f.statut)
               )
-              .reduce((sum, f) => sum + (f.totalttc || 0), 0)
+              .reduce((sum, f) => sum + (f.totalTTC || 0), 0)
           )
-        }
+        },
+        factureEvolution: {
+          mois,
+          emises: mois.map((_, i) =>
+            factures.filter(f =>
+              f.dateEmission &&
+              new Date(f.dateEmission).getFullYear() === anneeActuelle &&
+              new Date(f.dateEmission).getMonth() === i &&
+              ['SIGNED', 'SENT'].includes(f.statut)
+            ).length
+          ),
+          payees: mois.map((_, i) =>
+            factures.filter(f =>
+              f.dateEmission &&
+              new Date(f.dateEmission).getFullYear() === anneeActuelle &&
+              new Date(f.dateEmission).getMonth() === i &&
+              f.statut === 'PAID'
+            ).length
+          )
+        },
+        factureRepartition: {
+          labels: ['Signée', 'Payée', 'Brouillon', 'Annulée'],
+          valeurs: [
+            factures.filter(f => f.statut === 'SIGNED').length,
+            factures.filter(f => f.statut === 'PAID').length,
+            factures.filter(f => f.statut === 'SENT' || f.statut === 'DRAFT').length,
+            factures.filter(f => f.statut === 'CANCELLED' || f.statut === 'REJECTED').length
+          ]
+        },
+        ventesParProduit: (() => {
+          const produitsMap = new Map<string, number[]>();
+          
+          factures.forEach(f => {
+            if (f.dateEmission && ['PAID', 'SIGNED', 'SENT'].includes(f.statut)) {
+              const date = new Date(f.dateEmission);
+              if (date.getFullYear() === anneeActuelle) {
+                const m = date.getMonth();
+                if (f.lignes && Array.isArray(f.lignes)) {
+                  f.lignes.forEach((ligne: any) => {
+                    const designation = ligne.produitDesignation || ('Produit ' + ligne.produitId);
+                    if (!produitsMap.has(designation)) {
+                      produitsMap.set(designation, new Array(12).fill(0));
+                    }
+                    produitsMap.get(designation)![m] += (ligne.quantite || 0);
+                  });
+                }
+              }
+            }
+          });
+
+          return {
+            mois,
+            produits: Array.from(produitsMap.entries()).map(([label, data]) => ({ label, data }))
+          };
+        })()
       }
     };
   }

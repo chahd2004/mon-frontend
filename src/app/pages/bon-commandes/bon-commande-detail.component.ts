@@ -249,13 +249,41 @@ export class BonCommandeDetailComponent implements OnInit {
   }
 
   confirmerManuellement(): void {
-    this.infoMessage = 'Confirmation manuelle non disponible: endpoint backend absent.';
+    if (!this.bonCommande || !this.canConfirmer()) return;
+    this.sending = true;
     this.errorMessage = '';
+    this.infoMessage = '';
+    this.bonCommandeService.confirmer(this.bonCommande.id).subscribe({
+      next: (updated) => {
+        this.sending = false;
+        this.bonCommande = updated;
+        this.infoMessage = 'Bon de commande confirmé avec succès.';
+      },
+      error: (error) => {
+        this.sending = false;
+        this.errorMessage = error?.error?.message || 'Erreur lors de la confirmation.';
+      }
+    });
   }
 
   annulerBonCommande(): void {
-    this.infoMessage = 'Annulation non disponible: endpoint backend absent.';
+    if (!this.bonCommande || !this.canAnnuler()) return;
+    const raison = prompt('Raison de l\'annulation :');
+    if (!raison || raison.trim() === '') return;
+    this.sending = true;
     this.errorMessage = '';
+    this.infoMessage = '';
+    this.bonCommandeService.annuler(this.bonCommande.id, raison).subscribe({
+      next: (updated) => {
+        this.sending = false;
+        this.bonCommande = updated;
+        this.infoMessage = 'Bon de commande annulé.';
+      },
+      error: (error) => {
+        this.sending = false;
+        this.errorMessage = error?.error?.message || 'Erreur lors de l\'annulation.';
+      }
+    });
   }
 
   envoyerParEmail(): void {

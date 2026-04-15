@@ -169,22 +169,18 @@ th {
 // Row status coloring
 tr.status-draft {
   background-color: rgba(224, 242, 254, 0.5);
-  border-left: 4px solid #0c4a6e;
 }
 
 tr.status-delivered {
   background-color: rgba(220, 252, 231, 0.5);
-  border-left: 4px solid #166534;
 }
 
 tr.status-signed-client {
   background-color: rgba(237, 233, 254, 0.5);
-  border-left: 4px solid #5b21b6;
 }
 
 tr.status-dispute {
   background-color: rgba(254, 226, 226, 0.5);
-  border-left: 4px solid #991b1b;
 }
 
 .stats-card,
@@ -203,12 +199,7 @@ tr.status-dispute {
   color: #102a43;
 }
 
-.stats-line {
-  height: 10px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, #2563eb 0%, #10b981 35%, #8b5cf6 70%, #ef4444 100%);
-  margin-bottom: 0.6rem;
-}
+
 
 .stats-text {
   color: #243b53;

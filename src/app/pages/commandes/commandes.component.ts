@@ -45,14 +45,16 @@ export class CommandesComponent implements OnInit {
   conversionNotes = '';
   selectedBCId: number | null = null;
 
-  rawBonCommandes: BonCommande[] = [];
+  rawCommandes: any[] = [];
+  bonCommandesDisponibles: BonCommande[] = [];
+  chargementBCs = false;
 
   get isViewer(): boolean {
     return this.authService.hasRole('ENTREPRISE_VIEWER');
   }
 
   get commandes(): CommandeView[] {
-    return this.rawBonCommandes.map(item => ({
+    return this.rawCommandes.map(item => ({
       sourceId: item.id,
       numero: this.formatCommandeReference(item),
       client: item.acheteurNom || '-',
@@ -133,8 +135,8 @@ export class CommandesComponent implements OnInit {
     this.commandeService.getAll().subscribe({
       next: (list) => {
         console.log('Commandes loaded:', list);
-        this.rawBonCommandes = Array.isArray(list) ? list : [];
-        console.log('Filtered commandes:', this.rawBonCommandes);
+        this.rawCommandes = Array.isArray(list) ? list : [];
+        console.log('Filtered commandes:', this.rawCommandes);
         this.loading = false;
       },
       error: (error) => {
@@ -160,6 +162,18 @@ export class CommandesComponent implements OnInit {
     this.selectedBCId = null;
     this.errorMessage = '';
     this.successMessage = '';
+
+    this.chargementBCs = true;
+    this.bonCommandeService.getAll().subscribe({
+      next: (list) => {
+        this.bonCommandesDisponibles = Array.isArray(list) ? list : [];
+        this.chargementBCs = false;
+      },
+      error: () => {
+        this.errorMessage = 'Impossible de charger les bons de commande.';
+        this.chargementBCs = false;
+      }
+    });
   }
 
   closeConvertModal(): void {
@@ -170,7 +184,7 @@ export class CommandesComponent implements OnInit {
   }
 
   get confirmedBonCommandes(): BonCommande[] {
-    return this.rawBonCommandes.filter(item => (item.statut || '').toUpperCase() === 'CONFIRMED');
+    return this.bonCommandesDisponibles.filter(item => (item.statut || '').toUpperCase() === 'CONFIRMED');
   }
 
   get filteredConfirmedBonCommandes(): BonCommande[] {
@@ -289,7 +303,7 @@ export class CommandesComponent implements OnInit {
       return 'CONFIRMED';
     }
 
-    if (value === 'CONVERTED') {
+    if (value === 'DELIVERED') {
       return 'DELIVERED';
     }
 
@@ -332,7 +346,7 @@ export class CommandesComponent implements OnInit {
     return formatDocumentReference('BC', item.numBonCommande, item.dateCreation, item.id);
   }
 
-  private formatCommandeReference(item: BonCommande): string {
-    return formatDocumentReference('CMD', item.numBonCommande, item.dateCreation, item.id);
+  private formatCommandeReference(item: any): string {
+    return formatDocumentReference('CMD', item.numBonCommande || item.numero, item.dateCreation, item.id);
   }
 }

@@ -41,7 +41,10 @@ $bg: #f8fafc;
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      i { color: $primary-blue; }
+
+      i {
+        color: $primary-blue;
+      }
     }
   }
 }
@@ -64,7 +67,9 @@ $bg: #f8fafc;
   white-space: nowrap;
   flex-shrink: 0;
 
-  i { font-size: 0.95rem; }
+  i {
+    font-size: 0.95rem;
+  }
 
   &:hover {
     background-color: #0d9668;
@@ -77,6 +82,7 @@ $bg: #f8fafc;
     box-shadow: 0 2px 6px rgba($success, 0.3);
   }
 }
+
 .stats-section {
   margin-bottom: 1rem;
 
@@ -92,25 +98,58 @@ $bg: #f8fafc;
       display: flex;
       align-items: center;
       gap: 1rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
       transition: transform 0.2s;
-      &:hover { transform: translateY(-3px); }
+
+      &:hover {
+        transform: translateY(-3px);
+      }
 
       .stat-icon {
-        width: 46px; height: 46px;
+        width: 46px;
+        height: 46px;
         border-radius: 12px;
-        display: flex; align-items: center; justify-content: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         font-size: 1.3rem;
         flex-shrink: 0;
-        &.total   { background: rgba($primary-blue, 0.1); color: $primary-blue; }
-        &.paye    { background: rgba($success, 0.1);      color: $success; }
-        &.attente { background: rgba($warning, 0.1);      color: $warning; }
-        &.montant { background: rgba($danger, 0.1);       color: $danger; }
+
+        &.total {
+          background: rgba($primary-blue, 0.1);
+          color: $primary-blue;
+        }
+
+        &.paye {
+          background: rgba($success, 0.1);
+          color: $success;
+        }
+
+        &.attente {
+          background: rgba($warning, 0.1);
+          color: $warning;
+        }
+
+        &.montant {
+          background: rgba($danger, 0.1);
+          color: $danger;
+        }
       }
 
       .stat-details {
-        .stat-label { display: block; font-size: 0.82rem; color: #64748b; margin-bottom: 0.2rem; }
-        .stat-value { display: block; font-size: 1.2rem; font-weight: 700; color: $dark-blue; }
+        .stat-label {
+          display: block;
+          font-size: 0.82rem;
+          color: #64748b;
+          margin-bottom: 0.2rem;
+        }
+
+        .stat-value {
+          display: block;
+          font-size: 1.2rem;
+          font-weight: 700;
+          color: $dark-blue;
+        }
       }
     }
   }
@@ -119,16 +158,26 @@ $bg: #f8fafc;
 // ===== GRAPHIQUE =====
 .chart-section {
   margin-bottom: 1rem;
+
   ::ng-deep .p-card {
     border-radius: 15px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    .p-card-title { color: $dark-blue; font-weight: 600; }
-    .p-card-body  { padding: 1rem; }
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+    .p-card-title {
+      color: $dark-blue;
+      font-weight: 600;
+    }
+
+    .p-card-body {
+      padding: 1rem;
+    }
   }
+
   p-chart {
     display: block;
     max-height: 220px;
   }
+
   ::ng-deep canvas {
     max-height: 220px !important;
   }
@@ -140,7 +189,7 @@ $bg: #f8fafc;
   border-radius: 12px;
   padding: 1rem 1.5rem;
   margin-bottom: 1.5rem;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 
   .search-box {
     position: relative;
@@ -180,12 +229,18 @@ $bg: #f8fafc;
       border: none;
       color: #64748b;
       cursor: pointer;
-      width: 30px; height: 30px;
-      display: flex; align-items: center; justify-content: center;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       border-radius: 50%;
       transition: all 0.2s;
 
-      &:hover { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+      &:hover {
+        background: rgba(239, 68, 68, 0.1);
+        color: #ef4444;
+      }
     }
   }
 }
@@ -198,12 +253,18 @@ $bg: #f8fafc;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   margin-bottom: 2rem;
   border: 1px solid #e5e7eb;
-  .p-card-body { padding: 0; }
-  .p-card-content { padding: 0; }
+
+  .p-card-body {
+    padding: 0;
+  }
+
+  .p-card-content {
+    padding: 0;
+  }
 }
 
 ::ng-deep .p-datatable {
-  .p-datatable-thead > tr > th {
+  .p-datatable-thead>tr>th {
     background: $dark-blue;
     color: white;
     padding: 0.75rem 1rem;
@@ -213,20 +274,34 @@ $bg: #f8fafc;
     border: none;
   }
 
-  .p-datatable-tbody > tr {
+  .p-datatable-tbody>tr {
     background: white;
+
     td {
       padding: 0.65rem 1rem;
       border-bottom: 1px solid #f1f5f9;
       color: #334155;
-      &.text-right { text-align: right; }
-      &.font-bold   { font-weight: 600; color: $dark-blue; }
+
+      &.text-right {
+        text-align: right;
+      }
+
+      &.font-bold {
+        font-weight: 600;
+        color: $dark-blue;
+      }
 
       .client-info {
-        .client-name { font-weight: 600; color: $dark-blue; }
+        .client-name {
+          font-weight: 600;
+          color: $dark-blue;
+        }
       }
     }
-    &:hover { background: #f8fafc; }
+
+    &:hover {
+      background: #f8fafc;
+    }
   }
 
   .p-paginator {
@@ -252,18 +327,40 @@ $bg: #f8fafc;
   cursor: pointer;
   transition: all 0.2s;
   color: white;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
-  i { font-size: 1rem; }
+  i {
+    font-size: 1rem;
+  }
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
   }
 
-  &.view-btn   { background: $primary-blue; &:hover { background: #2563eb; } }
-  &.edit-btn   { background: $warning;      &:hover { background: #d97706; } }
-  &.delete-btn { background: $danger;       &:hover { background: #dc2626; } }
+  &.view-btn {
+    background: $primary-blue;
+
+    &:hover {
+      background: #2563eb;
+    }
+  }
+
+  &.edit-btn {
+    background: $warning;
+
+    &:hover {
+      background: #d97706;
+    }
+  }
+
+  &.delete-btn {
+    background: $danger;
+
+    &:hover {
+      background: #dc2626;
+    }
+  }
 }
 
 .icon-btn {
@@ -278,7 +375,9 @@ $bg: #f8fafc;
   transition: all 0.2s ease;
   padding: 0.4rem 0.5rem;
 
-  i { font-size: 1rem; }
+  i {
+    font-size: 1rem;
+  }
 
   &:hover {
     border-color: #d1d5db;
@@ -295,9 +394,21 @@ $bg: #f8fafc;
 .empty-message {
   text-align: center;
   padding: 1.5rem;
-  i  { color: #94a3b8; margin-bottom: 1rem; }
-  h3 { color: $dark-blue; margin: 0.5rem 0; }
-  p  { color: #64748b; margin-bottom: 1rem; }
+
+  i {
+    color: #94a3b8;
+    margin-bottom: 1rem;
+  }
+
+  h3 {
+    color: $dark-blue;
+    margin: 0.5rem 0;
+  }
+
+  p {
+    color: #64748b;
+    margin-bottom: 1rem;
+  }
 }
 
 // ===== PAGINATION =====
@@ -305,6 +416,7 @@ $bg: #f8fafc;
   background: white;
   padding: 0.75rem 1rem;
   border-top: 1px solid #f1f5f9;
+
   .p-paginator-page.p-highlight {
     background: $primary-blue;
     color: white;
@@ -314,30 +426,58 @@ $bg: #f8fafc;
 
 // ===== RESPONSIVE =====
 @media (max-width: 1200px) {
-  .stats-section .stats-grid     { grid-template-columns: repeat(2, 1fr); }
-  .filters-section .filters-grid { grid-template-columns: 1fr 1fr; }
+  .stats-section .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .filters-section .filters-grid {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 @media (max-width: 900px) {
-  .factures-container { padding: 0.75rem; }
-  .header-section h2  { font-size: 1.2rem; }
+  .factures-container {
+    padding: 0.75rem;
+  }
+
+  .header-section h2 {
+    font-size: 1.2rem;
+  }
 }
 
 @media (max-width: 768px) {
   .header-section {
     flex-direction: column;
     align-items: flex-start;
-    .nouvelle-facture-btn { width: 100%; justify-content: center; }
+
+    .nouvelle-facture-btn {
+      width: 100%;
+      justify-content: center;
+    }
   }
 
-  .stats-section .stats-grid     { grid-template-columns: 1fr 1fr; }
-  .filters-section .filters-grid { grid-template-columns: 1fr; }
-  .actions-cell { flex-direction: column; align-items: stretch; }
-  .action-btn   { justify-content: center; }
+  .stats-section .stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .filters-section .filters-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .actions-cell {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .action-btn {
+    justify-content: center;
+  }
 }
 
 @media (max-width: 480px) {
-  .stats-section .stats-grid { grid-template-columns: 1fr; }
+  .stats-section .stats-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 
@@ -436,7 +576,9 @@ $bg: #f8fafc;
         color: $dark-blue !important;
       }
 
-      .p-button-label { font-weight: 600 !important; }
+      .p-button-label {
+        font-weight: 600 !important;
+      }
     }
 
     // Bouton Oui / Confirmer
@@ -458,7 +600,241 @@ $bg: #f8fafc;
         box-shadow: 0 6px 18px rgba($danger, 0.45) !important;
       }
 
-      .p-button-label { font-weight: 700 !important; }
+      .p-button-label {
+        font-weight: 700 !important;
+      }
     }
+  }
+}
+
+// =====================================================
+// ===== SIGNATURE DIALOG — STYLE PREMIUM   =====
+// =====================================================
+
+::ng-deep .signature-dialog.p-dialog {
+  border-radius: 20px !important;
+  overflow: hidden;
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.4) !important;
+  border: none !important;
+
+  .p-dialog-header {
+    display: none; // On utilise notre propre header stylisé
+  }
+
+  .p-dialog-content {
+    padding: 0 !important;
+    background: #ffffff !important;
+    border-radius: 20px !important;
+  }
+}
+
+.signature-popup-content {
+  padding: 3rem 2.5rem;
+  text-align: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+  .signature-header {
+    margin-bottom: 2.5rem;
+
+    .icon {
+      font-size: 3.5rem;
+      display: block;
+      margin-bottom: 1rem;
+    }
+
+    h3 {
+      font-size: 1.4rem;
+      color: #1e293b;
+      font-weight: 800;
+      letter-spacing: 1px;
+      margin: 0;
+      text-transform: uppercase;
+    }
+
+    .divider {
+      width: 150px;
+      height: 2px;
+      background: #e2e8f0;
+      margin: 1.5rem auto 0;
+    }
+  }
+
+  .signature-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.8rem;
+    text-align: left;
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+
+      label {
+        font-weight: 700;
+        color: #475569;
+        font-size: 0.95rem;
+      }
+
+      .file-picker-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        background: #f8fafc;
+        border: 2px dashed #cbd5e1;
+        padding: 0.6rem 1rem;
+        border-radius: 12px;
+        transition: all 0.2s;
+
+        &:hover {
+          border-color: #3b82f6;
+          background: #f1f7ff;
+        }
+
+        ::ng-deep .custom-file-upload .p-button {
+          background: #1e293b !important;
+          border: none !important;
+          border-radius: 8px !important;
+          font-size: 0.85rem !important;
+          padding: 0.5rem 1.2rem !important;
+          font-weight: 600 !important;
+        }
+
+        .selected-filename {
+          font-size: 0.9rem;
+          color: #3b82f6;
+          font-weight: 600;
+        }
+
+        .placeholder-filename {
+          font-size: 0.9rem;
+          color: #94a3b8;
+          font-style: italic;
+        }
+      }
+
+      .password-wrapper {
+        input {
+          width: 100%;
+          padding: 1rem;
+          border: 2px solid #e2e8f0;
+          border-radius: 12px;
+          font-size: 1rem;
+          transition: all 0.2s;
+
+          &:focus {
+            border-color: #3b82f6;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+          }
+
+          &.masked-password-input {
+            -webkit-text-security: disc !important;
+            text-security: disc !important;
+          }
+        }
+      }
+    }
+
+    .btn-signer {
+      margin-top: 1rem;
+      background: #ffffff;
+      color: #1e293b;
+      border: 2px solid #1e293b;
+      padding: 1.1rem;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+      &:hover:not(:disabled) {
+        background: #1e293b;
+        color: #ffffff;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(30, 41, 59, 0.2);
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+
+    .btn-annuler {
+      background: none;
+      border: none;
+      color: #64748b;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: underline;
+      padding: 0.5rem;
+
+      &:hover {
+        color: #1e293b;
+      }
+    }
+  }
+
+  .signature-success-state {
+    .success-icon {
+      font-size: 4.5rem;
+      margin-bottom: 1.5rem;
+      animation: scaleUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    h3 {
+      font-size: 1.6rem;
+      color: #10b981;
+      font-weight: 800;
+      margin: 0;
+    }
+
+    .divider {
+      width: 100px;
+      height: 2px;
+      background: #e2e8f0;
+      margin: 2rem auto;
+    }
+
+    .btn-fermer {
+      background: #10b981;
+      color: white;
+      border: none;
+      padding: 1rem 3rem;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+
+      &:hover {
+        background: #059669;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+      }
+    }
+  }
+}
+
+@keyframes scaleUp {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
   }
 }

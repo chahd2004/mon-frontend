@@ -39,10 +39,10 @@
       </div>
     </div>
     <div class="stat-card purple">
-      <div class="stat-icon"><i class="pi pi-wallet"></i></div>
+      <div class="stat-icon"><i class="pi pi-id-card"></i></div>
       <div class="stat-info">
-        <span class="stat-value">{{ formatMontant(chiffreAffaires, true) }}</span>
-        <span class="stat-label">Chiffre d'affaires</span>
+        <span class="stat-value">{{ totalCollaborateurs }}</span>
+        <span class="stat-label">Collaborateurs</span>
       </div>
     </div>
     <div class="stat-card red">
@@ -58,17 +58,27 @@
   <div class="content-grid" *ngIf="!loading">
     <div class="chart-card">
       <div class="card-header">
-        <h3><i class="pi pi-chart-line"></i> Évolution mensuelle</h3>
+        <h3><i class="pi pi-chart-pie"></i> Répartition des factures</h3>
       </div>
       <div class="card-body">
-        <p-chart type="line" [data]="chartData" [options]="chartOptions" height="300px"></p-chart>
+        <p-chart type="doughnut" [data]="chartData" [options]="chartOptions" height="220px"></p-chart>
         <div *ngIf="chartData.datasets[0].data.length === 0" class="chart-empty">
           <p>Aucune donnée disponible</p>
         </div>
       </div>
     </div>
 
-
+    <div class="chart-card">
+      <div class="card-header">
+        <h3><i class="pi pi-chart-bar"></i> Ventes par produit / mois</h3>
+      </div>
+      <div class="card-body">
+        <p-chart type="bar" [data]="ventesProduitsData" [options]="ventesProduitsOptions" height="220px"></p-chart>
+        <div *ngIf="ventesProduitsData.datasets.length === 0" class="chart-empty">
+          <p>Aucune donnée disponible</p>
+        </div>
+      </div>
+    </div>
   </div>
 
 

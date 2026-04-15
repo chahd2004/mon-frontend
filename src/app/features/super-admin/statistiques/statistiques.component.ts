@@ -23,7 +23,7 @@ export class StatistiquesComponent implements OnInit {
   private dashboardService = inject(DashboardService);
   private superAdminUserService = inject(SuperAdminUserService);
   private authService = inject(AuthService);
-  
+
   isLoading = true;
 
   // Current user
@@ -41,7 +41,6 @@ export class StatistiquesComponent implements OnInit {
   clientsCount = 0;
   emetteursCount = 0;
   facturesCount = 0;
-  caTotalCount = '0 TND';
 
   ngOnInit(): void {
     this.loadStatistics();
@@ -50,16 +49,12 @@ export class StatistiquesComponent implements OnInit {
   private loadStatistics(): void {
     this.isLoading = true;
 
-    forkJoin({
-      adminStats: this.dashboardService.getSuperAdminStatistics(),
-      dashboardStats: this.dashboardService.getDashboardStatsFromAPI()
-    }).subscribe({
-      next: ({ adminStats, dashboardStats }: { adminStats: SuperAdminStatsResponse; dashboardStats: DashboardStats }) => {
+    this.dashboardService.getSuperAdminStatistics().subscribe({
+      next: (adminStats: SuperAdminStatsResponse) => {
         this.usersCount = adminStats.totalUsers ?? 0;
         this.clientsCount = adminStats.totalClients ?? 0;
         this.emetteursCount = adminStats.totalEmetteurs ?? 0;
         this.facturesCount = adminStats.totalFactures ?? 0;
-        this.caTotalCount = this.formatCurrency(dashboardStats.chiffreAffaires.actuel);
         this.isLoading = false;
       },
       error: (error) => {
@@ -67,14 +62,5 @@ export class StatistiquesComponent implements OnInit {
         this.isLoading = false;
       }
     });
-  }
-
-  private formatCurrency(value: number): string {
-    if (value >= 1000000) {
-      return (value / 1000000).toFixed(1) + 'M TND';
-    } else if (value >= 1000) {
-      return (value / 1000).toFixed(1) + 'K TND';
-    }
-    return value + ' TND';
   }
 }

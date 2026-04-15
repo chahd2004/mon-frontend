@@ -83,22 +83,14 @@
 
     <div class="actions-grid">
       <button class="action-btn" [disabled]="!canEnvoyer() || sending" (click)="envoyerAuClient()">ENVOYER AU CLIENT</button>
-      <button class="action-btn secondary" [disabled]="sending" (click)="envoyerParEmail()">ENVOYER PAR EMAIL</button>
       <button class="action-btn success" [disabled]="!canConfirmer()" (click)="confirmerManuellement()">CONFIRMER</button>
       <button class="action-btn danger" [disabled]="!canAnnuler()" (click)="annulerBonCommande()">ANNULER</button>
-      <button class="action-btn" [disabled]="!canConvertirCommande() || sending" (click)="convertirEnCommande()">CONVERTIR EN COMMANDE</button>
+
     </div>
 
     <p class="hint">{{ messageStatut }}</p>
   </section>
 
-  <section class="card">
-    <h2>Historique des envois</h2>
-    <div class="history-list">
-      <p *ngFor="let item of historiqueEnvois">{{ item }}</p>
-    </div>
-    <button class="action-btn secondary" [disabled]="sending" (click)="renvoyerEmail()">RENVOYER L EMAIL</button>
-  </section>
 
   <div class="error" *ngIf="errorMessage">{{ errorMessage }}</div>
   <div class="info" *ngIf="infoMessage">{{ infoMessage }}</div>

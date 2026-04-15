@@ -33,16 +33,37 @@ export class BonCommandeService {
   }
 
   convertirEnCommande(id: number, dateDocument: string, notes?: string): Observable<unknown> {
-    return this.http.post(`${this.conversionApiUrl}/bon-commandes/${id}/vers-commande`, {
+    return this.http.post(`${this.conversionApiUrl}/bon-commande/${id}/vers-commande`, {
       dateDocument,
       notes
     });
   }
 
   convertirEnBonLivraison(id: number, dateDocument: string, notes?: string): Observable<unknown> {
-    return this.http.post(`${this.conversionApiUrl}/bon-commandes/${id}/vers-bon-livraison`, {
+    return this.http.post(`${this.conversionApiUrl}/bon-commande/${id}/vers-bon-livraison`, {
       dateDocument,
       notes
     });
   }
+
+  /**
+   * Called by the client from the signature page (public, no auth required).
+   * Sends the .p12 file + password to sign the Bon de Commande.
+   */
+  signerParClient(bonCommandeId: number, file: File, password: string): Observable<BonCommande> {
+    const formData = new FormData();
+    formData.append('p12File', file);
+    formData.append('password', password);
+    formData.append('bonCommandeId', bonCommandeId.toString());
+    return this.http.post<BonCommande>(`${this.apiUrl}/signer-client`, formData);
+  }
+
+  confirmer(id: number): Observable<BonCommande> {
+    return this.http.put<BonCommande>(`${this.apiUrl}/${id}/confirmer`, {});
+  }
+
+  annuler(id: number, raison: string): Observable<BonCommande> {
+    return this.http.put<BonCommande>(`${this.apiUrl}/${id}/annuler`, { raison });
+  }
 }
+

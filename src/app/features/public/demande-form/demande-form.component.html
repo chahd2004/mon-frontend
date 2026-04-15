@@ -4,14 +4,14 @@
   <p-card class="demande-card">
     <ng-template pTemplate="header">
       <div class="card-header">
-        <h1>🏢 Demande de création d'entreprise</h1>
+        <h1>Demande de création d'entreprise</h1>
         <p>Remplissez le formulaire pour demander un accès entreprise</p>
       </div>
     </ng-template>
 
     <div class="form-container">
       <fieldset>
-        <legend>👤 Informations entreprise</legend>
+        <legend>Informations entreprise</legend>
 
         <div class="form-row">
           <div class="form-group">
@@ -43,53 +43,53 @@
 
         <div class="form-row">
           <div class="form-group">
-            <label for="telephone">📱 Téléphone</label>
+            <label for="telephone">Téléphone</label>
             <input pInputText id="telephone" [(ngModel)]="telephone" type="text" placeholder="+216 XX XXX XXX"
               [disabled]="loading" />
           </div>
 
           <div class="form-group">
-            <label for="region">📍 Région *</label>
+            <label for="region">Région *</label>
             <p-dropdown id="region" [(ngModel)]="region" [options]="regions" optionLabel="label" optionValue="value"
               placeholder="Sélectionnez une région" [disabled]="loading"></p-dropdown>
           </div>
         </div>
 
         <div class="form-group">
-          <label for="email">📧 Email professionnel *</label>
+          <label for="email">Email professionnel *</label>
           <input pInputText id="email" [(ngModel)]="email" type="email" placeholder="contact@monentreprise.tn"
             [disabled]="loading" />
         </div>
 
         <div class="form-group">
-          <label for="adresseComplete">📮 Adresse complète *</label>
+          <label for="adresseComplete">Adresse complète *</label>
           <textarea pInputTextarea id="adresseComplete" [(ngModel)]="adresseComplete"
             placeholder="Votre adresse complète" rows="3" [disabled]="loading"></textarea>
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label for="siteWeb">🌐 Site Web</label>
+            <label for="siteWeb">Site Web</label>
             <input pInputText id="siteWeb" [(ngModel)]="siteWeb" type="url" placeholder="https://www.votresite.tn"
               [disabled]="loading" />
           </div>
 
           <div class="form-group">
-            <label for="banque">🏦 Banque</label>
+            <label for="banque">Banque</label>
             <input pInputText id="banque" [(ngModel)]="banque" type="text" placeholder="Ex: BNA, BIAT, etc."
               [disabled]="loading" />
           </div>
         </div>
 
         <div class="form-group">
-          <label for="iban">💳 IBAN</label>
+          <label for="iban">IBAN</label>
           <input pInputText id="iban" [(ngModel)]="iban" type="text" placeholder="Votre numéro IBAN"
             [disabled]="loading" />
         </div>
       </fieldset>
 
       <fieldset>
-        <legend>👥 Responsable de l'entreprise</legend>
+        <legend>Responsable de l'entreprise</legend>
 
         <div class="form-row">
           <div class="form-group">
