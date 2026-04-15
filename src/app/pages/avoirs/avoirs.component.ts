@@ -134,6 +134,36 @@ export class AvoirsComponent implements OnInit {
     });
   }
 
+  validerAvoir(avoir: Avoir): void {
+    this.loading = true;
+    this.avoirService.validerAvoir(avoir.id).subscribe({
+      next: () => {
+        this.loadAvoirs();
+        this.infoMessage = `Avoir ${avoir.numAvoir} validé avec succès.`;
+        setTimeout(() => this.infoMessage = '', 3000);
+      },
+      error: (err) => {
+        this.loading = false;
+        this.errorMessage = 'Erreur lors de la validation.';
+      }
+    });
+  }
+
+  appliquerAvoir(avoir: Avoir): void {
+    this.loading = true;
+    this.avoirService.appliquerAvoir(avoir.id).subscribe({
+      next: () => {
+        this.loadAvoirs();
+        this.infoMessage = `Avoir ${avoir.numAvoir} appliqué avec succès.`;
+        setTimeout(() => this.infoMessage = '', 3000);
+      },
+      error: (err) => {
+        this.loading = false;
+        this.errorMessage = 'Erreur lors de l\'application.';
+      }
+    });
+  }
+
   formatStatut(statut: string): string {
     return AvoirStatutLabel[statut as keyof typeof AvoirStatutLabel] || statut;
   }

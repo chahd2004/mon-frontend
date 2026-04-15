@@ -11,10 +11,7 @@
       </button>
       <div class="top-actions">
 
-        <!-- DRAFT → Signer -->
-        <button *ngIf="!isViewer && statut === 'DRAFT'" class="action-btn sign-btn" (click)="signerFacture()">
-          <i class="pi pi-lock"></i> Signer
-        </button>
+
 
         <!-- SIGNED → Envoyer / Annuler -->
         <button *ngIf="!isViewer && statut === 'SIGNED'" class="action-btn send-btn" (click)="envoyerFacture()">
@@ -45,10 +42,7 @@
           <i class="pi pi-download"></i> Télécharger PDF
         </button>
 
-        <!-- Modifier (seulement si DRAFT) -->
-        <button *ngIf="!isViewer && statut === 'DRAFT'" class="edit-action-btn" (click)="passerEnModeEdition()">
-          <i class="pi pi-pencil"></i> Modifier
-        </button>
+
 
       </div>
     </div>
@@ -130,10 +124,6 @@
             <div class="recu-meta-item">
               <span class="recu-meta-label">Mode de paiement</span>
               <span class="recu-meta-value">{{ formatModePaiement(modePaiement) }}</span>
-            </div>
-            <div class="recu-meta-item">
-              <span class="recu-meta-label">Statut</span>
-              <span class="recu-meta-value">{{ formatStatut(statut) }}</span>
             </div>
           </div>
 
@@ -293,13 +283,6 @@
         </div>
 
         <!-- Statut en lecture seule (transitions via les boutons dédiés) -->
-        <div class="date-block">
-          <label>Statut</label>
-          <div class="statut-readonly">
-            <p-tag [value]="formatStatut(statut)" [severity]="getStatutSeverity(statut)"></p-tag>
-            <small class="statut-hint">Utilisez les boutons d'action pour changer le statut</small>
-          </div>
-        </div>
 
       </div>
     </div>

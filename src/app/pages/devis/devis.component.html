@@ -38,12 +38,22 @@
           </td>
           <td>
             <div class="row-actions">
-              <button class="icon-btn icon-btn-view" (click)="voirDevis(d.id)" title="Voir"><i class="pi pi-eye"></i></button>
-              <button class="icon-btn icon-btn-edit" *ngIf="!isViewer" (click)="modifierDevis(d.id)"
+              <button class="icon-btn" (click)="voirDevis(d.id)" title="Voir"><i class="pi pi-eye"></i></button>
+              
+              <button class="icon-btn" *ngIf="!isViewer && getEffectiveStatut(d) === 'DRAFT'" (click)="modifierDevis(d.id)"
                 title="Modifier"><i class="pi pi-pencil"></i></button>
-              <button class="icon-btn icon-btn-send" (click)="envoyerDevis(d.id)" [disabled]="!isEnvoyable(d)" title="Envoyer">
-                <i class="pi pi-send"></i>
-              </button>
+                
+              <button class="icon-btn" *ngIf="!isViewer && isEnvoyable(d)" (click)="envoyerDevis(d.id)" 
+                title="Envoyer"><i class="pi pi-send"></i></button>
+              
+              <button class="icon-btn" *ngIf="!isViewer && canAccepterOuRejeter(d)" (click)="accepterDevis(d.id)" 
+                title="Accepter"><i class="pi pi-check"></i></button>
+                
+              <button class="icon-btn" *ngIf="!isViewer && canAccepterOuRejeter(d)" (click)="rejeterDevis(d.id)" 
+                title="Rejeter"><i class="pi pi-times"></i></button>
+              
+              <button class="icon-btn" *ngIf="!isViewer && canConvertir(d)" (click)="convertirEnBC(d.id)" 
+                title="Convertir en BC"><i class="pi pi-file-export"></i></button>
             </div>
           </td>
         </tr>

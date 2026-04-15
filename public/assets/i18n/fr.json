@@ -172,7 +172,8 @@
     "SAVE": "Enregistrer",
     "CANCEL": "Annuler",
     "DELETE": "Supprimer",
-    "EDIT": "Modifier"
+    "EDIT": "Modifier",
+    "BACK": "Retour"
   },
   "SIDEBAR": {
     "GENERAL": "GÉNÉRAL",

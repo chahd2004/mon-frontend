@@ -2,9 +2,8 @@
   <button class="back-link" (click)="retourAuxCommandes()">&larr; Retour aux commandes</button>
 
   <section class="header-card">
-    <h1>COMMANDE #{{ formatCommandeReference() }}</h1>
-    <div class="status-pill" [ngClass]="getStatusClass(commande.statut)">
-      Statut: {{ getStatusLabel(commande.statut) }}
+    <div class="header-main">
+      <h1>COMMANDE #{{ formatCommandeReference() }}</h1>
     </div>
   </section>
 
@@ -63,31 +62,6 @@
           </tr>
         </tbody>
       </table>
-    </div>
-  </section>
-
-  <section class="card actions-card">
-    <h2>Actions - Changement de statut</h2>
-    <div class="actions-grid">
-      <!-- DRAFT → CONFIRMED -->
-      <button class="action-btn confirm-btn" *ngIf="statutNormalise === 'DRAFT'" (click)="confirmerCommande()" [disabled]="actionLoading">
-        <i class="pi pi-check"></i> CONFIRMER
-      </button>
-      
-      <!-- CONFIRMED → IN_PROGRESS -->
-      <button class="action-btn start-btn" *ngIf="statutNormalise === 'CONFIRMED'" (click)="demarrerProduction()" [disabled]="actionLoading">
-        <i class="pi pi-play"></i> EN PROGRES
-      </button>
-      
-      <!-- IN_PROGRESS → DELIVERED -->
-      <button class="action-btn deliver-btn" *ngIf="statutNormalise === 'IN_PROGRESS'" (click)="livrerCommande()" [disabled]="actionLoading">
-        <i class="pi pi-check-circle"></i> LIVRER
-      </button>
-
-      <!-- Annuler (disponible pour tous les statuts sauf DELIVERED) -->
-      <button class="action-btn cancel-btn" *ngIf="statutNormalise !== 'DELIVERED' && statutNormalise !== 'CLOSED'" (click)="annulerCommande()" [disabled]="actionLoading">
-        <i class="pi pi-times"></i> ANNULER
-      </button>
     </div>
   </section>
 

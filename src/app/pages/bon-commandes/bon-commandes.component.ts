@@ -72,10 +72,6 @@ export class BonCommandesComponent implements OnInit {
     });
   }
 
-  nouveauBC(): void {
-    this.router.navigate(['/bons-commandes/nouveau']);
-  }
-
   depuisDevis(): void {
     this.openConvertModal();
   }
@@ -88,19 +84,53 @@ export class BonCommandesComponent implements OnInit {
     this.router.navigate(['/bons-commandes', 'view', id]);
   }
 
-  modifierBC(id: number): void {
-    this.router.navigate(['/bons-commandes/nouveau'], { queryParams: { editId: id } });
-  }
-
   envoyerBC(id: number): void {
     this.bonCommandeService.envoyer(id).subscribe({
       next: () => {
         this.loadBonCommandes();
+        this.successMessage = `Bon de commande #${id} envoyé avec succès.`;
       },
-      error: () => {
-        this.errorMessage = `Impossible d'envoyer le bon de commande #${id}.`;
+      error: (error) => {
+        this.errorMessage = error?.error?.message || `Impossible d'envoyer le bon de commande #${id}.`;
       }
     });
+  }
+
+  confirmerBC(id: number): void {
+    this.bonCommandeService.confirmer(id).subscribe({
+      next: () => {
+        this.loadBonCommandes();
+        this.successMessage = `Bon de commande #${id} confirmé avec succès.`;
+      },
+      error: (error) => {
+        this.errorMessage = error?.error?.message || `Impossible de confirmer le bon de commande #${id}.`;
+      }
+    });
+  }
+
+  annulerBC(id: number): void {
+    const raison = prompt('Raison de l\'annulation :');
+    if (!raison || raison.trim() === '') return;
+
+    this.bonCommandeService.annuler(id, raison).subscribe({
+      next: () => {
+        this.loadBonCommandes();
+        this.successMessage = `Bon de commande #${id} annulé avec succès.`;
+      },
+      error: (error) => {
+        this.errorMessage = error?.error?.message || `Impossible d'annuler le bon de commande #${id}.`;
+      }
+    });
+  }
+
+  canConfirmer(bc: BonCommande): boolean {
+    const s = bc.statut?.toUpperCase();
+    return s === 'SENT' || s === 'SIGNED_CLIENT';
+  }
+
+  canAnnuler(bc: BonCommande): boolean {
+    const s = bc.statut?.toUpperCase();
+    return s !== 'CONVERTED' && s !== 'CANCELLED';
   }
 
   openConvertModal(): void {

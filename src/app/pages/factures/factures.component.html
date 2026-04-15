@@ -54,7 +54,7 @@
             translate) }}</td>
           <td>
             <p-tag [severity]="getStatutSeverity(facture.statut)"
-              [value]="'STATUS.' + facture.statut | translate"></p-tag>
+              [value]="formatStatut(facture.statut)"></p-tag>
           </td>
           <td>
             <div class="actions-cell">
@@ -63,17 +63,12 @@
                 <i class="pi pi-eye"></i>
               </button>
 
-              <button class="icon-btn icon-btn-sign" (click)="signerFacture(facture.id)"
-                [pTooltip]="'FACTURES.ACTIONS.SIGN' | translate" tooltipPosition="top">
-                <i class="pi pi-check-circle"></i>
-              </button>
-
-              <button *ngIf="!isViewer" class="icon-btn icon-btn-edit" (click)="modifierFacture(facture.id)"
+              <button *ngIf="!isViewer && facture.statut === 'DRAFT'" class="icon-btn icon-btn-edit" (click)="modifierFacture(facture.id)"
                 [pTooltip]="'FACTURES.ACTIONS.EDIT' | translate" tooltipPosition="top">
                 <i class="pi pi-pencil"></i>
               </button>
 
-              <button *ngIf="!isViewer" class="icon-btn icon-btn-delete" (click)="supprimerFacture(facture.id)"
+              <button *ngIf="!isViewer && facture.statut === 'DRAFT'" class="icon-btn icon-btn-delete" (click)="supprimerFacture(facture.id)"
                 [pTooltip]="'FACTURES.ACTIONS.DELETE' | translate" tooltipPosition="top">
                 <i class="pi pi-trash"></i>
               </button>

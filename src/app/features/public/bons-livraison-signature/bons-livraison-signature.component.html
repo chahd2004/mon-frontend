@@ -4,11 +4,11 @@
   <!-- Loading -->
   <div class="loading-state" *ngIf="loading">
     <div class="spinner"></div>
-    <p>Chargement du bon de commande...</p>
+    <p>Chargement du bon de livraison...</p>
   </div>
 
   <!-- Error State -->
-  <div class="error-state" *ngIf="!loading && errorMessage && !bonCommande">
+  <div class="error-state" *ngIf="!loading && errorMessage && !bonLivraison">
     <div class="error-card">
       <i class="pi pi-exclamation-triangle" style="font-size: 3rem; color: #ef4444; margin-bottom: 1rem;"></i>
       <h2>Document introuvable</h2>
@@ -20,35 +20,35 @@
   <div class="success-state" *ngIf="signatureReussie">
     <div class="success-card">
       <i class="pi pi-check-circle" style="font-size: 4rem; color: #22c55e; margin-bottom: 1.5rem;"></i>
-      <h2>SIGNATURE RÉUSSIE !</h2>
+      <h2>Signature réussie !</h2>
       <div class="divider"></div>
-      <p>Bon de commande <strong>{{ bonCommande?.numBonCommande }}</strong> signé avec succès.</p>
+      <p>Bon de livraison <strong>{{ bonLivraison?.numBonLivraison }}</strong> signé avec succès.</p>
       <button class="btn-close" (click)="fermer()">Fermer</button>
     </div>
   </div>
 
   <!-- Signature Form -->
-  <div class="signature-container" *ngIf="!loading && bonCommande && !signatureReussie">
+  <div class="signature-container" *ngIf="!loading && bonLivraison && !signatureReussie">
 
     <div class="signature-header">
-      <h1>SIGNATURE BON DE COMMANDE</h1>
+      <h1>🔏 SIGNATURE BON DE LIVRAISON</h1>
       <div class="divider"></div>
     </div>
 
     <div class="bc-info">
       <div class="info-row">
-        <span class="info-label">Bon de commande :</span>
-        <span class="info-value">{{ bonCommande.numBonCommande }}</span>
+        <span class="info-label">Bon de livraison :</span>
+        <span class="info-value">{{ bonLivraison.numBonLivraison }}</span>
       </div>
       <div class="info-row">
-        <span class="info-label">Montant :</span>
-        <span class="info-value amount">{{ bonCommande.totalTTC | number:'1.3-3' }} TND</span>
+        <span class="info-label">Facture :</span>
+        <span class="info-value">{{ bonLivraison.factureRef || '-' }}</span>
       </div>
     </div>
 
     <div class="form-card">
       <div class="input-group">
-        <label>Fichier .p12 :</label>
+        <label>📁 Fichier .p12 :</label>
         <div class="file-picker-wrapper">
           <p-fileUpload
             mode="basic"
@@ -65,7 +65,7 @@
       </div>
 
       <div class="input-group">
-        <label>Mot de passe :</label>
+        <label>🔐 Mot de passe :</label>
         <div class="password-wrapper">
           <input
             type="text"
@@ -92,7 +92,7 @@
       >
         <i class="pi pi-check-circle" *ngIf="!signing"></i>
         <i class="pi pi-spin pi-spinner" *ngIf="signing"></i>
-        SIGNER
+        SIGNER LA RÉCEPTION
       </button>
 
     </div>

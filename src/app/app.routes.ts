@@ -10,6 +10,7 @@ import { ChangePasswordComponent } from './features/public/change-password/chang
 import { DemandeFormComponent } from './features/public/demande-form/demande-form.component';
 import { DemandeStatutComponent } from './features/public/demande-statut/demande-statut.component';
 import { BonCommandeSignatureComponent } from './features/public/bon-commande-signature/bon-commande-signature.component';
+import { BonsLivraisonSignatureComponent } from './features/public/bons-livraison-signature/bons-livraison-signature.component';
 
 // ✅ PHASE 3 - SUPER_ADMIN Pages
 import { SuperAdminLayoutComponent } from './features/super-admin/layout/super-admin-layout.component';
@@ -63,12 +64,9 @@ import { DevisComponent } from './pages/devis/devis.component';
 import { DevisDetailComponent } from './pages/devis/devis-detail.component';
 import { DevisCreateComponent } from './pages/devis/devis-create.component';
 import { BonCommandesComponent } from './pages/bon-commandes/bon-commandes.component';
-import { BonCommandeCreateComponent } from './pages/bon-commandes/bon-commande-create.component';
 import { BonCommandeDetailComponent } from './pages/bon-commandes/bon-commande-detail.component';
 import { CommandesComponent } from './pages/commandes/commandes.component';
-import { CommandeCreateComponent } from './pages/commandes/commande-create.component';
 import { BonsLivraisonComponent } from './pages/bons-livraison/bons-livraison.component';
-import { BonsLivraisonCreateComponent } from './pages/bons-livraison/bons-livraison-create.component';
 import { BonsLivraisonDetailComponent } from './pages/bons-livraison/bons-livraison-detail.component';
 import { DemandesComponent } from './pages/demandes/demandes.component';
 import { DemandeDetailComponent } from './pages/demandes/demande-detail.component';
@@ -96,6 +94,7 @@ export const routes: Routes = [
   { path: 'demande/statut', component: DemandeStatutComponent },
   // Route publique accessible depuis le lien email du bon de commande
   { path: 'bon-commande/:ref', component: BonCommandeSignatureComponent },
+  { path: 'bon-livraison-signature/:ref', component: BonsLivraisonSignatureComponent },
 
   // ── Protégées : faut être connecté ─────────────────────────────
   {
@@ -115,13 +114,10 @@ export const routes: Routes = [
       { path: 'devis/view/:id', component: DevisDetailComponent },
       { path: 'devis/:ref', component: DevisDetailComponent },
       { path: 'bons-commandes', component: BonCommandesComponent },
-      { path: 'bons-commandes/nouveau', component: BonCommandeCreateComponent },
       { path: 'bons-commandes/view/:id', component: BonCommandeDetailComponent },
       { path: 'bon-commande/:ref', component: BonCommandeDetailComponent },
       { path: 'commandes', component: CommandesComponent },
-      { path: 'commandes/nouveau', component: CommandeCreateComponent },
       { path: 'bons-livraison', component: BonsLivraisonComponent },
-      { path: 'bons-livraison/nouveau', component: BonsLivraisonCreateComponent },
       { path: 'bons-livraison/view/:id', component: BonsLivraisonDetailComponent },
       { path: 'bon-livraison/:ref', component: BonsLivraisonDetailComponent },
       {

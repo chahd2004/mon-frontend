@@ -3,7 +3,6 @@
 
   <div class="header-card">
     <h1>{{ formatDevisReference() }}</h1>
-    <div class="status-pill">Statut: {{ getEffectiveStatut() }}</div>
   </div>
 
   <div class="infos-grid">
@@ -61,15 +60,7 @@
     <span class="ttc">TOTAL TTC: {{ totalTTCAvecTimbre | number:'1.3-3' }} TND</span>
   </div>
 
-  <div class="actions-card">
-    <button class="action-btn" [disabled]="!canEnvoyer()" (click)="envoyerAuClient()">Envoyer au client</button>
-    <button class="action-btn" [disabled]="!canAccepterOuRejeter()" (click)="accepterDevis()">Accepter</button>
-    <button class="action-btn danger" [disabled]="!canAccepterOuRejeter()" (click)="rejeterDevis()">Rejeter</button>
 
-    <button class="action-btn secondary" [disabled]="!canConvertirDirectement() || convertingDirect" (click)="convertirEnFactureDirecte()">
-      {{ convertingDirect ? 'Conversion en cours...' : 'Convertir en facture directe' }}
-    </button>
-  </div>
 
   <div class="error" *ngIf="errorMessage">{{ errorMessage }}</div>
 </div>

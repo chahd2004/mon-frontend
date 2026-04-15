@@ -2,9 +2,11 @@
   <button class="back-link" (click)="retourAuxBL()">&larr; Retour aux bons de livraison</button>
 
   <section class="header-card">
-    <h1>BON DE LIVRAISON #{{ referenceBL }}</h1>
-    <div class="status-pill" [ngClass]="statusClass">Statut: {{ statusLabel }}</div>
+    <div class="header-main">
+      <h1>BON DE LIVRAISON #{{ referenceBL }}</h1>
+    </div>
   </section>
+
 
   <section class="card">
     <h2>Informations</h2>
@@ -71,40 +73,6 @@
         </tbody>
       </table>
     </div>
-  </section>
-
-  <section class="card recap-card">
-    <h2>Recapitulatif</h2>
-    <div class="recap-grid">
-      <p>Total commande: <strong>{{ totalCommandeArticles }} articles</strong></p>
-      <p>Total livre: <strong>{{ totalLivresArticles }} articles</strong></p>
-      <p>Reste a livrer: <strong>{{ totalResteArticles }} articles</strong></p>
-    </div>
-  </section>
-
-  <section class="card actions-card">
-    <h2>Actions</h2>
-
-    <div class="actions-row">
-      <button class="action-btn" (click)="envoyerParEmail()">ENVOYER PAR EMAIL</button>
-      <button class="action-btn" (click)="dupliquerBL()">DUPLIQUER</button>
-    </div>
-
-    <div class="separator"></div>
-
-    <p class="status-line">STATUT: <strong>{{ currentStatusText }}</strong></p>
-
-    <div class="actions-row">
-      <button class="action-btn" (click)="modifierBL()">MODIFIER</button>
-      <button class="action-btn danger" (click)="supprimerBL()">SUPPRIMER</button>
-      <button class="action-btn success" [disabled]="actionLoading" (click)="actionSelonStatut()">
-        {{ actionLoading ? 'TRAITEMENT...' : actionStatutLabel }}
-      </button>
-    </div>
-
-    <p class="hint" *ngIf="statusValue === 'DRAFT'">
-      Le bon de livraison est en brouillon, vous pouvez le modifier avant livraison.
-    </p>
   </section>
 
   <div class="message error" *ngIf="errorMessage">{{ errorMessage }}</div>

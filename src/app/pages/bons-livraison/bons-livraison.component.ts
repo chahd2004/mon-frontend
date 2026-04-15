@@ -17,7 +17,7 @@ interface BonLivraisonView {
   commandeLiee: string;
   client: string;
   dateLivraison: string;
-  statut: 'DRAFT' | 'DELIVERED' | 'SIGNED_CLIENT' | 'DISPUTE';
+  statut: 'DRAFT' | 'DELIVERED' | 'SIGNED_CLIENT' | 'DISPUTE' | 'CLOSED';
   disputeReason?: string;
 }
 
@@ -41,7 +41,7 @@ export class BonsLivraisonComponent implements OnInit {
   successMessage = '';
 
   searchTerm = '';
-  selectedStatus: 'ALL' | 'DRAFT' | 'DELIVERED' | 'SIGNED_CLIENT' | 'DISPUTE' = 'ALL';
+  selectedStatus: 'ALL' | 'DRAFT' | 'DELIVERED' | 'SIGNED_CLIENT' | 'DISPUTE' | 'CLOSED' = 'ALL';
 
   displayConvertModal = false;
   loadingConfirmedCommandes = false;
@@ -53,11 +53,12 @@ export class BonsLivraisonComponent implements OnInit {
   rawBonsLivraison: BonLivraison[] = [];
   rawCommandes: BonCommande[] = [];
 
-  readonly statusOptions: Array<'DRAFT' | 'DELIVERED' | 'SIGNED_CLIENT' | 'DISPUTE'> = [
+  readonly statusOptions: Array<'DRAFT' | 'DELIVERED' | 'SIGNED_CLIENT' | 'DISPUTE' | 'CLOSED'> = [
     'DRAFT',
     'DELIVERED',
     'SIGNED_CLIENT',
-    'DISPUTE'
+    'DISPUTE',
+    'CLOSED'
   ];
 
   get isViewer(): boolean {
@@ -117,6 +118,10 @@ export class BonsLivraisonComponent implements OnInit {
     return this.filteredBonsLivraison.filter(item => item.statut === 'DRAFT').length;
   }
 
+  get closedCount(): number {
+    return this.filteredBonsLivraison.filter(item => item.statut === 'CLOSED').length;
+  }
+
   get disputes(): BonLivraisonView[] {
     return this.filteredBonsLivraison.filter(item => item.statut === 'DISPUTE');
   }
@@ -156,10 +161,6 @@ export class BonsLivraisonComponent implements OnInit {
         this.errorMessage = 'Impossible de charger les bons de livraison depuis le backend.';
       }
     });
-  }
-
-  nouveauBL(): void {
-    this.router.navigate(['/bons-livraison/nouveau']);
   }
 
   depuisCommande(): void {
@@ -223,6 +224,7 @@ export class BonsLivraisonComponent implements OnInit {
       vendeurId: selectedCommande.vendeurId,
       modePaiement: selectedCommande.modePaiement || 'VIREMENT',
       statut: 'DRAFT',
+      commandeSourceRef: this.formatCommandeReference(selectedCommande),
       lignes: (selectedCommande.lignes || []).map(ligne => ({
         produitId: ligne.produitId,
         produitDesignation: ligne.produitDesignation,
@@ -297,11 +299,26 @@ export class BonsLivraisonComponent implements OnInit {
     this.successMessage = '';
     this.bonLivraisonService.marquerLivre(item.sourceId).subscribe({
       next: () => {
-        this.successMessage = `Bon de livraison ${item.numeroBL} marque livre et email envoye au client.`;
+        this.successMessage = `Bon de livraison ${item.numeroBL} marqué livré et email envoyé au client.`;
         this.loadSourceLivraisons();
       },
       error: (error) => {
-        this.errorMessage = error?.error?.message || `Impossible de marquer ${item.numeroBL} comme livre.`;
+        this.errorMessage = error?.error?.message || `Impossible de marquer ${item.numeroBL} comme livré.`;
+      }
+    });
+  }
+
+  cloturerBL(item: BonLivraisonView): void {
+    this.errorMessage = '';
+    this.successMessage = '';
+    // On passe une chaine vide pour declencher la generation automatique de facture draft cote backend
+    this.bonLivraisonService.cloturer(item.sourceId, '').subscribe({
+      next: () => {
+        this.successMessage = `Bon de livraison ${item.numeroBL} clôturé avec succès.`;
+        this.loadSourceLivraisons();
+      },
+      error: (err) => {
+        this.errorMessage = err?.error?.message || `Erreur lors de la clôture du bon de livraison ${item.numeroBL}.`;
       }
     });
   }
@@ -325,11 +342,28 @@ export class BonsLivraisonComponent implements OnInit {
     this.successMessage = '';
     this.bonLivraisonService.resoudreLitige(item.sourceId).subscribe({
       next: () => {
-        this.successMessage = `Litige resolu pour ${item.numeroBL}.`;
+        this.successMessage = `Litige resolu pour ${item.numeroBL}. Le document repasse en DELIVERED pour signature.`;
         this.loadSourceLivraisons();
       },
       error: (error) => {
         this.errorMessage = error?.error?.message || `Resolution du litige impossible pour ${item.numeroBL}.`;
+      }
+    });
+  }
+
+  signalerLitige(item: BonLivraisonView): void {
+    const motif = prompt('Motif du litige :');
+    if (!motif || motif.trim() === '') return;
+
+    this.errorMessage = '';
+    this.successMessage = '';
+    this.bonLivraisonService.signalerLitige(item.sourceId, motif).subscribe({
+      next: () => {
+        this.successMessage = `Litige signalé pour ${item.numeroBL}.`;
+        this.loadSourceLivraisons();
+      },
+      error: (error) => {
+        this.errorMessage = error?.error?.message || `Signalement du litige impossible pour ${item.numeroBL}.`;
       }
     });
   }
@@ -339,13 +373,14 @@ export class BonsLivraisonComponent implements OnInit {
       DRAFT: 'draft',
       DELIVERED: 'delivered',
       SIGNED_CLIENT: 'signed-client',
-      DISPUTE: 'dispute'
+      DISPUTE: 'dispute',
+      CLOSED: 'closed'
     };
 
     return map[status] || 'draft';
   }
 
-  private toLivraisonStatus(raw?: string | null): 'DRAFT' | 'DELIVERED' | 'SIGNED_CLIENT' | 'DISPUTE' {
+  private toLivraisonStatus(raw?: string | null): 'DRAFT' | 'DELIVERED' | 'SIGNED_CLIENT' | 'DISPUTE' | 'CLOSED' {
     const value = (raw || '').toUpperCase();
 
     if (value === 'DRAFT') {
@@ -354,6 +389,10 @@ export class BonsLivraisonComponent implements OnInit {
 
     if (value === 'SIGNED_CLIENT') {
       return 'SIGNED_CLIENT';
+    }
+
+    if (value === 'CLOSED') {
+      return 'CLOSED';
     }
 
     if (value === 'DELIVERED' || value === 'CONFIRMED' || value === 'CONVERTED' || value === 'SENT') {

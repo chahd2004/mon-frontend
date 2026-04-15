@@ -25,6 +25,7 @@ export interface BonLivraison {
   statut?: StatutBonLivraison | string;
   disputeReason?: string;
   commandeSourceRef?: string;
+  modePaiement?: string;
   factureRef?: string;
   lignes?: LigneBonLivraison[];
 }

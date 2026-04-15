@@ -67,7 +67,8 @@ export class BonsLivraisonDetailComponent implements OnInit {
       DRAFT: 'DRAFT',
       DELIVERED: 'DELIVERED',
       SIGNED_CLIENT: 'SIGNED_CLIENT',
-      DISPUTE: 'DISPUTE'
+      DISPUTE: 'DISPUTE',
+      CLOSED: 'CLOSED'
     };
 
     return map[this.statusValue] || this.statusValue;
@@ -78,20 +79,25 @@ export class BonsLivraisonDetailComponent implements OnInit {
       DRAFT: 'Brouillon',
       DELIVERED: 'Livre',
       SIGNED_CLIENT: 'Signe client',
-      DISPUTE: 'Litige'
+      DISPUTE: 'Litige',
+      CLOSED: 'Cloturé'
     };
 
     return map[this.statusValue] || this.statusValue;
   }
 
-  get statusValue(): 'DRAFT' | 'DELIVERED' | 'SIGNED_CLIENT' | 'DISPUTE' {
+  get statusValue(): 'DRAFT' | 'DELIVERED' | 'SIGNED_CLIENT' | 'DISPUTE' | 'CLOSED' {
     const value = (this.livraison?.statut || '').toUpperCase();
 
     if (value === 'SIGNED_CLIENT') {
       return 'SIGNED_CLIENT';
     }
 
-    if (value === 'DELIVERED' || value === 'CLOSED') {
+    if (value === 'CLOSED') {
+      return 'CLOSED';
+    }
+
+    if (value === 'DELIVERED') {
       return 'DELIVERED';
     }
 
@@ -107,7 +113,8 @@ export class BonsLivraisonDetailComponent implements OnInit {
       DRAFT: 'draft',
       DELIVERED: 'delivered',
       SIGNED_CLIENT: 'signed-client',
-      DISPUTE: 'dispute'
+      DISPUTE: 'dispute',
+      CLOSED: 'closed'
     };
 
     return map[this.statusValue] || 'draft';
@@ -166,6 +173,19 @@ export class BonsLivraisonDetailComponent implements OnInit {
     );
   }
 
+  get linkSignature(): string {
+    if (!this.livraison) return '';
+    const ref = this.livraison.numBonLivraison || '';
+    const origin = window.location.origin;
+    return `${origin}/bon-livraison-signature/${ref}`;
+  }
+
+  copierLien(input: HTMLInputElement): void {
+    input.select();
+    document.execCommand('copy');
+    this.infoMessage = 'Lien copie dans le presse-papier.';
+  }
+
   modifierBL(): void {
     this.infoMessage = 'Modification BL non disponible pour le moment.';
     this.errorMessage = '';
@@ -215,19 +235,37 @@ export class BonsLivraisonDetailComponent implements OnInit {
     }
 
     if (this.statusValue === 'DELIVERED') {
-      this.infoMessage = 'Validation client non disponible pour le moment.';
+      this.infoMessage = 'Veuillez attendre la signature du client via le lien email.';
       this.errorMessage = '';
       return;
     }
 
     if (this.statusValue === 'SIGNED_CLIENT') {
-      this.infoMessage = 'BL deja signe par le client.';
-      this.errorMessage = '';
+      this.cloturerBL();
       return;
     }
 
     this.infoMessage = 'Resolution litige non disponible pour le moment.';
     this.errorMessage = '';
+  }
+
+  cloturerBL(): void {
+    this.actionLoading = true;
+    this.errorMessage = '';
+    this.infoMessage = '';
+
+    // On passe une chaine vide pour declencher la generation automatique de facture draft cote backend
+    this.bonLivraisonService.cloturer(this.livraisonId, '').subscribe({
+      next: () => {
+        this.actionLoading = false;
+        this.infoMessage = 'Bon de livraison cloture avec succes.';
+        this.loadDetail();
+      },
+      error: (err) => {
+        this.actionLoading = false;
+        this.errorMessage = err?.error?.message || 'Erreur lors de la cloture du bon de livraison.';
+      }
+    });
   }
 
   get actionStatutLabel(): string {
@@ -240,7 +278,11 @@ export class BonsLivraisonDetailComponent implements OnInit {
     }
 
     if (this.statusValue === 'SIGNED_CLIENT') {
-      return 'DEJA SIGNE';
+      return 'CLOTURER';
+    }
+
+    if (this.statusValue === 'CLOSED') {
+      return 'CLOTURE';
     }
 
     return 'RESOUDRE LITIGE';

@@ -166,6 +166,11 @@ th {
   color: #991b1b;
 }
 
+.status.closed {
+  background: #f1f5f9;
+  color: #475569;
+}
+
 // Row status coloring
 tr.status-draft {
   background-color: rgba(224, 242, 254, 0.5);
@@ -181,6 +186,10 @@ tr.status-signed-client {
 
 tr.status-dispute {
   background-color: rgba(254, 226, 226, 0.5);
+}
+
+tr.status-closed {
+  background-color: rgba(241, 245, 249, 0.5);
 }
 
 .stats-card,
@@ -264,6 +273,12 @@ tr.status-dispute {
   background-color: #fee2e2;
   border-color: #991b1b;
   color: #991b1b;
+}
+
+.stat-badge.closed {
+  background-color: #f1f5f9;
+  border-color: #475569;
+  color: #475569;
 }
 
 .dispute-item {

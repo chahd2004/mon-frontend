@@ -2,7 +2,6 @@
   <h1 class="title">Bons de commande</h1>
 
   <div class="action-bar">
-    <button class="btn btn-primary" *ngIf="!isViewer" (click)="nouveauBC()">+ Nouveau BC</button>
     <button class="btn btn-neutral" *ngIf="!isViewer" (click)="depuisDevis()">Depuis devis</button>
     <button class="btn btn-neutral" (click)="toggleStats()">Statistiques</button>
   </div>
@@ -40,11 +39,16 @@
           </td>
           <td>
             <div class="row-actions">
-              <button class="icon-btn icon-btn-view" (click)="voirBC(bc.id)" title="Voir"><i class="pi pi-eye"></i></button>
-              <button class="icon-btn icon-btn-edit" *ngIf="!isViewer" [disabled]="bc.statut !== 'DRAFT'" (click)="modifierBC(bc.id)"
-                title="Modifier"><i class="pi pi-pencil"></i></button>
-              <button class="icon-btn icon-btn-send" [disabled]="isViewer || bc.statut !== 'DRAFT'" (click)="envoyerBC(bc.id)"
-                title="Envoyer"><i class="pi pi-send"></i></button>
+              <button class="icon-btn" (click)="voirBC(bc.id)" title="Voir"><i class="pi pi-eye"></i></button>
+              
+              <button class="icon-btn" *ngIf="!isViewer && bc.statut === 'DRAFT'" (click)="envoyerBC(bc.id)"
+                title="Envoyer au client"><i class="pi pi-send"></i></button>
+              
+              <button class="icon-btn" *ngIf="!isViewer && canConfirmer(bc)" (click)="confirmerBC(bc.id)"
+                title="Confirmer"><i class="pi pi-check"></i></button>
+              
+              <button class="icon-btn" *ngIf="!isViewer && canAnnuler(bc)" (click)="annulerBC(bc.id)"
+                title="Annuler"><i class="pi pi-times"></i></button>
             </div>
           </td>
         </tr>

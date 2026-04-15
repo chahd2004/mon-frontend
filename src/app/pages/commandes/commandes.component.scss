@@ -153,6 +153,11 @@ th {
   color: #991b1b;
 }
 
+.status.cancelled {
+  background: #f1f5f9;
+  color: #475569;
+}
+
 // Row status coloring
 tr.status-draft {
   background-color: rgba(224, 242, 254, 0.5);
@@ -171,7 +176,11 @@ tr.status-delivered {
 }
 
 tr.status-closed {
-  background-color: rgba(245, 245, 245, 0.7);
+  background-color: rgba(254, 226, 226, 0.5);
+}
+
+tr.status-cancelled {
+  background-color: rgba(241, 245, 249, 0.6);
 }
 
 .stats-card,
@@ -256,9 +265,15 @@ tr.status-closed {
 }
 
 .stat-badge.closed {
-  background-color: #f3f4f6;
-  border-color: #666666;
-  color: #666666;
+  background-color: #fee2e2;
+  border-color: #991b1b;
+  color: #991b1b;
+}
+
+.stat-badge.cancelled {
+  background-color: #f1f5f9;
+  border-color: #475569;
+  color: #475569;
 }
 
 .summary-card {

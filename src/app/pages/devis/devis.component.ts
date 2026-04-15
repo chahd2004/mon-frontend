@@ -112,6 +112,42 @@ export class DevisComponent implements OnInit {
     this.router.navigate(['/devis', 'view', id]);
   }
 
+  accepterDevis(id: number): void {
+    this.devisService.accepter(id).subscribe({
+      next: () => this.loadDevis(),
+      error: () => this.errorMessage = `Impossible d'accepter le devis #${id}.`
+    });
+  }
+
+  rejeterDevis(id: number): void {
+    const raison = window.prompt('Saisir la raison du rejet :');
+    if (!raison || !raison.trim()) return;
+
+    this.devisService.rejeter(id, raison.trim()).subscribe({
+      next: () => this.loadDevis(),
+      error: () => this.errorMessage = `Impossible de rejeter le devis #${id}.`
+    });
+  }
+
+  convertirEnBC(id: number): void {
+    const dateDocument = new Date().toISOString().slice(0, 10);
+    this.devisService.convertirEnBonCommande(id, dateDocument).subscribe({
+      next: () => {
+        this.loadDevis();
+        this.router.navigate(['/bons-commandes']);
+      },
+      error: () => this.errorMessage = `Erreur lors de la conversion en bon de commande pour le devis #${id}.`
+    });
+  }
+
+  canAccepterOuRejeter(item: Devis): boolean {
+    return this.getEffectiveStatut(item) === 'SENT';
+  }
+
+  canConvertir(item: Devis): boolean {
+    return this.getEffectiveStatut(item) === 'ACCEPTED';
+  }
+
   modifierDevis(id: number): void {
     this.router.navigate(['/devis', 'nouveau'], { queryParams: { editId: id } });
   }

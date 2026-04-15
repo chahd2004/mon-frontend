@@ -59,7 +59,7 @@ export class CommandeDetailComponent implements OnInit {
     return this.commande?.lignes ?? [];
   }
 
-  get statutNormalise(): 'DRAFT' | 'CONFIRMED' | 'IN_PROGRESS' | 'DELIVERED' | 'CLOSED' {
+  get statutNormalise(): 'DRAFT' | 'CONFIRMED' | 'IN_PROGRESS' | 'DELIVERED' | 'CANCELLED' {
     return this.toCommandeStatus(this.commande?.statut);
   }
 
@@ -152,7 +152,7 @@ export class CommandeDetailComponent implements OnInit {
       return [];
     }
 
-    const isLinked = ['IN_PROGRESS', 'DELIVERED', 'CLOSED'].includes(this.statutNormalise);
+    const isLinked = ['IN_PROGRESS', 'DELIVERED'].includes(this.statutNormalise);
     if (!isLinked) {
       return [];
     }
@@ -179,11 +179,11 @@ export class CommandeDetailComponent implements OnInit {
       items.push(`${date} 09:30 - Commande confirmee (CONFIRMED)`);
     }
 
-    if (['IN_PROGRESS', 'DELIVERED', 'CLOSED'].includes(this.statutNormalise)) {
+    if (['IN_PROGRESS', 'DELIVERED'].includes(this.statutNormalise)) {
       items.push(`${date} 10:00 - Production demarree (IN_PROGRESS)`);
     }
 
-    if (['DELIVERED', 'CLOSED'].includes(this.statutNormalise)) {
+    if (this.statutNormalise === 'DELIVERED') {
       items.push(`${date} 16:45 - Commande marquee livree (DELIVERED)`);
     }
 
@@ -204,7 +204,7 @@ export class CommandeDetailComponent implements OnInit {
       CONFIRMED: 'Commande confirmee, prete a demarrer la production.',
       IN_PROGRESS: 'Production en cours, suivez l avancement ci-dessus.',
       DELIVERED: 'Commande livree, prete pour facturation.',
-      CLOSED: 'Commande cloturee.'
+      CANCELLED: 'Commande annulee.'
     };
 
     return map[this.statutNormalise] || 'Aucune information de statut.';
@@ -393,7 +393,7 @@ export class CommandeDetailComponent implements OnInit {
       CONFIRMED: 'confirmed',
       IN_PROGRESS: 'in-progress',
       DELIVERED: 'delivered',
-      CLOSED: 'closed'
+      CANCELLED: 'cancelled'
     };
 
     return map[normalized] || 'draft';
@@ -407,7 +407,7 @@ export class CommandeDetailComponent implements OnInit {
       CONFIRMED: 'CONFIRMED',
       IN_PROGRESS: 'IN_PROGRESS',
       DELIVERED: 'DELIVERED',
-      CLOSED: 'CLOSED'
+      CANCELLED: 'ANNULÉ'
     };
 
     return map[normalized] || '-';
@@ -557,7 +557,7 @@ export class CommandeDetailComponent implements OnInit {
     return `${day}/${month}/${year}`;
   }
 
-  private toCommandeStatus(raw?: string | null): 'DRAFT' | 'CONFIRMED' | 'IN_PROGRESS' | 'DELIVERED' | 'CLOSED' {
+  private toCommandeStatus(raw?: string | null): 'DRAFT' | 'CONFIRMED' | 'IN_PROGRESS' | 'DELIVERED' | 'CANCELLED' {
     const value = (raw || '').toUpperCase();
 
     if (value === 'DRAFT') {
@@ -572,8 +572,8 @@ export class CommandeDetailComponent implements OnInit {
       return 'DELIVERED';
     }
 
-    if (value === 'CANCELLED' || value === 'CLOSED') {
-      return 'CLOSED';
+    if (value === 'CANCELLED') {
+      return 'CANCELLED';
     }
 
     if (value === 'SENT' || value === 'SIGNED_CLIENT' || value === 'IN_PROGRESS') {

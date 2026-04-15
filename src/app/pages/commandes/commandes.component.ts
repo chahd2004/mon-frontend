@@ -15,7 +15,7 @@ interface CommandeView {
   client: string;
   dateCommande: string;
   totalTTC: number;
-  statut: 'DRAFT' | 'CONFIRMED' | 'IN_PROGRESS' | 'DELIVERED' | 'CLOSED';
+  statut: 'DRAFT' | 'CONFIRMED' | 'IN_PROGRESS' | 'DELIVERED' | 'CANCELLED';
 }
 
 @Component({
@@ -65,7 +65,7 @@ export class CommandesComponent implements OnInit {
   }
 
   get availableStatuses(): string[] {
-    return ['DRAFT', 'CONFIRMED', 'IN_PROGRESS', 'DELIVERED', 'CLOSED'];
+    return ['DRAFT', 'CONFIRMED', 'IN_PROGRESS', 'DELIVERED', 'CANCELLED'];
   }
 
   get filteredCommandes(): CommandeView[] {
@@ -115,8 +115,7 @@ export class CommandesComponent implements OnInit {
       DRAFT: 1,
       CONFIRMED: 2,
       IN_PROGRESS: 3,
-      DELIVERED: 4,
-      CLOSED: 5
+      DELIVERED: 4
     };
 
     return Array.from(counts.entries())
@@ -145,10 +144,6 @@ export class CommandesComponent implements OnInit {
         this.errorMessage = error?.error?.message || 'Impossible de charger les commandes depuis le backend.';
       }
     });
-  }
-
-  nouvelleCommande(): void {
-    this.router.navigate(['/commandes/nouveau']);
   }
 
   depuisBC(): void {
@@ -269,30 +264,82 @@ export class CommandesComponent implements OnInit {
     this.router.navigate(['/commandes/view', item.sourceId]);
   }
 
-  modifierCommande(item: CommandeView): void {
-    this.router.navigate(['/bons-commandes/nouveau'], { queryParams: { editId: item.sourceId } });
-  }
-
-  envoyerCommande(item: CommandeView): void {
-    this.errorMessage = '';
-    this.successMessage = '';
-
-    this.bonCommandeService.envoyer(item.sourceId).subscribe({
+  confirmerCommande(item: CommandeView): void {
+    const id = item.sourceId;
+    this.commandeService.confirmer(id).subscribe({
       next: () => {
-        this.successMessage = `Commande ${item.numero} envoyee.`;
+        this.successMessage = `Commande ${item.numero} confirmée avec succès.`;
         this.loadCommandes();
       },
-      error: () => {
-        this.errorMessage = `Impossible d'envoyer la commande ${item.numero}.`;
+      error: (error) => {
+        this.errorMessage = error?.error?.message || `Impossible de confirmer la commande ${item.numero}.`;
       }
     });
+  }
+
+  demarrerProduction(item: CommandeView): void {
+    const id = item.sourceId;
+    this.commandeService.demarrer(id).subscribe({
+      next: () => {
+        this.successMessage = `Production démarrée pour la commande ${item.numero}.`;
+        this.loadCommandes();
+      },
+      error: (error) => {
+        this.errorMessage = error?.error?.message || `Impossible de démarrer la production pour la commande ${item.numero}.`;
+      }
+    });
+  }
+
+  livrerCommande(item: CommandeView): void {
+    const id = item.sourceId;
+    this.commandeService.marquerLivree(id).subscribe({
+      next: () => {
+        this.successMessage = `Commande ${item.numero} marquée comme livrée.`;
+        this.loadCommandes();
+      },
+      error: (error) => {
+        this.errorMessage = error?.error?.message || `Impossible de livrer la commande ${item.numero}.`;
+      }
+    });
+  }
+
+  annulerCommande(item: CommandeView): void {
+    const id = item.sourceId;
+    const raison = prompt('Raison de l\'annulation :');
+    if (!raison || raison.trim() === '') return;
+
+    this.commandeService.annuler(id, raison).subscribe({
+      next: () => {
+        this.successMessage = `Commande ${item.numero} annulée avec succès.`;
+        this.loadCommandes();
+      },
+      error: (error) => {
+        this.errorMessage = error?.error?.message || `Impossible d'annuler la commande ${item.numero}.`;
+      }
+    });
+  }
+
+  canConfirm(item: CommandeView): boolean {
+    return item.statut === 'DRAFT';
+  }
+
+  canStartProduction(item: CommandeView): boolean {
+    return item.statut === 'CONFIRMED';
+  }
+
+  canDeliver(item: CommandeView): boolean {
+    return item.statut === 'IN_PROGRESS';
+  }
+
+  canCancel(item: CommandeView): boolean {
+    return ['DRAFT', 'CONFIRMED', 'IN_PROGRESS'].includes(item.statut);
   }
 
   totalByStatus(status: string): number {
     return this.commandes.filter(item => item.statut === status).length;
   }
 
-  private toCommandeStatus(raw?: string | null): 'DRAFT' | 'CONFIRMED' | 'IN_PROGRESS' | 'DELIVERED' | 'CLOSED' {
+  private toCommandeStatus(raw?: string | null): 'DRAFT' | 'CONFIRMED' | 'IN_PROGRESS' | 'DELIVERED' | 'CANCELLED' {
     const value = (raw || '').toUpperCase();
 
     if (value === 'DRAFT') {
@@ -307,8 +354,8 @@ export class CommandesComponent implements OnInit {
       return 'DELIVERED';
     }
 
-    if (value === 'CANCELLED' || value === 'CLOSED') {
-      return 'CLOSED';
+    if (value === 'CANCELLED') {
+      return 'CANCELLED';
     }
 
     if (value === 'SENT' || value === 'SIGNED_CLIENT' || value === 'IN_PROGRESS') {
@@ -324,7 +371,7 @@ export class CommandesComponent implements OnInit {
       CONFIRMED: 'confirmed',
       IN_PROGRESS: 'in-progress',
       DELIVERED: 'delivered',
-      CLOSED: 'closed'
+      CANCELLED: 'cancelled'
     };
 
     return map[status] || 'draft';
@@ -336,7 +383,7 @@ export class CommandesComponent implements OnInit {
       CONFIRMED: 'CONFIRMED',
       IN_PROGRESS: 'IN PROGRESS',
       DELIVERED: 'DELIVERED',
-      CLOSED: 'CLOSED'
+      CANCELLED: 'CANCELLED'
     };
 
     return map[status] || status;

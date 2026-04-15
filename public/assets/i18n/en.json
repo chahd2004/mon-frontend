@@ -171,7 +171,8 @@
     "SAVE": "Save",
     "CANCEL": "Cancel",
     "DELETE": "Delete",
-    "EDIT": "Edit"
+    "EDIT": "Edit",
+    "BACK": "Back"
   },
   "SIDEBAR": {
     "GENERAL": "GENERAL",
