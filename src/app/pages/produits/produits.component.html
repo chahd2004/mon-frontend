@@ -199,15 +199,6 @@
         </div>
       </div>
 
-      <div class="form-group test-mode-field">
-        <label>
-          <i class="pi pi-info-circle" style="color: #f59e0b;"></i>
-          {{ 'PRODUITS.FORM.EMETTEUR_ID' | translate }} <span class="required">*</span>
-          <small style="color: #94a3b8; font-weight: 400;"> (mode test)</small>
-        </label>
-        <p-inputNumber [(ngModel)]="produitForm.emetteurId" [min]="1" placeholder="Ex: 1"></p-inputNumber>
-      </div>
-
       <div class="preview-section" *ngIf="produitForm.prixUnitaire > 0">
         <h4>{{ 'PRODUITS.FORM.PREVIEW_TITLE' | translate }}</h4>
         <div class="preview-item">

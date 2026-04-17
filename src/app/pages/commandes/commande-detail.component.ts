@@ -15,18 +15,8 @@ import { Produit } from '../../models/produit.model';
 import { environment } from '../../../environments/environment';
 import { formatDocumentReference } from '../../shared/utils/reference-format.util';
 
-interface ProductionRow {
-  produit: string;
-  statut: 'EN_ATTENTE' | 'EN_COURS' | 'TERMINE';
-  dateDebut: string | null;
-  dateFinPrevue: string;
-}
-
 interface BonLivraisonLie {
   numero: string;
-  dateLivraison: string;
-  transporteur: string;
-  statut: string;
 }
 
 @Component({
@@ -79,119 +69,17 @@ export class CommandeDetailComponent implements OnInit {
     return formatDocumentReference('BC', this.commande.numBonCommande, this.commande.dateCreation, this.commande.id);
   }
 
-  get dateLivraisonPrevue(): Date | null {
-    const base = this.toDate(this.commande?.dateCreation);
-    if (!base) {
-      return null;
-    }
-
-    const preview = new Date(base);
-    preview.setDate(preview.getDate() + 15);
-    return preview;
-  }
-
-  get priorite(): string {
-    return 'Normale';
-  }
-
-  get productionVisible(): boolean {
-    return this.statutNormalise === 'IN_PROGRESS';
-  }
-
-  get productionProgress(): number {
-    if (this.statutNormalise === 'IN_PROGRESS') {
-      return 35;
-    }
-
-    if (this.statutNormalise === 'DELIVERED') {
-      return 100;
-    }
-
-    if (this.statutNormalise === 'CONFIRMED') {
-      return 10;
-    }
-
-    return 0;
-  }
-
-  get productionRows(): ProductionRow[] {
-    return this.lignes.map((ligne, idx) => {
-      const startDate = this.toDate(this.commande?.dateCreation);
-      const endDate = startDate ? new Date(startDate) : new Date();
-      endDate.setDate(endDate.getDate() + (idx + 5));
-
-      if (this.statutNormalise === 'DELIVERED') {
-        return {
-          produit: ligne.produitDesignation || '-',
-          statut: 'TERMINE',
-          dateDebut: this.formatDate(startDate),
-          dateFinPrevue: this.formatDate(endDate)
-        };
-      }
-
-      if (this.statutNormalise === 'IN_PROGRESS') {
-        return {
-          produit: ligne.produitDesignation || '-',
-          statut: idx === 0 ? 'EN_COURS' : 'EN_ATTENTE',
-          dateDebut: idx === 0 ? this.formatDate(startDate) : null,
-          dateFinPrevue: this.formatDate(endDate)
-        };
-      }
-
-      return {
-        produit: ligne.produitDesignation || '-',
-        statut: 'EN_ATTENTE',
-        dateDebut: null,
-        dateFinPrevue: this.formatDate(endDate)
-      };
-    });
-  }
 
   get bonsLivraisonLies(): BonLivraisonLie[] {
-    if (!this.commande) {
-      return [];
-    }
-
-    const isLinked = ['IN_PROGRESS', 'DELIVERED'].includes(this.statutNormalise);
-    if (!isLinked) {
+    if (!this.commande || !this.commande.documentConvertiRef) {
       return [];
     }
 
     return [
       {
-        numero: formatDocumentReference('BL', this.commande.numBonCommande, this.commande.dateCreation, this.commande.id),
-        dateLivraison: this.commande.dateCreation,
-        transporteur: 'DHL',
-        statut: this.statutNormalise === 'DELIVERED' ? 'SIGNED' : 'DRAFT'
+        numero: this.commande.documentConvertiRef
       }
     ];
-  }
-
-  get historique(): string[] {
-    if (!this.commande) {
-      return [];
-    }
-
-    const date = this.formatDate(this.toDate(this.commande.dateCreation));
-    const items = [`${date} 09:00 - Commande creee (DRAFT)`];
-
-    if (this.statutNormalise !== 'DRAFT') {
-      items.push(`${date} 09:30 - Commande confirmee (CONFIRMED)`);
-    }
-
-    if (['IN_PROGRESS', 'DELIVERED'].includes(this.statutNormalise)) {
-      items.push(`${date} 10:00 - Production demarree (IN_PROGRESS)`);
-    }
-
-    if (this.statutNormalise === 'DELIVERED') {
-      items.push(`${date} 16:45 - Commande marquee livree (DELIVERED)`);
-    }
-
-    if (this.commande.statut?.toUpperCase() === 'CANCELLED') {
-      items.push(`${date} 17:10 - Commande annulee (CANCELLED)`);
-    }
-
-    return items;
   }
 
   get statusHintMessage(): string {
@@ -317,15 +205,6 @@ export class CommandeDetailComponent implements OnInit {
     this.errorMessage = '';
   }
 
-  mettreAJourProduction(): void {
-    this.infoMessage = 'Mise a jour avancement global non disponible pour le moment.';
-    this.errorMessage = '';
-  }
-
-  actionProductionRow(_index: number): void {
-    this.infoMessage = 'Mise a jour production ligne non disponible pour le moment.';
-    this.errorMessage = '';
-  }
 
   voirBLLie(): void {
     if (!this.commande) {
@@ -511,31 +390,7 @@ export class CommandeDetailComponent implements OnInit {
     return map[value] || value;
   }
 
-  getProductionStatusLabel(statut: ProductionRow['statut']): string {
-    const map: Record<ProductionRow['statut'], string> = {
-      EN_ATTENTE: 'En attente',
-      EN_COURS: 'En cours',
-      TERMINE: 'Termine'
-    };
 
-    return map[statut];
-  }
-
-  getProductionActionLabel(statut: ProductionRow['statut']): string {
-    if (statut === 'EN_COURS') {
-      return 'Mettre a jour';
-    }
-
-    if (statut === 'EN_ATTENTE') {
-      return 'Demarrer';
-    }
-
-    return 'Voir';
-  }
-
-  getProgressBarStyle(): string {
-    return `width: ${this.productionProgress}%`;
-  }
 
   private toDate(value?: string | null): Date | null {
     if (!value) {

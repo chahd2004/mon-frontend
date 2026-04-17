@@ -1,5 +1,5 @@
 // src/app/pages/factures/factures.component.ts
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -20,10 +20,13 @@ import { DialogModule } from 'primeng/dialog';
 import { FileUploadModule } from 'primeng/fileupload';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { TranslateModule } from '@ngx-translate/core';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { FactureService } from '../../core/services/facture.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ErrorHandlerService } from '../../core/services/error-handler.service';
+import { FactureRefreshService } from '../../core/services/facture-refresh.service';
 import { Facture, StatutFacture, StatutFactureLabel } from '../../models/facture.model';
 
 @Component({
@@ -39,13 +42,15 @@ import { Facture, StatutFacture, StatutFactureLabel } from '../../models/facture
   templateUrl: './factures.component.html',
   styleUrls: ['./factures.component.scss']
 })
-export class FacturesComponent implements OnInit {
+export class FacturesComponent implements OnInit, OnDestroy {
   private factureService = inject(FactureService);
   private authService = inject(AuthService);
   private errorHandler = inject(ErrorHandlerService);
   private router = inject(Router);
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
+  private factureRefresh = inject(FactureRefreshService);
+  private destroy$ = new Subject<void>();
 
   get isViewer(): boolean {
     return this.authService.hasRole('ENTREPRISE_VIEWER');
@@ -78,6 +83,19 @@ export class FacturesComponent implements OnInit {
   ngOnInit(): void {
     this.loadFactures();
     this.loadStatistiques();
+    
+    // S'abonner aux notifications de refresh (nouvelle facture créée/modifiée)
+    this.factureRefresh.refresh$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.page = 1; // Réinitialiser à la première page
+        this.loadFactures();
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
 
@@ -223,6 +241,84 @@ export class FacturesComponent implements OnInit {
           }
         });
       }
+    });
+  }
+
+  emettreFacture(id: number): void {
+    this.factureService.envoyerFacture(id).subscribe({
+      next: () => {
+        this.messageService.add({ severity: 'success', summary: 'Succès', detail: 'Facture émise et envoyée' });
+        this.loadFactures();
+      },
+      error: (err) => this.messageService.add({ severity: 'error', summary: 'Erreur', detail: this.errorHandler.extractErrorMessage(err) })
+    });
+  }
+
+  payerFacture(id: number): void {
+    this.factureService.marquerPayee(id).subscribe({
+      next: () => {
+        this.messageService.add({ severity: 'success', summary: 'Succès', detail: 'Facture marquée comme payée' });
+        this.loadFactures();
+      },
+      error: (err) => this.messageService.add({ severity: 'error', summary: 'Erreur', detail: this.errorHandler.extractErrorMessage(err) })
+    });
+  }
+
+  rejeterFacture(id: number): void {
+    const raison = window.prompt('Raison du rejet (obligatoire) :');
+    if (!raison || raison.trim() === '') {
+      this.messageService.add({ severity: 'warn', summary: 'Attention', detail: 'La raison du rejet est obligatoire' });
+      return;
+    }
+
+    this.factureService.rejeterFacture(id, raison).subscribe({
+      next: () => {
+        this.messageService.add({ severity: 'success', summary: 'Succès', detail: 'Facture rejetée' });
+        this.loadFactures();
+      },
+      error: (err) => this.messageService.add({ severity: 'error', summary: 'Erreur', detail: this.errorHandler.extractErrorMessage(err) })
+    });
+  }
+
+  annulerFacture(id: number): void {
+    this.confirmationService.confirm({
+      message: 'Êtes-vous sûr de vouloir annuler cette facture ? Cela générera un avoir.',
+      header: 'Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.factureService.annulerFacture(id).subscribe({
+          next: () => {
+            this.messageService.add({ severity: 'success', summary: 'Succès', detail: 'Facture annulée' });
+            this.loadFactures();
+          },
+          error: (err) => this.messageService.add({ severity: 'error', summary: 'Erreur', detail: this.errorHandler.extractErrorMessage(err) })
+        });
+      }
+    });
+  }
+
+  retourBrouillon(id: number): void {
+    this.factureService.retourBrouillon(id).subscribe({
+      next: () => {
+        this.messageService.add({ severity: 'info', summary: 'Info', detail: 'Facture retournée en brouillon' });
+        this.loadFactures();
+      },
+      error: (err) => this.messageService.add({ severity: 'error', summary: 'Erreur', detail: this.errorHandler.extractErrorMessage(err) })
+    });
+  }
+
+  telechargerXml(id: number): void {
+    this.factureService.downloadXml(id).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `facture-${id}.xml`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+        this.messageService.add({ severity: 'success', summary: 'Succès', detail: 'Téléchargement lancé' });
+      },
+      error: (err) => this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Impossible de télécharger le XML' })
     });
   }
 }

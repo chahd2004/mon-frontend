@@ -50,7 +50,7 @@ export class ClientFormComponent implements OnInit {
     { label: 'Siliana', value: 'SILIANA' }
   ];
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder) { }
 
   ngOnInit(): void {
     this.initForm();

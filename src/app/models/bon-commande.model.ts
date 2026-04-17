@@ -20,6 +20,7 @@ export interface LigneBonCommande {
 export interface BonCommande {
   id: number;
   numBonCommande: string;
+  numCommande?: string; // Ajouté pour compatibilité backend
   dateCreation: string;
   acheteurId: number;
   acheteurNom: string;

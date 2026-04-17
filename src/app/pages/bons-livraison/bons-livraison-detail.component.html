@@ -15,15 +15,11 @@
       <div class="mini-card">
         <h3>Commande liee</h3>
         <p><strong>N°:</strong> {{ commandeReference }}</p>
-        <p><strong>Date:</strong> {{ commandeDate | date:'dd/MM/yyyy' }}</p>
-        <p><strong>Document source:</strong> {{ commandeReference }}</p>
       </div>
 
       <div class="mini-card">
         <h3>Livraison</h3>
         <p><strong>Date:</strong> {{ livraison.dateCreation | date:'dd/MM/yyyy' }}</p>
-        <p><strong>Transporteur:</strong> {{ transporteur }}</p>
-        <p><strong>N° suivi:</strong> {{ numeroSuivi }}</p>
       </div>
     </div>
 
@@ -32,12 +28,6 @@
       <p class="strong">{{ client?.raisonSociale || livraison.acheteurNom }}</p>
       <p>{{ client?.adresseComplete || '-' }}</p>
       <p>{{ client?.email || '-' }} | {{ client?.telephone || '-' }}</p>
-      <p>MF: {{ matriculeFiscalClient }}</p>
-    </div>
-
-    <div class="full-card">
-      <h3>Adresse de livraison</h3>
-      <p>{{ adresseLivraison }}</p>
     </div>
   </section>
 
@@ -49,26 +39,17 @@
           <tr>
             <th>#</th>
             <th>Designation</th>
-            <th>Qte cmd</th>
             <th>Qte livre</th>
-            <th>Reste</th>
-            <th>Statut</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let ligne of lignes">
             <td>{{ ligne.index }}</td>
             <td>{{ ligne.designation }}</td>
-            <td>{{ ligne.quantiteCommandee }}</td>
             <td>{{ ligne.quantiteLivree }}</td>
-            <td>{{ ligne.reste }}</td>
-            <td>
-              <span class="state ok" *ngIf="isComplet(ligne)">Livre complet</span>
-              <span class="state warn" *ngIf="!isComplet(ligne)">Livraison partielle</span>
-            </td>
           </tr>
           <tr *ngIf="!lignes.length">
-            <td colspan="6" class="empty">Aucun produit trouve.</td>
+            <td colspan="3" class="empty">Aucun produit trouve.</td>
           </tr>
         </tbody>
       </table>

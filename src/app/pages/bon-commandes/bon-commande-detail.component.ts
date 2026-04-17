@@ -91,39 +91,7 @@ export class BonCommandeDetailComponent implements OnInit {
     return map[this.statutNormalise] || '';
   }
 
-  get historiqueEnvois(): string[] {
-    if (!this.bonCommande) {
-      return [];
-    }
 
-    const date = this.formatDate(this.toDate(this.bonCommande.dateCreation));
-    const items = [`${date} 10:00 - Bon de commande cree (DRAFT)`];
-
-    if (['SENT', 'SIGNED_CLIENT', 'CONFIRMED', 'CONVERTED'].includes(this.statutNormalise)) {
-      items.push(`${date} 10:15 - Email envoye a ${this.client?.email || 'client@email.com'} - Objet: "${this.formatBonCommandeReference()}"`);
-      items.push(`${date} 10:15 - PDF joint: bon_commande_${this.formatBonCommandeReference()}.pdf`);
-    }
-
-    if (['CONFIRMED', 'CONVERTED'].includes(this.statutNormalise)) {
-      items.push(`${date} 10:40 - Bon de commande confirme (CONFIRMED)`);
-    }
-
-    if (this.statutNormalise === 'CONVERTED') {
-      items.push(`${date} 11:10 - Bon de commande converti en commande (CONVERTED)`);
-    }
-
-    if (this.statutNormalise === 'CANCELLED') {
-      items.push(`${date} 11:20 - Bon de commande annule (CANCELLED)`);
-    }
-
-    return items;
-  }
-
-  get conditionsPaiement(): string {
-    const notes = this.bonCommande?.notes || '';
-    const match = notes.match(/Conditions:\s*([^|]+)/i);
-    return match?.[1]?.trim() || '30 jours net';
-  }
 
   ngOnInit(): void {
     const rawParam = this.route.snapshot.paramMap.get('id') || this.route.snapshot.paramMap.get('ref') || '';

@@ -17,14 +17,12 @@
         <p>{{ client?.adresseComplete || '-' }}</p>
         <p>{{ client?.email || '-' }}</p>
         <p>{{ client?.telephone || '-' }}</p>
-        <p>MF: {{ client?.code || '-' }}</p>
       </section>
 
       <section class="mini-card">
         <h3>Bon de commande</h3>
         <p><strong>Date d'emission:</strong> {{ bonCommande.dateCreation | date:'dd/MM/yyyy' }}</p>
         <p><strong>Mode de paiement:</strong> {{ formatModePaiement(bonCommande.modePaiement) }}</p>
-        <p><strong>Conditions:</strong> {{ conditionsPaiement }}</p>
       </section>
     </div>
 

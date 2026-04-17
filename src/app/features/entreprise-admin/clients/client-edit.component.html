@@ -37,13 +37,8 @@
 
         <div class="form-group">
           <label for="region">Région *</label>
-          <p-dropdown
-            id="region"
-            [options]="regionOptions"
-            formControlName="region"
-            optionLabel="label"
-            optionValue="value"
-          ></p-dropdown>
+          <p-dropdown id="region" [options]="regionOptions" formControlName="region" optionLabel="label"
+            optionValue="value"></p-dropdown>
         </div>
 
         <div class="form-group">
@@ -59,15 +54,8 @@
 
       <div class="form-actions">
         <button pButton type="button" label="Annuler" class="p-button-text" (click)="cancel()"></button>
-        <button
-          pButton
-          type="button"
-          label="Mettre à jour"
-          icon="pi pi-check"
-          [loading]="isSubmitting"
-          [disabled]="!form.valid || isSubmitting"
-          (click)="save()"
-        ></button>
+        <button pButton type="button" label="Mettre à jour" icon="pi pi-check" [loading]="isSubmitting"
+          [disabled]="!form.valid || isSubmitting" (click)="save()"></button>
       </div>
     </form>
   </p-card>

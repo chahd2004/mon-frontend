@@ -410,8 +410,9 @@ export class BonsLivraisonComponent implements OnInit {
     return formatDocumentReference('BC', item.numBonCommande, item.dateCreation, item.id);
   }
 
-  formatCommandeReference(item: BonCommande): string {
-    return formatDocumentReference('CMD', item.numBonCommande, item.dateCreation, item.id);
+  formatCommandeReference(item: any): string {
+    const raw = item.numBonCommande || item.numCommande || item.numero;
+    return formatDocumentReference('CMD', raw, item.dateCreation, item.id);
   }
 
   private formatBLReference(item: BonLivraison): string {

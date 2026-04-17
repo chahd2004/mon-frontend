@@ -8,18 +8,9 @@ import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
 import { TooltipModule } from 'primeng/tooltip';
 import { TagModule } from 'primeng/tag';
-
-interface Facture {
-  id: string;
-  numero: string;
-  client: string;
-  dateEmission: string;
-  dateEcheance: string;
-  montantHT: number;
-  montantTTC: number;
-  statut: 'DRAFT' | 'ENVOYEE' | 'ACCEPTEE' | 'PAYEE' | 'ANNULEE';
-  modePaiement: string;
-}
+import { FactureService } from '../../../core/services/facture.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { Facture } from '../../../models/facture.model';
 
 @Component({
   selector: 'app-factures-list',
@@ -29,65 +20,55 @@ interface Facture {
   styleUrl: './factures-list.component.scss'
 })
 export class FacturesListComponent implements OnInit {
-  factures: Facture[] = [];
-  filteredFactures: Facture[] = [];
+  factures: any[] = [];
+  filteredFactures: any[] = [];
   isLoading = false;
   searchTerm = '';
   selectedStatut = '';
+  currentEmetteurId: number | null = null;
 
   statutOptions = [
     { label: 'Tous', value: '' },
     { label: 'Brouillon', value: 'DRAFT' },
-    { label: 'Envoyée', value: 'ENVOYEE' },
-    { label: 'Acceptée', value: 'ACCEPTEE' },
-    { label: 'Payée', value: 'PAYEE' },
-    { label: 'Annulée', value: 'ANNULEE' }
+    { label: 'Signée', value: 'SIGNED' },
+    { label: 'Envoyée', value: 'SENT' },
+    { label: 'Payée', value: 'PAID' },
+    { label: 'Rejetée', value: 'REJECTED' },
+    { label: 'Annulée', value: 'CANCELLED' }
   ];
 
+  constructor(
+    private factureService: FactureService,
+    private authService: AuthService
+  ) { }
+
   ngOnInit(): void {
+    const user = this.authService.currentUser();
+    this.currentEmetteurId = user?.emetteurId || null;
     this.loadFactures();
   }
 
-  private loadFactures(): void {
+  loadFactures(): void {
     this.isLoading = true;
-    // Mock data
-    this.factures = [
-      {
-        id: '1',
-        numero: 'FAC-2024-001',
-        client: 'Société ABC SARL',
-        dateEmission: '2024-01-15',
-        dateEcheance: '2024-02-14',
-        montantHT: 5000,
-        montantTTC: 5950,
-        statut: 'PAYEE',
-        modePaiement: 'Virement'
+    this.factureService.getAll().subscribe({
+      next: (data) => {
+        // Marquer chaque facture comme Vente ou Achat
+        const processedData = data.map(f => ({
+          ...f,
+          isVente: f.vendeurId === this.currentEmetteurId,
+          partenaireNom: f.vendeurId === this.currentEmetteurId ? f.acheteurNom : f.vendeurNom
+        }));
+
+        this.factures = processedData.sort((a, b) => (b.id || 0) - (a.id || 0));
+        this.filteredFactures = [...this.factures];
+        this.isLoading = false;
+        console.log('Factures chargées:', this.factures.length);
       },
-      {
-        id: '2',
-        numero: 'FAC-2024-002',
-        client: 'Entreprise XYZ Ltée',
-        dateEmission: '2024-02-10',
-        dateEcheance: '2024-03-10',
-        montantHT: 7500,
-        montantTTC: 8925,
-        statut: 'ACCEPTEE',
-        modePaiement: 'Chèque'
-      },
-      {
-        id: '3',
-        numero: 'FAC-2024-003',
-        client: 'Société Commerce TN',
-        dateEmission: '2024-03-05',
-        dateEcheance: '2024-04-04',
-        montantHT: 3000,
-        montantTTC: 3570,
-        statut: 'DRAFT',
-        modePaiement: 'À sélectionner'
+      error: (err) => {
+        console.error('Erreur lors du chargement des factures:', err);
+        this.isLoading = false;
       }
-    ];
-    this.filteredFactures = [...this.factures];
-    this.isLoading = false;
+    });
   }
 
   onSearch(): void {
@@ -101,8 +82,8 @@ export class FacturesListComponent implements OnInit {
   applyFilters(): void {
     this.filteredFactures = this.factures.filter(fact => {
       const matchesSearch =
-        fact.numero.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        fact.client.toLowerCase().includes(this.searchTerm.toLowerCase());
+        (fact.numFact || '').toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        (fact.partenaireNom || '').toLowerCase().includes(this.searchTerm.toLowerCase());
 
       const matchesStatut = !this.selectedStatut || fact.statut === this.selectedStatut;
 
@@ -114,13 +95,15 @@ export class FacturesListComponent implements OnInit {
     switch (statut) {
       case 'DRAFT':
         return 'info';
-      case 'ENVOYEE':
+      case 'SENT':
         return 'warning';
-      case 'ACCEPTEE':
+      case 'SIGNED':
         return 'info';
-      case 'PAYEE':
+      case 'PAID':
         return 'success';
-      case 'ANNULEE':
+      case 'REJECTED':
+        return 'danger';
+      case 'CANCELLED':
         return 'danger';
       default:
         return 'secondary';
@@ -131,13 +114,15 @@ export class FacturesListComponent implements OnInit {
     switch (statut) {
       case 'DRAFT':
         return 'Brouillon';
-      case 'ENVOYEE':
+      case 'SENT':
         return 'Envoyée';
-      case 'ACCEPTEE':
-        return 'Acceptée';
-      case 'PAYEE':
+      case 'SIGNED':
+        return 'Signée';
+      case 'PAID':
         return 'Payée';
-      case 'ANNULEE':
+      case 'REJECTED':
+        return 'Rejetée';
+      case 'CANCELLED':
         return 'Annulée';
       default:
         return statut;
@@ -148,7 +133,7 @@ export class FacturesListComponent implements OnInit {
     console.log('View detail:', id);
   }
 
-  deleteFacture(id: string): void {
+  deleteFacture(id: number): void {
     this.factures = this.factures.filter(f => f.id !== id);
     this.applyFilters();
   }

@@ -29,7 +29,13 @@
       "VIEW": "View",
       "SIGN": "Sign",
       "EDIT": "Edit",
-      "DELETE": "Delete"
+      "DELETE": "Delete",
+      "EMIT": "Emit",
+      "PAY": "Pay",
+      "REJECT": "Reject",
+      "CANCEL": "Cancel",
+      "BACK_TO_DRAFT": "Back to Draft",
+      "DOWNLOAD_XML": "Download XML"
     },
     "EMPTY": {
       "TITLE": "No invoices found",
@@ -44,7 +50,8 @@
     "PAID": "Paid",
     "PARTIAL": "Partial",
     "CANCELLED": "Cancelled",
-    "VALIDATED": "Validated"
+    "VALIDATED": "Validated",
+    "SIGNED": "Signed"
   },
   "CLIENTS": {
     "TITLE": "Client List",

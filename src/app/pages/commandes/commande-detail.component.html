@@ -17,15 +17,12 @@
         <p>{{ client?.adresseComplete || '-' }}</p>
         <p>{{ client?.email || '-' }}</p>
         <p>{{ client?.telephone || '-' }}</p>
-        <p>MF: {{ client?.code || '-' }}</p>
       </div>
 
       <div class="mini-card">
         <h3>Commande</h3>
         <p><strong>Date commande:</strong> {{ commande.dateCreation | date:'dd/MM/yyyy' }}</p>
-        <p><strong>Date livraison prevue:</strong> {{ dateLivraisonPrevue ? (dateLivraisonPrevue | date:'dd/MM/yyyy') : '-' }}</p>
         <p><strong>Mode paiement:</strong> {{ formatModePaiement(commande.modePaiement) }}</p>
-        <p><strong>Priorite:</strong> {{ priorite }}</p>
       </div>
     </div>
 
@@ -74,12 +71,6 @@
     </div>
   </section>
 
-  <section class="card">
-    <h2>Historique</h2>
-    <div class="history-list">
-      <p *ngFor="let item of historique">{{ item }}</p>
-    </div>
-  </section>
 
   <div class="message error" *ngIf="errorMessage">{{ errorMessage }}</div>
   <div class="message info" *ngIf="infoMessage">{{ infoMessage }}</div>

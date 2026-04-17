@@ -10,35 +10,24 @@
   <div class="filters-section">
     <span class="p-input-icon-left">
       <i class="pi pi-search"></i>
-      <input type="text" pInputText placeholder="Rechercher par numéro ou client..." [(ngModel)]="searchTerm" (keyup)="onSearch()" />
+      <input type="text" pInputText placeholder="Rechercher par numéro ou client..." [(ngModel)]="searchTerm"
+        (keyup)="onSearch()" />
     </span>
 
-    <p-dropdown
-      [options]="statutOptions"
-      [(ngModel)]="selectedStatut"
-      optionLabel="label"
-      optionValue="value"
-      placeholder="Filtrer par statut"
-      (onChange)="onStatutChange()"
-      styleClass="w-full"
-    ></p-dropdown>
+    <p-dropdown [options]="statutOptions" [(ngModel)]="selectedStatut" optionLabel="label" optionValue="value"
+      placeholder="Filtrer par statut" (onChange)="onStatutChange()" styleClass="w-full"></p-dropdown>
   </div>
 
-  <p-table
-    [value]="filteredFactures"
-    [loading]="isLoading"
-    [paginator]="true"
-    [rows]="10"
-    responsiveLayout="scroll"
-    [globalFilterFields]="['numero', 'client']"
-  >
+  <p-table [value]="filteredFactures" [loading]="isLoading" [paginator]="true" [rows]="25" responsiveLayout="scroll"
+    [globalFilterFields]="['numFact', 'partenaireNom']">
     <ng-template pTemplate="header">
       <tr>
-        <th pSortableColumn="numero">Numéro <p-sortIcon field="numero"></p-sortIcon></th>
-        <th pSortableColumn="client">Client <p-sortIcon field="client"></p-sortIcon></th>
+        <th pSortableColumn="numFact">Numéro <p-sortIcon field="numFact"></p-sortIcon></th>
+        <th pSortableColumn="isVente">Type <p-sortIcon field="isVente"></p-sortIcon></th>
+        <th pSortableColumn="partenaireNom">Partenaire <p-sortIcon field="partenaireNom"></p-sortIcon></th>
         <th pSortableColumn="dateEmission">Émise le <p-sortIcon field="dateEmission"></p-sortIcon></th>
-        <th pSortableColumn="dateEcheance">Échéance <p-sortIcon field="dateEcheance"></p-sortIcon></th>
-        <th pSortableColumn="montantTTC" style="text-align: right">Montant <p-sortIcon field="montantTTC"></p-sortIcon></th>
+        <th pSortableColumn="datePaiement">Échéance <p-sortIcon field="datePaiement"></p-sortIcon></th>
+        <th pSortableColumn="totalTTC" style="text-align: right">Montant <p-sortIcon field="totalTTC"></p-sortIcon></th>
         <th pSortableColumn="statut">Statut <p-sortIcon field="statut"></p-sortIcon></th>
         <th style="width: 15%">Actions</th>
       </tr>
@@ -46,47 +35,27 @@
 
     <ng-template pTemplate="body" let-fact>
       <tr>
-        <td><strong>{{ fact.numero }}</strong></td>
-        <td>{{ fact.client }}</td>
-        <td>{{ fact.dateEmission }}</td>
-        <td>{{ fact.dateEcheance }}</td>
-        <td style="text-align: right; font-weight: 600">{{ fact.montantTTC | number: '1.2-2' }} TND</td>
+        <td><strong>{{ fact.numFact }}</strong></td>
         <td>
-          <p-tag
-            [value]="getStatutLabel(fact.statut)"
-            [severity]="$any(getStatutSeverity(fact.statut))"
-          ></p-tag>
+          <p-tag [value]="fact.isVente ? 'VENTE' : 'ACHAT'" [severity]="fact.isVente ? 'success' : 'info'"></p-tag>
+        </td>
+        <td>{{ fact.partenaireNom }}</td>
+        <td>{{ fact.dateEmission | date:'dd/MM/yyyy' }}</td>
+        <td>{{ fact.datePaiement | date:'dd/MM/yyyy' }}</td>
+        <td style="text-align: right; font-weight: 600">{{ fact.totalTTC | number: '1.2-2' }} TND</td>
+        <td>
+          <p-tag [value]="getStatutLabel(fact.statut)" [severity]="$any(getStatutSeverity(fact.statut))"></p-tag>
         </td>
         <td>
           <div class="action-buttons">
-            <a
-              [routerLink]="[fact.id]"
-              pButton
-              type="button"
-              icon="pi pi-eye"
-              class="p-button-rounded p-button-text p-button-sm"
-              pTooltip="Voir détails"
-              tooltipPosition="top"
-            ></a>
-            <a
-              *ngIf="fact.statut === 'DRAFT'"
-              [routerLink]="[fact.id, 'edit']"
-              pButton
-              type="button"
-              icon="pi pi-pencil"
-              class="p-button-rounded p-button-text p-button-sm"
-              pTooltip="Modifier"
-              tooltipPosition="top"
-            ></a>
-            <button
-              pButton
-              type="button"
-              icon="pi pi-trash"
-              class="p-button-rounded p-button-text p-button-sm p-button-danger"
-              pTooltip="Supprimer"
-              tooltipPosition="top"
-              (click)="deleteFacture(fact.id)"
-            ></button>
+            <a [routerLink]="[fact.id]" pButton type="button" icon="pi pi-eye"
+              class="p-button-rounded p-button-text p-button-sm" pTooltip="Voir détails" tooltipPosition="top"></a>
+            <a *ngIf="fact.statut === 'DRAFT'" [routerLink]="[fact.id, 'edit']" pButton type="button"
+              icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-sm" pTooltip="Modifier"
+              tooltipPosition="top"></a>
+            <button pButton type="button" icon="pi pi-trash"
+              class="p-button-rounded p-button-text p-button-sm p-button-danger" pTooltip="Supprimer"
+              tooltipPosition="top" (click)="deleteFacture(fact.id)"></button>
           </div>
         </td>
       </tr>

@@ -18,13 +18,8 @@
   <div class="filters-section">
     <div class="search-box">
       <i class="pi pi-search"></i>
-      <input
-        type="text"
-        pInputText
-        [placeholder]="'CLIENTS.SEARCH_PLACEHOLDER' | translate"
-        [(ngModel)]="searchText"
-        (keyup.enter)="onSearch()"
-      >
+      <input type="text" pInputText [placeholder]="'CLIENTS.SEARCH_PLACEHOLDER' | translate" [(ngModel)]="searchText"
+        (keyup.enter)="onSearch()">
       <button *ngIf="searchText" class="clear-search" (click)="clearSearch()">
         <i class="pi pi-times"></i>
       </button>
@@ -33,15 +28,8 @@
 
   <!-- Tableau -->
   <p-card>
-    <p-table
-      [value]="clientsFiltered"
-      [rows]="rowsPerPage"
-      [totalRecords]="clientsFiltered.length"
-      [loading]="loading"
-      [lazy]="false"
-      (onPageChange)="onPageChange($event)"
-      responsiveLayout="scroll"
-    >
+    <p-table [value]="clientsFiltered" [rows]="rowsPerPage" [totalRecords]="clientsFiltered.length" [loading]="loading"
+      [lazy]="false" (onPageChange)="onPageChange($event)" responsiveLayout="scroll">
       <ng-template pTemplate="header">
         <tr>
           <th>{{ 'CLIENTS.TABLE.RAISON_SOCIALE' | translate }}</th>
@@ -50,7 +38,8 @@
           <th>{{ 'CLIENTS.TABLE.ADRESSE' | translate }}</th>
           <th>{{ 'CLIENTS.TABLE.PAYS' | translate }}</th>
           <th>{{ 'CLIENTS.TABLE.REGION' | translate }}</th>
-          <th *ngIf="!isViewer" style="text-align: center; min-width: 160px;">{{ 'CLIENTS.TABLE.ACTIONS' | translate }}</th>
+          <th *ngIf="!isViewer" style="text-align: center; min-width: 160px;">{{ 'CLIENTS.TABLE.ACTIONS' | translate }}
+          </th>
         </tr>
       </ng-template>
 
@@ -64,20 +53,12 @@
           <td>{{ client.region }}</td>
           <td *ngIf="!isViewer">
             <div class="actions-cell">
-              <button
-                class="icon-btn icon-btn-edit"
-                (click)="modifierClient(client)"
-                [pTooltip]="'CLIENTS.ACTIONS.EDIT_TOOLTIP' | translate"
-                tooltipPosition="top"
-              >
+              <button class="icon-btn icon-btn-edit" (click)="modifierClient(client)"
+                [pTooltip]="'CLIENTS.ACTIONS.EDIT_TOOLTIP' | translate" tooltipPosition="top">
                 <i class="pi pi-pencil"></i>
               </button>
-              <button
-                class="icon-btn icon-btn-delete"
-                (click)="supprimerClient(client.id)"
-                [pTooltip]="'CLIENTS.ACTIONS.DELETE_TOOLTIP' | translate"
-                tooltipPosition="top"
-              >
+              <button class="icon-btn icon-btn-delete" (click)="supprimerClient(client.id)"
+                [pTooltip]="'CLIENTS.ACTIONS.DELETE_TOOLTIP' | translate" tooltipPosition="top">
                 <i class="pi pi-trash"></i>
               </button>
             </div>
@@ -99,80 +80,50 @@
   </p-card>
 
   <!-- DIALOGUE AJOUT / MODIFICATION -->
-  <p-dialog
-    [(visible)]="displayDialog"
-    styleClass="client-dialog"
+  <p-dialog [(visible)]="displayDialog" styleClass="client-dialog"
     [header]="dialogMode === 'add' ? ('CLIENTS.DIALOG.ADD_TITLE' | translate) : ('CLIENTS.DIALOG.EDIT_TITLE' | translate)"
-    [style]="{width: '520px'}"
-    [modal]="true"
-    [draggable]="false"
-    [resizable]="false"
-    [closeOnEscape]="true"
-    (onHide)="resetForm()"
-  >
+    [style]="{width: '520px'}" [modal]="true" [draggable]="false" [resizable]="false" [closeOnEscape]="true"
+    (onHide)="resetForm()">
     <div class="dialog-content">
 
       <div class="form-group">
         <label for="raisonSociale">
           {{ 'CLIENTS.FORM.RAISON_SOCIALE' | translate }} <span class="required">*</span>
         </label>
-        <input
-          id="raisonSociale"
-          type="text"
-          pInputText
-          [(ngModel)]="clientForm.raisonSociale"
-          [placeholder]="'CLIENTS.FORM.PLACEHOLDERS.RAISON_SOCIALE' | translate"
-          class="client-input"
-          autofocus
-        >
+        <input id="raisonSociale" type="text" pInputText [(ngModel)]="clientForm.raisonSociale"
+          [placeholder]="'CLIENTS.FORM.PLACEHOLDERS.RAISON_SOCIALE' | translate" class="client-input" autofocus>
       </div>
 
       <div class="form-row">
         <div class="form-group half">
           <label for="email">{{ 'CLIENTS.FORM.EMAIL' | translate }} <span class="required">*</span></label>
-          <input id="email" type="email" pInputText
-            [(ngModel)]="clientForm.email"
-            [placeholder]="'CLIENTS.FORM.PLACEHOLDERS.EMAIL' | translate"
-            class="client-input">
+          <input id="email" type="email" pInputText [(ngModel)]="clientForm.email"
+            [placeholder]="'CLIENTS.FORM.PLACEHOLDERS.EMAIL' | translate" class="client-input">
         </div>
         <div class="form-group half">
           <label for="telephone">{{ 'CLIENTS.FORM.TELEPHONE' | translate }} <span class="required">*</span></label>
-          <input id="telephone" type="text" pInputText
-            [(ngModel)]="clientForm.telephone"
-            [placeholder]="'CLIENTS.FORM.PLACEHOLDERS.TELEPHONE' | translate"
-            class="client-input">
+          <input id="telephone" type="text" pInputText [(ngModel)]="clientForm.telephone"
+            [placeholder]="'CLIENTS.FORM.PLACEHOLDERS.TELEPHONE' | translate" class="client-input">
         </div>
       </div>
 
       <div class="form-group">
         <label for="adresse">{{ 'CLIENTS.FORM.ADRESSE' | translate }}</label>
-        <input id="adresse" type="text" pInputText
-          [(ngModel)]="clientForm.adresseComplete"
-          [placeholder]="'CLIENTS.FORM.PLACEHOLDERS.ADRESSE' | translate"
-          class="client-input">
+        <input id="adresse" type="text" pInputText [(ngModel)]="clientForm.adresseComplete"
+          [placeholder]="'CLIENTS.FORM.PLACEHOLDERS.ADRESSE' | translate" class="client-input">
       </div>
 
       <div class="form-row">
         <div class="form-group half">
           <label for="pays">{{ 'CLIENTS.FORM.PAYS' | translate }}</label>
-          <input id="pays" type="text" pInputText
-            [(ngModel)]="clientForm.pays"
-            [placeholder]="'CLIENTS.FORM.PLACEHOLDERS.PAYS' | translate"
-            class="client-input">
+          <input id="pays" type="text" pInputText [(ngModel)]="clientForm.pays"
+            [placeholder]="'CLIENTS.FORM.PLACEHOLDERS.PAYS' | translate" class="client-input">
         </div>
         <div class="form-group half">
           <label for="region">{{ 'CLIENTS.FORM.REGION' | translate }}</label>
-          <p-dropdown
-            id="region"
-            [options]="regions"
-            [(ngModel)]="clientForm.region"
-            optionLabel="label"
-            optionValue="value"
-            [placeholder]="'CLIENTS.FORM.PLACEHOLDERS.REGION_SELECT' | translate"
-            [showClear]="true"
-            [style]="{'width':'100%'}"
-            appendTo="body"
-          ></p-dropdown>
+          <p-dropdown id="region" [options]="regions" [(ngModel)]="clientForm.region" optionLabel="label"
+            optionValue="value" [placeholder]="'CLIENTS.FORM.PLACEHOLDERS.REGION_SELECT' | translate" [showClear]="true"
+            [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
         </div>
       </div>
 

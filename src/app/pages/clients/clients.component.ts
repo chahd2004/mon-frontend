@@ -58,19 +58,19 @@ export class ClientsComponent implements OnInit {
   clients: Client[] = [];
   clientsFiltered: Client[] = [];
   loading: boolean = false;
-  
+
   // Pagination côté client
   page: number = 1;
   rowsPerPage: number = 10;
-  
+
   // Recherche
   searchText: string = '';
-  
+
   // Dialog
   displayDialog: boolean = false;
   dialogMode: 'add' | 'edit' = 'add';
   selectedClient: Client | null = null;
-  
+
   // Formulaire client (camelCase pour le backend)
   clientForm: Partial<ClientRequest> = {
     raisonSociale: '',
@@ -115,7 +115,7 @@ export class ClientsComponent implements OnInit {
 
   loadClients(): void {
     this.loading = true;
-    
+
     this.clientService.getClients().subscribe({
       next: (clients) => {
         this.clients = clients;
@@ -138,9 +138,9 @@ export class ClientsComponent implements OnInit {
     const search = (this.searchText || '').toLowerCase().trim();
     this.clientsFiltered = search
       ? this.clients.filter(c =>
-          (c.raisonSociale || '').toLowerCase().includes(search) ||
-          (c.email || '').toLowerCase().includes(search) ||
-          (c.telephone || '').includes(search))
+        (c.raisonSociale || '').toLowerCase().includes(search) ||
+        (c.email || '').toLowerCase().includes(search) ||
+        (c.telephone || '').includes(search))
       : [...this.clients];
   }
 
@@ -301,7 +301,7 @@ export class ClientsComponent implements OnInit {
 
     this.confirmationService.confirm({
       message: 'Supprimer ce client ?',
-      
+
       header: 'Confirmation',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {

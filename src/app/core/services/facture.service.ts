@@ -43,6 +43,30 @@ export class FactureService {
     return this.http.put<Facture>(`${this.apiUrl}/${id}/signer`, {});
   }
 
+  envoyerFacture(id: number): Observable<Facture> {
+    return this.http.put<Facture>(`${this.apiUrl}/${id}/envoyer`, {});
+  }
+
+  marquerPayee(id: number): Observable<Facture> {
+    return this.http.put<Facture>(`${this.apiUrl}/${id}/payer`, {});
+  }
+
+  rejeterFacture(id: number, raison: string): Observable<Facture> {
+    return this.http.put<Facture>(`${this.apiUrl}/${id}/rejeter`, { raison });
+  }
+
+  annulerFacture(id: number): Observable<Facture> {
+    return this.http.put<Facture>(`${this.apiUrl}/${id}/annuler`, {});
+  }
+
+  retourBrouillon(id: number): Observable<Facture> {
+    return this.http.put<Facture>(`${this.apiUrl}/${id}/retour-brouillon`, {});
+  }
+
+  downloadXml(id: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/${id}/xml`, { responseType: 'blob' });
+  }
+
   signerFactureWithCertificate(factureId: number, file: File, password: string): Observable<any> {
     const formData = new FormData();
     formData.append('p12File', file);

@@ -43,16 +43,6 @@ export class DevisDetailComponent implements OnInit {
     return this.devis?.lignes ?? [];
   }
 
-  get timbreFiscal(): number {
-    return 0.5;
-  }
-
-  get totalTTCAvecTimbre(): number {
-    if (!this.devis) {
-      return 0;
-    }
-    return (this.devis.totalTTC || 0) + this.timbreFiscal;
-  }
 
   ngOnInit(): void {
     const rawParam = this.route.snapshot.paramMap.get('id') || this.route.snapshot.paramMap.get('ref') || '';
@@ -313,20 +303,7 @@ export class DevisDetailComponent implements OnInit {
       return '-';
     }
 
-    const backendStatut = this.devis.statut || 'DRAFT';
-    const finalStatuts = new Set(['ACCEPTED', 'REJECTED', 'CONVERTED', 'EXPIRED']);
-
-    if (finalStatuts.has(backendStatut)) {
-      return backendStatut;
-    }
-
-    // Frontend-only expiration for non-final statuses.
-    const limite = this.getDateLimite(this.devis);
-    if (limite && Date.now() > limite.getTime()) {
-      return 'EXPIRED';
-    }
-
-    return backendStatut;
+    return this.devis.statut || 'DRAFT';
   }
 
   getLigneTauxTVA(ligne: LigneDevis): number {
@@ -363,21 +340,6 @@ export class DevisDetailComponent implements OnInit {
     return `${year}-${month}-${day}`;
   }
 
-  private getDateLimite(devis: Devis): Date | null {
-    const explicit = this.toValidDate(devis.dateValidite || null);
-    if (explicit) {
-      return explicit;
-    }
-
-    const base = this.toValidDate(devis.dateCreation || null);
-    if (!base) {
-      return null;
-    }
-
-    const fallback = new Date(base);
-    fallback.setDate(fallback.getDate() + 30);
-    return fallback;
-  }
 
   private toValidDate(value: string | null): Date | null {
     if (!value) {

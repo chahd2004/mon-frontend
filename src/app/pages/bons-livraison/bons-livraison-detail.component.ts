@@ -13,9 +13,7 @@ import { formatDocumentReference } from '../../shared/utils/reference-format.uti
 interface LigneLivraisonView {
   index: number;
   designation: string;
-  quantiteCommandee: number;
   quantiteLivree: number;
-  reste: number;
 }
 
 @Component({
@@ -40,10 +38,7 @@ export class BonsLivraisonDetailComponent implements OnInit {
   errorMessage = '';
   infoMessage = '';
 
-  transporteur = 'DHL';
-  numeroSuivi = '-';
   adresseLivraison = '-';
-  matriculeFiscalClient = '-';
 
   ngOnInit(): void {
     const rawParam = this.route.snapshot.paramMap.get('id') || this.route.snapshot.paramMap.get('ref') || '';
@@ -124,14 +119,10 @@ export class BonsLivraisonDetailComponent implements OnInit {
     const source = this.livraison?.lignes || [];
 
     return source.map((ligne, idx) => {
-      const qteCmd = Math.max(0, Number(ligne.quantite || 0));
-      const qteLiv = qteCmd;
       return {
         index: idx + 1,
         designation: ligne.produitDesignation || '-',
-        quantiteCommandee: qteCmd,
-        quantiteLivree: qteLiv,
-        reste: Math.max(0, qteCmd - qteLiv)
+        quantiteLivree: Number(ligne.quantite || 0)
       };
     });
   }
@@ -145,19 +136,11 @@ export class BonsLivraisonDetailComponent implements OnInit {
   }
 
   get commandeDate(): string {
-    return this.livraison?.dateCreation || '';
-  }
-
-  get totalCommandeArticles(): number {
-    return this.lignes.reduce((sum, ligne) => sum + ligne.quantiteCommandee, 0);
+    return '';
   }
 
   get totalLivresArticles(): number {
     return this.lignes.reduce((sum, ligne) => sum + ligne.quantiteLivree, 0);
-  }
-
-  get totalResteArticles(): number {
-    return this.lignes.reduce((sum, ligne) => sum + ligne.reste, 0);
   }
 
   get referenceBL(): string {
@@ -186,15 +169,6 @@ export class BonsLivraisonDetailComponent implements OnInit {
     this.infoMessage = 'Lien copie dans le presse-papier.';
   }
 
-  modifierBL(): void {
-    this.infoMessage = 'Modification BL non disponible pour le moment.';
-    this.errorMessage = '';
-  }
-
-  supprimerBL(): void {
-    this.infoMessage = 'Suppression BL non disponible: endpoint backend absent.';
-    this.errorMessage = '';
-  }
 
   marquerCommeLivre(): void {
     this.actionLoading = true;
@@ -223,10 +197,6 @@ export class BonsLivraisonDetailComponent implements OnInit {
     this.marquerCommeLivre();
   }
 
-  dupliquerBL(): void {
-    this.infoMessage = 'Duplication BL non disponible pour le moment.';
-    this.errorMessage = '';
-  }
 
   actionSelonStatut(): void {
     if (this.statusValue === 'DRAFT') {
@@ -288,9 +258,6 @@ export class BonsLivraisonDetailComponent implements OnInit {
     return 'RESOUDRE LITIGE';
   }
 
-  isComplet(ligne: LigneLivraisonView): boolean {
-    return ligne.reste === 0;
-  }
 
   private loadDetail(): void {
     this.loading = true;
@@ -322,7 +289,6 @@ export class BonsLivraisonDetailComponent implements OnInit {
       next: ([client]) => {
         this.client = client;
         this.adresseLivraison = this.livraison?.adresseLivraison || client?.adresseComplete || '-';
-        this.matriculeFiscalClient = client?.code || '-';
         this.loading = false;
       },
       error: () => {

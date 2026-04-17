@@ -43,21 +43,21 @@ export interface FactureRequest {
 }
 
 export enum StatutFacture {
-  DRAFT     = 'DRAFT',
-  SIGNED    = 'SIGNED',
-  SENT      = 'SENT',
-  PAID      = 'PAID',
-  REJECTED  = 'REJECTED',
+  DRAFT = 'DRAFT',
+  SIGNED = 'SIGNED',
+  SENT = 'SENT',
+  PAID = 'PAID',
+  REJECTED = 'REJECTED',
   CANCELLED = 'CANCELLED'
 }
 
 /** Libellés français pour chaque statut */
 export const StatutFactureLabel: Record<string, string> = {
-  DRAFT:     'Brouillon',
-  SIGNED:    'Signée',
-  SENT:      'Émise',
-  PAID:      'Payée',
-  REJECTED:  'Rejetée',
+  DRAFT: 'Brouillon',
+  SIGNED: 'Signée',
+  SENT: 'Émise',
+  PAID: 'Payée',
+  REJECTED: 'Rejetée',
   CANCELLED: 'Annulée'
 };
 

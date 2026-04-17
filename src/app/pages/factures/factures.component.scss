@@ -364,24 +364,34 @@ $bg: #f8fafc;
 }
 
 .icon-btn {
-  border: 1px solid #e5e7eb;
-  background: transparent;
-  color: #666666;
-  border-radius: 8px;
+  border: 1px solid #e2e8f0; // Gris clair
+  background: #ffffff; // Blanc (au lieu du jaune/beige)
+  color: #475569; // Gris foncé
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
-  padding: 0.4rem 0.5rem;
+  width: 38px;
+  height: 38px;
+  padding: 0;
 
   i {
-    font-size: 1rem;
+    font-size: 1.1rem;
+    font-weight: 300; // Pour un look plus fin si supporté par la font
   }
 
   &:hover {
-    border-color: #d1d5db;
-    background: #f9fafb;
+    border-color: #cbd5e1;
+    background: #f8fafc; // Gris très clair (neutre)
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  }
+
+  &:active {
+    background: #f1f5f9; // Gris légèrement plus soutenu
+    transform: translateY(0);
   }
 
   &:disabled {

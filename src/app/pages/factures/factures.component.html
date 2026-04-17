@@ -58,20 +58,75 @@
           </td>
           <td>
             <div class="actions-cell">
-              <button class="icon-btn icon-btn-view" (click)="voirFacture(facture.id)"
+              <!-- Voir (Tous) -->
+              <button class="icon-btn" (click)="voirFacture(facture.id)"
                 [pTooltip]="'FACTURES.ACTIONS.VIEW' | translate" tooltipPosition="top">
                 <i class="pi pi-eye"></i>
               </button>
 
-              <button *ngIf="!isViewer && facture.statut === 'DRAFT'" class="icon-btn icon-btn-edit" (click)="modifierFacture(facture.id)"
-                [pTooltip]="'FACTURES.ACTIONS.EDIT' | translate" tooltipPosition="top">
-                <i class="pi pi-pencil"></i>
-              </button>
+              <!-- Brouillon: Modifier, Supprimer, Signer -->
+              <ng-container *ngIf="!isViewer && facture.statut === 'DRAFT'">
+                <button class="icon-btn" (click)="modifierFacture(facture.id)"
+                  [pTooltip]="'FACTURES.ACTIONS.EDIT' | translate" tooltipPosition="top">
+                  <i class="pi pi-pencil"></i>
+                </button>
+                <button class="icon-btn" (click)="supprimerFacture(facture.id)"
+                  [pTooltip]="'FACTURES.ACTIONS.DELETE' | translate" tooltipPosition="top">
+                  <i class="pi pi-trash"></i>
+                </button>
+                <button class="icon-btn" (click)="signerFacture(facture.id)"
+                  [pTooltip]="'FACTURES.ACTIONS.SIGN' | translate" tooltipPosition="top">
+                  <i class="pi pi-check"></i>
+                </button>
+              </ng-container>
 
-              <button *ngIf="!isViewer && facture.statut === 'DRAFT'" class="icon-btn icon-btn-delete" (click)="supprimerFacture(facture.id)"
-                [pTooltip]="'FACTURES.ACTIONS.DELETE' | translate" tooltipPosition="top">
-                <i class="pi pi-trash"></i>
-              </button>
+              <!-- Signée: Émettre, Rejeter, Annuler -->
+              <ng-container *ngIf="!isViewer && facture.statut === 'SIGNED'">
+                <button class="icon-btn" (click)="emettreFacture(facture.id)"
+                  [pTooltip]="'FACTURES.ACTIONS.EMIT' | translate" tooltipPosition="top">
+                  <i class="pi pi-send"></i>
+                </button>
+                <button class="icon-btn" (click)="rejeterFacture(facture.id)"
+                  [pTooltip]="'FACTURES.ACTIONS.REJECT' | translate" tooltipPosition="top">
+                  <i class="pi pi-times"></i>
+                </button>
+                <button class="icon-btn" (click)="annulerFacture(facture.id)"
+                  [pTooltip]="'FACTURES.ACTIONS.CANCEL' | translate" tooltipPosition="top">
+                  <i class="pi pi-ban"></i>
+                </button>
+              </ng-container>
+
+              <!-- Émise: Payer, Rejeter, Annuler -->
+              <ng-container *ngIf="!isViewer && facture.statut === 'SENT'">
+                <button class="icon-btn" (click)="payerFacture(facture.id)"
+                  [pTooltip]="'FACTURES.ACTIONS.PAY' | translate" tooltipPosition="top">
+                  <i class="pi pi-wallet"></i>
+                </button>
+                <button class="icon-btn" (click)="rejeterFacture(facture.id)"
+                  [pTooltip]="'FACTURES.ACTIONS.REJECT' | translate" tooltipPosition="top">
+                  <i class="pi pi-times"></i>
+                </button>
+                <button class="icon-btn" (click)="annulerFacture(facture.id)"
+                  [pTooltip]="'FACTURES.ACTIONS.CANCEL' | translate" tooltipPosition="top">
+                  <i class="pi pi-ban"></i>
+                </button>
+              </ng-container>
+
+              <!-- Rejetée: Retour Brouillon -->
+              <ng-container *ngIf="!isViewer && facture.statut === 'REJECTED'">
+                <button class="icon-btn" (click)="retourBrouillon(facture.id)"
+                  [pTooltip]="'FACTURES.ACTIONS.BACK_TO_DRAFT' | translate" tooltipPosition="top">
+                  <i class="pi pi-refresh"></i>
+                </button>
+              </ng-container>
+
+              <!-- Téléchargement XML (Uniquement Signée) -->
+              <ng-container *ngIf="facture.statut === 'SIGNED'">
+                <button class="icon-btn" (click)="telechargerXml(facture.id)"
+                  [pTooltip]="'FACTURES.ACTIONS.DOWNLOAD_XML' | translate" tooltipPosition="top">
+                  <i class="pi pi-download"></i>
+                </button>
+              </ng-container>
             </div>
           </td>
         </tr>

@@ -29,7 +29,13 @@
       "VIEW": "Voir",
       "SIGN": "Signer",
       "EDIT": "Modifier",
-      "DELETE": "Supprimer"
+      "DELETE": "Supprimer",
+      "EMIT": "Émettre",
+      "PAY": "Payer",
+      "REJECT": "Rejeter",
+      "CANCEL": "Annuler",
+      "BACK_TO_DRAFT": "Retour au brouillon",
+      "DOWNLOAD_XML": "Télécharger XML"
     },
     "EMPTY": {
       "TITLE": "Aucune facture trouvée",
@@ -40,7 +46,7 @@
   },
   "STATUS": {
     "DRAFT": "Brouillon",
-    "SENT": "Envoyée",
+    "SENT": "Émise",
     "PAID": "Payée",
     "PARTIAL": "Partielle",
     "CANCELLED": "Annulée",

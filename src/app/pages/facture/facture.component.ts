@@ -28,6 +28,7 @@ import { AvoirType } from '../../models/avoir.model';
 import { QRCodeComponent } from 'angularx-qrcode';
 
 import { environment } from '../../../environments/environment';
+import { FactureRefreshService } from '../../core/services/facture-refresh.service';
 
 const DEFAULT_VENDEUR_ID = 1;
 const QR_BASE_URL = 'https://mon-app.com';
@@ -92,6 +93,7 @@ export class FactureComponent implements OnInit {
   private authService = inject(AuthService);
   private errorHandler = inject(ErrorHandlerService);
   private avoirService = inject(AvoirService);
+  private factureRefresh = inject(FactureRefreshService);
 
   // ===== MODE =====
   mode: 'view' | 'edit' | 'create' = 'create';
@@ -212,12 +214,12 @@ export class FactureComponent implements OnInit {
     this.loading = true;
     this.http.get<any>(`${environment.apiUrl}/factures/${id}`).subscribe({
       next: (facture) => {
-        this.numFact      = facture.numFact ?? '';
-        this.statut       = facture.statut ?? 'DRAFT';
+        this.numFact = facture.numFact ?? '';
+        this.statut = facture.statut ?? 'DRAFT';
         this.modePaiement = facture.modePaiement ?? 'VIREMENT';
         this.typeAcheteur = facture.typeAcheteur ?? 'CLIENT';
-        this.vendeurId    = facture.vendeurId ?? DEFAULT_VENDEUR_ID;
-        this.acheteurId   = facture.acheteurId ?? null;
+        this.vendeurId = facture.vendeurId ?? DEFAULT_VENDEUR_ID;
+        this.acheteurId = facture.acheteurId ?? null;
 
         if (facture.dateEmission) this.dateEmission = new Date(facture.dateEmission);
         if (facture.datePaiement) this.datePaiement = new Date(facture.datePaiement);
@@ -238,23 +240,23 @@ export class FactureComponent implements OnInit {
   }
 
   private mapLigne(l: any): LigneFacture {
-    const produit   = this.produits.find(p => p.id === (l.produitId ?? l.produit?.id));
-    const prixUnit  = this.safeNum(l.prixUnitaire ?? l.prix_unitaire ?? produit?.prixUnitaire);
-    const quantite  = this.safeNum(l.quantite ?? l.qte ?? 1);
-    const tauxTVA   = this.safeNum(l.tauxTVA ?? l.taux_tva ?? produit?.tauxTVA ?? 0);
-    const ht        = prixUnit * quantite;
-    const tva       = ht * (tauxTVA / 100);
-    const ttc       = ht + tva;
-    const label     = produit
+    const produit = this.produits.find(p => p.id === (l.produitId ?? l.produit?.id));
+    const prixUnit = this.safeNum(l.prixUnitaire ?? l.prix_unitaire ?? produit?.prixUnitaire);
+    const quantite = this.safeNum(l.quantite ?? l.qte ?? 1);
+    const tauxTVA = this.safeNum(l.tauxTVA ?? l.taux_tva ?? produit?.tauxTVA ?? 0);
+    const ht = prixUnit * quantite;
+    const tva = ht * (tauxTVA / 100);
+    const ttc = ht + tva;
+    const label = produit
       ? `${produit.reference} — ${produit.designation}`
       : (l.produitLabel ?? l.designation ?? l.libelle ?? `Produit #${l.produitId}`);
     return {
-      produitId:   l.produitId ?? l.produit?.id ?? 0,
+      produitId: l.produitId ?? l.produit?.id ?? 0,
       produitLabel: label,
       quantite,
       prixUnitaire: prixUnit,
       tauxTVA,
-      montantHT:  this.safeNum(l.montantHT  ?? l.montant_ht)  || ht,
+      montantHT: this.safeNum(l.montantHT ?? l.montant_ht) || ht,
       montantTVA: this.safeNum(l.montantTVA ?? l.montant_tva) || tva,
       montantTTC: this.safeNum(l.montantTTC ?? l.montant_ttc) || ttc,
     };
@@ -318,18 +320,18 @@ export class FactureComponent implements OnInit {
       this.messageService.add({ severity: 'warn', summary: 'Produit requis', detail: 'Sélectionnez un produit' });
       return;
     }
-    const p  = this.produitSelectionne;
+    const p = this.produitSelectionne;
     const ht = this.safeNum(p.prixUnitaire) * this.safeNum(this.quantiteAjout);
     const tva = ht * (this.safeNum(p.tauxTVA) / 100);
     this.lignes.push({
-      produitId:    p.id,
+      produitId: p.id,
       produitLabel: `${p.reference} — ${p.designation}`,
-      quantite:     this.quantiteAjout,
+      quantite: this.quantiteAjout,
       prixUnitaire: p.prixUnitaire,
-      tauxTVA:      p.tauxTVA,
-      montantHT:    ht,
-      montantTVA:   tva,
-      montantTTC:   ht + tva
+      tauxTVA: p.tauxTVA,
+      montantHT: ht,
+      montantTVA: tva,
+      montantTTC: ht + tva
     });
     this.produitSelectionne = null;
     this.quantiteAjout = 1;
@@ -342,7 +344,7 @@ export class FactureComponent implements OnInit {
   }
 
   // ===== TOTAUX =====
-  get totalHT():  number { return this.lignes.reduce((s, l) => s + this.safeNum(l.montantHT), 0); }
+  get totalHT(): number { return this.lignes.reduce((s, l) => s + this.safeNum(l.montantHT), 0); }
   get totalTVA(): number { return this.lignes.reduce((s, l) => s + this.safeNum(l.montantTVA), 0); }
   get totalTTC(): number { return this.lignes.reduce((s, l) => s + this.safeNum(l.montantTTC), 0); }
   get droitTimbre(): number { return 0.500; }
@@ -362,9 +364,9 @@ export class FactureComponent implements OnInit {
     const payload = {
       dateEmission: this.formatDate(this.dateEmission),
       datePaiement: this.formatDate(this.datePaiement),
-      acheteurId:   this.acheteurId,
+      acheteurId: this.acheteurId,
       typeAcheteur: this.typeAcheteur,
-      vendeurId:    this.vendeurId,
+      vendeurId: this.vendeurId,
       modePaiement: this.modePaiement,
       statut: this.toBackendStatut(this.statut),
       lignes: this.lignes.map(l => ({ produitId: l.produitId, quantite: l.quantite }))
@@ -381,6 +383,7 @@ export class FactureComponent implements OnInit {
           severity: 'success', summary: 'Succès',
           detail: this.isEditMode ? 'Facture modifiée avec succès' : 'Facture créée avec succès'
         });
+        this.factureRefresh.notifyRefresh();
         setTimeout(() => this.router.navigate(['/factures']), 1500);
       },
       error: (err) => {
@@ -457,7 +460,7 @@ export class FactureComponent implements OnInit {
           summary: 'Facture annulée',
           detail: `La facture ${this.numFact} a été annulée et un avoir a été créé.`
         });
-        
+
         // Rediriger vers la liste des avoirs après 1.5 secondes
         setTimeout(() => this.router.navigate(['/avoirs']), 1500);
       },
@@ -687,22 +690,22 @@ export class FactureComponent implements OnInit {
   // ===== MONTANT EN LETTRES =====
   montantEnLettres(valeur: number): string {
     if (isNaN(valeur) || valeur < 0) return '';
-    const dinars   = Math.floor(valeur);
+    const dinars = Math.floor(valeur);
     const millimes = Math.round((valeur - dinars) * 1000);
-    const dinarStr   = dinars   > 0 ? `${this._nombreEnLettres(dinars)} ${dinars === 1 ? 'dinar' : 'dinars'}` : '';
+    const dinarStr = dinars > 0 ? `${this._nombreEnLettres(dinars)} ${dinars === 1 ? 'dinar' : 'dinars'}` : '';
     const millimeStr = millimes > 0 ? `${this._nombreEnLettres(millimes)} ${millimes === 1 ? 'millime' : 'millimes'}` : '';
     if (dinarStr && millimeStr) return `${dinarStr} et ${millimeStr}`;
-    if (dinarStr)   return dinarStr;
+    if (dinarStr) return dinarStr;
     if (millimeStr) return millimeStr;
     return 'zero dinar';
   }
 
   private _nombreEnLettres(n: number): string {
     if (n === 0) return 'zero';
-    const unites  = ['', 'un', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf',
+    const unites = ['', 'un', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf',
       'dix', 'onze', 'douze', 'treize', 'quatorze', 'quinze', 'seize', 'dix-sept', 'dix-huit', 'dix-neuf'];
     const dizaines = ['', '', 'vingt', 'trente', 'quarante', 'cinquante', 'soixante', 'soixante', 'quatre-vingt', 'quatre-vingt'];
-    const _dizaine  = (n: number): string => {
+    const _dizaine = (n: number): string => {
       if (n < 20) return unites[n];
       const d = Math.floor(n / 10); const u = n % 10;
       if (d === 7) return u === 1 ? 'soixante et onze' : `soixante-${unites[10 + u]}`;
@@ -717,14 +720,14 @@ export class FactureComponent implements OnInit {
       const centStr = c === 1 ? 'cent' : `${unites[c]} cent${r === 0 && c > 1 ? 's' : ''}`;
       return r === 0 ? centStr : `${centStr} ${_dizaine(r)}`;
     };
-    const _millier  = (n: number): string => {
+    const _millier = (n: number): string => {
       const m = Math.floor(n / 1000); const r = n % 1000;
       let result = '';
       if (m > 0) result = m === 1 ? 'mille' : `${_centaine(m)} mille`;
       if (r > 0) result = result ? `${result} ${_centaine(r)}` : _centaine(r);
       return result;
     };
-    const _million  = (n: number): string => {
+    const _million = (n: number): string => {
       const m = Math.floor(n / 1_000_000); const r = n % 1_000_000;
       let result = '';
       if (m > 0) result = `${_centaine(m)} million${m > 1 ? 's' : ''}`;
