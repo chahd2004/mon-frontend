@@ -58,7 +58,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
           <div class="divider"></div>
           <i class="pi pi-check-circle success-icon"></i>
           <div class="divider"></div>
-          <button class="btn-signer" (click)="onOk()" style="margin-top: 1rem; width: 100%;">OK</button>
+          <button class="btn-ok" (click)="onOk()">OK</button>
         </div>
       </ng-container>
     </div>
@@ -136,28 +136,50 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
             &.masked-password-input { -webkit-text-security: disc !important; text-security: disc !important; }
           }
         }
+      }
 
-        .btn-signer {
-          margin-top: 0.5rem;
-          background: #ffffff;
-          color: #1e293b;
-          border: 2px solid #1e293b;
-          padding: 0.8rem;
-          border-radius: 10px;
-          font-weight: 800;
-          font-size: 1rem;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 0.6rem;
-          transition: all 0.2s;
-          &:hover:not(:disabled) {
-            background: #1e293b;
-            color: #ffffff;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-          }
-          &:disabled { opacity: 0.5; cursor: not-allowed; }
+      .btn-signer {
+        margin-top: 0.5rem;
+        background: #ffffff;
+        color: #1e293b;
+        border: 2px solid #1e293b;
+        padding: 0.8rem;
+        border-radius: 10px;
+        font-weight: 800;
+        font-size: 1rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        transition: all 0.2s;
+        &:hover:not(:disabled) {
+          background: #1e293b;
+          color: #ffffff;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        &:disabled { opacity: 0.5; cursor: not-allowed; }
+      }
+
+      .btn-ok {
+        margin-top: 1rem;
+        width: 100%;
+        background: #10b981;
+        color: #ffffff;
+        border: none;
+        padding: 0.8rem;
+        border-radius: 10px;
+        font-weight: 800;
+        font-size: 1rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        transition: all 0.2s;
+        &:hover:not(:disabled) {
+          background: darken(#10b981, 10%);
+          box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
         }
       }
 

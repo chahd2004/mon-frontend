@@ -19,6 +19,7 @@ import { TableModule } from 'primeng/table';
 import { MessageService } from 'primeng/api';
 import { TagModule } from 'primeng/tag';
 import { DividerModule } from 'primeng/divider';
+import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../core/services/auth.service';
 import { ErrorHandlerService } from '../../core/services/error-handler.service';
 import { AvoirService } from '../../core/services/avoir.service';
@@ -79,6 +80,7 @@ interface LigneFacture {
     InputTextModule, InputNumberModule,
     DropdownModule, CalendarModule,
     TooltipModule, TableModule, TagModule, DividerModule,
+    TranslateModule,
     QRCodeComponent
   ],
   providers: [MessageService],

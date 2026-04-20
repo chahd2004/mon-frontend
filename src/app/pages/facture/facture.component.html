@@ -78,7 +78,7 @@
           <!-- Titre + QR -->
           <div class="recu-title-block">
             <div class="recu-title-row">
-              <span class="recu-title">FACTURE</span>
+              <span class="recu-title">{{ 'FACTURE.TITLE' | translate }}</span>
               <span class="recu-num">N° {{ numFact || '—' }}</span>
             </div>
             <div class="recu-qr-block">
@@ -222,21 +222,21 @@
           <span>{{ vendeurSelectionne?.raisonSociale?.charAt(0) ?? 'V' }}</span>
         </div>
         <div class="vendeur-info">
-          <p-dropdown [options]="emetteurs" [(ngModel)]="vendeurId" optionLabel="raisonSociale" optionValue="id"
-            placeholder="Sélectionner l'émetteur vendeur" (onChange)="onVendeurChange()"
-            [style]="{'min-width':'250px'}">
-          </p-dropdown>
+          <!-- Vendeur FIXE (non modifiable) -->
+          <div class="vendeur-fixed">
+            <span class="vendeur-value">{{ vendeurSelectionne?.raisonSociale ?? 'Non défini' }}</span>
+          </div>
         </div>
       </div>
       <div class="vendeur-right">
         <div class="info-grid">
-          <div class="info-item"><span class="info-label">Adresse :</span><span class="info-value">{{
+          <div class="info-item"><span class="info-label">{{ 'FACTURE.ADDRESS' | translate }}</span><span class="info-value">{{
               vendeurSelectionne?.adresseComplete ?? 'Non renseignée' }}</span></div>
-          <div class="info-item"><span class="info-label">Téléphone :</span><span class="info-value">{{
+          <div class="info-item"><span class="info-label">{{ 'FACTURE.PHONE' | translate }}</span><span class="info-value">{{
               vendeurSelectionne?.telephone ?? 'Non renseigné' }}</span></div>
-          <div class="info-item"><span class="info-label">Code / RC :</span><span class="info-value">{{
+          <div class="info-item"><span class="info-label">{{ 'FACTURE.CODE_RC' | translate }}</span><span class="info-value">{{
               vendeurSelectionne?.code ?? 'Non renseigné' }}</span></div>
-          <div class="info-item"><span class="info-label">Email :</span><span class="info-value">{{
+          <div class="info-item"><span class="info-label">{{ 'FACTURE.EMAIL' | translate }}</span><span class="info-value">{{
               vendeurSelectionne?.email ?? 'Non renseigné' }}</span></div>
         </div>
       </div>
@@ -247,22 +247,22 @@
     <div class="section facture-header">
       <div class="facture-title-block">
         <div class="title-inline">
-          <h1 class="facture-title">INFORMATIONS DE LA FACTURE</h1>
+          <h1 class="facture-title">{{ 'FACTURE.INVOICE_INFO' | translate }}</h1>
         </div>
       </div>
       <div class="facture-dates">
         <div class="date-block">
-          <label>Date d'émission <span class="required">*</span></label>
+          <label>{{ 'FACTURE.ISSUE_DATE' | translate }} <span class="required">*</span></label>
           <p-calendar [(ngModel)]="dateEmission" dateFormat="dd/mm/yy" [showIcon]="true"
             (onSelect)="onDateEmissionChange()"></p-calendar>
         </div>
         <div class="date-block">
-          <label>Date de paiement <span class="required">*</span></label>
+          <label>{{ 'FACTURE.PAYMENT_DATE' | translate }} <span class="required">*</span></label>
           <p-calendar [(ngModel)]="datePaiement" dateFormat="dd/mm/yy" [showIcon]="true"
             [minDate]="minDatePaiement"></p-calendar>
         </div>
         <div class="date-block">
-          <label>Mode de paiement <span class="required">*</span></label>
+          <label>{{ 'FACTURE.PAYMENT_METHOD' | translate }} <span class="required">*</span></label>
           <p-dropdown [options]="modePaiementOptions" [(ngModel)]="modePaiement" optionLabel="label"
             optionValue="value"></p-dropdown>
         </div>
@@ -275,16 +275,16 @@
     <p-divider></p-divider>
 
     <div class="section acheteur-section">
-      <h3 class="section-title">ACHETEUR</h3>
+      <h3 class="section-title">{{ 'FACTURE.BUYER' | translate }}</h3>
       <div class="acheteur-grid">
         <div class="acheteur-select-block">
           <div class="form-group">
-            <label>Type d'acheteur <span class="required">*</span></label>
+            <label>{{ 'FACTURE.BUYER_TYPE' | translate }} <span class="required">*</span></label>
             <p-dropdown [options]="typeAcheteurOptions" [(ngModel)]="typeAcheteur" optionLabel="label"
               optionValue="value" (onChange)="onTypeAcheteurChange()"></p-dropdown>
           </div>
           <div class="form-group">
-            <label>Sélectionner l'acheteur <span class="required">*</span></label>
+            <label>{{ 'FACTURE.SELECT_BUYER' | translate }} <span class="required">*</span></label>
             <p-dropdown [options]="acheteurOptions" [(ngModel)]="acheteurId" optionLabel="label" optionValue="value"
               placeholder="Choisir un acheteur" (onChange)="onAcheteurChange()" [filter]="true"
               filterPlaceholder="Rechercher...">
@@ -297,27 +297,27 @@
     <p-divider></p-divider>
 
     <div class="section lignes-section">
-      <h3 class="section-title">LIGNES DE FACTURE</h3>
+      <h3 class="section-title">{{ 'FACTURE.INVOICE_LINES' | translate }}</h3>
       <div class="add-ligne-bar">
-        <div class="add-ligne-title"><i class="pi pi-plus-circle"></i> Ajouter une ligne</div>
+        <div class="add-ligne-title"><i class="pi pi-plus-circle"></i> {{ 'FACTURE.ADD_LINE' | translate }}</div>
         <div class="add-ligne-controls">
           <div class="ctrl-group ctrl-produit">
-            <label>PRODUIT</label>
+            <label>{{ 'FACTURE.PRODUCT' | translate }}</label>
             <p-dropdown [options]="produitOptions" [(ngModel)]="produitSelectionne" optionLabel="label"
               optionValue="value" placeholder="Sélectionner un produit" [filter]="true"
               filterPlaceholder="Rechercher..." (onChange)="onProduitSelect($event.value)">
             </p-dropdown>
           </div>
           <div class="ctrl-group">
-            <label>QUANTITÉ</label>
+            <label>{{ 'FACTURE.QUANTITY' | translate }}</label>
             <p-inputNumber [(ngModel)]="quantiteAjout" [min]="1" [max]="9999"
               [style]="{'width':'100%'}"></p-inputNumber>
           </div>
-          <button class="ajouter-btn" (click)="ajouterLigne()">Ajouter</button>
+          <button class="ajouter-btn" (click)="ajouterLigne()">{{ 'FACTURE.ADD' | translate }}</button>
         </div>
         <div class="add-ligne-hint" *ngIf="!acheteurId">
           <i class="pi pi-info-circle"></i>
-          Sélectionnez l'acheteur ci-dessus, puis ajoutez des lignes
+          {{ 'FACTURE.SELECT_BUYER_HINT' | translate }}
         </div>
       </div>
 
@@ -325,8 +325,8 @@
         <ng-template pTemplate="header">
           <tr>
             <th>#</th>
-            <th>Produit</th>
-            <th class="text-right">Qté</th>
+            <th>{{ 'FACTURE.PRODUCT' | translate }}</th>
+            <th class="text-right">{{ 'FACTURE.QUANTITY' | translate }}</th>
             <th class="text-right">Prix HT</th>
             <th class="text-right">TVA %</th>
             <th class="text-right">Montant HT</th>
@@ -360,10 +360,10 @@
         {{ vendeurSelectionne.raisonSociale }} - Matricule fiscal : {{ vendeurSelectionne.matriculeFiscal ?? 'N/A' }}
       </div>
       <div class="total-bloc">
-        <h4>TOTAL GÉNÉRAL</h4>
-        <div class="total-row"><span>Total H.T.</span><strong>{{ formatPrix(totalHT) }}</strong></div>
-        <div class="total-row"><span>TVA</span><strong>{{ formatPrix(totalTVA) }}</strong></div>
-        <div class="total-row"><span>Droit de Timbre</span><strong>{{ formatPrix(droitTimbre) }}</strong></div>
+        <h4>{{ 'FACTURE.TOTAL_GENERAL' | translate }}</h4>
+        <div class="total-row"><span>{{ 'FACTURE.TOTAL_HT' | translate }}</span><strong>{{ formatPrix(totalHT) }}</strong></div>
+        <div class="total-row"><span>{{ 'FACTURE.VAT' | translate }}</span><strong>{{ formatPrix(totalTVA) }}</strong></div>
+        <div class="total-row"><span>{{ 'FACTURE.STAMP_DUTY' | translate }}</span><strong>{{ formatPrix(droitTimbre) }}</strong></div>
         <p-divider></p-divider>
         <div class="total-row grand-total"><span>Total T.T.C</span><strong>{{ formatPrix(totalTTC + droitTimbre)
             }}</strong></div>

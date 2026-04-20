@@ -145,6 +145,13 @@ $white: #ffffff;
     }
     .vendeur-info { display: flex; flex-direction: column; gap: 0.3rem;
       .vendeur-subtitle { color: $gray; font-size: 0.85rem; font-style: italic; }
+      
+      // Vendeur FIXE (lecture seule)
+      .vendeur-fixed {
+        display: flex; flex-direction: column; gap: 0.3rem;
+        .vendeur-label { color: $gray; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+        .vendeur-value { color: $dark; font-size: 1rem; font-weight: 700; }
+      }
     }
   }
   .vendeur-right { flex: 1;
