@@ -9,9 +9,9 @@
     <input type="text" [(ngModel)]="searchQuery" [placeholder]="'AVOIRS.SEARCH_PLACEHOLDER' | translate" class="search-input">
     
     <select [(ngModel)]="typeFilter" class="filter-select">
-      <option value="ALL">Tous les types</option>
-      <option value="TOTAL">Total</option>
-      <option value="PARTIEL">Partiel</option>
+      <option value="ALL">{{ 'AVOIRS.TYPE.ALL' | translate }}</option>
+      <option value="TOTAL">{{ 'AVOIRS.TYPE.TOTAL' | translate }}</option>
+      <option value="PARTIEL">{{ 'AVOIRS.TYPE.PARTIEL' | translate }}</option>
     </select>
 
     <select [(ngModel)]="statusFilter" class="filter-select">
@@ -27,14 +27,14 @@
     <table *ngIf="filteredAvoirs.length; else emptyBlock">
       <thead>
         <tr>
-          <th>N° Avoir</th>
-          <th>Facture liée</th>
-          <th>Client</th>
-          <th>Type</th>
-          <th>Date</th>
-          <th>Total TTC</th>
-          <th>Statut</th>
-          <th>Actions</th>
+          <th>{{ 'AVOIRS.TABLE.NUM' | translate }}</th>
+          <th>{{ 'AVOIRS.TABLE.LINKED' | translate }}</th>
+          <th>{{ 'AVOIRS.TABLE.CLIENT' | translate }}</th>
+          <th>{{ 'AVOIRS.TABLE.TYPE' | translate }}</th>
+          <th>{{ 'AVOIRS.TABLE.DATE' | translate }}</th>
+          <th>{{ 'AVOIRS.TABLE.TOTAL' | translate }}</th>
+          <th>{{ 'AVOIRS.TABLE.STATUS' | translate }}</th>
+          <th>{{ 'AVOIRS.TABLE.ACTIONS' | translate }}</th>
         </tr>
       </thead>
       <tbody>
@@ -43,7 +43,7 @@
           <td>{{ avoir.factureSourceNum }}</td>
           <td>{{ avoir.nomAcheteur || '-' }}</td>
           <td>
-            <span class="badge-type" [ngClass]="avoir.type.toLowerCase()">{{ avoir.type }}</span>
+            <span class="badge-type" [ngClass]="avoir.type.toLowerCase()">{{ 'AVOIRS.TYPE.' + avoir.type | translate }}</span>
           </td>
           <td>{{ avoir.dateCreation | date:'dd/MM/yyyy' }}</td>
           <td class="strong">{{ avoir.totalTTC | number:'1.3-3' }} TND</td>

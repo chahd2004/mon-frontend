@@ -5,6 +5,7 @@ import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
 import { AuthService } from '../../../core/services/auth.service';
 import { UserRole } from '../../../models';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface SidebarMenuItem {
   label: string;
@@ -18,7 +19,7 @@ interface SidebarMenuItem {
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, RouterModule, ButtonModule, MenuModule],
+  imports: [CommonModule, RouterModule, ButtonModule, MenuModule, TranslateModule],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss'
 })
@@ -32,55 +33,55 @@ export class SidebarComponent {
 
     const allItems: SidebarMenuItem[] = [
       {
-        label: 'Tableau de bord',
+        label: 'SIDEBAR.DASHBOARD',
         icon: 'pi pi-home',
         route: userRole === 'SUPER_ADMIN' ? '/super-admin/statistiques' : '/accueil',
         roles: ['SUPER_ADMIN', 'ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER', 'CLIENT', 'EMETTEUR']
       },
       {
-        label: 'Clients',
+        label: 'SIDEBAR.CLIENTS',
         icon: 'pi pi-users',
         route: '/clients',
         roles: ['ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER', 'EMETTEUR']
       },
       {
-        label: 'Produits',
+        label: 'SIDEBAR.PRODUITS',
         icon: 'pi pi-shopping-bag',
         route: '/produits',
         roles: ['ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER', 'EMETTEUR']
       },
       {
-        label: 'Factures',
+        label: 'SIDEBAR.FACTURES',
         icon: 'pi pi-file',
         route: '/factures',
         roles: ['ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER', 'CLIENT', 'EMETTEUR']
       },
       {
-        label: 'Demandes',
+        label: 'SIDEBAR.DEMANDES',
         icon: 'pi pi-inbox',
         route: userRole === 'SUPER_ADMIN' ? '/super-admin/demandes' : '/demandes',
         roles: ['SUPER_ADMIN', 'ENTREPRISE_ADMIN']
       },
       {
-        label: 'Utilisateurs',
+        label: 'SIDEBAR.UTILISATEURS',
         icon: 'pi pi-id-card',
         route: '/super-admin/users',
         roles: ['SUPER_ADMIN']
       },
       {
-        label: 'Collaborateurs',
+        label: 'SIDEBAR.COLLABORATEURS',
         icon: 'pi pi-users-alt',
         route: '/collaborateurs',
         roles: ['ENTREPRISE_ADMIN', 'EMETTEUR']
       },
       {
-        label: 'Paramètres',
+        label: 'SIDEBAR.PARAMETRES',
         icon: 'pi pi-cog',
         route: this.getParametresRoute(userRole),
         roles: ['SUPER_ADMIN', 'ENTREPRISE_ADMIN', 'EMETTEUR', 'CLIENT']
       },
       {
-        label: 'Déconnexion',
+        label: 'SIDEBAR.LOGOUT',
         icon: 'pi pi-sign-out',
         roles: ['SUPER_ADMIN', 'ENTREPRISE_ADMIN', 'EMETTEUR', 'CLIENT'],
         action: 'logout'

@@ -2,20 +2,20 @@
 
 <section class="page">
   <header class="page-header">
-    <h1>Demandes</h1>
-    <span class="badge">{{ pendingCount }} en attente</span>
-    <button class="btn-refresh" (click)="loadDemandes()">↻ Actualiser</button>
+    <h1>{{ 'DEMANDES.TITLE' | translate }}</h1>
+    <span class="badge">{{ 'DEMANDES.PENDING_COUNT' | translate:{count: pendingCount} }}</span>
+    <button class="btn-refresh" (click)="loadDemandes()">↻ {{ 'DEMANDES.BTN_REFRESH' | translate }}</button>
   </header>
 
   <!-- Chargement -->
   <div class="loading" *ngIf="isLoading">
     <p-progressSpinner strokeWidth="4" styleClass="spinner-sm"></p-progressSpinner>
-    <p>Chargement...</p>
+    <p>{{ 'DEMANDES.LOADING' | translate }}</p>
   </div>
 
   <!-- Liste vide -->
   <div class="empty" *ngIf="!isLoading && demandes.length === 0">
-    <p>📭 Aucune demande trouvée.</p>
+    <p>📭 {{ 'DEMANDES.EMPTY' | translate }}</p>
   </div>
 
   <!-- Cartes des demandes -->
@@ -31,17 +31,17 @@
     </div>
 
     <div class="actions">
-      <button class="btn secondary" (click)="voirDetail(d.id)">Détail</button>
+      <button class="btn secondary" (click)="voirDetail(d.id)">{{ 'DEMANDES.ACTIONS.DETAIL' | translate }}</button>
       <button
         class="btn success"
         (click)="approuver(d)"
         [disabled]="!isPending(d.status) || actionLoadingId === d.id"
-      >{{ actionLoadingId === d.id ? '...' : 'Approuver' }}</button>
+      >{{ actionLoadingId === d.id ? '...' : ('DEMANDES.ACTIONS.APPROVE' | translate) }}</button>
       <button
         class="btn danger"
         (click)="rejeter(d)"
         [disabled]="!isPending(d.status) || actionLoadingId === d.id"
-      >Rejeter</button>
+      >{{ 'DEMANDES.ACTIONS.REJECT' | translate }}</button>
     </div>
   </div>
 </section>

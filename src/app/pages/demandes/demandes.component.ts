@@ -5,11 +5,12 @@ import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { DemandeService } from '../../core/services/demande.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-demandes',
   standalone: true,
-  imports: [CommonModule, RouterModule, ToastModule, ProgressSpinnerModule],
+  imports: [CommonModule, RouterModule, ToastModule, ProgressSpinnerModule, TranslateModule],
   providers: [MessageService],
   templateUrl: './demandes.component.html',
   styleUrl: './demandes.component.scss'
@@ -18,6 +19,7 @@ export class DemandesComponent implements OnInit {
   private demandeService = inject(DemandeService);
   private messageService = inject(MessageService);
   private router = inject(Router);
+  private translate = inject(TranslateService);
 
   demandes: any[] = [];
   isLoading = false;
@@ -43,8 +45,8 @@ export class DemandesComponent implements OnInit {
       error: () => {
         this.isLoading = false;
         this.messageService.add({
-          severity: 'error', summary: 'Erreur',
-          detail: 'Impossible de charger les demandes.'
+          severity: 'error', summary: this.translate.instant('TOAST.ERROR'),
+          detail: this.translate.instant('DEMANDES.MSGS.LOAD_ERROR') || 'Impossible de charger les demandes.'
         });
       }
     });
@@ -61,22 +63,22 @@ export class DemandesComponent implements OnInit {
         demande.status = 'APPROVED';
         this.actionLoadingId = null;
         this.messageService.add({
-          severity: 'success', summary: 'Approuvée',
-          detail: `La demande de "${demande.raisonSociale}" a été approuvée.`
+          severity: 'success', summary: this.translate.instant('STATUS.APPROVED'),
+          detail: this.translate.instant('DEMANDES.MSGS.APPROVE_SUCCESS')
         });
       },
       error: (err) => {
         this.actionLoadingId = null;
         this.messageService.add({
-          severity: 'error', summary: 'Erreur',
-          detail: this.extractApiError(err, 'Erreur lors de l\'approbation.')
+          severity: 'error', summary: this.translate.instant('TOAST.ERROR'),
+          detail: this.extractApiError(err, this.translate.instant('DEMANDES.MSGS.APPROVE_ERROR'))
         });
       }
     });
   }
 
   rejeter(demande: any): void {
-    const raison = prompt('Raison du rejet (obligatoire) :');
+    const raison = prompt(this.translate.instant('DEMANDES.PROMPT_REASON') || 'Raison du rejet (obligatoire) :');
     if (!raison?.trim()) return;
 
     this.actionLoadingId = demande.id;
@@ -85,15 +87,15 @@ export class DemandesComponent implements OnInit {
         demande.status = 'REJECTED';
         this.actionLoadingId = null;
         this.messageService.add({
-          severity: 'info', summary: 'Rejetée',
-          detail: `La demande de "${demande.raisonSociale}" a été rejetée.`
+          severity: 'info', summary: this.translate.instant('STATUS.REJECTED'),
+          detail: this.translate.instant('DEMANDES.MSGS.REJECT_SUCCESS')
         });
       },
       error: (err) => {
         this.actionLoadingId = null;
         this.messageService.add({
-          severity: 'error', summary: 'Erreur',
-          detail: this.extractApiError(err, 'Erreur lors du rejet.')
+          severity: 'error', summary: this.translate.instant('TOAST.ERROR'),
+          detail: this.extractApiError(err, this.translate.instant('DEMANDES.MSGS.REJECT_ERROR'))
         });
       }
     });
@@ -104,13 +106,8 @@ export class DemandesComponent implements OnInit {
   }
 
   getStatutLabel(status: string): string {
-    const labels: Record<string, string> = {
-      REQUESTED: 'EN ATTENTE',
-      PENDING: 'EN ATTENTE',
-      APPROVED: 'APPROUVÉE',
-      REJECTED: 'REJETÉE'
-    };
-    return labels[status] || status;
+    const s = (status === 'REQUESTED' || status === 'PENDING') ? 'PENDING' : status;
+    return this.translate.instant('STATUS.' + s);
   }
 
   getStatutClass(status: string): string {

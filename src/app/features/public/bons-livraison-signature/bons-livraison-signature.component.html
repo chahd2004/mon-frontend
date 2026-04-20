@@ -4,58 +4,60 @@
   <!-- Loading -->
   <div class="loading-state" *ngIf="loading">
     <div class="spinner"></div>
-    <p>Chargement du bon de livraison...</p>
+    <p>{{ 'PUBLIC_SIGNATURE.LOADING_BL' | translate }}</p>
   </div>
 
   <!-- Error State -->
   <div class="error-state" *ngIf="!loading && errorMessage && !bonLivraison">
     <div class="error-card">
       <i class="pi pi-exclamation-triangle" style="font-size: 3rem; color: #ef4444; margin-bottom: 1rem;"></i>
-      <h2>Document introuvable</h2>
+      <h2>{{ 'PUBLIC_SIGNATURE.NOT_FOUND_TITLE' | translate }}</h2>
       <p>{{ errorMessage }}</p>
     </div>
   </div>
 
   <!-- Success State -->
-  <div class="success-state" *ngIf="signatureReussie">
+  <div class="success-state" *ngIf="signatureReussie || dejaSigne">
     <div class="success-card">
       <i class="pi pi-check-circle" style="font-size: 4rem; color: #22c55e; margin-bottom: 1.5rem;"></i>
-      <h2>Signature réussie !</h2>
+      <h2 *ngIf="signatureReussie">{{ 'SIGNATURE.SUCCESS_TITLE' | translate }}</h2>
+      <h2 *ngIf="dejaSigne">{{ 'PUBLIC_SIGNATURE.ALREADY_SIGNED_TITLE' | translate }}</h2>
       <div class="divider"></div>
-      <p>Bon de livraison <strong>{{ bonLivraison?.numBonLivraison }}</strong> signé avec succès.</p>
-      <button class="btn-close" (click)="fermer()">Fermer</button>
+      <p *ngIf="signatureReussie">{{ 'PUBLIC_SIGNATURE.SUCCESS_BL' | translate:{ref: bonLivraison?.numBonLivraison} }}</p>
+      <p *ngIf="dejaSigne">{{ 'PUBLIC_SIGNATURE.BL_ALREADY_SIGNED' | translate:{ref: bonLivraison?.numBonLivraison} }}</p>
+      <button class="btn-close" (click)="fermer()">{{ 'PUBLIC_SIGNATURE.BTN_CLOSE' | translate }}</button>
     </div>
   </div>
 
   <!-- Signature Form -->
-  <div class="signature-container" *ngIf="!loading && bonLivraison && !signatureReussie">
+  <div class="signature-container" *ngIf="!loading && bonLivraison && !signatureReussie && !dejaSigne">
 
     <div class="signature-header">
-      <h1>🔏 SIGNATURE BON DE LIVRAISON</h1>
+      <h1><i class="pi pi-lock" style="font-size: 1.3rem; vertical-align: middle; margin-right: 8px;"></i> {{ 'PUBLIC_SIGNATURE.BL_TITLE' | translate }}</h1>
       <div class="divider"></div>
     </div>
 
     <div class="bc-info">
       <div class="info-row">
-        <span class="info-label">Bon de livraison :</span>
+        <span class="info-label">{{ 'PUBLIC_SIGNATURE.BL_LABEL' | translate }}</span>
         <span class="info-value">{{ bonLivraison.numBonLivraison }}</span>
       </div>
       <div class="info-row">
-        <span class="info-label">Facture :</span>
+        <span class="info-label">{{ 'PUBLIC_SIGNATURE.INVOICE_LABEL' | translate }}</span>
         <span class="info-value">{{ bonLivraison.factureRef || '-' }}</span>
       </div>
     </div>
 
     <div class="form-card">
       <div class="input-group">
-        <label>📁 Fichier .p12 :</label>
+        <label>{{ 'SIGNATURE.FILE_LABEL' | translate }}</label>
         <div class="file-picker-wrapper">
           <p-fileUpload
             mode="basic"
             name="p12File"
             accept=".p12,.pfx"
             [auto]="true"
-            [chooseLabel]="'Parcourir'"
+            [chooseLabel]="'SIGNATURE.BROWSE' | translate"
             (onSelect)="onFileSelect($event)"
             styleClass="custom-file-upload"
           ></p-fileUpload>
@@ -65,7 +67,7 @@
       </div>
 
       <div class="input-group">
-        <label>🔐 Mot de passe :</label>
+        <label>{{ 'SIGNATURE.PASSWORD_LABEL' | translate }}</label>
         <div class="password-wrapper">
           <input
             type="text"
@@ -92,7 +94,7 @@
       >
         <i class="pi pi-check-circle" *ngIf="!signing"></i>
         <i class="pi pi-spin pi-spinner" *ngIf="signing"></i>
-        SIGNER LA RÉCEPTION
+        {{ 'PUBLIC_SIGNATURE.BTN_SIGN_BL' | translate }}
       </button>
 
     </div>

@@ -1,62 +1,62 @@
 <section class="page">
   <div class="page-header">
-    <h1>Collaborateurs</h1>
-    <button class="primary" (click)="ouvrirFormulaire()">Ajouter</button>
+    <h1>{{ 'COLLABORATEURS.TITLE' | translate }}</h1>
+    <button class="primary" (click)="ouvrirFormulaire()">{{ 'COLLABORATEURS.BTN_ADD' | translate }}</button>
   </div>
 
-  <p class="status" *ngIf="isLoading">Chargement des collaborateurs...</p>
+  <p class="status" *ngIf="isLoading">{{ 'COLLABORATEURS.LOADING' | translate }}</p>
   <p class="status error" *ngIf="errorMessage">{{ errorMessage }}</p>
 
   <div class="form-card" *ngIf="showForm">
-    <h2>Ajouter un collaborateur</h2>
+    <h2>{{ 'COLLABORATEURS.FORM.TITLE' | translate }}</h2>
 
     <div class="form-grid">
       <label>
-        <span>Email *</span>
+        <span>{{ 'COLLABORATEURS.FORM.EMAIL' | translate }}</span>
         <input [(ngModel)]="email" type="email" placeholder="collaborateur@ent.com" />
       </label>
 
       <label>
-        <span>Prénom *</span>
+        <span>{{ 'COLLABORATEURS.FORM.PRENOM' | translate }}</span>
         <input [(ngModel)]="prenom" placeholder="Ahmed" />
       </label>
 
       <label>
-        <span>Nom *</span>
+        <span>{{ 'COLLABORATEURS.FORM.NOM' | translate }}</span>
         <input [(ngModel)]="nom" placeholder="Ben Salem" />
       </label>
 
       <label>
-        <span>Rôle</span>
-        <input value="Viewer d'entreprise" disabled />
+        <span>{{ 'COLLABORATEURS.FORM.ROLE' | translate }}</span>
+        <input [value]="'COLLABORATEURS.FORM.ROLE_VIEWER' | translate" disabled />
       </label>
 
       <label>
-        <span>Fonction *</span>
+        <span>{{ 'COLLABORATEURS.FORM.FONCTION' | translate }}</span>
         <input [(ngModel)]="fonction" placeholder="Comptable" />
       </label>
 
       <label>
-        <span>Téléphone</span>
+        <span>{{ 'COLLABORATEURS.FORM.TEL' | translate }}</span>
         <input [(ngModel)]="telephone" placeholder="12345678" />
       </label>
     </div>
 
-    <p class="info">Un email sera envoyé avec le mot de passe temporaire.</p>
+    <p class="info">{{ 'COLLABORATEURS.FORM.INFO' | translate }}</p>
 
     <div class="form-actions">
-      <button class="ghost" (click)="annulerFormulaire()">Annuler</button>
-      <button class="primary" [disabled]="!canSubmit" (click)="creerCollaborateur()">Créer</button>
+      <button class="ghost" (click)="annulerFormulaire()">{{ 'COLLABORATEURS.FORM.BTN_CANCEL' | translate }}</button>
+      <button class="primary" [disabled]="!canSubmit" (click)="creerCollaborateur()">{{ 'COLLABORATEURS.FORM.BTN_CREATE' | translate }}</button>
     </div>
   </div>
 
   <table>
     <thead>
       <tr>
-        <th>Nom</th>
-        <th>Email</th>
-        <th>Rôle</th>
-        <th>Actions</th>
+        <th>{{ 'COLLABORATEURS.TABLE.NOM' | translate }}</th>
+        <th>{{ 'COLLABORATEURS.TABLE.EMAIL' | translate }}</th>
+        <th>{{ 'COLLABORATEURS.TABLE.ROLE' | translate }}</th>
+        <th>{{ 'COLLABORATEURS.TABLE.ACTIONS' | translate }}</th>
       </tr>
     </thead>
     <tbody>
@@ -65,11 +65,13 @@
         <td>{{ c.email }}</td>
         <td>{{ c.role }}</td>
         <td class="actions">
-          <button *ngIf="c.role !== 'ENTREPRISE_ADMIN'" class="danger action-btn" (click)="supprimerCollaborateur(c)">Supprimer</button>
+          <button *ngIf="c.role !== 'ENTREPRISE_ADMIN'" class="danger action-btn" (click)="supprimerCollaborateur(c)">
+            {{ 'COMMON.DELETE' | translate }}
+          </button>
         </td>
       </tr>
       <tr *ngIf="!isLoading && !collaborateurs.length">
-        <td colspan="4">Aucun membre d'entreprise trouvé.</td>
+        <td colspan="4">{{ 'COLLABORATEURS.EMPTY' | translate }}</td>
       </tr>
     </tbody>
   </table>

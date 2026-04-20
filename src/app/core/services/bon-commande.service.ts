@@ -50,13 +50,6 @@ export class BonCommandeService {
    * Called by the client from the signature page (public, no auth required).
    * Sends the .p12 file + password to sign the Bon de Commande.
    */
-  signerParClient(bonCommandeId: number, file: File, password: string): Observable<BonCommande> {
-    const formData = new FormData();
-    formData.append('p12File', file);
-    formData.append('password', password);
-    formData.append('bonCommandeId', bonCommandeId.toString());
-    return this.http.post<BonCommande>(`${this.apiUrl}/signer-client`, formData);
-  }
 
   confirmer(id: number): Observable<BonCommande> {
     return this.http.put<BonCommande>(`${this.apiUrl}/${id}/confirmer`, {});

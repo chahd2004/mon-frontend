@@ -4,15 +4,15 @@
   <div class="header-section">
     <div>
       <h2 class="enterprise-name" *ngIf="raisonSociale">{{ raisonSociale }}</h2>
-      <h1>Tableau de bord</h1>
-      <p class="subtitle">Bienvenue sur votre espace de gestion</p>
+      <h1>{{ 'DASHBOARD.TITLE' | translate }}</h1>
+      <p class="subtitle">{{ 'DASHBOARD.SUBTITLE' | translate }}</p>
     </div>
     <div class="header-actions">
       <button class="btn-outline" (click)="retourAccueil()">
-        <i class="pi pi-home"></i> Accueil
+        <i class="pi pi-home"></i> {{ 'DASHBOARD.HOME' | translate }}
       </button>
       <button class="btn-outline" (click)="rafraichir()">
-        <i class="pi pi-refresh"></i> Actualiser
+        <i class="pi pi-refresh"></i> {{ 'DASHBOARD.REFRESH' | translate }}
       </button>
     </div>
   </div>
@@ -28,28 +28,28 @@
       <div class="stat-icon"><i class="pi pi-file"></i></div>
       <div class="stat-info">
         <span class="stat-value">{{ totalFactures }}</span>
-        <span class="stat-label">Total Factures</span>
+        <span class="stat-label">{{ 'DASHBOARD.TOTAL_FACTURES' | translate }}</span>
       </div>
     </div>
     <div class="stat-card green" (click)="naviguerVersClients()">
       <div class="stat-icon"><i class="pi pi-users"></i></div>
       <div class="stat-info">
         <span class="stat-value">{{ totalClients }}</span>
-        <span class="stat-label">Total Clients</span>
+        <span class="stat-label">{{ 'DASHBOARD.TOTAL_CLIENTS' | translate }}</span>
       </div>
     </div>
-    <div class="stat-card purple">
+    <div class="stat-card purple" *ngIf="!isViewer">
       <div class="stat-icon"><i class="pi pi-id-card"></i></div>
       <div class="stat-info">
         <span class="stat-value">{{ totalCollaborateurs }}</span>
-        <span class="stat-label">Collaborateurs</span>
+        <span class="stat-label">{{ 'DASHBOARD.COLLABORATEURS' | translate }}</span>
       </div>
     </div>
     <div class="stat-card red">
       <div class="stat-icon"><i class="pi pi-exclamation-triangle"></i></div>
       <div class="stat-info">
         <span class="stat-value">{{ facturesImpayees }}</span>
-        <span class="stat-label">Factures impayées</span>
+        <span class="stat-label">{{ 'DASHBOARD.UNPAID_INVOICES' | translate }}</span>
       </div>
     </div>
   </div>
@@ -58,24 +58,24 @@
   <div class="content-grid" *ngIf="!loading">
     <div class="chart-card">
       <div class="card-header">
-        <h3><i class="pi pi-chart-pie"></i> Répartition des factures</h3>
+        <h3><i class="pi pi-chart-pie"></i> {{ 'DASHBOARD.CHART_DISTRIBUTION' | translate }}</h3>
       </div>
       <div class="card-body">
         <p-chart type="doughnut" [data]="chartData" [options]="chartOptions" height="220px"></p-chart>
         <div *ngIf="chartData.datasets[0].data.length === 0" class="chart-empty">
-          <p>Aucune donnée disponible</p>
+          <p>{{ 'DASHBOARD.NO_DATA' | translate }}</p>
         </div>
       </div>
     </div>
 
     <div class="chart-card">
       <div class="card-header">
-        <h3><i class="pi pi-chart-bar"></i> Ventes par produit / mois</h3>
+        <h3><i class="pi pi-chart-bar"></i> {{ 'DASHBOARD.CHART_SALES' | translate }}</h3>
       </div>
       <div class="card-body">
         <p-chart type="bar" [data]="ventesProduitsData" [options]="ventesProduitsOptions" height="220px"></p-chart>
         <div *ngIf="ventesProduitsData.datasets.length === 0" class="chart-empty">
-          <p>Aucune donnée disponible</p>
+          <p>{{ 'DASHBOARD.NO_DATA' | translate }}</p>
         </div>
       </div>
     </div>

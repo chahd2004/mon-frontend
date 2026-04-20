@@ -216,7 +216,11 @@ export class ParametresComponent implements OnInit {
 
   // ===== PROFIL =====
   sauvegarderProfil(): void {
-    this.messageService.add({ severity: 'success', summary: 'Succès', detail: 'Profil mis à jour avec succès' });
+    this.messageService.add({
+      severity: 'success',
+      summary: this.translate.instant('TOAST.SUCCESS'),
+      detail: this.translate.instant('PARAMETRES.MSGS.PROFILE_SUCCESS')
+    });
   }
 
   onAvatarUpload(event: any): void {
@@ -226,15 +230,34 @@ export class ParametresComponent implements OnInit {
   // ===== SÉCURITÉ =====
   changerMotDePasse(): void {
     if (!this.passwordData.ancien || !this.passwordData.nouveau || !this.passwordData.confirmation) {
-      this.messageService.add({ severity: 'warn', summary: 'Attention', detail: 'Veuillez remplir tous les champs' }); return;
+      this.messageService.add({
+        severity: 'warn',
+        summary: this.translate.instant('TOAST.WARN'),
+        detail: this.translate.instant('PARAMETRES.MSGS.VALIDATION_REQUIRED') || 'Veuillez remplir tous les champs'
+      });
+      return;
     }
     if (this.passwordData.nouveau !== this.passwordData.confirmation) {
-      this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Les mots de passe ne correspondent pas' }); return;
+      this.messageService.add({
+        severity: 'error',
+        summary: this.translate.instant('TOAST.ERROR'),
+        detail: this.translate.instant('PARAMETRES.MSGS.PWD_MISMATCH') || 'Les mots de passe ne correspondent pas'
+      });
+      return;
     }
     if (this.passwordData.nouveau.length < 8) {
-      this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Minimum 8 caractères' }); return;
+      this.messageService.add({
+        severity: 'error',
+        summary: this.translate.instant('TOAST.ERROR'),
+        detail: this.translate.instant('PARAMETRES.MSGS.PWD_MIN_LENGTH') || 'Minimum 8 caractères'
+      });
+      return;
     }
-    this.messageService.add({ severity: 'success', summary: 'Succès', detail: 'Mot de passe modifié avec succès' });
+    this.messageService.add({
+      severity: 'success',
+      summary: this.translate.instant('TOAST.SUCCESS'),
+      detail: this.translate.instant('PARAMETRES.MSGS.PWD_SUCCESS')
+    });
     this.passwordData = { ancien: '', nouveau: '', confirmation: '' };
   }
 
@@ -262,7 +285,11 @@ export class ParametresComponent implements OnInit {
 
   // ===== SOCIÉTÉ =====
   sauvegarderSociete(): void {
-    this.messageService.add({ severity: 'success', summary: 'Succès', detail: 'Informations société mises à jour' });
+    this.messageService.add({
+      severity: 'success',
+      summary: this.translate.instant('TOAST.SUCCESS'),
+      detail: this.translate.instant('PARAMETRES.MSGS.SOCIETE_SUCCESS')
+    });
   }
 
   // ===== PRÉFÉRENCES =====

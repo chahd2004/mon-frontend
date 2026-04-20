@@ -10,7 +10,9 @@ $gray-text: #64748b;
 $border-color: #e2e8f0;
 
 .clients-container {
-  padding: 1rem 1.5rem;
+  max-width: 1450px;
+  margin: 0 auto;
+  padding: 0.5rem 1rem;
   min-height: 100vh;
   background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
   box-sizing: border-box;
@@ -130,14 +132,13 @@ $border-color: #e2e8f0;
 }
 
 // ===== TABLEAU (Design moderne unifié) =====
-::ng-deep .p-card {
+.clients-table {
+  background: white;
   border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   margin-bottom: 2rem;
-  border: 1px solid #e5e7eb;
-  .p-card-body { padding: 0; }
-  .p-card-content { padding: 0; }
 }
 
 ::ng-deep .p-datatable {

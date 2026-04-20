@@ -1,14 +1,14 @@
 <div class="bc-page">
-  <h1 class="title">Bons de commande</h1>
+  <h1 class="title">{{ 'BC.TITLE' | translate }}</h1>
 
   <div class="action-bar">
-    <button class="btn btn-neutral" *ngIf="!isViewer" (click)="depuisDevis()">Depuis devis</button>
-    <button class="btn btn-neutral" (click)="toggleStats()">Statistiques</button>
+    <button class="btn btn-neutral" *ngIf="!isViewer" (click)="depuisDevis()">{{ 'BC.ACTIONS.FROM_QUOTE' | translate }}</button>
+    <button class="btn btn-neutral" (click)="toggleStats()">{{ 'BC.ACTIONS.STATS' | translate }}</button>
   </div>
 
   <div class="filters-row">
     <select [(ngModel)]="selectedStatus" [ngModelOptions]="{ standalone: true }">
-      <option value="ALL">Filtrer par statut</option>
+      <option value="ALL">{{ 'BC.FILTER_STATUS' | translate }}</option>
       <option *ngFor="let status of statusOptions" [ngValue]="status">{{ getStatutLabel(status) }}</option>
     </select>
   </div>
@@ -20,12 +20,12 @@
     <table>
       <thead>
         <tr>
-          <th>N°</th>
-          <th>Client</th>
-          <th>Date d'emission</th>
-          <th>Total TTC</th>
-          <th>Statut</th>
-          <th>Actions</th>
+          <th>{{ 'BC.TABLE.NUM' | translate }}</th>
+          <th>{{ 'BC.TABLE.CLIENT' | translate }}</th>
+          <th>{{ 'BC.TABLE.DATE' | translate }}</th>
+          <th>{{ 'BC.TABLE.TOTAL' | translate }}</th>
+          <th>{{ 'BC.TABLE.STATUS' | translate }}</th>
+          <th>{{ 'BC.TABLE.ACTIONS' | translate }}</th>
         </tr>
       </thead>
       <tbody>
@@ -53,14 +53,14 @@
           </td>
         </tr>
         <tr *ngIf="!filteredBonCommandes.length">
-          <td colspan="6" class="empty">Aucun bon de commande trouve.</td>
+          <td colspan="6" class="empty">{{ 'BC.EMPTY' | translate }}</td>
         </tr>
       </tbody>
     </table>
   </div>
 
   <div class="stats-card" *ngIf="showStats">
-    <h2>Statuts bons de commande</h2>
+    <h2>{{ 'BC.ACTIONS.STATS' | translate }}</h2>
     <div class="stats-container">
       <div *ngFor="let stat of statusStats" class="stat-badge" [ngClass]="getStatutClass(stat.status)">
         <span class="stat-label">{{ getStatutLabel(stat.status) }}</span>
@@ -70,20 +70,20 @@
   </div>
 
   <ng-template #loadingTpl>
-    <div class="loading">Chargement des bons de commande...</div>
+    <div class="loading">{{ 'BC.LOADING' | translate }}</div>
   </ng-template>
 </div>
 
 <div class="modal-backdrop" *ngIf="displayConvertModal" (click)="closeConvertModal()">
   <div class="modal-card" (click)="$event.stopPropagation()">
     <div class="modal-header">
-      <h3>Convertir un devis en bon de commande</h3>
+      <h3>{{ 'BC.CONVERT_MODAL.TITLE' | translate }}</h3>
       <button type="button" class="modal-close" (click)="closeConvertModal()">x</button>
     </div>
 
-    <p class="modal-subtitle">Selectionnez un devis accepte a convertir :</p>
+    <p class="modal-subtitle">{{ 'BC.CONVERT_MODAL.SUBTITLE' | translate }}</p>
 
-    <input type="text" class="search-input" placeholder="Rechercher un devis..." [(ngModel)]="conversionSearch"
+    <input type="text" class="search-input" [placeholder]="'BC.CONVERT_MODAL.SEARCH_PLACEHOLDER' | translate" [(ngModel)]="conversionSearch"
       [ngModelOptions]="{ standalone: true }" />
 
     <div class="table-wrapper modal-table" *ngIf="!loadingAcceptedDevis; else loadingAcceptedTpl">
@@ -91,11 +91,11 @@
         <thead>
           <tr>
             <th>Selection</th>
-            <th>N° Devis</th>
-            <th>Client</th>
-            <th>Date</th>
-            <th>Montant TTC</th>
-            <th>Statut</th>
+            <th>{{ 'BC.TABLE.NUM' | translate }}</th>
+            <th>{{ 'BC.TABLE.CLIENT' | translate }}</th>
+            <th>{{ 'BC.TABLE.DATE' | translate }}</th>
+            <th>{{ 'BC.TABLE.TOTAL' | translate }}</th>
+            <th>{{ 'BC.TABLE.STATUS' | translate }}</th>
           </tr>
         </thead>
         <tbody>
@@ -111,27 +111,27 @@
             <td><span class="status accepted">ACCEPTED</span></td>
           </tr>
           <tr *ngIf="!filteredAcceptedDevis.length">
-            <td colspan="6" class="empty">Aucun devis accepte trouve.</td>
+            <td colspan="6" class="empty">{{ 'BC.CONVERT_MODAL.EMPTY' | translate }}</td>
           </tr>
         </tbody>
       </table>
     </div>
 
     <ng-template #loadingAcceptedTpl>
-      <div class="loading">Chargement des devis acceptes...</div>
+      <div class="loading">{{ 'BC.CONVERT_MODAL.LOADING' | translate }}</div>
     </ng-template>
 
     <div class="field">
-      <label>Notes (optionnel)</label>
+      <label>{{ 'BC.CONVERT_MODAL.NOTES_LABEL' | translate }}</label>
       <textarea rows="3" [(ngModel)]="conversionNotes" [ngModelOptions]="{ standalone: true }"
-        placeholder="Ajouter une note..."></textarea>
+        [placeholder]="'BC.CONVERT_MODAL.NOTES_PLACEHOLDER' | translate"></textarea>
     </div>
 
     <div class="modal-actions">
-      <button type="button" class="btn btn-neutral" (click)="closeConvertModal()">Annuler</button>
+      <button type="button" class="btn btn-neutral" (click)="closeConvertModal()">{{ 'BC.CONVERT_MODAL.BTN_CANCEL' | translate }}</button>
       <button type="button" class="btn btn-primary" [disabled]="converting || !selectedDevisId"
         (click)="convertirDevisSelectionne()">
-        {{ converting ? 'Conversion...' : 'Convertir' }}
+        {{ converting ? ('BC.CONVERT_MODAL.CONVERTING' | translate) : ('BC.CONVERT_MODAL.BTN_CONVERT' | translate) }}
       </button>
     </div>
   </div>

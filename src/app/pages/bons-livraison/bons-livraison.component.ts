@@ -10,6 +10,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { BonLivraisonService } from '../../core/services/bon-livraison.service';
 import { BonLivraison } from '../../models/bon-livraison.model';
 import { formatDocumentReference } from '../../shared/utils/reference-format.util';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 interface BonLivraisonView {
   sourceId: number;
@@ -24,7 +25,7 @@ interface BonLivraisonView {
 @Component({
   selector: 'app-bons-livraison',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './bons-livraison.component.html',
   styleUrls: ['./bons-livraison.component.scss']
 })
@@ -34,6 +35,7 @@ export class BonsLivraisonComponent implements OnInit {
   private readonly bonLivraisonService = inject(BonLivraisonService);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly translate = inject(TranslateService);
 
   loading = false;
   showStats = true;
@@ -158,7 +160,7 @@ export class BonsLivraisonComponent implements OnInit {
       },
       error: () => {
         this.loading = false;
-        this.errorMessage = 'Impossible de charger les bons de livraison depuis le backend.';
+        this.errorMessage = this.translate.instant('BL.LOADING_ERROR') || 'Impossible de charger les bons de livraison.';
       }
     });
   }
@@ -178,7 +180,7 @@ export class BonsLivraisonComponent implements OnInit {
       },
       error: () => {
         this.loadingConfirmedCommandes = false;
-        this.errorMessage = 'Impossible de charger les commandes livrees.';
+        this.errorMessage = this.translate.instant('BL.CONVERT_MODAL.LOAD_ERROR') || 'Impossible de charger les commandes livrées.';
       }
     });
   }
@@ -192,7 +194,7 @@ export class BonsLivraisonComponent implements OnInit {
 
   convertirCommandeSelectionnee(): void {
     if (!this.selectedCommandeId) {
-      this.errorMessage = 'Veuillez selectionner une commande livree.';
+      this.errorMessage = this.translate.instant('BL.CONVERT_MODAL.SELECT_REQUIRED');
       return;
     }
 
@@ -204,14 +206,14 @@ export class BonsLivraisonComponent implements OnInit {
     // Get the selected commande
     const selectedCommande = this.rawCommandes.find(c => c.id === this.selectedCommandeId);
     if (!selectedCommande) {
-      this.errorMessage = 'Commande non trouvee.';
+      this.errorMessage = this.translate.instant('BL.CONVERT_MODAL.NOT_FOUND');
       this.converting = false;
       return;
     }
 
     // Verify there are lignes
     if (!selectedCommande.lignes || selectedCommande.lignes.length === 0) {
-      this.errorMessage = 'La commande selectionnee n\'a pas de lignes.';
+      this.errorMessage = this.translate.instant('BL.CONVERT_MODAL.NO_LINES');
       this.converting = false;
       return;
     }
@@ -237,16 +239,12 @@ export class BonsLivraisonComponent implements OnInit {
       next: () => {
         this.converting = false;
         this.fermerConvertModal();
-        this.successMessage = 'Commande convertie en bon de livraison avec succes.';
+        this.successMessage = this.translate.instant('BL.CONVERT_MODAL.SUCCESS');
         this.loadSourceLivraisons();
       },
-      error: (error) => {
+      error: (error: any) => {
         this.converting = false;
-        console.error('Erreur complète:', error);
-        console.error('Message backend:', error?.error);
-
-        // Affiche le message d'erreur détaillé
-        let messageErreur = 'Erreur lors de la conversion en bon de livraison.';
+        let messageErreur = this.translate.instant('BL.CONVERT_MODAL.ERROR');
         if (error?.error?.message) {
           messageErreur = error.error.message;
         } else if (error?.error?.error) {
@@ -299,11 +297,11 @@ export class BonsLivraisonComponent implements OnInit {
     this.successMessage = '';
     this.bonLivraisonService.marquerLivre(item.sourceId).subscribe({
       next: () => {
-        this.successMessage = `Bon de livraison ${item.numeroBL} marqué livré et email envoyé au client.`;
+        this.successMessage = this.translate.instant('BL.MSGS.DELIVER_SUCCESS', { num: item.numeroBL });
         this.loadSourceLivraisons();
       },
-      error: (error) => {
-        this.errorMessage = error?.error?.message || `Impossible de marquer ${item.numeroBL} comme livré.`;
+      error: (error: any) => {
+        this.errorMessage = error?.error?.message || this.translate.instant('BL.MSGS.DELIVER_ERROR', { num: item.numeroBL });
       }
     });
   }
@@ -314,11 +312,11 @@ export class BonsLivraisonComponent implements OnInit {
     // On passe une chaine vide pour declencher la generation automatique de facture draft cote backend
     this.bonLivraisonService.cloturer(item.sourceId, '').subscribe({
       next: () => {
-        this.successMessage = `Bon de livraison ${item.numeroBL} clôturé avec succès.`;
+        this.successMessage = this.translate.instant('BL.MSGS.CLOSE_SUCCESS', { num: item.numeroBL });
         this.loadSourceLivraisons();
       },
-      error: (err) => {
-        this.errorMessage = err?.error?.message || `Erreur lors de la clôture du bon de livraison ${item.numeroBL}.`;
+      error: (err: any) => {
+        this.errorMessage = err?.error?.message || this.translate.instant('BL.MSGS.CLOSE_ERROR', { num: item.numeroBL });
       }
     });
   }
@@ -328,11 +326,11 @@ export class BonsLivraisonComponent implements OnInit {
     this.successMessage = '';
     this.bonLivraisonService.delete(item.sourceId).subscribe({
       next: () => {
-        this.successMessage = `Bon de livraison ${item.numeroBL} supprime.`;
+        this.successMessage = this.translate.instant('BL.MSGS.DELETE_SUCCESS', { num: item.numeroBL });
         this.loadSourceLivraisons();
       },
-      error: (error) => {
-        this.errorMessage = error?.error?.message || `Suppression impossible pour ${item.numeroBL}.`;
+      error: (error: any) => {
+        this.errorMessage = error?.error?.message || this.translate.instant('BL.MSGS.DELETE_ERROR', { num: item.numeroBL });
       }
     });
   }
@@ -342,28 +340,28 @@ export class BonsLivraisonComponent implements OnInit {
     this.successMessage = '';
     this.bonLivraisonService.resoudreLitige(item.sourceId).subscribe({
       next: () => {
-        this.successMessage = `Litige resolu pour ${item.numeroBL}. Le document repasse en DELIVERED pour signature.`;
+        this.successMessage = this.translate.instant('BL.MSGS.RESOLVE_SUCCESS', { num: item.numeroBL });
         this.loadSourceLivraisons();
       },
-      error: (error) => {
-        this.errorMessage = error?.error?.message || `Resolution du litige impossible pour ${item.numeroBL}.`;
+      error: (error: any) => {
+        this.errorMessage = error?.error?.message || this.translate.instant('BL.MSGS.RESOLVE_ERROR', { num: item.numeroBL });
       }
     });
   }
 
   signalerLitige(item: BonLivraisonView): void {
-    const motif = prompt('Motif du litige :');
+    const motif = prompt(this.translate.instant('BL.MSGS.DISPUTE_PROMPT'));
     if (!motif || motif.trim() === '') return;
 
     this.errorMessage = '';
     this.successMessage = '';
     this.bonLivraisonService.signalerLitige(item.sourceId, motif).subscribe({
       next: () => {
-        this.successMessage = `Litige signalé pour ${item.numeroBL}.`;
+        this.successMessage = this.translate.instant('BL.MSGS.DISPUTE_SUCCESS', { num: item.numeroBL });
         this.loadSourceLivraisons();
       },
-      error: (error) => {
-        this.errorMessage = error?.error?.message || `Signalement du litige impossible pour ${item.numeroBL}.`;
+      error: (error: any) => {
+        this.errorMessage = error?.error?.message || this.translate.instant('BL.MSGS.DISPUTE_ERROR', { num: item.numeroBL });
       }
     });
   }

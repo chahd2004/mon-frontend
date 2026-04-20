@@ -48,13 +48,6 @@ export class BonLivraisonService {
     return this.http.put<BonLivraison>(`${this.apiUrl}/${id}/litige`, { motif });
   }
 
-  signerParClient(bonLivraisonId: number, file: File, password: string): Observable<BonLivraison> {
-    const formData = new FormData();
-    formData.append('p12File', file);
-    formData.append('password', password);
-    formData.append('bonLivraisonId', bonLivraisonId.toString());
-    return this.http.post<BonLivraison>(`${this.apiUrl}/signer-client`, formData);
-  }
 
   cloturer(id: number, factureRef: string = ''): Observable<BonLivraison> {
     return this.http.put<BonLivraison>(`${this.apiUrl}/${id}/cloturer?factureRef=${encodeURIComponent(factureRef)}`, {});

@@ -3,7 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { BonCommandeService } from '../../../core/services/bon-commande.service';
+import { SignatureService } from '../../../core/services/signature.service';
 import { BonCommande } from '../../../models/bon-commande.model';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 // PrimeNG
 import { InputTextModule } from 'primeng/inputtext';
@@ -21,7 +23,8 @@ import { MessageService } from 'primeng/api';
     InputTextModule,
     ButtonModule,
     FileUploadModule,
-    ToastModule
+    ToastModule,
+    TranslateModule
   ],
   providers: [MessageService],
   templateUrl: './bon-commande-signature.component.html',
@@ -30,6 +33,8 @@ import { MessageService } from 'primeng/api';
 export class BonCommandeSignatureComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly bcService = inject(BonCommandeService);
+  private readonly signatureService = inject(SignatureService);
+  private readonly translate = inject(TranslateService);
 
   // BC data
   bonCommande: BonCommande | null = null;
@@ -42,12 +47,13 @@ export class BonCommandeSignatureComponent implements OnInit {
   password = '';
   signing = false;
   signatureReussie = false;
+  dejaSigne = false;
 
   ngOnInit(): void {
     const ref = this.route.snapshot.paramMap.get('ref') || '';
     if (!ref) {
       this.loading = false;
-      this.errorMessage = 'Référence de bon de commande invalide.';
+      this.errorMessage = this.translate.instant('PUBLIC_SIGNATURE.NOT_FOUND_BC');
       return;
     }
     this.resolveBC(ref);
@@ -67,10 +73,13 @@ export class BonCommandeSignatureComponent implements OnInit {
           return;
         }
         this.bonCommande = bc;
+        if (this.bonCommande.statut === 'SIGNED_CLIENT') {
+          this.dejaSigne = true;
+        }
         this.loading = false;
       },
       error: () => {
-        this.errorMessage = 'Impossible de charger les données du bon de commande.';
+        this.errorMessage = this.translate.instant('PUBLIC_SIGNATURE.NOT_FOUND_BC');
         this.loading = false;
       }
     });
@@ -87,22 +96,35 @@ export class BonCommandeSignatureComponent implements OnInit {
     return !!this.selectedFile && this.password.trim().length > 0 && !this.signing;
   }
 
-  signer(): void {
+  async signer(): Promise<void> {
     if (!this.bonCommande || !this.selectedFile || !this.canSign()) return;
 
     this.signing = true;
     this.errorMessage = '';
 
-    this.bcService.signerParClient(this.bonCommande.id, this.selectedFile, this.password).subscribe({
-      next: () => {
-        this.signing = false;
-        this.signatureReussie = true;
-      },
-      error: (err) => {
-        this.signing = false;
-        this.errorMessage = err?.error?.message || 'Erreur lors de la signature. Vérifiez votre certificat et mot de passe.';
-      }
-    });
+    try {
+      // 1. Récupérer le XML brut
+      const xmlBrut = await this.signatureService.getXmlBrutBC(this.bonCommande.id);
+
+      // 2. Signer localement
+      const xmlSigne = await this.signatureService.signerXAdES(
+        this.selectedFile,
+        this.password,
+        xmlBrut,
+        this.bonCommande.id
+      );
+
+      // 3. Envoyer le XML signé
+      await this.signatureService.envoyerXmlSigneBC(this.bonCommande.id, xmlSigne);
+
+      this.signing = false;
+      this.signatureReussie = true;
+
+    } catch (err: any) {
+      this.signing = false;
+      this.errorMessage = err?.message || 'Erreur lors de la signature. Vérifiez votre certificat et mot de passe.';
+      console.error('Signature error:', err);
+    }
   }
 
   fermer(): void {

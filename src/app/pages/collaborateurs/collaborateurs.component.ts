@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { CollaborateurService } from '../../core/services/collaborateur.service';
 import { AuthService } from '../../core/services/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 interface Collaborateur {
   id?: number | string;
@@ -18,14 +19,15 @@ interface Collaborateur {
 @Component({
   selector: 'app-collaborateurs',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './collaborateurs.component.html',
   styleUrl: './collaborateurs.component.scss'
 })
 export class CollaborateursComponent {
   constructor(
     private collaborateurService: CollaborateurService,
-    private authService: AuthService
+    private authService: AuthService,
+    private translate: TranslateService
   ) {
     this.loadCollaborateurs();
   }
@@ -92,7 +94,7 @@ export class CollaborateursComponent {
       },
       error: (err) => {
         console.error('Erreur lors du chargement des collaborateurs:', err);
-        this.errorMessage = "Impossible de charger les collaborateurs depuis la base.";
+        this.errorMessage = this.translate.instant('COLLABORATEURS.LOADING_ERROR') || "Impossible de charger les collaborateurs.";
         this.isLoading = false;
       }
     });
@@ -109,7 +111,7 @@ export class CollaborateursComponent {
 
   creerCollaborateur(): void {
     if (!this.canSubmit) {
-      this.errorMessage = 'Veuillez remplir Email, Prenom, Nom et Fonction.';
+      this.errorMessage = this.translate.instant('COLLABORATEURS.MSGS.VALIDATION_REQUIRED') || 'Veuillez remplir tous les champs obligatoires.';
       return;
     }
 
@@ -128,7 +130,6 @@ export class CollaborateursComponent {
       next: (created: any) => {
         this.resetForm();
         this.showForm = false;
-        // Recharger la liste complète du backend pour s'assurer que le nouvel ajout s'affiche
         this.loadCollaborateurs();
       },
       error: (error: HttpErrorResponse) => {
@@ -136,7 +137,7 @@ export class CollaborateursComponent {
           error?.error?.message ||
           error?.error?.error ||
           error?.message ||
-          '';
+          this.translate.instant('COLLABORATEURS.MSGS.CREATE_ERROR');
         const rawErrorPayload =
           typeof error?.error === 'string'
             ? error.error
@@ -156,22 +157,22 @@ export class CollaborateursComponent {
             searchableMessage.includes('internal server error'));
 
         this.errorMessage = (isDuplicateEmail || isGenericInternalError)
-          ? 'Email deja utilise.'
+          ? this.translate.instant('PARAMS.MSGS.EMAIL_EXISTS') || 'Email déjà utilisé.'
           : backendMessage
-            ? `Echec de creation: ${backendMessage}`
-            : "Echec de creation: le collaborateur n'a pas ete enregistre en base.";
+            ? `${this.translate.instant('COLLABORATEURS.MSGS.CREATE_ERROR')}: ${backendMessage}`
+            : this.translate.instant('COLLABORATEURS.MSGS.CREATE_ERROR');
       }
     });
   }
 
   supprimerCollaborateur(collaborateur: Collaborateur): void {
     if (!collaborateur.id) {
-      this.errorMessage = "Impossible de supprimer: identifiant collaborateur manquant.";
+      this.errorMessage = this.translate.instant('COLLABORATEURS.MSGS.DELETE_ERROR');
       return;
     }
 
     const confirmed = window.confirm(
-      `Supprimer le collaborateur ${collaborateur.prenom} ${collaborateur.nom} ?`
+      this.translate.instant('COLLABORATEURS.MSGS.DELETE_CONFIRM', { nom: `${collaborateur.prenom} ${collaborateur.nom}` })
     );
     if (!confirmed) return;
 
@@ -183,8 +184,8 @@ export class CollaborateursComponent {
       error: (error: HttpErrorResponse) => {
         const backendMessage = error?.error?.message || error?.error?.error || error?.message;
         this.errorMessage = backendMessage
-          ? `Échec de suppression: ${backendMessage}`
-          : "Échec de suppression: le collaborateur n'a pas été supprimé.";
+          ? `${this.translate.instant('COLLABORATEURS.MSGS.DELETE_ERROR')}: ${backendMessage}`
+          : this.translate.instant('COLLABORATEURS.MSGS.DELETE_ERROR');
       }
     });
   }

@@ -32,16 +32,18 @@
   </div>
 
   <!-- Tableau -->
-  <p-card>
-    <p-table
-      [value]="produitsFiltered"
-      [rows]="rowsPerPage"
-      [totalRecords]="produitsFiltered.length"
-      [loading]="loading"
-      [lazy]="false"
-      (onPageChange)="onPageChange($event)"
-      responsiveLayout="scroll"
-    >
+  <p-table
+    [value]="produitsFiltered"
+    [rows]="rowsPerPage"
+    [totalRecords]="produitsFiltered.length"
+    [loading]="loading"
+    [lazy]="true"
+    [paginator]="true"
+    [rowsPerPageOptions]="rowsOptions"
+    (onLazyLoad)="loadProduitsLazy($event)"
+    styleClass="p-datatable-sm p-datatable-striped produits-table"
+    responsiveLayout="scroll"
+  >
       <ng-template pTemplate="header">
         <tr>
           <th>ID</th>
@@ -107,7 +109,6 @@
         </tr>
       </ng-template>
     </p-table>
-  </p-card>
 
   <!-- Dialogue d'ajout/modification -->
   <p-dialog

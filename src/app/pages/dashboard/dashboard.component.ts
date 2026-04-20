@@ -19,13 +19,14 @@ import { EmetteurService } from '../../core/services/emetteur.service';
 import { FactureService } from '../../core/services/facture.service';
 import { ClientService } from '../../core/services/client.service';
 import { DashboardService } from '../../core/services/dashboard.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [
     CommonModule, CardModule, ButtonModule, ChartModule,
-    TableModule, TagModule, ProgressSpinnerModule, TooltipModule, ToastModule
+    TableModule, TagModule, ProgressSpinnerModule, TooltipModule, ToastModule, TranslateModule
   ],
   providers: [MessageService],
   templateUrl: './dashboard.component.html',
@@ -47,6 +48,10 @@ export class DashboardComponent implements OnInit {
   facturesImpayees: number = 0;
   loading: boolean = true;
   raisonSociale: string | null = null;
+
+  get isViewer(): boolean {
+    return this.authService.hasRole('ENTREPRISE_VIEWER' as any);
+  }
 
   chartData: any = {
     labels: ['Signée', 'Payée', 'Brouillon', 'Annulée'],
@@ -142,6 +147,11 @@ export class DashboardComponent implements OnInit {
         this.totalCollaborateurs = data.collaborateurs?.total || 0;
         this.chiffreAffaires = data.chiffreAffaires?.actuel || 0;
         this.facturesImpayees = data.factures?.enRetard || 0;
+
+        if (!this.raisonSociale && data.nomEntreprise) {
+          this.raisonSociale = data.nomEntreprise;
+        }
+
         if (data.graphiques?.factureRepartition) {
           const valeurs = data.graphiques.factureRepartition.valeurs;
           const labels = data.graphiques.factureRepartition.labels;

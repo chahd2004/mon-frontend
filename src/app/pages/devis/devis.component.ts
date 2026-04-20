@@ -7,11 +7,12 @@ import { DevisService } from '../../core/services/devis.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Devis } from '../../models/devis.model';
 import { formatDocumentReference } from '../../shared/utils/reference-format.util';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-devis',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './devis.component.html',
   styleUrls: ['./devis.component.scss']
 })
@@ -19,6 +20,7 @@ export class DevisComponent implements OnInit {
   private readonly devisService = inject(DevisService);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly translate = inject(TranslateService);
 
   get isViewer(): boolean {
     return this.authService.hasRole('ENTREPRISE_VIEWER');
@@ -94,7 +96,7 @@ export class DevisComponent implements OnInit {
         this.loading = false;
       },
       error: () => {
-        this.errorMessage = 'Impossible de charger les devis depuis le backend.';
+        this.errorMessage = this.translate.instant('DEVIS.LOADING_ERROR') || 'Impossible de charger les devis.';
         this.loading = false;
       }
     });
@@ -114,18 +116,28 @@ export class DevisComponent implements OnInit {
 
   accepterDevis(id: number): void {
     this.devisService.accepter(id).subscribe({
-      next: () => this.loadDevis(),
-      error: () => this.errorMessage = `Impossible d'accepter le devis #${id}.`
+      next: () => {
+        this.loadDevis();
+        this.errorMessage = '';
+      },
+      error: (error: any) => {
+        this.errorMessage = error?.error?.message || this.translate.instant('DEVIS.MSGS.ACCEPT_ERROR', { id });
+      }
     });
   }
 
   rejeterDevis(id: number): void {
-    const raison = window.prompt('Saisir la raison du rejet :');
+    const raison = window.prompt(this.translate.instant('DEVIS.MSGS.REJECT_REASON_PROMPT') || 'Saisir la raison du rejet :');
     if (!raison || !raison.trim()) return;
 
     this.devisService.rejeter(id, raison.trim()).subscribe({
-      next: () => this.loadDevis(),
-      error: () => this.errorMessage = `Impossible de rejeter le devis #${id}.`
+      next: () => {
+        this.loadDevis();
+        this.errorMessage = '';
+      },
+      error: (error: any) => {
+        this.errorMessage = error?.error?.message || this.translate.instant('DEVIS.MSGS.REJECT_ERROR', { id });
+      }
     });
   }
 
@@ -136,7 +148,9 @@ export class DevisComponent implements OnInit {
         this.loadDevis();
         this.router.navigate(['/bons-commandes']);
       },
-      error: () => this.errorMessage = `Erreur lors de la conversion en bon de commande pour le devis #${id}.`
+      error: (error: any) => {
+        this.errorMessage = error?.error?.message || this.translate.instant('DEVIS.MSGS.CONVERT_ERROR', { id });
+      }
     });
   }
 
@@ -156,9 +170,10 @@ export class DevisComponent implements OnInit {
     this.devisService.envoyer(id).subscribe({
       next: () => {
         this.loadDevis();
+        this.errorMessage = '';
       },
-      error: () => {
-        this.errorMessage = `Impossible d'envoyer le devis #${id}.`;
+      error: (error: any) => {
+        this.errorMessage = error?.error?.message || this.translate.instant('DEVIS.MSGS.SEND_ERROR', { id });
       }
     });
   }

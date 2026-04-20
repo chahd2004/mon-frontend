@@ -67,14 +67,6 @@ export class FactureService {
     return this.http.get(`${this.apiUrl}/${id}/xml`, { responseType: 'blob' });
   }
 
-  signerFactureWithCertificate(factureId: number, file: File, password: string): Observable<any> {
-    const formData = new FormData();
-    formData.append('p12File', file);
-    formData.append('password', password);
-    formData.append('factureId', factureId.toString());
-
-    return this.http.post(`${environment.apiUrl}/signature/signer`, formData);
-  }
 
   getFactures(
     page: number = 1,
@@ -89,10 +81,13 @@ export class FactureService {
           statut,
           search
         );
+        const sorted = filtered.sort((a, b) => 
+          new Date(b.dateEmission).getTime() - new Date(a.dateEmission).getTime()
+        );
         const start = (page - 1) * limit;
         return {
-          data: filtered.slice(start, start + limit),
-          total: filtered.length
+          data: sorted.slice(start, start + limit),
+          total: sorted.length
         };
       })
     );

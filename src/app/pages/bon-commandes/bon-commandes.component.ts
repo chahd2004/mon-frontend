@@ -9,11 +9,12 @@ import { AuthService } from '../../core/services/auth.service';
 import { DevisService } from '../../core/services/devis.service';
 import { Devis } from '../../models/devis.model';
 import { formatDocumentReference } from '../../shared/utils/reference-format.util';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-bon-commandes',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './bon-commandes.component.html',
   styleUrls: ['./bon-commandes.component.scss']
 })
@@ -22,6 +23,7 @@ export class BonCommandesComponent implements OnInit {
   private readonly devisService = inject(DevisService);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly translate = inject(TranslateService);
 
   bonCommandes: BonCommande[] = [];
   loading = false;
@@ -66,7 +68,7 @@ export class BonCommandesComponent implements OnInit {
         this.loading = false;
       },
       error: () => {
-        this.errorMessage = 'Impossible de charger les bons de commande depuis le backend.';
+        this.errorMessage = this.translate.instant('BC.LOADING_ERROR') || 'Impossible de charger les bons de commande.';
         this.loading = false;
       }
     });
@@ -88,10 +90,10 @@ export class BonCommandesComponent implements OnInit {
     this.bonCommandeService.envoyer(id).subscribe({
       next: () => {
         this.loadBonCommandes();
-        this.successMessage = `Bon de commande #${id} envoyé avec succès.`;
+        this.successMessage = this.translate.instant('BC.MSGS.SEND_SUCCESS', { id });
       },
-      error: (error) => {
-        this.errorMessage = error?.error?.message || `Impossible d'envoyer le bon de commande #${id}.`;
+      error: (error: any) => {
+        this.errorMessage = error?.error?.message || this.translate.instant('BC.MSGS.SEND_ERROR', { id });
       }
     });
   }
@@ -100,25 +102,25 @@ export class BonCommandesComponent implements OnInit {
     this.bonCommandeService.confirmer(id).subscribe({
       next: () => {
         this.loadBonCommandes();
-        this.successMessage = `Bon de commande #${id} confirmé avec succès.`;
+        this.successMessage = this.translate.instant('BC.MSGS.CONFIRM_SUCCESS', { id });
       },
-      error: (error) => {
-        this.errorMessage = error?.error?.message || `Impossible de confirmer le bon de commande #${id}.`;
+      error: (error: any) => {
+        this.errorMessage = error?.error?.message || this.translate.instant('BC.MSGS.CONFIRM_ERROR', { id });
       }
     });
   }
 
   annulerBC(id: number): void {
-    const raison = prompt('Raison de l\'annulation :');
+    const raison = prompt(this.translate.instant('BC.MSGS.CANCEL_REASON_PROMPT'));
     if (!raison || raison.trim() === '') return;
 
     this.bonCommandeService.annuler(id, raison).subscribe({
       next: () => {
         this.loadBonCommandes();
-        this.successMessage = `Bon de commande #${id} annulé avec succès.`;
+        this.successMessage = this.translate.instant('BC.MSGS.CANCEL_SUCCESS', { id });
       },
-      error: (error) => {
-        this.errorMessage = error?.error?.message || `Impossible d'annuler le bon de commande #${id}.`;
+      error: (error: any) => {
+        this.errorMessage = error?.error?.message || this.translate.instant('BC.MSGS.CANCEL_ERROR', { id });
       }
     });
   }
@@ -150,7 +152,7 @@ export class BonCommandesComponent implements OnInit {
       },
       error: () => {
         this.loadingAcceptedDevis = false;
-        this.errorMessage = 'Impossible de charger les devis acceptes.';
+        this.errorMessage = this.translate.instant('BC.CONVERT_MODAL.LOAD_ERROR') || 'Impossible de charger les devis acceptés.';
       }
     });
   }
@@ -178,7 +180,7 @@ export class BonCommandesComponent implements OnInit {
 
   convertirDevisSelectionne(): void {
     if (!this.selectedDevisId) {
-      this.errorMessage = 'Veuillez selectionner un devis accepte a convertir.';
+      this.errorMessage = this.translate.instant('BC.CONVERT_MODAL.SELECT_REQUIRED');
       return;
     }
 
@@ -192,12 +194,12 @@ export class BonCommandesComponent implements OnInit {
       next: () => {
         this.converting = false;
         this.closeConvertModal();
-        this.successMessage = 'Devis converti en bon de commande avec succes.';
+        this.successMessage = this.translate.instant('BC.CONVERT_MODAL.SUCCESS');
         this.loadBonCommandes();
       },
-      error: (error) => {
+      error: (error: any) => {
         this.converting = false;
-        this.errorMessage = error?.error?.message || 'Erreur lors de la conversion du devis en bon de commande.';
+        this.errorMessage = error?.error?.message || this.translate.instant('BC.CONVERT_MODAL.ERROR');
       }
     });
   }
@@ -237,7 +239,8 @@ export class BonCommandesComponent implements OnInit {
       CANCELLED: 'CANCELLED'
     };
 
-    return map[statut] || statut;
+    const key = map[statut] || statut;
+    return this.translate.instant('STATUS.' + key);
   }
 
   getStatutClass(statut: string): string {

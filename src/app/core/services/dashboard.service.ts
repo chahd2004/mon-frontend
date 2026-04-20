@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, forkJoin, map } from 'rxjs';
+import { Observable, forkJoin, map, catchError, of } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { FactureService } from './facture.service';
 import { ClientService } from './client.service';
@@ -85,13 +85,20 @@ export class DashboardService extends BaseService {
 
   getStats(): Observable<DashboardStats> {
     return forkJoin({
-      factures: this.factureService.getFactures(1, 1000),
-      clients: this.clientService.getClients(),
+      factures: this.factureService.getFactures(1, 1000).pipe(catchError(() => of({ data: [], total: 0 }))),
+      clients: this.clientService.getClients().pipe(catchError(() => of([]))),
       collaborateurs: this.http.get<any[] | { content: any[] }>(`${this.apiUrl}/entreprise-admin/collaborateurs`, this.getHeaders())
+        .pipe(catchError(() => of([])))
     }).pipe(
       map(({ factures, clients, collaborateurs }) => {
         const collabList = Array.isArray(collaborateurs) ? collaborateurs : (collaborateurs as any).content || [];
-        return this.calculerStats(factures.data, clients, collabList);
+        const stats = this.calculerStats(factures.data, clients, collabList);
+        
+        if (factures.data && factures.data.length > 0) {
+          (stats as any).nomEntreprise = factures.data[0].vendeurNom || factures.data[0].acheteurNom;
+        }
+        
+        return stats;
       })
     );
   }

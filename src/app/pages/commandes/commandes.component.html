@@ -1,9 +1,9 @@
 <div class="commandes-page">
-  <h1 class="title">Commandes</h1>
+  <h1 class="title">{{ 'COMMANDES.TITLE' | translate }}</h1>
 
   <div class="action-bar">
-    <button class="btn btn-neutral" (click)="depuisBC()">Depuis BC</button>
-    <button class="btn btn-neutral" (click)="toggleStats()">Statistiques</button>
+    <button class="btn btn-neutral" (click)="depuisBC()">{{ 'COMMANDES.ACTIONS.FROM_BC' | translate }}</button>
+    <button class="btn btn-neutral" (click)="toggleStats()">{{ 'COMMANDES.ACTIONS.STATS' | translate }}</button>
   </div>
 
   <div *ngIf="errorMessage" class="message error">{{ errorMessage }}</div>
@@ -11,7 +11,7 @@
 
   <div class="filters-row">
     <select [(ngModel)]="selectedStatus" [ngModelOptions]="{ standalone: true }">
-      <option value="ALL">Filtrer par statut</option>
+      <option value="ALL">{{ 'COMMANDES.FILTER_STATUS' | translate }}</option>
       <option *ngFor="let status of availableStatuses" [ngValue]="status">{{ getStatusLabel(status) }}</option>
     </select>
   </div>
@@ -20,12 +20,12 @@
     <table>
       <thead>
         <tr>
-          <th>N°</th>
-          <th>Client</th>
-          <th>Date commande</th>
-          <th>Total TTC</th>
-          <th>Statut</th>
-          <th>Actions</th>
+          <th>{{ 'COMMANDES.TABLE.NUM' | translate }}</th>
+          <th>{{ 'COMMANDES.TABLE.CLIENT' | translate }}</th>
+          <th>{{ 'COMMANDES.TABLE.DATE' | translate }}</th>
+          <th>{{ 'COMMANDES.TABLE.TOTAL' | translate }}</th>
+          <th>{{ 'COMMANDES.TABLE.STATUS' | translate }}</th>
+          <th>{{ 'COMMANDES.TABLE.ACTIONS' | translate }}</th>
         </tr>
       </thead>
       <tbody>
@@ -53,14 +53,14 @@
           </td>
         </tr>
         <tr *ngIf="!filteredCommandes.length">
-          <td colspan="6" class="empty">Aucune commande trouvee.</td>
+          <td colspan="6" class="empty">{{ 'COMMANDES.EMPTY' | translate }}</td>
         </tr>
       </tbody>
     </table>
   </div>
 
   <div class="stats-card" *ngIf="showStats">
-    <h2>Statuts commandes</h2>
+    <h2>{{ 'COMMANDES.STATS_TITLE' | translate }}</h2>
     <div class="stats-container">
       <div *ngFor="let stat of statusStats" class="stat-badge" [ngClass]="getStatusClass(stat.status)">
         <span class="stat-label">{{ getStatusLabel(stat.status) }}</span>
@@ -70,20 +70,20 @@
   </div>
 
   <ng-template #loadingTpl>
-    <div class="loading">Chargement des commandes...</div>
+    <div class="loading">{{ 'COMMANDES.LOADING' | translate }}</div>
   </ng-template>
 </div>
 
 <div class="modal-backdrop" *ngIf="displayConvertModal" (click)="closeConvertModal()">
   <div class="modal-card" (click)="$event.stopPropagation()">
     <div class="modal-header">
-      <h3>Convertir un bon de commande en commande</h3>
+      <h3>{{ 'COMMANDES.CONVERT_MODAL.TITLE' | translate }}</h3>
       <button type="button" class="modal-close" (click)="closeConvertModal()">x</button>
     </div>
 
-    <p class="modal-subtitle">Selectionnez un bon de commande confirme a convertir :</p>
+    <p class="modal-subtitle">{{ 'COMMANDES.CONVERT_MODAL.SUBTITLE' | translate }}</p>
 
-    <input type="text" class="search-input" placeholder="Rechercher un bon de commande..."
+    <input type="text" class="search-input" [placeholder]="'COMMANDES.CONVERT_MODAL.SEARCH_PLACEHOLDER' | translate"
       [(ngModel)]="conversionSearch" [ngModelOptions]="{ standalone: true }" />
 
     <div class="table-wrapper modal-table">
@@ -91,11 +91,11 @@
         <thead>
           <tr>
             <th>Selection</th>
-            <th>N° BC</th>
-            <th>Client</th>
-            <th>Date</th>
-            <th>Montant TTC</th>
-            <th>Statut</th>
+            <th>{{ 'BC.TABLE.NUM' | translate }}</th>
+            <th>{{ 'COMMANDES.TABLE.CLIENT' | translate }}</th>
+            <th>{{ 'COMMANDES.TABLE.DATE' | translate }}</th>
+            <th>{{ 'COMMANDES.TABLE.TOTAL' | translate }}</th>
+            <th>{{ 'COMMANDES.TABLE.STATUS' | translate }}</th>
           </tr>
         </thead>
         <tbody>
@@ -111,23 +111,23 @@
             <td><span class="status confirmed">CONFIRMED</span></td>
           </tr>
           <tr *ngIf="!filteredConfirmedBonCommandes.length">
-            <td colspan="6" class="empty">Aucun bon de commande confirme trouve.</td>
+            <td colspan="6" class="empty">{{ 'COMMANDES.CONVERT_MODAL.EMPTY' | translate }}</td>
           </tr>
         </tbody>
       </table>
     </div>
 
     <div class="field">
-      <label>Notes (optionnel)</label>
+      <label>{{ 'COMMANDES.CONVERT_MODAL.NOTES_LABEL' | translate }}</label>
       <textarea rows="3" [(ngModel)]="conversionNotes" [ngModelOptions]="{ standalone: true }"
-        placeholder="Ajouter une note..."></textarea>
+        [placeholder]="'COMMANDES.CONVERT_MODAL.NOTES_PLACEHOLDER' | translate"></textarea>
     </div>
 
     <div class="modal-actions">
-      <button type="button" class="btn btn-neutral" (click)="closeConvertModal()">Annuler</button>
+      <button type="button" class="btn btn-neutral" (click)="closeConvertModal()">{{ 'COMMANDES.CONVERT_MODAL.BTN_CANCEL' | translate }}</button>
       <button type="button" class="btn btn-primary" [disabled]="converting || !selectedBCId"
         (click)="convertirBCSelectionne()">
-        {{ converting ? 'Conversion...' : 'Convertir' }}
+        {{ converting ? ('COMMANDES.CONVERT_MODAL.CONVERTING' | translate) : ('COMMANDES.CONVERT_MODAL.BTN_CONVERT' | translate) }}
       </button>
     </div>
   </div>

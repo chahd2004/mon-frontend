@@ -13,10 +13,22 @@ export class AppComponent implements OnInit {
   private translate = inject(TranslateService);
 
   ngOnInit(): void {
-    // Initialiser la langue et charger immédiatement les traductions
+    this.translate.addLangs(['fr', 'en']);
     this.translate.setDefaultLang('fr');
-    this.translate.use('fr').subscribe(() => {
-      // Traductions chargées - le composant peut maintenant se rendre correctement
+
+    let savedLang = 'fr';
+    const savedPrefs = localStorage.getItem('app_preferences');
+    if (savedPrefs) {
+      try {
+        const parsed = JSON.parse(savedPrefs);
+        if (parsed.langue) {
+          savedLang = parsed.langue;
+        }
+      } catch (e) {}
+    }
+
+    this.translate.use(savedLang).subscribe(() => {
+      // Translations loaded
     });
   }
 }

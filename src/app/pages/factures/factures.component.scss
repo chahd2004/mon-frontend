@@ -8,9 +8,9 @@ $border: #e2e8f0;
 $bg: #f8fafc;
 
 .factures-container {
-  max-width: 1200px;
+  max-width: 1450px; // Élargir pour plus de contenu horizontal
   margin: 0 auto;
-  padding: 1rem 1.5rem;
+  padding: 0.5rem 1rem;
   min-height: 100vh;
   background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
   box-sizing: border-box;
@@ -247,20 +247,13 @@ $bg: #f8fafc;
 
 
 // ===== TABLEAU =====
-::ng-deep .p-card {
+.factures-table {
+  background: white;
   border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   margin-bottom: 2rem;
-  border: 1px solid #e5e7eb;
-
-  .p-card-body {
-    padding: 0;
-  }
-
-  .p-card-content {
-    padding: 0;
-  }
 }
 
 ::ng-deep .p-datatable {

@@ -17,11 +17,11 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ChartModule } from 'primeng/chart';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { DialogModule } from 'primeng/dialog';
-import { FileUploadModule } from 'primeng/fileupload';
 import { MessageService, ConfirmationService } from 'primeng/api';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { SignatureComponent } from '../../components/signature/signature.component';
 
 import { FactureService } from '../../core/services/facture.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -36,7 +36,8 @@ import { Facture, StatutFacture, StatutFactureLabel } from '../../models/facture
     CommonModule, FormsModule, TableModule, ButtonModule, CardModule,
     ToastModule, ConfirmDialogModule, TagModule, TooltipModule,
     DropdownModule, CalendarModule, InputTextModule, ChartModule,
-    ProgressSpinnerModule, TranslateModule, DialogModule, FileUploadModule
+    ProgressSpinnerModule, TranslateModule, DialogModule,
+    SignatureComponent
   ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './factures.component.html',
@@ -49,6 +50,7 @@ export class FacturesComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
+  private translate = inject(TranslateService);
   private factureRefresh = inject(FactureRefreshService);
   private destroy$ = new Subject<void>();
 
@@ -63,6 +65,7 @@ export class FacturesComponent implements OnInit, OnDestroy {
 
   page: number = 1;
   rowsPerPage: number = 10;
+  rowsOptions: number[] = [10, 20, 50, 100];
 
   statutFilter: string = '';
   searchText: string = '';
@@ -74,10 +77,6 @@ export class FacturesComponent implements OnInit, OnDestroy {
 
   // Signature Modal
   showSignatureModal = false;
-  signatureSuccess = false;
-  selectedP12File: File | null = null;
-  signaturePassword = '';
-  isSigning = false;
   currentFactureId: number | null = null;
 
   ngOnInit(): void {
@@ -108,11 +107,21 @@ export class FacturesComponent implements OnInit, OnDestroy {
         this.totalRecords = response.total;
         this.loading = false;
       },
-      error: (err) => {
-        this.messageService.add({ severity: 'error', summary: 'Erreur', detail: this.errorHandler.extractErrorMessage(err) });
+      error: (err: any) => {
+        this.messageService.add({ 
+          severity: 'error', 
+          summary: this.translate.instant('TOAST.ERROR'), 
+          detail: this.errorHandler.extractErrorMessage(err) 
+        });
         this.loading = false;
       }
     });
+  }
+
+  loadFacturesLazy(event: any): void {
+    this.page = (event.first / event.rows) + 1;
+    this.rowsPerPage = event.rows;
+    this.loadFactures();
   }
 
   loadStatistiques(): void {
@@ -126,6 +135,7 @@ export class FacturesComponent implements OnInit, OnDestroy {
 
 
   onPageChange(event: any): void {
+    // Gardé par précaution mais loadFacturesLazy est privilégié
     this.page = event.page + 1;
     this.rowsPerPage = event.rows;
     this.loadFactures();
@@ -175,69 +185,35 @@ export class FacturesComponent implements OnInit, OnDestroy {
   signerFacture(id: number): void {
     this.currentFactureId = id;
     this.showSignatureModal = true;
-    this.signatureSuccess = false;
-    this.selectedP12File = null;
-    this.signaturePassword = '';
-  }
-
-  onFileSelect(event: any): void {
-    this.selectedP12File = event.files[0];
-  }
-
-  confirmSignature(): void {
-    if (!this.currentFactureId || !this.selectedP12File || !this.signaturePassword) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Attention',
-        detail: 'Veuillez sélectionner un fichier .p12 et saisir le mot de passe'
-      });
-      return;
-    }
-
-    this.isSigning = true;
-    this.factureService.signerFactureWithCertificate(
-      this.currentFactureId,
-      this.selectedP12File,
-      this.signaturePassword
-    ).subscribe({
-      next: (response) => {
-        this.isSigning = false;
-        this.signatureSuccess = true;
-        this.loadFactures();
-        this.messageService.add({ severity: 'success', summary: 'Succès', detail: 'Facture signée avec succès' });
-      },
-      error: (err) => {
-        this.isSigning = false;
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Erreur',
-          detail: this.errorHandler.extractErrorMessage(err)
-        });
-      }
-    });
   }
 
   closeSignatureModal(): void {
     this.showSignatureModal = false;
-    this.signatureSuccess = false;
-    this.selectedP12File = null;
-    this.signaturePassword = '';
     this.currentFactureId = null;
+    this.loadFactures(); // Refresh list after signature
   }
 
   supprimerFacture(id: number): void {
     this.confirmationService.confirm({
-      message: 'Êtes-vous sûr de vouloir supprimer cette facture ?',
-      header: 'Confirmation',
+      message: this.translate.instant('FACTURES.MSGS.DELETE_CONFIRM'),
+      header: this.translate.instant('TOAST.CONFIRMATION'),
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.factureService.deleteFacture(id).subscribe({
           next: () => {
-            this.messageService.add({ severity: 'success', summary: 'Succès', detail: 'Facture supprimée avec succès' });
+            this.messageService.add({ 
+              severity: 'success', 
+              summary: this.translate.instant('TOAST.SUCCESS'), 
+              detail: this.translate.instant('FACTURES.MSGS.DELETE_SUCCESS') 
+            });
             this.loadFactures();
           },
           error: () => {
-            this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Impossible de supprimer la facture' });
+            this.messageService.add({ 
+              severity: 'error', 
+              summary: this.translate.instant('TOAST.ERROR'), 
+              detail: this.translate.instant('FACTURES.MSGS.DELETE_ERROR') 
+            });
           }
         });
       }
@@ -247,51 +223,87 @@ export class FacturesComponent implements OnInit, OnDestroy {
   emettreFacture(id: number): void {
     this.factureService.envoyerFacture(id).subscribe({
       next: () => {
-        this.messageService.add({ severity: 'success', summary: 'Succès', detail: 'Facture émise et envoyée' });
+        this.messageService.add({ 
+          severity: 'success', 
+          summary: this.translate.instant('TOAST.SUCCESS'), 
+          detail: this.translate.instant('FACTURES.MSGS.EMIT_SUCCESS') 
+        });
         this.loadFactures();
       },
-      error: (err) => this.messageService.add({ severity: 'error', summary: 'Erreur', detail: this.errorHandler.extractErrorMessage(err) })
+      error: (err: any) => this.messageService.add({ 
+        severity: 'error', 
+        summary: this.translate.instant('TOAST.ERROR'), 
+        detail: this.errorHandler.extractErrorMessage(err) 
+      })
     });
   }
 
   payerFacture(id: number): void {
     this.factureService.marquerPayee(id).subscribe({
       next: () => {
-        this.messageService.add({ severity: 'success', summary: 'Succès', detail: 'Facture marquée comme payée' });
+        this.messageService.add({ 
+          severity: 'success', 
+          summary: this.translate.instant('TOAST.SUCCESS'), 
+          detail: this.translate.instant('FACTURES.MSGS.PAY_SUCCESS') 
+        });
         this.loadFactures();
       },
-      error: (err) => this.messageService.add({ severity: 'error', summary: 'Erreur', detail: this.errorHandler.extractErrorMessage(err) })
+      error: (err: any) => this.messageService.add({ 
+        severity: 'error', 
+        summary: this.translate.instant('TOAST.ERROR'), 
+        detail: this.errorHandler.extractErrorMessage(err) 
+      })
     });
   }
 
   rejeterFacture(id: number): void {
-    const raison = window.prompt('Raison du rejet (obligatoire) :');
+    const raison = window.prompt(this.translate.instant('FACTURES.MSGS.REJECT_REASON_REQ') + ' :');
     if (!raison || raison.trim() === '') {
-      this.messageService.add({ severity: 'warn', summary: 'Attention', detail: 'La raison du rejet est obligatoire' });
+      this.messageService.add({ 
+        severity: 'warn', 
+        summary: this.translate.instant('TOAST.WARN'), 
+        detail: this.translate.instant('FACTURES.MSGS.REJECT_REASON_REQ') 
+      });
       return;
     }
 
     this.factureService.rejeterFacture(id, raison).subscribe({
       next: () => {
-        this.messageService.add({ severity: 'success', summary: 'Succès', detail: 'Facture rejetée' });
+        this.messageService.add({ 
+          severity: 'success', 
+          summary: this.translate.instant('TOAST.SUCCESS'), 
+          detail: this.translate.instant('FACTURES.MSGS.REJECT_SUCCESS') 
+        });
         this.loadFactures();
       },
-      error: (err) => this.messageService.add({ severity: 'error', summary: 'Erreur', detail: this.errorHandler.extractErrorMessage(err) })
+      error: (err: any) => this.messageService.add({ 
+        severity: 'error', 
+        summary: this.translate.instant('TOAST.ERROR'), 
+        detail: this.errorHandler.extractErrorMessage(err) 
+      })
     });
   }
 
   annulerFacture(id: number): void {
     this.confirmationService.confirm({
-      message: 'Êtes-vous sûr de vouloir annuler cette facture ? Cela générera un avoir.',
-      header: 'Confirmation',
+      message: this.translate.instant('FACTURES.MSGS.CANCEL_CONFIRM'),
+      header: this.translate.instant('TOAST.CONFIRMATION'),
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.factureService.annulerFacture(id).subscribe({
           next: () => {
-            this.messageService.add({ severity: 'success', summary: 'Succès', detail: 'Facture annulée' });
+            this.messageService.add({ 
+              severity: 'success', 
+              summary: this.translate.instant('TOAST.SUCCESS'), 
+              detail: this.translate.instant('FACTURES.MSGS.CANCEL_SUCCESS') 
+            });
             this.loadFactures();
           },
-          error: (err) => this.messageService.add({ severity: 'error', summary: 'Erreur', detail: this.errorHandler.extractErrorMessage(err) })
+          error: (err: any) => this.messageService.add({ 
+            severity: 'error', 
+            summary: this.translate.instant('TOAST.ERROR'), 
+            detail: this.errorHandler.extractErrorMessage(err) 
+          })
         });
       }
     });
@@ -300,10 +312,18 @@ export class FacturesComponent implements OnInit, OnDestroy {
   retourBrouillon(id: number): void {
     this.factureService.retourBrouillon(id).subscribe({
       next: () => {
-        this.messageService.add({ severity: 'info', summary: 'Info', detail: 'Facture retournée en brouillon' });
+        this.messageService.add({ 
+          severity: 'info', 
+          summary: this.translate.instant('TOAST.INFO'), 
+          detail: this.translate.instant('FACTURES.MSGS.DRAFT_SUCCESS') 
+        });
         this.loadFactures();
       },
-      error: (err) => this.messageService.add({ severity: 'error', summary: 'Erreur', detail: this.errorHandler.extractErrorMessage(err) })
+      error: (err: any) => this.messageService.add({ 
+        severity: 'error', 
+        summary: this.translate.instant('TOAST.ERROR'), 
+        detail: this.errorHandler.extractErrorMessage(err) 
+      })
     });
   }
 
@@ -316,9 +336,17 @@ export class FacturesComponent implements OnInit, OnDestroy {
         a.download = `facture-${id}.xml`;
         a.click();
         window.URL.revokeObjectURL(url);
-        this.messageService.add({ severity: 'success', summary: 'Succès', detail: 'Téléchargement lancé' });
+        this.messageService.add({ 
+          severity: 'success', 
+          summary: this.translate.instant('TOAST.SUCCESS'), 
+          detail: this.translate.instant('FACTURES.MSGS.DOWNLOAD_SUCCESS') 
+        });
       },
-      error: (err) => this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Impossible de télécharger le XML' })
+      error: (err: any) => this.messageService.add({ 
+        severity: 'error', 
+        summary: this.translate.instant('TOAST.ERROR'), 
+        detail: this.translate.instant('FACTURES.MSGS.DOWNLOAD_ERROR') 
+      })
     });
   }
 }

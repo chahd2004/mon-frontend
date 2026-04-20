@@ -17,7 +17,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { CheckboxModule } from 'primeng/checkbox';
 import { MessageService } from 'primeng/api';
 import { ConfirmationService } from 'primeng/api';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { ProduitService } from '../../core/services/produit.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -54,6 +54,7 @@ export class ProduitsComponent implements OnInit {
   private router = inject(Router);
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
+  private translate = inject(TranslateService);
 
   get isViewer(): boolean {
     return this.authService.hasRole('ENTREPRISE_VIEWER');
@@ -67,6 +68,7 @@ export class ProduitsComponent implements OnInit {
   // Pagination côté client
   page: number = 1;
   rowsPerPage: number = 10;
+  rowsOptions: number[] = [10, 20, 50, 100];
 
   // Recherche
   searchText: string = '';
@@ -125,15 +127,13 @@ export class ProduitsComponent implements OnInit {
         this.applyFilter();
         this.loading = false;
       },
-      error: (error) => {
+      error: (error: any) => {
         this.loading = false;
         const msg = error?.error?.message ?? error?.error?.error ?? error?.error?.detail;
         this.messageService.add({
           severity: 'error',
-          summary: 'Erreur',
-          detail: msg || (error?.status === 400
-            ? 'Le serveur a refusé la requête (paramètres ou droits).'
-            : 'Impossible de charger les produits.')
+          summary: this.translate.instant('TOAST.ERROR'),
+          detail: msg || this.translate.instant('PRODUITS.MSGS.LOAD_ERROR')
         });
       }
     });
@@ -141,11 +141,23 @@ export class ProduitsComponent implements OnInit {
 
   applyFilter(): void {
     const search = (this.searchText || '').toLowerCase().trim();
-    this.produitsFiltered = search
+    let result = search
       ? this.produits.filter(p =>
         (p.reference || '').toLowerCase().includes(search) ||
         (p.designation || '').toLowerCase().includes(search))
       : [...this.produits];
+
+    // Tri par référence alphabétique par défaut
+    this.produitsFiltered = result.sort((a, b) => 
+      (a.reference || '').localeCompare(b.reference || '')
+    );
+  }
+
+  loadProduitsLazy(event: any): void {
+    this.page = (event.first / event.rows) + 1;
+    this.rowsPerPage = event.rows;
+    // On ne recharge pas forcément depuis le service car Produits utilise le filtrage local
+    // mais on s'assure que le paginateur fonctionne bien
   }
 
   onPageChange(event: any): void {
@@ -216,8 +228,8 @@ export class ProduitsComponent implements OnInit {
     if (!this.produitForm.reference?.trim() || !this.produitForm.designation?.trim()) {
       this.messageService.add({
         severity: 'warn',
-        summary: 'Validation',
-        detail: 'La référence et la désignation sont obligatoires'
+        summary: this.translate.instant('TOAST.WARN'),
+        detail: this.translate.instant('PRODUITS.MSGS.VALIDATION_REQUIRED')
       });
       return;
     }
@@ -248,17 +260,21 @@ export class ProduitsComponent implements OnInit {
       this.produitService.createProduit(request).subscribe({
         next: () => {
           this.loading = false;
-          this.messageService.add({ severity: 'success', summary: 'Succès', detail: 'Produit ajouté avec succès' });
+          this.messageService.add({ 
+            severity: 'success', 
+            summary: this.translate.instant('TOAST.SUCCESS'), 
+            detail: this.translate.instant('PRODUITS.MSGS.SAVE_SUCCESS_ADD') 
+          });
           this.displayDialog = false;
           this.loadProduits();
         },
-        error: (error) => {
+        error: (error: any) => {
           this.loading = false;
           const msg = error?.error?.message ?? error?.error?.error ?? error?.error?.detail;
           this.messageService.add({
             severity: 'error',
-            summary: 'Erreur',
-            detail: msg || (error?.status === 400 ? 'Données invalides (vérifiez référence, prix, TVA).' : 'Impossible d\'ajouter le produit')
+            summary: this.translate.instant('TOAST.ERROR'),
+            detail: msg || this.translate.instant('PRODUITS.MSGS.SAVE_ERROR')
           });
         }
       });
@@ -266,17 +282,21 @@ export class ProduitsComponent implements OnInit {
       this.produitService.updateProduit(this.selectedProduit.id, request).subscribe({
         next: () => {
           this.loading = false;
-          this.messageService.add({ severity: 'success', summary: 'Succès', detail: 'Produit modifié avec succès' });
+          this.messageService.add({ 
+            severity: 'success', 
+            summary: this.translate.instant('TOAST.SUCCESS'), 
+            detail: this.translate.instant('PRODUITS.MSGS.SAVE_SUCCESS_EDIT') 
+          });
           this.displayDialog = false;
           this.loadProduits();
         },
-        error: (error) => {
+        error: (error: any) => {
           this.loading = false;
           const msg = error?.error?.message ?? error?.error?.error ?? error?.error?.detail;
           this.messageService.add({
             severity: 'error',
-            summary: 'Erreur',
-            detail: msg || (error?.status === 400 ? 'Données invalides (vérifiez référence, prix, TVA).' : 'Impossible de modifier le produit')
+            summary: this.translate.instant('TOAST.ERROR'),
+            detail: msg || this.translate.instant('PRODUITS.MSGS.SAVE_ERROR')
           });
         }
       });
@@ -289,18 +309,25 @@ export class ProduitsComponent implements OnInit {
     }
 
     this.confirmationService.confirm({
-      message: 'Êtes-vous sûr de vouloir supprimer ce produit ?',
-
-      header: 'Confirmation',
+      message: this.translate.instant('PRODUITS.MSGS.DELETE_CONFIRM'),
+      header: this.translate.instant('TOAST.CONFIRMATION'),
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.produitService.deleteProduit(id).subscribe({
           next: () => {
-            this.messageService.add({ severity: 'success', summary: 'Succès', detail: 'Produit supprimé' });
+            this.messageService.add({ 
+              severity: 'success', 
+              summary: this.translate.instant('TOAST.SUCCESS'), 
+              detail: this.translate.instant('PRODUITS.MSGS.DELETE_SUCCESS') 
+            });
             this.loadProduits();
           },
           error: () => {
-            this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Impossible de supprimer le produit' });
+            this.messageService.add({ 
+              severity: 'error', 
+              summary: this.translate.instant('TOAST.ERROR'), 
+              detail: this.translate.instant('PRODUITS.MSGS.DELETE_ERROR') 
+            });
           }
         });
       }

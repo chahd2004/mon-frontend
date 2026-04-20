@@ -22,25 +22,25 @@
         <div class="profile-card">
           <div class="profile-card-header">
             <i class="pi pi-user header-icon"></i>
-            <h3>MON PROFIL</h3>
+            <h3>{{ 'PARAMETRES.MON_PROFIL.TITLE' | translate }}</h3>
           </div>
           <div class="profile-card-body">
             <div class="form-group">
-              <label>Email</label>
+              <label>{{ 'PARAMETRES.MON_PROFIL.EMAIL' | translate }}</label>
               <div class="email-field">
                 <input type="email" pInputText [(ngModel)]="userProfile.email" class="param-input" disabled>
                 <i class="pi pi-lock lock-icon"></i>
               </div>
             </div>
             <div class="form-group">
-              <label>Prénom</label>
-              <input type="text" pInputText [(ngModel)]="userProfile.prenom" class="param-input" placeholder="Votre prénom">
+              <label>{{ 'PARAMETRES.MON_PROFIL.PRENOM' | translate }}</label>
+              <input type="text" pInputText [(ngModel)]="userProfile.prenom" class="param-input" [placeholder]="'PARAMETRES.MON_PROFIL.PLACEHOLDER_PRENOM' | translate">
             </div>
             <div class="form-group">
-              <label>Nom</label>
-              <input type="text" pInputText [(ngModel)]="userProfile.nom" class="param-input" placeholder="Votre nom">
+              <label>{{ 'PARAMETRES.MON_PROFIL.NOM' | translate }}</label>
+              <input type="text" pInputText [(ngModel)]="userProfile.nom" class="param-input" [placeholder]="'PARAMETRES.MON_PROFIL.PLACEHOLDER_NOM' | translate">
             </div>
-            <button pButton label="Sauvegarder" class="btn-green profile-save-btn"
+            <button pButton [label]="'PARAMETRES.MON_PROFIL.BTN_SAVE' | translate" class="btn-green profile-save-btn"
               (click)="sauvegarderProfil()">
             </button>
           </div>
@@ -50,25 +50,25 @@
         <div class="profile-card">
           <div class="profile-card-header">
             <i class="pi pi-lock header-icon"></i>
-            <h3>MOT DE PASSE</h3>
+            <h3>{{ 'PARAMETRES.PASSWORD.TITLE' | translate }}</h3>
           </div>
           <div class="profile-card-body">
             <div class="form-group">
-              <label>Actuel</label>
+              <label>{{ 'PARAMETRES.PASSWORD.ACTUEL' | translate }}</label>
               <p-password [(ngModel)]="passwordData.ancien" [feedback]="false" [toggleMask]="true"
                 styleClass="password-field" inputStyleClass="param-input" placeholder="••••••••••"></p-password>
             </div>
             <div class="form-group">
-              <label>Nouveau</label>
+              <label>{{ 'PARAMETRES.PASSWORD.NOUVEAU' | translate }}</label>
               <p-password [(ngModel)]="passwordData.nouveau" [feedback]="true" [toggleMask]="true"
                 styleClass="password-field" inputStyleClass="param-input" placeholder="••••••••••"></p-password>
             </div>
             <div class="form-group">
-              <label>Confirmer</label>
+              <label>{{ 'PARAMETRES.PASSWORD.CONFIRMER' | translate }}</label>
               <p-password [(ngModel)]="passwordData.confirmation" [feedback]="false" [toggleMask]="true"
                 styleClass="password-field" inputStyleClass="param-input" placeholder="••••••••••"></p-password>
             </div>
-            <button pButton label="Changer" class="p-button-warning profile-save-btn"
+            <button pButton [label]="'PARAMETRES.PASSWORD.BTN_CHANGE' | translate" class="p-button-warning profile-save-btn"
               (click)="changerMotDePasse()">
             </button>
           </div>
@@ -78,26 +78,26 @@
         <div class="profile-card" *ngIf="!isSuperAdmin()">
           <div class="profile-card-header">
             <i class="pi pi-building header-icon"></i>
-            <h3>ENTREPRISE</h3>
+            <h3>{{ 'PARAMETRES.SOCIETE.TITLE' | translate }}</h3>
           </div>
           <div class="profile-card-body">
             <div class="form-group">
-              <label>Raison sociale</label>
+              <label>{{ 'PARAMETRES.SOCIETE.RAISON' | translate }}</label>
               <input type="text" pInputText [(ngModel)]="societeInfo.raison_sociale" class="param-input" placeholder="Acme SARL">
             </div>
             <div class="form-group">
-              <label>Téléphone</label>
+              <label>{{ 'PARAMETRES.SOCIETE.TEL' | translate }}</label>
               <input type="text" pInputText [(ngModel)]="societeInfo.telephone" class="param-input" placeholder="+216 71 123 456">
             </div>
             <div class="form-group">
-              <label>Adresse</label>
+              <label>{{ 'PARAMETRES.SOCIETE.ADRESSE' | translate }}</label>
               <input type="text" pInputText [(ngModel)]="societeInfo.adresse" class="param-input" placeholder="123 Rue de la Liberté, Tunis">
             </div>
             <div class="form-group">
-              <label>IBAN</label>
+              <label>{{ 'PARAMETRES.SOCIETE.IBAN' | translate }}</label>
               <input type="text" pInputText [(ngModel)]="societeInfo.iban" class="param-input" placeholder="TN59 1234 5678">
             </div>
-            <button pButton label="Sauvegarder" class="btn-green profile-save-btn"
+            <button pButton [label]="'PARAMETRES.SOCIETE.BTN_SAVE' | translate" class="btn-green profile-save-btn"
               (click)="sauvegarderSociete()">
             </button>
           </div>
@@ -119,7 +119,7 @@
               <i class="pi pi-globe pref-icon"></i>
               <div>
                 <span class="pref-title">{{ 'PARAMETRES.LANGUE' | translate }}</span>
-                <span class="pref-hint">Appliquée immédiatement</span>
+                <span class="pref-hint">{{ 'PARAMETRES.PREFS.LANG_HINT' | translate }}</span>
               </div>
             </div>
             <p-selectButton
@@ -130,8 +130,8 @@
               (onChange)="onLangueChange()">
             </p-selectButton>
             <div class="pref-preview">
-              <span *ngIf="preferences.langue === 'fr'">🇫🇷 Interface en Français — direction gauche → droite</span>
-              <span *ngIf="preferences.langue === 'en'">🇬🇧 Interface in English — left to right direction</span>
+              <span *ngIf="preferences.langue === 'fr'">{{ 'PARAMETRES.PREFS.LANG_FR_DESC' | translate }}</span>
+              <span *ngIf="preferences.langue === 'en'">{{ 'PARAMETRES.PREFS.LANG_EN_DESC' | translate }}</span>
             </div>
           </div>
 

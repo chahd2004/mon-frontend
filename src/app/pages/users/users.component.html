@@ -1,15 +1,20 @@
 <section class="page">
-  <h1>Utilisateurs</h1>
+  <h1>{{ 'USERS.TITLE' | translate }}</h1>
   <table>
     <thead>
-      <tr><th>ID</th><th>Email</th><th>Rôle</th><th>Statut</th></tr>
+      <tr>
+        <th>{{ 'USERS.TABLE.ID' | translate }}</th>
+        <th>{{ 'USERS.TABLE.EMAIL' | translate }}</th>
+        <th>{{ 'USERS.TABLE.ROLE' | translate }}</th>
+        <th>{{ 'USERS.TABLE.STATUS' | translate }}</th>
+      </tr>
     </thead>
     <tbody>
       <tr *ngFor="let u of users">
         <td>{{ u.id }}</td>
         <td>{{ u.email }}</td>
         <td>{{ u.role }}</td>
-        <td>{{ u.statut }}</td>
+        <td>{{ 'STATUS.' + u.statut | translate }}</td>
       </tr>
     </tbody>
   </table>

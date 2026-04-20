@@ -8,6 +8,7 @@ import { BonCommandeService } from '../../core/services/bon-commande.service';
 import { BonCommande } from '../../models/bon-commande.model';
 import { AuthService } from '../../core/services/auth.service';
 import { formatDocumentReference } from '../../shared/utils/reference-format.util';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 interface CommandeView {
   sourceId: number;
@@ -21,7 +22,7 @@ interface CommandeView {
 @Component({
   selector: 'app-commandes',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './commandes.component.html',
   styleUrls: ['./commandes.component.scss']
 })
@@ -30,6 +31,7 @@ export class CommandesComponent implements OnInit {
   private readonly bonCommandeService = inject(BonCommandeService);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly translate = inject(TranslateService);
 
   loading = false;
   showStats = true;
@@ -141,7 +143,7 @@ export class CommandesComponent implements OnInit {
       error: (error) => {
         this.loading = false;
         console.error('Erreur lors du chargement des commandes:', error);
-        this.errorMessage = error?.error?.message || 'Impossible de charger les commandes depuis le backend.';
+        this.errorMessage = error?.error?.message || this.translate.instant('COMMANDES.LOADING_ERROR') || 'Impossible de charger les commandes.';
       }
     });
   }
@@ -165,7 +167,7 @@ export class CommandesComponent implements OnInit {
         this.chargementBCs = false;
       },
       error: () => {
-        this.errorMessage = 'Impossible de charger les bons de commande.';
+        this.errorMessage = this.translate.instant('COMMANDES.CONVERT_MODAL.LOAD_ERROR') || 'Impossible de charger les bons de commande.';
         this.chargementBCs = false;
       }
     });
@@ -198,7 +200,7 @@ export class CommandesComponent implements OnInit {
 
   convertirBCSelectionne(): void {
     if (!this.selectedBCId) {
-      this.errorMessage = 'Veuillez selectionner un bon de commande confirme.';
+      this.errorMessage = this.translate.instant('COMMANDES.CONVERT_MODAL.SELECT_REQUIRED');
       return;
     }
 
@@ -212,15 +214,15 @@ export class CommandesComponent implements OnInit {
       next: () => {
         this.converting = false;
         this.closeConvertModal();
-        this.successMessage = 'Bon de commande converti en commande avec succes.';
+        this.successMessage = this.translate.instant('COMMANDES.CONVERT_MODAL.SUCCESS');
         this.loadCommandes();
       },
-      error: (error) => {
+      error: (error: any) => {
         this.converting = false;
         this.errorMessage =
           error?.error?.message ||
           error?.error?.error ||
-          'Erreur lors de la conversion du bon de commande en commande.';
+          this.translate.instant('COMMANDES.CONVERT_MODAL.ERROR');
       }
     });
   }
@@ -268,11 +270,11 @@ export class CommandesComponent implements OnInit {
     const id = item.sourceId;
     this.commandeService.confirmer(id).subscribe({
       next: () => {
-        this.successMessage = `Commande ${item.numero} confirmée avec succès.`;
+        this.successMessage = this.translate.instant('COMMANDES.MSGS.CONFIRM_SUCCESS', { id: item.numero });
         this.loadCommandes();
       },
-      error: (error) => {
-        this.errorMessage = error?.error?.message || `Impossible de confirmer la commande ${item.numero}.`;
+      error: (error: any) => {
+        this.errorMessage = error?.error?.message || this.translate.instant('COMMANDES.MSGS.CONFIRM_ERROR', { id: item.numero });
       }
     });
   }
@@ -281,11 +283,11 @@ export class CommandesComponent implements OnInit {
     const id = item.sourceId;
     this.commandeService.demarrer(id).subscribe({
       next: () => {
-        this.successMessage = `Production démarrée pour la commande ${item.numero}.`;
+        this.successMessage = this.translate.instant('COMMANDES.MSGS.START_PROD_SUCCESS', { id: item.numero });
         this.loadCommandes();
       },
-      error: (error) => {
-        this.errorMessage = error?.error?.message || `Impossible de démarrer la production pour la commande ${item.numero}.`;
+      error: (error: any) => {
+        this.errorMessage = error?.error?.message || this.translate.instant('COMMANDES.MSGS.START_PROD_ERROR', { id: item.numero });
       }
     });
   }
@@ -294,27 +296,27 @@ export class CommandesComponent implements OnInit {
     const id = item.sourceId;
     this.commandeService.marquerLivree(id).subscribe({
       next: () => {
-        this.successMessage = `Commande ${item.numero} marquée comme livrée.`;
+        this.successMessage = this.translate.instant('COMMANDES.MSGS.DELIVER_SUCCESS', { id: item.numero });
         this.loadCommandes();
       },
-      error: (error) => {
-        this.errorMessage = error?.error?.message || `Impossible de livrer la commande ${item.numero}.`;
+      error: (error: any) => {
+        this.errorMessage = error?.error?.message || this.translate.instant('COMMANDES.MSGS.DELIVER_ERROR', { id: item.numero });
       }
     });
   }
 
   annulerCommande(item: CommandeView): void {
     const id = item.sourceId;
-    const raison = prompt('Raison de l\'annulation :');
+    const raison = prompt(this.translate.instant('COMMANDES.MSGS.CANCEL_REASON_PROMPT'));
     if (!raison || raison.trim() === '') return;
 
     this.commandeService.annuler(id, raison).subscribe({
       next: () => {
-        this.successMessage = `Commande ${item.numero} annulée avec succès.`;
+        this.successMessage = this.translate.instant('COMMANDES.MSGS.CANCEL_SUCCESS', { id: item.numero });
         this.loadCommandes();
       },
-      error: (error) => {
-        this.errorMessage = error?.error?.message || `Impossible d'annuler la commande ${item.numero}.`;
+      error: (error: any) => {
+        this.errorMessage = error?.error?.message || this.translate.instant('COMMANDES.MSGS.CANCEL_ERROR', { id: item.numero });
       }
     });
   }
@@ -381,12 +383,13 @@ export class CommandesComponent implements OnInit {
     const map: Record<string, string> = {
       DRAFT: 'DRAFT',
       CONFIRMED: 'CONFIRMED',
-      IN_PROGRESS: 'IN PROGRESS',
+      IN_PROGRESS: 'IN_PROGRESS',
       DELIVERED: 'DELIVERED',
       CANCELLED: 'CANCELLED'
     };
 
-    return map[status] || status;
+    const key = map[status] || status;
+    return this.translate.instant('STATUS.' + key);
   }
 
   formatBonCommandeReference(item: BonCommande): string {

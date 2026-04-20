@@ -7,8 +7,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { Avoir, AvoirStatutLabel, AVOIR_STATUT_COLORS } from '../../models/avoir.model';
 
 import { FormsModule } from '@angular/forms';
-
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-avoirs',
@@ -21,6 +20,7 @@ export class AvoirsComponent implements OnInit {
   private readonly avoirService = inject(AvoirService);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly translate = inject(TranslateService);
 
   loading = false;
   errorMessage = '';
@@ -106,7 +106,7 @@ export class AvoirsComponent implements OnInit {
       error: (err) => {
         this.loading = false;
         console.error('❌ Erreur chargement avoirs:', err);
-        this.errorMessage = 'Impossible de charger les avoirs. Vérifiez la connexion au serveur.';
+        this.errorMessage = this.translate.instant('AVOIRS.MSGS.LOAD_ERROR') || 'Impossible de charger les avoirs.';
       }
     });
   }
@@ -124,12 +124,12 @@ export class AvoirsComponent implements OnInit {
     this.avoirService.envoyerAvoir(avoir.id).subscribe({
       next: () => {
         this.loadAvoirs();
-        this.infoMessage = `Avoir ${avoir.numAvoir} envoyé avec succès.`;
+        this.infoMessage = this.translate.instant('AVOIRS.MSGS.SEND_SUCCESS', { num: avoir.numAvoir });
         setTimeout(() => this.infoMessage = '', 3000);
       },
-      error: (err) => {
+      error: (err: any) => {
         this.loading = false;
-        this.errorMessage = 'Erreur lors de l\'envoi de l\'avoir.';
+        this.errorMessage = err?.error?.message || this.translate.instant('AVOIRS.MSGS.SEND_ERROR');
       }
     });
   }
@@ -139,12 +139,12 @@ export class AvoirsComponent implements OnInit {
     this.avoirService.validerAvoir(avoir.id).subscribe({
       next: () => {
         this.loadAvoirs();
-        this.infoMessage = `Avoir ${avoir.numAvoir} validé avec succès.`;
+        this.infoMessage = this.translate.instant('AVOIRS.MSGS.VALIDATE_SUCCESS', { num: avoir.numAvoir });
         setTimeout(() => this.infoMessage = '', 3000);
       },
-      error: (err) => {
+      error: (err: any) => {
         this.loading = false;
-        this.errorMessage = 'Erreur lors de la validation.';
+        this.errorMessage = err?.error?.message || this.translate.instant('AVOIRS.MSGS.VALIDATE_ERROR');
       }
     });
   }
@@ -154,12 +154,12 @@ export class AvoirsComponent implements OnInit {
     this.avoirService.appliquerAvoir(avoir.id).subscribe({
       next: () => {
         this.loadAvoirs();
-        this.infoMessage = `Avoir ${avoir.numAvoir} appliqué avec succès.`;
+        this.infoMessage = this.translate.instant('AVOIRS.MSGS.APPLY_SUCCESS', { num: avoir.numAvoir });
         setTimeout(() => this.infoMessage = '', 3000);
       },
-      error: (err) => {
+      error: (err: any) => {
         this.loading = false;
-        this.errorMessage = 'Erreur lors de l\'application.';
+        this.errorMessage = err?.error?.message || this.translate.instant('AVOIRS.MSGS.APPLY_ERROR');
       }
     });
   }

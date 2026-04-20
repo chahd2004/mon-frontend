@@ -1,9 +1,9 @@
 <div class="bl-page">
-  <h1 class="title">Bons de livraison</h1>
+  <h1 class="title">{{ 'BL.TITLE' | translate }}</h1>
 
   <div class="action-bar">
-    <button class="btn btn-neutral" *ngIf="!isViewer" (click)="depuisCommande()">Depuis commande</button>
-    <button class="btn btn-neutral" (click)="toggleStats()">Statistiques</button>
+    <button class="btn btn-neutral" *ngIf="!isViewer" (click)="depuisCommande()">{{ 'BL.ACTIONS.FROM_ORDER' | translate }}</button>
+    <button class="btn btn-neutral" (click)="toggleStats()">{{ 'BL.ACTIONS.STATS' | translate }}</button>
   </div>
 
   <div *ngIf="errorMessage" class="message error">{{ errorMessage }}</div>
@@ -11,8 +11,8 @@
 
   <div class="filters-row">
     <select [(ngModel)]="selectedStatus" [ngModelOptions]="{ standalone: true }">
-      <option value="ALL">Filtrer par statut</option>
-      <option *ngFor="let status of statusOptions" [ngValue]="status">{{ status }}</option>
+      <option value="ALL">{{ 'BL.FILTER_STATUS' | translate }}</option>
+      <option *ngFor="let status of statusOptions" [ngValue]="status">{{ 'STATUS.' + status | translate }}</option>
     </select>
   </div>
 
@@ -20,12 +20,12 @@
     <table>
       <thead>
         <tr>
-          <th>N°</th>
-          <th>Commande liee</th>
-          <th>Client</th>
-          <th>Date livraison</th>
-          <th>Statut</th>
-          <th>Actions</th>
+          <th>{{ 'BL.TABLE.NUM' | translate }}</th>
+          <th>{{ 'BL.TABLE.ORDER_LINK' | translate }}</th>
+          <th>{{ 'BL.TABLE.CLIENT' | translate }}</th>
+          <th>{{ 'BL.TABLE.DATE' | translate }}</th>
+          <th>{{ 'BL.TABLE.STATUS' | translate }}</th>
+          <th>{{ 'BL.TABLE.ACTIONS' | translate }}</th>
         </tr>
       </thead>
       <tbody>
@@ -35,7 +35,7 @@
           <td>{{ item.client }}</td>
           <td>{{ item.dateLivraison | date:'dd/MM/yyyy' }}</td>
           <td>
-            <span class="status" [ngClass]="getStatusClass(item.statut)">{{ item.statut }}</span>
+            <span class="status" [ngClass]="getStatusClass(item.statut)">{{ 'STATUS.' + item.statut | translate }}</span>
           </td>
           <td>
             <div class="row-actions">
@@ -59,62 +59,62 @@
           </td>
         </tr>
         <tr *ngIf="!filteredBonsLivraison.length">
-          <td colspan="6" class="empty">Aucun bon de livraison trouve.</td>
+          <td colspan="6" class="empty">{{ 'BL.EMPTY' | translate }}</td>
         </tr>
       </tbody>
     </table>
   </div>
 
   <div class="stats-card" *ngIf="showStats">
-    <h2>Statuts bons de livraison</h2>
+    <h2>{{ 'BL.STATS_TITLE' | translate }}</h2>
     <div class="stats-line"></div>
     <div class="stats-container">
       <div class="stat-badge draft">
-        <span class="stat-label">DRAFT</span>
+        <span class="stat-label">{{ 'STATUS.DRAFT' | translate }}</span>
         <span class="stat-count">{{ draftCount }}</span>
       </div>
       <div class="stat-badge delivered">
-        <span class="stat-label">DELIVERED</span>
+        <span class="stat-label">{{ 'STATUS.DELIVERED' | translate }}</span>
         <span class="stat-count">{{ deliveredCount }}</span>
       </div>
       <div class="stat-badge signed-client">
-        <span class="stat-label">SIGNED</span>
+        <span class="stat-label">{{ 'STATUS.SIGNED' | translate }}</span>
         <span class="stat-count">{{ signedCount }}</span>
       </div>
       <div class="stat-badge dispute">
-        <span class="stat-label">DISPUTE</span>
+        <span class="stat-label">{{ 'STATUS.DISPUTE' | translate }}</span>
         <span class="stat-count">{{ disputeCount }}</span>
       </div>
       <div class="stat-badge closed" *ngIf="closedCount > 0">
-        <span class="stat-label">CLOSED</span>
+        <span class="stat-label">{{ 'STATUS.CLOSED' | translate }}</span>
         <span class="stat-count">{{ closedCount }}</span>
       </div>
     </div>
   </div>
 
   <div class="dispute-card" *ngIf="disputes.length">
-    <h2>Litiges en cours</h2>
+    <h2>{{ 'BL.DISPUTES_TITLE' | translate }}</h2>
     <div class="dispute-item" *ngFor="let item of disputes">
       <strong>{{ item.numeroBL }}</strong> - {{ item.client }} <br/>
-      <span class="reason">Motif: {{ item.disputeReason || 'A préciser' }}</span>
+      <span class="reason">{{ 'BL.DISPUTE_REASON_LABEL' | translate }} {{ item.disputeReason || ('BL.DISPUTE_REASON_UNKNOWN' | translate) }}</span>
     </div>
   </div>
 
   <ng-template #loadingTpl>
-    <div class="loading">Chargement des bons de livraison...</div>
+    <div class="loading">{{ 'BL.LOADING' | translate }}</div>
   </ng-template>
 </div>
 
 <div class="modal-backdrop" *ngIf="displayConvertModal" (click)="fermerConvertModal()">
   <div class="modal-card" (click)="$event.stopPropagation()">
     <div class="modal-header">
-      <h3>Convertir une commande en bon de livraison</h3>
+      <h3>{{ 'BL.CONVERT_MODAL.TITLE' | translate }}</h3>
       <button type="button" class="modal-close" (click)="fermerConvertModal()">x</button>
     </div>
 
-    <p class="modal-subtitle">Selectionnez une commande en cours a convertir :</p>
+    <p class="modal-subtitle">{{ 'BL.CONVERT_MODAL.SUBTITLE' | translate }}</p>
 
-    <input type="text" class="search-input" placeholder="Rechercher une commande..." [(ngModel)]="conversionSearch"
+    <input type="text" class="search-input" [placeholder]="'BL.CONVERT_MODAL.SEARCH_PLACEHOLDER' | translate" [(ngModel)]="conversionSearch"
       [ngModelOptions]="{ standalone: true }" />
 
     <div class="table-wrapper modal-table" *ngIf="!loadingConfirmedCommandes; else loadingCommandesTpl">
@@ -122,11 +122,11 @@
         <thead>
           <tr>
             <th>Selection</th>
-            <th>N° Commande</th>
-            <th>Client</th>
-            <th>Date</th>
-            <th>Montant TTC</th>
-            <th>Statut</th>
+            <th>{{ 'BL.TABLE.ORDER_LINK' | translate }}</th>
+            <th>{{ 'BL.TABLE.CLIENT' | translate }}</th>
+            <th>{{ 'BL.TABLE.DATE' | translate }}</th>
+            <th>{{ 'BL.TABLE.TOTAL' | translate }}</th>
+            <th>{{ 'BL.TABLE.STATUS' | translate }}</th>
           </tr>
         </thead>
         <tbody>
@@ -142,27 +142,27 @@
             <td><span class="status in-progress">EN PROGRES</span></td>
           </tr>
           <tr *ngIf="!confirmedCommandes.length">
-            <td colspan="6" class="empty">Aucune commande en cours trouvee.</td>
+            <td colspan="6" class="empty">{{ 'BL.CONVERT_MODAL.EMPTY' | translate }}</td>
           </tr>
         </tbody>
       </table>
     </div>
 
     <ng-template #loadingCommandesTpl>
-      <div class="loading">Chargement des commandes en cours...</div>
+      <div class="loading">{{ 'BL.CONVERT_MODAL.LOADING' | translate }}</div>
     </ng-template>
 
     <div class="field">
-      <label>Notes (optionnel)</label>
+      <label>{{ 'BL.CONVERT_MODAL.NOTES_LABEL' | translate }}</label>
       <textarea rows="3" [(ngModel)]="conversionNotes" [ngModelOptions]="{ standalone: true }"
-        placeholder="Ajouter une note..."></textarea>
+        [placeholder]="'BL.CONVERT_MODAL.NOTES_PLACEHOLDER' | translate"></textarea>
     </div>
 
     <div class="modal-actions">
-      <button type="button" class="btn btn-neutral" (click)="fermerConvertModal()">Annuler</button>
+      <button type="button" class="btn btn-neutral" (click)="fermerConvertModal()">{{ 'BL.CONVERT_MODAL.BTN_CANCEL' | translate }}</button>
       <button type="button" class="btn btn-primary" [disabled]="converting || !selectedCommandeId"
         (click)="convertirCommandeSelectionnee()">
-        {{ converting ? 'Conversion...' : 'Convertir' }}
+        {{ converting ? ('BL.CONVERT_MODAL.CONVERTING' | translate) : ('BL.CONVERT_MODAL.BTN_CONVERT' | translate) }}
       </button>
     </div>
   </div>

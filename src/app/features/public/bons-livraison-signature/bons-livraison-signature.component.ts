@@ -3,7 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { BonLivraisonService } from '../../../core/services/bon-livraison.service';
+import { SignatureService } from '../../../core/services/signature.service';
 import { BonLivraison } from '../../../models/bon-livraison.model';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 // PrimeNG
 import { InputTextModule } from 'primeng/inputtext';
@@ -21,7 +23,8 @@ import { MessageService } from 'primeng/api';
     InputTextModule,
     ButtonModule,
     FileUploadModule,
-    ToastModule
+    ToastModule,
+    TranslateModule
   ],
   providers: [MessageService],
   templateUrl: './bons-livraison-signature.component.html',
@@ -30,6 +33,8 @@ import { MessageService } from 'primeng/api';
 export class BonsLivraisonSignatureComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly blService = inject(BonLivraisonService);
+  private readonly signatureService = inject(SignatureService);
+  private readonly translate = inject(TranslateService);
 
   // BL data
   bonLivraison: BonLivraison | null = null;
@@ -42,12 +47,13 @@ export class BonsLivraisonSignatureComponent implements OnInit {
   password = '';
   signing = false;
   signatureReussie = false;
+  dejaSigne = false;
 
   ngOnInit(): void {
     const ref = this.route.snapshot.paramMap.get('ref') || '';
     if (!ref) {
       this.loading = false;
-      this.errorMessage = 'Référence de bon de livraison invalide.';
+      this.errorMessage = this.translate.instant('PUBLIC_SIGNATURE.NOT_FOUND_BL');
       return;
     }
     this.resolveBL(ref);
@@ -66,10 +72,13 @@ export class BonsLivraisonSignatureComponent implements OnInit {
           return;
         }
         this.bonLivraison = bl;
+        if (this.bonLivraison.statut === 'SIGNED_CLIENT') {
+          this.dejaSigne = true;
+        }
         this.loading = false;
       },
       error: () => {
-        this.errorMessage = 'Impossible de charger les données du bon de livraison.';
+        this.errorMessage = this.translate.instant('PUBLIC_SIGNATURE.NOT_FOUND_BL');
         this.loading = false;
       }
     });
@@ -86,22 +95,35 @@ export class BonsLivraisonSignatureComponent implements OnInit {
     return !!this.selectedFile && this.password.trim().length > 0 && !this.signing;
   }
 
-  signer(): void {
+  async signer(): Promise<void> {
     if (!this.bonLivraison || !this.selectedFile || !this.canSign()) return;
 
     this.signing = true;
     this.errorMessage = '';
 
-    this.blService.signerParClient(this.bonLivraison.id, this.selectedFile, this.password).subscribe({
-      next: () => {
-        this.signing = false;
-        this.signatureReussie = true;
-      },
-      error: (err) => {
-        this.signing = false;
-        this.errorMessage = err?.error?.message || 'Erreur lors de la signature. Vérifiez votre certificat et mot de passe.';
-      }
-    });
+    try {
+      // 1. Récupérer le XML brut
+      const xmlBrut = await this.signatureService.getXmlBrutBL(this.bonLivraison.id);
+
+      // 2. Signer localement
+      const xmlSigne = await this.signatureService.signerXAdES(
+        this.selectedFile,
+        this.password,
+        xmlBrut,
+        this.bonLivraison.id
+      );
+
+      // 3. Envoyer le XML signé
+      await this.signatureService.envoyerXmlSigneBL(this.bonLivraison.id, xmlSigne);
+
+      this.signing = false;
+      this.signatureReussie = true;
+
+    } catch (err: any) {
+      this.signing = false;
+      this.errorMessage = err?.message || 'Erreur lors de la signature. Vérifiez votre certificat et mot de passe.';
+      console.error('Signature error:', err);
+    }
   }
 
   fermer(): void {

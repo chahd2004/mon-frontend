@@ -1,9 +1,9 @@
 <section class="page">
-  <h1>Mon profil</h1>
+  <h1>{{ 'PARAMETRES.PROFIL' | translate }}</h1>
   <div class="form">
-    <input [(ngModel)]="nom" placeholder="Nom" />
-    <input [(ngModel)]="prenom" placeholder="Prénom" />
-    <input [(ngModel)]="email" placeholder="Email" />
-    <button (click)="enregistrer()">Enregistrer</button>
+    <input [(ngModel)]="nom" [placeholder]="'PARAMETRES.MON_PROFIL.NOM' | translate" />
+    <input [(ngModel)]="prenom" [placeholder]="'PARAMETRES.MON_PROFIL.PRENOM' | translate" />
+    <input [(ngModel)]="email" [placeholder]="'PARAMETRES.MON_PROFIL.EMAIL' | translate" />
+    <button (click)="enregistrer()">{{ 'COMMON.SAVE' | translate }}</button>
   </div>
 </section>

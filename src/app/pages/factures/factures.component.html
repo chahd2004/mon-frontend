@@ -27,9 +27,10 @@
   </div>
 
   <!-- Tableau -->
-  <p-card>
-    <p-table [value]="factures" [rows]="rowsPerPage" [totalRecords]="totalRecords" [loading]="loading" [lazy]="true"
-      (onPageChange)="onPageChange($event)" responsiveLayout="scroll">
+  <p-table [value]="factures" [rows]="rowsPerPage" [totalRecords]="totalRecords" [loading]="loading" [lazy]="true"
+    [paginator]="true" [rowsPerPageOptions]="rowsOptions"
+    (onLazyLoad)="loadFacturesLazy($event)" responsiveLayout="scroll"
+    styleClass="p-datatable-sm p-datatable-striped factures-table">
       <ng-template pTemplate="header">
         <tr>
           <th>{{ 'FACTURES.TABLE.NUM' | translate }}</th>
@@ -147,7 +148,6 @@
         </tr>
       </ng-template>
     </p-table>
-  </p-card>
 
 
 
@@ -156,64 +156,8 @@
 
   <!-- Popup Signature Électronique -->
   <p-dialog [(visible)]="showSignatureModal" [modal]="true" [header]="' '" [style]="{width: '500px'}"
-    [closable]="!isSigning" (onHide)="closeSignatureModal()" styleClass="signature-dialog">
-    <div class="signature-popup-content">
-
-      <!-- Étape 1 : Formulaire de Signature -->
-      <ng-container *ngIf="!signatureSuccess">
-        <div class="signature-header">
-          <h3>SIGNATURE ÉLECTRONIQUE</h3>
-          <div class="divider"></div>
-        </div>
-
-        <div class="signature-body">
-          <div class="input-group">
-            <label>Fichier .p12 :</label>
-            <div class="file-picker-wrapper">
-              <p-fileUpload mode="basic" name="p12File" accept=".p12,.pfx" [auto]="true" [chooseLabel]="'Parcourir'"
-                (onSelect)="onFileSelect($event)" styleClass="custom-file-upload"></p-fileUpload>
-              <span class="selected-filename" *ngIf="selectedP12File">{{ selectedP12File.name }}</span>
-              <span class="placeholder-filename" *ngIf="!selectedP12File">virtualtoken.p12</span>
-            </div>
-          </div>
-
-          <div class="input-group">
-            <label>Mot de passe :</label>
-            <div class="password-wrapper">
-              <!-- Input fantôme pour perturber l'autofill -->
-              <input type="text" name="hp_field" style="position: absolute; opacity: 0; pointer-events: none;">
-              
-              <input type="text" pInputText [(ngModel)]="signaturePassword" placeholder="• • • • • • • • • • • • •"
-                [disabled]="isSigning" class="masked-password-input" 
-                name="sig_token_field" id="sig_token_field" autocomplete="off">
-            </div>
-          </div>
-
-          <button class="btn-signer" (click)="confirmSignature()"
-            [disabled]="isSigning || !selectedP12File || !signaturePassword">
-            <i class="pi pi-check-circle" *ngIf="!isSigning"></i>
-            <i class="pi pi-spin pi-spinner" *ngIf="isSigning"></i>
-            SIGNER
-          </button>
-
-          <button class="btn-annuler" (click)="closeSignatureModal()" [disabled]="isSigning">
-            Annuler
-          </button>
-        </div>
-      </ng-container>
-
-      <!-- Étape 2 : Succès -->
-      <ng-container *ngIf="signatureSuccess">
-        <div class="signature-success-state">
-          <h3>SIGNATURE RÉUSSIE !</h3>
-          <div class="divider"></div>
-
-          <button class="btn-fermer" (click)="closeSignatureModal()">
-            Fermer
-          </button>
-        </div>
-      </ng-container>
-
-    </div>
+     (onHide)="closeSignatureModal()" styleClass="signature-dialog">
+    <app-signature *ngIf="currentFactureId" [factureId]="currentFactureId" 
+      (onComplete)="closeSignatureModal()"></app-signature>
   </p-dialog>
 </div>
