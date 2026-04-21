@@ -1,5 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -18,7 +19,7 @@ import { formatDocumentReference } from '../../shared/utils/reference-format.uti
 @Component({
   selector: 'app-devis-detail',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './devis-detail.component.html',
   styleUrls: ['./devis-detail.component.scss']
 })
@@ -29,6 +30,7 @@ export class DevisDetailComponent implements OnInit {
   private readonly clientService = inject(ClientService);
   private readonly produitService = inject(ProduitService);
   private readonly http = inject(HttpClient);
+  private readonly translate = inject(TranslateService);
 
   devisId = 0;
   devis: Devis | null = null;
@@ -276,18 +278,8 @@ export class DevisDetailComponent implements OnInit {
   }
 
   formatModePaiement(value?: string | null): string {
-    const map: Record<string, string> = {
-      VIREMENT: 'Virement bancaire',
-      CHEQUE: 'Cheque',
-      ESPECES: 'Especes',
-      CARTE: 'Carte bancaire'
-    };
-
-    if (!value) {
-      return '-';
-    }
-
-    return map[value] || value;
+    if (!value) return '-';
+    return this.translate.instant('FACTURE.PAYMENT_METHODS.' + value);
   }
 
   getStatutLabel(statut?: string): string {

@@ -19,7 +19,7 @@
     <div class="search-box">
       <i class="pi pi-search"></i>
       <input type="text" pInputText [placeholder]="'FACTURES.SEARCH_PLACEHOLDER' | translate" [(ngModel)]="searchText"
-        (keyup.enter)="onSearch()" autocomplete="off" name="facture-search-field" id="facture-search-field">
+        (keyup.enter)="onSearch()" autocomplete="one-time-code" name="facture_search_query" id="facture_search_query">
       <button *ngIf="searchText" class="clear-search" (click)="resetFilters()">
         <i class="pi pi-times"></i>
       </button>

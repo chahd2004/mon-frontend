@@ -1,5 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
@@ -20,7 +21,7 @@ interface DevisLineForm {
 @Component({
   selector: 'app-devis-create',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './devis-create.component.html',
   styleUrls: ['./devis-create.component.scss']
 })
@@ -29,8 +30,11 @@ export class DevisCreateComponent implements OnInit {
   private readonly produitService = inject(ProduitService);
   private readonly devisService = inject(DevisService);
   private readonly authService = inject(AuthService);
+  private readonly translate = inject(TranslateService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+
+  private langSub?: any;
 
   clients: Client[] = [];
   produits: Produit[] = [];
@@ -61,39 +65,8 @@ export class DevisCreateComponent implements OnInit {
     region: 'TUNIS'
   };
 
-  regions: { label: string; value: RegionTunisie }[] = [
-    { label: 'Tunis', value: 'TUNIS' },
-    { label: 'Ariana', value: 'ARIANA' },
-    { label: 'Ben Arous', value: 'BEN_AROUS' },
-    { label: 'Manouba', value: 'MANOUBA' },
-    { label: 'Nabeul', value: 'NABEUL' },
-    { label: 'Zaghouan', value: 'ZAGHOUAN' },
-    { label: 'Bizerte', value: 'BIZERTE' },
-    { label: 'Beja', value: 'BEJA' },
-    { label: 'Jendouba', value: 'JENDOUBA' },
-    { label: 'Kef', value: 'KEF' },
-    { label: 'Siliana', value: 'SILIANA' },
-    { label: 'Sousse', value: 'SOUSSE' },
-    { label: 'Monastir', value: 'MONASTIR' },
-    { label: 'Mahdia', value: 'MAHDIA' },
-    { label: 'Sfax', value: 'SFAX' },
-    { label: 'Kairouan', value: 'KAIROUAN' },
-    { label: 'Kasserine', value: 'KASSERINE' },
-    { label: 'Sidi Bouzid', value: 'SIDI_BOUZID' },
-    { label: 'Gabes', value: 'GABES' },
-    { label: 'Medenine', value: 'MEDENINE' },
-    { label: 'Tataouine', value: 'TATAOUINE' },
-    { label: 'Gafsa', value: 'GAFSA' },
-    { label: 'Tozeur', value: 'TOZEUR' },
-    { label: 'Kebili', value: 'KEBILI' }
-  ];
-
-  modePaiementOptions = [
-    { value: 'VIREMENT', label: 'Virement bancaire' },
-    { value: 'CHEQUE', label: 'Cheque' },
-    { value: 'ESPECES', label: 'Especes' },
-    { value: 'CARTE', label: 'Carte bancaire' }
-  ] as const;
+  regions: any[] = [];
+  modePaiementOptions: any[] = [];
 
   get isEditMode(): boolean {
     return this.editId !== null;
@@ -104,7 +77,51 @@ export class DevisCreateComponent implements OnInit {
     const parsedId = Number(editIdParam || 0);
     this.editId = parsedId > 0 ? parsedId : null;
 
+    this.initTranslations();
     this.loadData();
+  }
+
+  private initTranslations(): void {
+    this.updateOptions();
+    this.langSub = this.translate.onLangChange.subscribe(() => {
+      this.updateOptions();
+    });
+  }
+
+  private updateOptions(): void {
+    this.regions = [
+      { label: this.translate.instant('DASHBOARD.REGIONS.TUNIS'), value: 'TUNIS' },
+      { label: this.translate.instant('DASHBOARD.REGIONS.ARIANA'), value: 'ARIANA' },
+      { label: this.translate.instant('DASHBOARD.REGIONS.BEN_AROUS'), value: 'BEN_AROUS' },
+      { label: this.translate.instant('DASHBOARD.REGIONS.MANOUBA'), value: 'MANOUBA' },
+      { label: this.translate.instant('DASHBOARD.REGIONS.NABEUL'), value: 'NABEUL' },
+      { label: this.translate.instant('DASHBOARD.REGIONS.ZAGHOUAN'), value: 'ZAGHOUAN' },
+      { label: this.translate.instant('DASHBOARD.REGIONS.BIZERTE'), value: 'BIZERTE' },
+      { label: this.translate.instant('DASHBOARD.REGIONS.BEJA'), value: 'BEJA' },
+      { label: this.translate.instant('DASHBOARD.REGIONS.JENDOUBA'), value: 'JENDOUBA' },
+      { label: this.translate.instant('DASHBOARD.REGIONS.KEF'), value: 'KEF' },
+      { label: this.translate.instant('DASHBOARD.REGIONS.SILIANA'), value: 'SILIANA' },
+      { label: this.translate.instant('DASHBOARD.REGIONS.SOUSSE'), value: 'SOUSSE' },
+      { label: this.translate.instant('DASHBOARD.REGIONS.MONASTIR'), value: 'MONASTIR' },
+      { label: this.translate.instant('DASHBOARD.REGIONS.MAHDIA'), value: 'MAHDIA' },
+      { label: this.translate.instant('DASHBOARD.REGIONS.SFAX'), value: 'SFAX' },
+      { label: this.translate.instant('DASHBOARD.REGIONS.KAIROUAN'), value: 'KAIROUAN' },
+      { label: this.translate.instant('DASHBOARD.REGIONS.KASSERINE'), value: 'KASSERINE' },
+      { label: this.translate.instant('DASHBOARD.REGIONS.SIDI_BOUZID'), value: 'SIDI_BOUZID' },
+      { label: this.translate.instant('DASHBOARD.REGIONS.GABES'), value: 'GABES' },
+      { label: this.translate.instant('DASHBOARD.REGIONS.MEDENINE'), value: 'MEDENINE' },
+      { label: this.translate.instant('DASHBOARD.REGIONS.TATAOUINE'), value: 'TATAOUINE' },
+      { label: this.translate.instant('DASHBOARD.REGIONS.GAFSA'), value: 'GAFSA' },
+      { label: this.translate.instant('DASHBOARD.REGIONS.TOZEUR'), value: 'TOZEUR' },
+      { label: this.translate.instant('DASHBOARD.REGIONS.KEBILI'), value: 'KEBILI' }
+    ];
+
+    this.modePaiementOptions = [
+      { label: this.translate.instant('FACTURE.PAYMENT_METHODS.VIREMENT'), value: 'VIREMENT' },
+      { label: this.translate.instant('FACTURE.PAYMENT_METHODS.CHEQUE'), value: 'CHEQUE' },
+      { label: this.translate.instant('FACTURE.PAYMENT_METHODS.ESPECES'), value: 'ESPECES' },
+      { label: this.translate.instant('FACTURE.PAYMENT_METHODS.CARTE'), value: 'CARTE' }
+    ];
   }
 
   retourAuxDevis(): void {
@@ -412,5 +429,11 @@ export class DevisCreateComponent implements OnInit {
 
   private generateClientCode(): string {
     return `CL-${Date.now().toString().slice(-8)}`;
+  }
+
+  ngOnDestroy(): void {
+    if (this.langSub) {
+      this.langSub.unsubscribe();
+    }
   }
 }

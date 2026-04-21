@@ -28,7 +28,7 @@
 
       <label>
         <span>{{ 'COLLABORATEURS.FORM.ROLE' | translate }}</span>
-        <input [value]="'COLLABORATEURS.FORM.ROLE_VIEWER' | translate" disabled />
+        <input [value]="'ROLES.' + role | translate" disabled />
       </label>
 
       <label>
@@ -63,7 +63,7 @@
       <tr *ngFor="let c of collaborateurs">
         <td>{{ c.prenom }} {{ c.nom }}</td>
         <td>{{ c.email }}</td>
-        <td>{{ c.role }}</td>
+        <td>{{ 'ROLES.' + c.role | translate }}</td>
         <td class="actions">
           <button *ngIf="c.role !== 'ENTREPRISE_ADMIN'" class="danger action-btn" (click)="supprimerCollaborateur(c)">
             {{ 'COMMON.DELETE' | translate }}

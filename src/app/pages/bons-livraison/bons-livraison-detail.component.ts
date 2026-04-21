@@ -1,5 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -19,7 +20,7 @@ interface LigneLivraisonView {
 @Component({
   selector: 'app-bons-livraison-detail',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './bons-livraison-detail.component.html',
   styleUrls: ['./bons-livraison-detail.component.scss']
 })
@@ -28,6 +29,7 @@ export class BonsLivraisonDetailComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly bonLivraisonService = inject(BonLivraisonService);
   private readonly clientService = inject(ClientService);
+  private readonly translate = inject(TranslateService);
 
   livraisonId = 0;
   livraison: BonLivraison | null = null;
@@ -59,26 +61,18 @@ export class BonsLivraisonDetailComponent implements OnInit {
 
   get statusLabel(): string {
     const map: Record<string, string> = {
-      DRAFT: 'DRAFT',
-      DELIVERED: 'DELIVERED',
-      SIGNED_CLIENT: 'SIGNED_CLIENT',
-      DISPUTE: 'DISPUTE',
-      CLOSED: 'CLOSED'
+      DRAFT: 'STATUS.DRAFT',
+      DELIVERED: 'STATUS.DELIVERED',
+      SIGNED_CLIENT: 'STATUS.SIGNED_CLIENT',
+      DISPUTE: 'STATUS.DISPUTE',
+      CLOSED: 'STATUS.CLOSED'
     };
 
-    return map[this.statusValue] || this.statusValue;
+    return this.translate.instant(map[this.statusValue] || this.statusValue);
   }
 
   get currentStatusText(): string {
-    const map: Record<string, string> = {
-      DRAFT: 'Brouillon',
-      DELIVERED: 'Livre',
-      SIGNED_CLIENT: 'Signe client',
-      DISPUTE: 'Litige',
-      CLOSED: 'Cloturé'
-    };
-
-    return map[this.statusValue] || this.statusValue;
+    return this.statusLabel;
   }
 
   get statusValue(): 'DRAFT' | 'DELIVERED' | 'SIGNED_CLIENT' | 'DISPUTE' | 'CLOSED' {
@@ -166,7 +160,7 @@ export class BonsLivraisonDetailComponent implements OnInit {
   copierLien(input: HTMLInputElement): void {
     input.select();
     document.execCommand('copy');
-    this.infoMessage = 'Lien copie dans le presse-papier.';
+    this.infoMessage = this.translate.instant('BONS_LIVRAISON.LINK_COPIED');
   }
 
 
@@ -178,7 +172,7 @@ export class BonsLivraisonDetailComponent implements OnInit {
     this.bonLivraisonService.marquerLivre(this.livraisonId).subscribe({
       next: () => {
         this.actionLoading = false;
-        this.infoMessage = 'Bon de livraison marque livre. Email envoye au client.';
+        this.infoMessage = this.translate.instant('BONS_LIVRAISON.MSGS.DELIVERED_SUCCESS');
         this.loadDetail();
       },
       error: (error) => {
@@ -205,7 +199,7 @@ export class BonsLivraisonDetailComponent implements OnInit {
     }
 
     if (this.statusValue === 'DELIVERED') {
-      this.infoMessage = 'Veuillez attendre la signature du client via le lien email.';
+      this.infoMessage = this.translate.instant('BONS_LIVRAISON.MSGS.WAIT_WAIT');
       this.errorMessage = '';
       return;
     }
@@ -228,7 +222,7 @@ export class BonsLivraisonDetailComponent implements OnInit {
     this.bonLivraisonService.cloturer(this.livraisonId, '').subscribe({
       next: () => {
         this.actionLoading = false;
-        this.infoMessage = 'Bon de livraison cloture avec succes.';
+        this.infoMessage = this.translate.instant('BONS_LIVRAISON.MSGS.CLOSED_SUCCESS');
         this.loadDetail();
       },
       error: (err) => {
@@ -239,23 +233,15 @@ export class BonsLivraisonDetailComponent implements OnInit {
   }
 
   get actionStatutLabel(): string {
-    if (this.statusValue === 'DRAFT') {
-      return 'LIVRER';
-    }
+    const map: Record<string, string> = {
+      DRAFT: 'BONS_LIVRAISON.ACTIONS.DELIVER',
+      DELIVERED: 'BONS_LIVRAISON.ACTIONS.WAIT_SIGNATURE',
+      SIGNED_CLIENT: 'BONS_LIVRAISON.ACTIONS.CLOSE',
+      CLOSED: 'BONS_LIVRAISON.ACTIONS.CLOSED',
+      DISPUTE: 'BONS_LIVRAISON.ACTIONS.RESOLVE_DISPUTE'
+    };
 
-    if (this.statusValue === 'DELIVERED') {
-      return 'ATTENDRE SIGNATURE CLIENT';
-    }
-
-    if (this.statusValue === 'SIGNED_CLIENT') {
-      return 'CLOTURER';
-    }
-
-    if (this.statusValue === 'CLOSED') {
-      return 'CLOTURE';
-    }
-
-    return 'RESOUDRE LITIGE';
+    return this.translate.instant(map[this.statusValue] || 'BONS_LIVRAISON.ACTIONS.RESOLVE_DISPUTE');
   }
 
 

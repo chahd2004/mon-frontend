@@ -64,24 +64,9 @@
     </div>
   </section>
 
-  <div class="actions-footer no-print">
-    <!-- Mode Vue -->
-    <ng-container *ngIf="!editMode">
-      <button class="btn btn-primary" (click)="pdf()">TÉLÉCHARGER PDF</button>
-      
-      <button class="btn btn-warning" *ngIf="statusLabel === 'DRAFT'" (click)="modifier()">MODIFIER</button>
-      <button class="btn btn-success" *ngIf="statusLabel === 'DRAFT'" (click)="valider()">VALIDER L'AVOIR</button>
-      
-      <button class="btn btn-primary" *ngIf="statusLabel === 'VALIDATED'" (click)="envoyer()">ENVOYER AU CLIENT</button>
-      
-      <button class="btn btn-info" *ngIf="statusLabel === 'SENT'" (click)="appliquer()">APPLIQUER SUR LA FACTURE</button>
-    </ng-container>
-
-    <!-- Mode Edition -->
-    <ng-container *ngIf="editMode">
-      <button class="btn btn-success" (click)="enregistrer()">ENREGISTRER LES MODIFICATIONS</button>
-      <button class="btn btn-neutral" (click)="annulerEdition()">ANNULER</button>
-    </ng-container>
+  <div class="actions-footer no-print" *ngIf="editMode">
+    <button class="btn btn-success" (click)="enregistrer()">ENREGISTRER LES MODIFICATIONS</button>
+    <button class="btn btn-neutral" (click)="annulerEdition()">ANNULER</button>
   </div>
 
   <div class="message error" *ngIf="errorMessage">{{ errorMessage }}</div>

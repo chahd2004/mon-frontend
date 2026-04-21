@@ -68,7 +68,7 @@ export class BonCommandesComponent implements OnInit {
         this.loading = false;
       },
       error: () => {
-        this.errorMessage = this.translate.instant('BC.LOADING_ERROR') || 'Impossible de charger les bons de commande.';
+        this.errorMessage = this.translate.instant('BC.MSGS.LOADING_ERROR') || 'Impossible de charger les bons de commande.';
         this.loading = false;
       }
     });

@@ -27,7 +27,7 @@ import { FactureService } from '../../core/services/facture.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ErrorHandlerService } from '../../core/services/error-handler.service';
 import { FactureRefreshService } from '../../core/services/facture-refresh.service';
-import { Facture, StatutFacture, StatutFactureLabel } from '../../models/facture.model';
+import { Facture, StatutFacture } from '../../models/facture.model';
 
 @Component({
   selector: 'app-factures',
@@ -166,7 +166,7 @@ export class FacturesComponent implements OnInit, OnDestroy {
   }
 
   formatStatut(statut: string): string {
-    return StatutFactureLabel[statut] ?? statut;
+    return this.translate.instant('STATUS.' + statut);
   }
 
   // ===== NAVIGATION CORRIGÉE =====

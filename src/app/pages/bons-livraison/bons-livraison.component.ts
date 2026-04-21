@@ -160,7 +160,7 @@ export class BonsLivraisonComponent implements OnInit {
       },
       error: () => {
         this.loading = false;
-        this.errorMessage = this.translate.instant('BL.LOADING_ERROR') || 'Impossible de charger les bons de livraison.';
+        this.errorMessage = this.translate.instant('BL.MSGS.LOADING_ERROR') || 'Impossible de charger les bons de livraison.';
       }
     });
   }

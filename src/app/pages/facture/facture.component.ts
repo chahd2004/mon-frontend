@@ -23,7 +23,9 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../core/services/auth.service';
 import { ErrorHandlerService } from '../../core/services/error-handler.service';
 import { AvoirService } from '../../core/services/avoir.service';
-import { AvoirType } from '../../models/avoir.model';
+import { EmetteurService } from '../../core/services/emetteur.service';
+import { TranslateService } from '@ngx-translate/core';
+import { Facture, StatutFacture } from '../../models/facture.model';
 
 // QR Code
 import { QRCodeComponent } from 'angularx-qrcode';
@@ -91,6 +93,8 @@ export class FactureComponent implements OnInit {
   private http = inject(HttpClient);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private emetteurService = inject(EmetteurService);
+  private translate = inject(TranslateService);
   private messageService = inject(MessageService);
   private authService = inject(AuthService);
   private errorHandler = inject(ErrorHandlerService);
@@ -107,9 +111,9 @@ export class FactureComponent implements OnInit {
   get isViewer(): boolean { return this.authService.hasRole('ENTREPRISE_VIEWER'); }
 
   get pageTitle(): string {
-    if (this.mode === 'view') return 'Détail de la facture';
-    if (this.mode === 'edit') return 'Modifier la facture';
-    return 'Nouvelle facture';
+    if (this.mode === 'view') return this.translate.instant('FACTURES.ACTIONS.VIEW') + ' ' + this.translate.instant('FACTURE.TITLE');
+    if (this.mode === 'edit') return this.translate.instant('FACTURES.ACTIONS.EDIT') + ' ' + this.translate.instant('FACTURE.TITLE');
+    return this.translate.instant('FACTURES.NEW');
   }
 
   // ===== QR CODE =====
@@ -139,29 +143,14 @@ export class FactureComponent implements OnInit {
   produitSelectionne: Produit | null = null;
   quantiteAjout: number = 1;
 
-  // ===== OPTIONS =====
-  typeAcheteurOptions = [
-    { label: 'Client', value: 'CLIENT' },
-    { label: 'Émetteur', value: 'EMETTEUR' }
-  ];
-  modePaiementOptions = [
-    { label: 'Virement bancaire', value: 'VIREMENT' },
-    { label: 'Chèque', value: 'CHEQUE' },
-    { label: 'Espèces', value: 'ESPECES' },
-    { label: 'Carte bancaire', value: 'CARTE' }
-  ];
-
-  statutOptions = [
-    { label: 'Brouillon', value: 'DRAFT' },
-    { label: 'Signée', value: 'SIGNED' },
-    { label: 'Émise', value: 'SENT' },
-    { label: 'Payée', value: 'PAID' },
-    { label: 'Rejetée', value: 'REJECTED' },
-    { label: 'Annulée', value: 'CANCELLED' }
-  ];
+  typeAcheteurOptions: any[] = [];
+  modePaiementOptions: any[] = [];
+  statutOptions: any[] = [];
 
   loading = false;
   minDatePaiement: Date = new Date();
+
+  private langChangeSub?: any;
 
   ngOnInit(): void {
     const idParam = this.route.snapshot.paramMap.get('id');
@@ -178,9 +167,38 @@ export class FactureComponent implements OnInit {
       this.mode = 'view';
     }
 
+    this.initTranslations();
     this.loadEmetteurs();
     this.loadClients();
     this.loadProduits();
+  }
+
+  initTranslations(): void {
+    this.langChangeSub = this.translate.onLangChange.subscribe(() => {
+      this.initOptions();
+    });
+    this.initOptions();
+  }
+
+  initOptions(): void {
+    this.typeAcheteurOptions = [
+      { label: this.translate.instant('FACTURE.BUYER_TYPES.CLIENT'), value: 'CLIENT' },
+      { label: this.translate.instant('FACTURE.BUYER_TYPES.EMETTEUR'), value: 'EMETTEUR' }
+    ];
+    this.modePaiementOptions = [
+      { label: this.translate.instant('FACTURE.PAYMENT_METHODS.VIREMENT'), value: 'VIREMENT' },
+      { label: this.translate.instant('FACTURE.PAYMENT_METHODS.CHEQUE'), value: 'CHEQUE' },
+      { label: this.translate.instant('FACTURE.PAYMENT_METHODS.ESPECES'), value: 'ESPECES' },
+      { label: this.translate.instant('FACTURE.PAYMENT_METHODS.CARTE'), value: 'CARTE' }
+    ];
+    this.statutOptions = [
+      { label: this.translate.instant('STATUS.DRAFT'), value: 'DRAFT' },
+      { label: this.translate.instant('STATUS.SIGNED'), value: 'SIGNED' },
+      { label: this.translate.instant('STATUS.SENT'), value: 'SENT' },
+      { label: this.translate.instant('STATUS.PAID'), value: 'PAID' },
+      { label: this.translate.instant('STATUS.REJECTED'), value: 'REJECTED' },
+      { label: this.translate.instant('STATUS.CANCELLED'), value: 'CANCELLED' }
+    ];
   }
 
   // ===== CHARGEMENTS =====
@@ -302,8 +320,10 @@ export class FactureComponent implements OnInit {
 
   // ===== LIGNES =====
   get acheteurOptions(): { label: string; value: number }[] {
-    if (this.typeAcheteur === 'CLIENT') return this.clients.map(c => ({ label: c.raisonSociale, value: c.id }));
-    return this.emetteurs.map(e => ({ label: e.raisonSociale, value: e.id }));
+    const clients_labels = this.clients.map(c => ({ label: c.raisonSociale, value: c.id }));
+    const emetteurs_labels = this.emetteurs.map(e => ({ label: e.raisonSociale, value: e.id }));
+    if (this.typeAcheteur === 'CLIENT') return clients_labels;
+    return emetteurs_labels;
   }
 
   get produitOptions(): { label: string; value: number }[] {
@@ -382,8 +402,8 @@ export class FactureComponent implements OnInit {
       next: () => {
         this.loading = false;
         this.messageService.add({
-          severity: 'success', summary: 'Succès',
-          detail: this.isEditMode ? 'Facture modifiée avec succès' : 'Facture créée avec succès'
+          severity: 'success', summary: this.translate.instant('TOAST.SUCCESS'),
+          detail: this.isEditMode ? this.translate.instant('CLIENTS.MSGS.SAVE_SUCCESS_EDIT') : this.translate.instant('CLIENTS.MSGS.SAVE_SUCCESS_ADD')
         });
         this.factureRefresh.notifyRefresh();
         setTimeout(() => this.router.navigate(['/factures']), 1500);
@@ -403,7 +423,7 @@ export class FactureComponent implements OnInit {
     this.http.put<any>(`${environment.apiUrl}/factures/${this.factureId}/signer`, {}).subscribe({
       next: (f) => {
         this.statut = this.normalizeFrontStatut(f.statut);
-        this.messageService.add({ severity: 'success', summary: 'Signée', detail: 'Facture signée avec succès' });
+        this.messageService.add({ severity: 'success', summary: this.translate.instant('STATUS.SIGNED'), detail: this.translate.instant('SIGNATURE.SUCCESS_MSG') });
       },
       error: (err) => this.messageService.add({ severity: 'error', summary: 'Erreur', detail: this.errorHandler.extractErrorMessage(err) })
     });
@@ -415,7 +435,7 @@ export class FactureComponent implements OnInit {
     this.http.put<any>(`${environment.apiUrl}/factures/${this.factureId}/envoyer`, {}).subscribe({
       next: (f) => {
         this.statut = this.normalizeFrontStatut(f.statut);
-        this.messageService.add({ severity: 'success', summary: 'Envoyée', detail: 'Facture envoyée avec succès' });
+        this.messageService.add({ severity: 'success', summary: this.translate.instant('STATUS.SENT'), detail: this.translate.instant('FACTURES.MSGS.EMIT_SUCCESS') });
       },
       error: (err) => this.messageService.add({ severity: 'error', summary: 'Erreur', detail: this.errorHandler.extractErrorMessage(err) })
     });
@@ -427,7 +447,7 @@ export class FactureComponent implements OnInit {
     this.http.put<any>(`${environment.apiUrl}/factures/${this.factureId}/payer`, {}).subscribe({
       next: (f) => {
         this.statut = this.normalizeFrontStatut(f.statut);
-        this.messageService.add({ severity: 'success', summary: 'Payée', detail: 'Facture marquée comme payée' });
+        this.messageService.add({ severity: 'success', summary: this.translate.instant('STATUS.PAID'), detail: this.translate.instant('FACTURES.MSGS.PAY_SUCCESS') });
       },
       error: (err) => this.messageService.add({ severity: 'error', summary: 'Erreur', detail: this.errorHandler.extractErrorMessage(err) })
     });
@@ -441,7 +461,7 @@ export class FactureComponent implements OnInit {
     this.http.put<any>(`${environment.apiUrl}/factures/${this.factureId}/rejeter`, { raison }).subscribe({
       next: (f) => {
         this.statut = this.normalizeFrontStatut(f.statut);
-        this.messageService.add({ severity: 'warn', summary: 'Rejetée', detail: 'Facture rejetée' });
+        this.messageService.add({ severity: 'warn', summary: this.translate.instant('STATUS.REJECTED'), detail: this.translate.instant('FACTURES.MSGS.REJECT_SUCCESS') });
       },
       error: (err) => this.messageService.add({ severity: 'error', summary: 'Erreur', detail: this.errorHandler.extractErrorMessage(err) })
     });
@@ -459,8 +479,8 @@ export class FactureComponent implements OnInit {
         this.loading = false;
         this.messageService.add({
           severity: 'success',
-          summary: 'Facture annulée',
-          detail: `La facture ${this.numFact} a été annulée et un avoir a été créé.`
+          summary: this.translate.instant('FACTURES.MSGS.CANCEL_SUCCESS'),
+          detail: this.translate.instant('FACTURES.MSGS.CANCEL_SUCCESS')
         });
 
         // Rediriger vers la liste des avoirs après 1.5 secondes
@@ -483,7 +503,7 @@ export class FactureComponent implements OnInit {
     this.http.put<any>(`${environment.apiUrl}/factures/${this.factureId}/retour-brouillon`, {}).subscribe({
       next: (f) => {
         this.statut = this.normalizeFrontStatut(f.statut);
-        this.messageService.add({ severity: 'info', summary: 'Brouillon', detail: 'Facture remise en brouillon' });
+        this.messageService.add({ severity: 'info', summary: this.translate.instant('STATUS.DRAFT'), detail: this.translate.instant('FACTURES.MSGS.DRAFT_SUCCESS') });
       },
       error: (err) => this.messageService.add({ severity: 'error', summary: 'Erreur', detail: this.errorHandler.extractErrorMessage(err) })
     });
@@ -665,15 +685,7 @@ export class FactureComponent implements OnInit {
   }
 
   formatStatut(statut: string): string {
-    const map: Record<string, string> = {
-      DRAFT: 'Brouillon', BROUILLON: 'Brouillon',
-      SENT: 'Émise', EMISE: 'Émise',
-      PAID: 'Payée', PAYEE: 'Payée',
-      CANCELLED: 'Annulée', ANNULEE: 'Annulée',
-      SIGNED: 'Signée', REJECTED: 'Rejetée',
-      EN_ATTENTE: 'En attente', EN_RETARD: 'En retard'
-    };
-    return map[statut] ?? statut;
+    return this.translate.instant('STATUS.' + statut);
   }
 
   getStatutSeverity(statut: string): 'success' | 'warning' | 'danger' | 'info' | 'secondary' {
@@ -758,6 +770,12 @@ export class FactureComponent implements OnInit {
     };
 
     return map[value] || value || 'DRAFT';
+  }
+
+  ngOnDestroy(): void {
+    if (this.langChangeSub) {
+      this.langChangeSub.unsubscribe();
+    }
   }
 
   private toBackendStatut(statut: string): string {

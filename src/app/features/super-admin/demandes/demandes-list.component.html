@@ -2,8 +2,8 @@
   <p-toast></p-toast>
 
   <div class="page-header">
-    <h1>Gestion des demandes d'inscription</h1>
-    <p>Approuvez ou rejetez les demandes d'entreprise</p>
+    <h1>{{ 'SUPER_ADMIN.REQUESTS.TITLE' | translate }}</h1>
+    <p>{{ 'SUPER_ADMIN.REQUESTS.SUBTITLE' | translate }}</p>
   </div>
 
   <div class="filter-section">
@@ -12,7 +12,7 @@
       <input
         pInputText
         type="text"
-        placeholder="Rechercher par entreprise ou email..."
+        [placeholder]="'SUPER_ADMIN.REQUESTS.SEARCH_PLACEHOLDER' | translate"
         [(ngModel)]="searchTerm"
         (input)="onSearch()"
         class="search-input"
@@ -24,7 +24,7 @@
       optionValue="value"
       [(ngModel)]="selectedStatus"
       (onChange)="onStatusChange()"
-      placeholder="Filtrer par statut"
+      [placeholder]="'SUPER_ADMIN.REQUESTS.FILTER_STATUS' | translate"
       class="status-dropdown"
     ></p-dropdown>
 
@@ -42,12 +42,12 @@
     >
       <ng-template pTemplate="header">
         <tr class="table-header">
-          <th pSortableColumn="raisonSociale">Entreprise <p-sortIcon field="raisonSociale"></p-sortIcon></th>
-          <th pSortableColumn="email">Email <p-sortIcon field="email"></p-sortIcon></th>
-          <th pSortableColumn="region">Région <p-sortIcon field="region"></p-sortIcon></th>
-          <th pSortableColumn="status">Statut <p-sortIcon field="status"></p-sortIcon></th>
-          <th pSortableColumn="dateSoumission">Date <p-sortIcon field="dateSoumission"></p-sortIcon></th>
-          <th style="width: 150px; text-align: center;">Actions</th>
+          <th pSortableColumn="raisonSociale">{{ 'SUPER_ADMIN.REQUESTS.TABLE.COMPANY' | translate }} <p-sortIcon field="raisonSociale"></p-sortIcon></th>
+          <th pSortableColumn="email">{{ 'SUPER_ADMIN.REQUESTS.TABLE.EMAIL' | translate }} <p-sortIcon field="email"></p-sortIcon></th>
+          <th pSortableColumn="region">{{ 'SUPER_ADMIN.REQUESTS.TABLE.REGION' | translate }} <p-sortIcon field="region"></p-sortIcon></th>
+          <th pSortableColumn="status">{{ 'SUPER_ADMIN.REQUESTS.TABLE.STATUS' | translate }} <p-sortIcon field="status"></p-sortIcon></th>
+          <th pSortableColumn="dateSoumission">{{ 'SUPER_ADMIN.REQUESTS.TABLE.DATE' | translate }} <p-sortIcon field="dateSoumission"></p-sortIcon></th>
+          <th style="width: 150px; text-align: center;">{{ 'SUPER_ADMIN.REQUESTS.TABLE.ACTIONS' | translate }}</th>
         </tr>
       </ng-template>
 
@@ -71,7 +71,7 @@
               <button
                 pButton
                 icon="pi pi-eye"
-                pTooltip="Voir détails"
+                [pTooltip]="'FACTURES.ACTIONS.VIEW' | translate"
                 tooltipPosition="top"
                 class="p-button-text p-button-info"
                 (click)="viewDetails(demande.id)"
@@ -85,7 +85,7 @@
         <tr>
           <td colspan="6" class="empty-message">
             <i class="pi pi-inbox"></i>
-            <p>Aucune demande trouvée</p>
+            <p>{{ 'SUPER_ADMIN.REQUESTS.EMPTY' | translate }}</p>
           </td>
         </tr>
       </ng-template>

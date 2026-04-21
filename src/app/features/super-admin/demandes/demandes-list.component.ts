@@ -8,7 +8,9 @@ import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { DropdownModule } from 'primeng/dropdown';
 import { ToastModule } from 'primeng/toast';
+import { TooltipModule } from 'primeng/tooltip';
 import { MessageService } from 'primeng/api';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DemandeService } from '../../../core/services/demande.service';
 
 @Component({
@@ -16,7 +18,8 @@ import { DemandeService } from '../../../core/services/demande.service';
   standalone: true,
   imports: [
     CommonModule, FormsModule, ButtonModule, InputTextModule,
-    TableModule, TagModule, DropdownModule, ToastModule, RouterModule
+    TableModule, TagModule, DropdownModule, ToastModule, RouterModule, TranslateModule,
+    TooltipModule
   ],
   providers: [MessageService],
   templateUrl: './demandes-list.component.html',
@@ -26,6 +29,7 @@ export class DemandesListComponent implements OnInit {
   private demandeService = inject(DemandeService);
   private router = inject(Router);
   private messageService = inject(MessageService);
+  private translate = inject(TranslateService);
 
   demandes: any[] = [];
   filteredDemandes: any[] = [];
@@ -33,15 +37,20 @@ export class DemandesListComponent implements OnInit {
   searchTerm = '';
   selectedStatus: string | null = null;
 
-  statusOptions = [
-    { label: 'Toutes', value: null },
-    { label: 'En attente', value: 'REQUESTED' },
-    { label: 'Approuvées', value: 'APPROVED' },
-    { label: 'Rejetées', value: 'REJECTED' }
-  ];
+  statusOptions = [];
 
   ngOnInit(): void {
+    this.initStatusOptions();
     this.loadDemandes();
+  }
+
+  private initStatusOptions(): void {
+    this.statusOptions = [
+      { label: this.translate.instant('AVOIRS.STATUS.ALL'), value: null },
+      { label: this.translate.instant('STATUS.PENDING'), value: 'REQUESTED' },
+      { label: this.translate.instant('STATUS.APPROVED'), value: 'APPROVED' },
+      { label: this.translate.instant('STATUS.REJECTED'), value: 'REJECTED' }
+    ] as any;
   }
 
   loadDemandes(): void {
@@ -56,8 +65,8 @@ export class DemandesListComponent implements OnInit {
         this.isLoading = false;
         this.messageService.add({
           severity: 'error',
-          summary: 'Erreur',
-          detail: 'Impossible de charger les demandes.'
+          summary: this.translate.instant('TOAST.ERROR'),
+          detail: this.translate.instant('SUPER_ADMIN.REQUESTS.MSGS.LOAD_ERROR') || 'Impossible de charger les demandes.'
         });
       }
     });
@@ -86,12 +95,8 @@ export class DemandesListComponent implements OnInit {
   }
 
   getStatusLabel(status: string): string {
-    const labels: Record<string, string> = {
-      REQUESTED: 'En attente',
-      APPROVED: 'Approuvée',
-      REJECTED: 'Rejetée'
-    };
-    return labels[status] || status;
+    const key = `STATUS.${status === 'REQUESTED' ? 'PENDING' : status}`;
+    return this.translate.instant(key);
   }
 
   getStatusSeverity(status: string): 'warning' | 'success' | 'danger' | 'info' {

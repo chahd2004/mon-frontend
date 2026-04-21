@@ -2,10 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-demande-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslateModule],
   templateUrl: './demande-detail.component.html',
   styleUrl: './demande-detail.component.scss'
 })

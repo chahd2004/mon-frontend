@@ -55,6 +55,7 @@
           <td>
             <div class="row-actions">
               <button class="icon-btn" (click)="voirAvoir(avoir)" title="Voir"><i class="pi pi-eye"></i></button>
+              <button class="icon-btn" (click)="telechargerPdf(avoir)" title="PDF"><i class="pi pi-file-pdf" style="color: #e74c3c;"></i></button>
               
               <button class="icon-btn" *ngIf="avoir.statut === 'DRAFT'" (click)="modifierAvoir(avoir)" 
                 title="Modifier"><i class="pi pi-pencil"></i></button>

@@ -84,7 +84,7 @@ export class CollaborateursComponent {
               nom: currentUser.nom || '',
               email: currentUser.email,
               role: 'ENTREPRISE_ADMIN',
-              fonction: 'Administrateur',
+              fonction: this.translate.instant('ROLES.ENTREPRISE_ADMIN'),
               telephone: currentUser.telephone || ''
             });
           }
@@ -157,7 +157,7 @@ export class CollaborateursComponent {
             searchableMessage.includes('internal server error'));
 
         this.errorMessage = (isDuplicateEmail || isGenericInternalError)
-          ? this.translate.instant('PARAMS.MSGS.EMAIL_EXISTS') || 'Email déjà utilisé.'
+          ? this.translate.instant('PARAMETRES.MSGS.EMAIL_EXISTS') || 'Email déjà utilisé.'
           : backendMessage
             ? `${this.translate.instant('COLLABORATEURS.MSGS.CREATE_ERROR')}: ${backendMessage}`
             : this.translate.instant('COLLABORATEURS.MSGS.CREATE_ERROR');

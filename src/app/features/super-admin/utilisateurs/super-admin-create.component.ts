@@ -7,6 +7,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { CardModule } from 'primeng/card';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SuperAdminUserService, CreateSuperAdminRequest } from '../../../core/services/super-admin-user.service';
 
 @Component({
@@ -20,7 +21,8 @@ import { SuperAdminUserService, CreateSuperAdminRequest } from '../../../core/se
     ButtonModule,
     InputTextModule,
     CardModule,
-    ToastModule
+    ToastModule,
+    TranslateModule
   ],
   providers: [MessageService],
   templateUrl: './super-admin-create.component.html',
@@ -31,6 +33,7 @@ export class SuperAdminCreateComponent implements OnInit {
   private router = inject(Router);
   private messageService = inject(MessageService);
   private superAdminUserService = inject(SuperAdminUserService);
+  private translate = inject(TranslateService);
 
   createForm!: FormGroup;
   isLoading = false;
@@ -60,8 +63,8 @@ export class SuperAdminCreateComponent implements OnInit {
     if (!this.createForm.valid) {
       this.messageService.add({
         severity: 'error',
-        summary: 'Erreur',
-        detail: 'Veuillez remplir tous les champs correctement'
+        summary: this.translate.instant('TOAST.ERROR'),
+        detail: this.translate.instant('COMMON.FILL_ALL_FIELDS')
       });
       return;
     }
@@ -81,8 +84,8 @@ export class SuperAdminCreateComponent implements OnInit {
         this.isLoading = false;
         this.messageService.add({
           severity: 'success',
-          summary: 'Succès',
-          detail: 'Super Admin créé avec succès'
+          summary: this.translate.instant('TOAST.SUCCESS'),
+          detail: this.translate.instant('SUPER_ADMIN.USERS.MSGS.CREATE_SUCCESS')
         });
         setTimeout(() => {
           this.router.navigate(['/super-admin/users']);
@@ -90,10 +93,10 @@ export class SuperAdminCreateComponent implements OnInit {
       },
       error: (error) => {
         this.isLoading = false;
-        const errorMessage = error?.error?.message || 'Erreur lors de la création du Super Admin';
+        const errorMessage = error?.error?.message || this.translate.instant('SUPER_ADMIN.USERS.MSGS.CREATE_ERROR');
         this.messageService.add({
           severity: 'error',
-          summary: 'Erreur',
+          summary: this.translate.instant('TOAST.ERROR'),
           detail: errorMessage
         });
       }

@@ -6,6 +6,7 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
 import { CardModule } from 'primeng/card';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { UserDTO } from '../../../models';
 
 @Component({
@@ -13,7 +14,8 @@ import { UserDTO } from '../../../models';
   standalone: true,
   imports: [
     CommonModule, FormsModule, ReactiveFormsModule, RouterModule,
-    ButtonModule, InputTextModule, DropdownModule, CardModule
+    ButtonModule, InputTextModule, DropdownModule, CardModule,
+    TranslateModule
   ],
   templateUrl: './utilisateur-edit.component.html',
   styleUrl: './utilisateur-edit.component.scss'
@@ -22,21 +24,17 @@ export class UtilisateurEditComponent implements OnInit {
   private fb = inject(FormBuilder);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private translate = inject(TranslateService);
 
   editForm!: FormGroup;
   isLoading = false;
   isNew = false;
   user: UserDTO | null = null;
 
-  roleOptions = [
-    { label: 'Super Admin', value: 'SUPER_ADMIN' },
-    { label: 'Admin Entreprise', value: 'ENTREPRISE_ADMIN' },
-    { label: 'Lecteur Entreprise', value: 'ENTREPRISE_VIEWER' },
-    { label: 'Client', value: 'CLIENT' },
-    { label: 'Émetteur', value: 'EMETTEUR' }
-  ];
+  roleOptions = [];
 
   ngOnInit(): void {
+    this.initOptions();
     this.initForm();
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
@@ -44,6 +42,16 @@ export class UtilisateurEditComponent implements OnInit {
     } else {
       this.isNew = true;
     }
+  }
+
+  private initOptions(): void {
+    this.roleOptions = [
+      { label: this.translate.instant('ROLES.SUPER_ADMIN'), value: 'SUPER_ADMIN' },
+      { label: this.translate.instant('ROLES.ENTREPRISE_ADMIN'), value: 'ENTREPRISE_ADMIN' },
+      { label: this.translate.instant('ROLES.ENTREPRISE_VIEWER'), value: 'ENTREPRISE_VIEWER' },
+      { label: this.translate.instant('ROLES.CLIENT'), value: 'CLIENT' },
+      { label: this.translate.instant('ROLES.EMETTEUR'), value: 'EMETTEUR' }
+    ] as any;
   }
 
   private initForm(): void {

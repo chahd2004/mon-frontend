@@ -11,11 +11,12 @@ import { SuperAdminUserService } from '../../../core/services/super-admin-user.s
 import { AuthService } from '../../../core/services/auth.service';
 import { UserDTO, normalizeUserRole } from '../../../models';
 import { forkJoin } from 'rxjs';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-statistiques',
   standalone: true,
-  imports: [CommonModule, RouterModule, ButtonModule, CardModule, SkeletonModule, TableModule, TagModule],
+  imports: [CommonModule, RouterModule, ButtonModule, CardModule, SkeletonModule, TableModule, TagModule, TranslateModule],
   templateUrl: './statistiques.component.html',
   styleUrl: './statistiques.component.scss'
 })
@@ -23,6 +24,7 @@ export class StatistiquesComponent implements OnInit {
   private dashboardService = inject(DashboardService);
   private superAdminUserService = inject(SuperAdminUserService);
   private authService = inject(AuthService);
+  private translate = inject(TranslateService);
 
   isLoading = true;
 
@@ -30,10 +32,11 @@ export class StatistiquesComponent implements OnInit {
   currentUser = this.authService.currentUser;
   userFullName = computed(() => {
     const user = this.currentUser();
-    if (!user) return 'Administrateur';
+    const fallback = this.translate.instant('ROLES.ENTREPRISE_ADMIN'); // Or just 'Administrator'
+    if (!user) return fallback;
     const firstName = user.prenom || '';
     const lastName = user.nom || '';
-    return `${firstName} ${lastName}`.trim() || 'Administrateur';
+    return `${firstName} ${lastName}`.trim() || fallback;
   });
 
   // KPI Data

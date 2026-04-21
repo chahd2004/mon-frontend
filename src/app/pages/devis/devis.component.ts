@@ -96,7 +96,7 @@ export class DevisComponent implements OnInit {
         this.loading = false;
       },
       error: () => {
-        this.errorMessage = this.translate.instant('DEVIS.LOADING_ERROR') || 'Impossible de charger les devis.';
+        this.errorMessage = this.translate.instant('DEVIS.MSGS.LOADING_ERROR') || 'Impossible de charger les devis.';
         this.loading = false;
       }
     });

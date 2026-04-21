@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { BonCommandeService } from '../../../core/services/bon-commande.service';
+import { FactureService } from '../../../core/services/facture.service';
 import { SignatureService } from '../../../core/services/signature.service';
 import { BonCommande } from '../../../models/bon-commande.model';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -33,6 +34,7 @@ import { MessageService } from 'primeng/api';
 export class BonCommandeSignatureComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly bcService = inject(BonCommandeService);
+  private readonly factureService = inject(FactureService);
   private readonly signatureService = inject(SignatureService);
   private readonly translate = inject(TranslateService);
 
@@ -48,6 +50,9 @@ export class BonCommandeSignatureComponent implements OnInit {
   signing = false;
   signatureReussie = false;
   dejaSigne = false;
+
+  // Factures list
+  factures: any[] = [];
 
   ngOnInit(): void {
     const ref = this.route.snapshot.paramMap.get('ref') || '';
@@ -120,11 +125,26 @@ export class BonCommandeSignatureComponent implements OnInit {
       this.signing = false;
       this.signatureReussie = true;
 
+      // 4. Charger les factures pour les afficher
+      this.chargerFactures();
+
     } catch (err: any) {
       this.signing = false;
       this.errorMessage = err?.message || 'Erreur lors de la signature. Vérifiez votre certificat et mot de passe.';
       console.error('Signature error:', err);
     }
+  }
+
+  private chargerFactures(): void {
+    this.factureService.getAll().subscribe({
+      next: (factures) => {
+        this.factures = factures;
+      },
+      error: (err) => {
+        console.error('Erreur chargement factures:', err);
+        this.factures = [];
+      }
+    });
   }
 
   fermer(): void {

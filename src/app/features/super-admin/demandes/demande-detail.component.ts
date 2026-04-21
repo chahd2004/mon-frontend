@@ -10,6 +10,7 @@ import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { MessageService, ConfirmationService } from 'primeng/api';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DemandeService } from '../../../core/services/demande.service';
 
 @Component({
@@ -17,7 +18,8 @@ import { DemandeService } from '../../../core/services/demande.service';
   standalone: true,
   imports: [
     CommonModule, FormsModule, ButtonModule, CardModule, TagModule,
-    InputTextareaModule, ToastModule, ConfirmDialogModule, ProgressSpinnerModule
+    InputTextareaModule, ToastModule, ConfirmDialogModule, ProgressSpinnerModule,
+    TranslateModule
   ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './demande-detail.component.html',
@@ -29,6 +31,7 @@ export class DemandeDetailComponent implements OnInit {
   private demandeService = inject(DemandeService);
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
+  private translate = inject(TranslateService);
 
   demande: any = null;
   isLoading = false;
@@ -53,8 +56,8 @@ export class DemandeDetailComponent implements OnInit {
       error: () => {
         this.isLoading = false;
         this.messageService.add({
-          severity: 'error', summary: 'Erreur',
-          detail: 'Impossible de charger les détails de cette demande.'
+          severity: 'error', summary: this.translate.instant('TOAST.ERROR'),
+          detail: this.translate.instant('SUPER_ADMIN.REQUESTS.DETAIL.MSGS.LOAD_ERROR') || 'Impossible de charger les détails de cette demande.'
         });
       }
     });
@@ -62,11 +65,11 @@ export class DemandeDetailComponent implements OnInit {
 
   confirmerApprobation(): void {
     this.confirmationService.confirm({
-      message: `Approuver la demande de "${this.demande?.raisonSociale}" ? Un email avec les identifiants sera envoyé automatiquement.`,
-      header: 'Confirmation d\'approbation',
+      message: this.translate.instant('SUPER_ADMIN.REQUESTS.CONFIRMATIONS.APPROVE_MESSAGE', { company: this.demande?.raisonSociale }),
+      header: this.translate.instant('SUPER_ADMIN.REQUESTS.CONFIRMATIONS.APPROVE_HEADER'),
       icon: 'pi pi-check-circle',
-      acceptLabel: 'Approuver',
-      rejectLabel: 'Annuler',
+      acceptLabel: this.translate.instant('SUPER_ADMIN.REQUESTS.DETAIL.APPROVE'),
+      rejectLabel: this.translate.instant('COMMON.CANCEL'),
       acceptButtonStyleClass: 'p-button-success',
       accept: () => this.approuver()
     });
@@ -79,8 +82,8 @@ export class DemandeDetailComponent implements OnInit {
         this.actionLoading = false;
         this.demande.status = 'APPROVED';
         this.messageService.add({
-          severity: 'success', summary: 'Demande approuvée',
-          detail: 'Le compte a été créé et un email envoyé au responsable.'
+          severity: 'success', summary: this.translate.instant('SUPER_ADMIN.REQUESTS.CONFIRMATIONS.APPROVE_SUCCESS_TITLE'),
+          detail: this.translate.instant('SUPER_ADMIN.REQUESTS.CONFIRMATIONS.APPROVE_SUCCESS_DETAIL')
         });
         setTimeout(() => this.router.navigate(['/super-admin/demandes']), 2500);
       },
@@ -105,8 +108,8 @@ export class DemandeDetailComponent implements OnInit {
   rejeter(): void {
     if (!this.rejectionReason.trim()) {
       this.messageService.add({
-        severity: 'warn', summary: 'Validation',
-        detail: 'Veuillez entrer une raison de rejet.'
+        severity: 'warn', summary: this.translate.instant('SUPER_ADMIN.REQUESTS.CONFIRMATIONS.REJECT_WARN_TITLE'),
+        detail: this.translate.instant('SUPER_ADMIN.REQUESTS.CONFIRMATIONS.REJECT_WARN_DETAIL')
       });
       return;
     }
@@ -117,8 +120,8 @@ export class DemandeDetailComponent implements OnInit {
         this.demande.status = 'REJECTED';
         this.showRejectionForm = false;
         this.messageService.add({
-          severity: 'info', summary: 'Demande rejetée',
-          detail: 'La demande a été rejetée et un email a été envoyé.'
+          severity: 'info', summary: this.translate.instant('SUPER_ADMIN.REQUESTS.CONFIRMATIONS.REJECT_SUCCESS_TITLE'),
+          detail: this.translate.instant('SUPER_ADMIN.REQUESTS.CONFIRMATIONS.REJECT_SUCCESS_DETAIL')
         });
         setTimeout(() => this.router.navigate(['/super-admin/demandes']), 2500);
       },
@@ -135,12 +138,13 @@ export class DemandeDetailComponent implements OnInit {
   }
 
   getStatusLabel(): string {
-    const labels: Record<string, string> = {
-      REQUESTED: '⏳ En attente',
-      APPROVED: '✅ Approuvée',
-      REJECTED: '❌ Rejetée'
+    const status = this.demande?.status;
+    const key = `STATUS.${status === 'REQUESTED' ? 'PENDING' : status}`;
+    const localized = this.translate.instant(key);
+    const icons: Record<string, string> = {
+      REQUESTED: '⏳', APPROVED: '✅', REJECTED: '❌'
     };
-    return labels[this.demande?.status] || this.demande?.status || '';
+    return `${icons[status] || ''} ${localized}`.trim();
   }
 
   getStatusSeverity(): 'warning' | 'success' | 'danger' | 'info' {

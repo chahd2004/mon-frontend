@@ -1,5 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -22,7 +23,7 @@ interface BonLivraisonLie {
 @Component({
   selector: 'app-commande-detail',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './commande-detail.component.html',
   styleUrls: ['./commande-detail.component.scss']
 })
@@ -33,6 +34,7 @@ export class CommandeDetailComponent implements OnInit {
   private readonly clientService = inject(ClientService);
   private readonly produitService = inject(ProduitService);
   private readonly http = inject(HttpClient);
+  private readonly translate = inject(TranslateService);
 
   commandeId = 0;
   commande: BonCommande | null = null;
@@ -83,19 +85,16 @@ export class CommandeDetailComponent implements OnInit {
   }
 
   get statusHintMessage(): string {
-    if (this.commande?.statut?.toUpperCase() === 'CANCELLED') {
-      return 'Commande annulee.';
-    }
-
     const map: Record<string, string> = {
-      DRAFT: 'Commande en brouillon, vous pouvez modifier avant confirmation.',
-      CONFIRMED: 'Commande confirmee, prete a demarrer la production.',
-      IN_PROGRESS: 'Production en cours, suivez l avancement ci-dessus.',
-      DELIVERED: 'Commande livree, prete pour facturation.',
-      CANCELLED: 'Commande annulee.'
+      DRAFT: 'COMMANDES.HINTS.DRAFT',
+      CONFIRMED: 'COMMANDES.HINTS.CONFIRMED',
+      IN_PROGRESS: 'COMMANDES.HINTS.IN_PROGRESS',
+      DELIVERED: 'COMMANDES.HINTS.DELIVERED',
+      CANCELLED: 'COMMANDES.HINTS.CANCELLED'
     };
 
-    return map[this.statutNormalise] || 'Aucune information de statut.';
+    const key = map[this.statutNormalise] || 'COMMANDES.HINTS.NOT_DEFINED';
+    return this.translate.instant(key);
   }
 
   ngOnInit(): void {
@@ -282,14 +281,14 @@ export class CommandeDetailComponent implements OnInit {
     const normalized = this.toCommandeStatus(statut);
 
     const map: Record<string, string> = {
-      DRAFT: 'DRAFT',
-      CONFIRMED: 'CONFIRMED',
-      IN_PROGRESS: 'IN_PROGRESS',
-      DELIVERED: 'DELIVERED',
-      CANCELLED: 'ANNULÉ'
+      DRAFT: 'STATUS.DRAFT',
+      CONFIRMED: 'STATUS.CONFIRMED',
+      IN_PROGRESS: 'STATUS.IN_PROGRESS',
+      DELIVERED: 'STATUS.DELIVERED',
+      CANCELLED: 'STATUS.CANCELLED'
     };
 
-    return map[normalized] || '-';
+    return normalized ? this.translate.instant(map[normalized] || normalized) : '-';
   }
 
   getLigneTauxTVA(ligne: LigneBonCommande): number {
@@ -376,18 +375,8 @@ export class CommandeDetailComponent implements OnInit {
   }
 
   formatModePaiement(value?: string | null): string {
-    const map: Record<string, string> = {
-      VIREMENT: 'Virement bancaire',
-      CHEQUE: 'Cheque',
-      ESPECES: 'Especes',
-      CARTE: 'Carte bancaire'
-    };
-
-    if (!value) {
-      return '-';
-    }
-
-    return map[value] || value;
+    if (!value) return '-';
+    return this.translate.instant('FACTURE.PAYMENT_METHODS.' + value);
   }
 
 

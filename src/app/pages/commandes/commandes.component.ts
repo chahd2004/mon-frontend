@@ -143,7 +143,7 @@ export class CommandesComponent implements OnInit {
       error: (error) => {
         this.loading = false;
         console.error('Erreur lors du chargement des commandes:', error);
-        this.errorMessage = error?.error?.message || this.translate.instant('COMMANDES.LOADING_ERROR') || 'Impossible de charger les commandes.';
+        this.errorMessage = error?.error?.message || this.translate.instant('COMMANDES.MSGS.LOADING_ERROR') || 'Impossible de charger les commandes.';
       }
     });
   }

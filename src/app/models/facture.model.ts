@@ -51,15 +51,7 @@ export enum StatutFacture {
   CANCELLED = 'CANCELLED'
 }
 
-/** Libellés français pour chaque statut */
-export const StatutFactureLabel: Record<string, string> = {
-  DRAFT: 'Brouillon',
-  SIGNED: 'Signée',
-  SENT: 'Émise',
-  PAID: 'Payée',
-  REJECTED: 'Rejetée',
-  CANCELLED: 'Annulée'
-};
+// StatutFactureLabel removed - used translations instead
 
 /** Aligné avec le backend (ModePaiement.java) */
 export enum ModePaiement {

@@ -8,6 +8,7 @@ import { Avoir, AvoirStatutLabel, AVOIR_STATUT_COLORS } from '../../models/avoir
 
 import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { jsPDF } from 'jspdf';
 
 @Component({
   selector: 'app-avoirs',
@@ -178,5 +179,25 @@ export class AvoirsComponent implements OnInit {
 
   goBack(): void {
     window.history.back();
+  }
+
+  telechargerPdf(avoir: Avoir): void {
+    const fileName = `Avoir_${avoir.numAvoir || 'export'}.pdf`;
+    const doc = new jsPDF();
+
+    doc.setFontSize(20);
+    doc.text('AVOIR / CREDIT NOTE', 20, 20);
+
+    doc.setFontSize(12);
+    doc.text(`Numéro: ${avoir.numAvoir}`, 20, 40);
+    doc.text(`Date: ${new Date(avoir.dateCreation).toLocaleDateString()}`, 20, 50);
+    doc.text(`Facture Source: ${avoir.factureSourceNum || '-'}`, 20, 60);
+    doc.text(`Client: ${avoir.nomAcheteur || '-'}`, 20, 70);
+    doc.text(`Type: ${avoir.type}`, 20, 80);
+
+    doc.setFont('helvetica', 'bold');
+    doc.text(`TOTAL TTC: ${(avoir.totalTTC || 0).toFixed(3)} TND`, 20, 100);
+
+    doc.save(fileName);
   }
 }

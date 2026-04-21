@@ -19,7 +19,7 @@ import { EmetteurService } from '../../core/services/emetteur.service';
 import { FactureService } from '../../core/services/facture.service';
 import { ClientService } from '../../core/services/client.service';
 import { DashboardService } from '../../core/services/dashboard.service';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-dashboard',
@@ -40,6 +40,7 @@ export class DashboardComponent implements OnInit {
   private messageService = inject(MessageService);
   private authService = inject(AuthService);
   private emetteurService = inject(EmetteurService);
+  private translate = inject(TranslateService);
 
   totalFactures: number = 0;
   totalClients: number = 0;
@@ -54,7 +55,7 @@ export class DashboardComponent implements OnInit {
   }
 
   chartData: any = {
-    labels: ['Signée', 'Payée', 'Brouillon', 'Annulée'],
+    labels: [],
     datasets: [
       {
         data: [],
@@ -81,6 +82,10 @@ export class DashboardComponent implements OnInit {
     this.initChartOptions();
     this.loadData();
     this.fetchEnterpriseName();
+
+    this.translate.onLangChange.subscribe(() => {
+      this.loadData();
+    });
   }
 
   private fetchEnterpriseName(): void {
@@ -158,8 +163,9 @@ export class DashboardComponent implements OnInit {
           const total = valeurs.reduce((a: number, b: number) => a + b, 0);
 
           this.chartData.labels = labels.map((label: string, i: number) => {
+            const translatedLabel = this.translate.instant('STATUS.' + (label.toUpperCase() === 'SIGNÉE' ? 'SIGNED' : label.toUpperCase() === 'PAYÉE' ? 'PAID' : label.toUpperCase() === 'BROUILLON' ? 'DRAFT' : label.toUpperCase() === 'ANNULÉE' ? 'CANCELLED' : label));
             const pct = total > 0 ? Math.round((valeurs[i] / total) * 100) : 0;
-            return `${label} ${pct}%`;
+            return `${translatedLabel} ${pct}%`;
           });
           this.chartData.datasets[0].data = valeurs;
           this.chartData = { ...this.chartData };
@@ -181,7 +187,11 @@ export class DashboardComponent implements OnInit {
         this.loading = false;
       },
       error: () => {
-        this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Impossible de charger les statistiques' });
+        this.messageService.add({ 
+          severity: 'error', 
+          summary: this.translate.instant('TOAST.ERROR'), 
+          detail: this.translate.instant('PARAMETRES.MSGS.ERROR') 
+        });
         this.loading = false;
       }
     });
@@ -208,10 +218,7 @@ export class DashboardComponent implements OnInit {
   }
 
   formatStatut(statut: string): string {
-    const map: Record<string, string> = {
-      PAYEE: 'Payée', EN_ATTENTE: 'En attente', EN_RETARD: 'En retard', ANNULEE: 'Annulée', BROUILLON: 'Brouillon'
-    };
-    return map[statut] ?? statut;
+    return this.translate.instant('STATUS.' + statut);
   }
 
   naviguerVersFactures(): void { this.router.navigate(['/factures']); }
@@ -220,6 +227,10 @@ export class DashboardComponent implements OnInit {
 
   rafraichir(): void {
     this.loadData();
-    this.messageService.add({ severity: 'info', summary: 'Rafraîchi', detail: 'Données mises à jour' });
+    this.messageService.add({ 
+      severity: 'info', 
+      summary: this.translate.instant('DASHBOARD.REFRESH'), 
+      detail: this.translate.instant('DASHBOARD.REFRESH_SUCCESS') 
+    });
   }
 }

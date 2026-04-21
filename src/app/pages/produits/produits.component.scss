@@ -385,25 +385,25 @@ $border-color: #e2e8f0;
 
   &.statut-disponible {
     background: rgba($success, 0.12);
-    color: darken($success, 8%);
+    color: color.adjust($success, $lightness: -8%);
     border: 1px solid rgba($success, 0.3);
   }
 
   &.statut-faible {
     background: rgba($warning, 0.12);
-    color: darken($warning, 15%);
+    color: color.adjust($warning, $lightness: -15%);
     border: 1px solid rgba($warning, 0.35);
   }
 
   &.statut-rupture {
     background: rgba($danger, 0.1);
-    color: darken($danger, 10%);
+    color: color.adjust($danger, $lightness: -10%);
     border: 1px solid rgba($danger, 0.3);
   }
 
   &.statut-illimite {
     background: rgba($primary-blue, 0.1);
-    color: darken($primary-blue, 10%);
+    color: color.adjust($primary-blue, $lightness: -10%);
     border: 1px solid rgba($primary-blue, 0.3);
   }
 }

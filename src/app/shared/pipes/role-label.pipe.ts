@@ -1,4 +1,5 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform, inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { UserRole } from '../../models';
 
 @Pipe({
@@ -6,16 +7,12 @@ import { UserRole } from '../../models';
   standalone: true
 })
 export class RoleLabelPipe implements PipeTransform {
-  private readonly labels: Record<UserRole, string> = {
-    SUPER_ADMIN: 'Super Admin',
-    ENTREPRISE_ADMIN: 'Admin Entreprise',
-    ENTREPRISE_VIEWER: 'Lecteur Entreprise',
-    CLIENT: 'Client',
-    EMETTEUR: 'Émetteur'
-  };
+  private translate = inject(TranslateService);
 
   transform(role: UserRole | null | undefined): string {
-    if (!role) return 'Inconnu';
-    return this.labels[role] || role;
+    if (!role) return this.translate.instant('COMMON.NOT_DEFINED') || 'Inconnu';
+    const key = `ROLES.${role}`;
+    const localized = this.translate.instant(key);
+    return localized === key ? role : localized;
   }
 }

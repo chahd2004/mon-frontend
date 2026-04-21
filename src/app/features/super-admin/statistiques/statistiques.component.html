@@ -2,8 +2,8 @@
   <div class="page-header">
     <div class="welcome-section">
       <div>
-        <h1 class="welcome-title">Bienvenue <span class="admin-name">{{ userFullName() }}</span></h1>
-        <h2>SUPER ADMIN - Tableau de bord</h2>
+        <h1 class="welcome-title">{{ 'SUPER_ADMIN.DASHBOARD.WELCOME' | translate }} <span class="admin-name">{{ userFullName() }}</span></h1>
+        <h2>{{ 'SUPER_ADMIN.DASHBOARD.TITLE' | translate }}</h2>
       </div>
     </div>
   </div>
@@ -15,7 +15,7 @@
         <i class="pi pi-users"></i>
       </div>
       <div class="kpi-content">
-        <p class="kpi-label">USERS</p>
+        <p class="kpi-label">{{ 'SUPER_ADMIN.DASHBOARD.USERS' | translate }}</p>
         <p class="kpi-value" *ngIf="!isLoading">{{ usersCount | number }}</p>
         <p-skeleton *ngIf="isLoading" width="80%" height="2rem"></p-skeleton>
       </div>
@@ -26,7 +26,7 @@
         <i class="pi pi-file"></i>
       </div>
       <div class="kpi-content">
-        <p class="kpi-label">FACTURES</p>
+        <p class="kpi-label">{{ 'SUPER_ADMIN.DASHBOARD.INVOICES' | translate }}</p>
         <p class="kpi-value" *ngIf="!isLoading">{{ facturesCount | number }}</p>
         <p-skeleton *ngIf="isLoading" width="80%" height="2rem"></p-skeleton>
       </div>
@@ -37,7 +37,7 @@
         <i class="pi pi-building"></i>
       </div>
       <div class="kpi-content">
-        <p class="kpi-label">ENTREPRISES</p>
+        <p class="kpi-label">{{ 'SUPER_ADMIN.DASHBOARD.COMPANIES' | translate }}</p>
         <p class="kpi-value" *ngIf="!isLoading">{{ emetteursCount | number }}</p>
         <p-skeleton *ngIf="isLoading" width="80%" height="2rem"></p-skeleton>
       </div>
