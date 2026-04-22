@@ -324,82 +324,48 @@ tr.status-closed {
   padding: 0.9rem;
 }
 
-.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(15, 23, 42, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: 1rem;
+.convert-dialog-content {
+  .subtitle {
+    font-size: 0.95rem;
+    color: #475569;
+    margin-bottom: 1.5rem;
+  }
+  
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1rem;
+
+    label {
+      font-weight: 600;
+      color: #1e293b;
+      font-size: 0.9rem;
+    }
+  }
 }
 
-.modal-card {
-  width: min(1080px, 100%);
-  max-height: 90vh;
-  overflow: auto;
-  background: #ffffff;
-  border-radius: 14px;
-  border: 1px solid #d8e4f5;
-  padding: 1rem;
-}
+:host ::ng-deep {
+  .p-dialog .p-dialog-header {
+    background: #f8fafc;
+    color: #1e293b;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 1.25rem;
+  }
 
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.8rem;
-  margin-bottom: 0.7rem;
-}
+  .p-dialog .p-dialog-content {
+    padding: 1.5rem;
+  }
 
-.modal-header h3 {
-  margin: 0;
-  color: #0f172a;
-  text-transform: uppercase;
-}
+  .p-dialog .p-dialog-footer {
+    border-top: 1px solid #e2e8f0;
+    padding: 1rem 1.5rem;
+    background: #f8fafc;
+  }
 
-.modal-close {
-  border: 0;
-  background: #e2e8f0;
-  color: #1f2937;
-  border-radius: 8px;
-  width: 2rem;
-  height: 2rem;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.modal-subtitle {
-  margin: 0 0 0.7rem;
-  color: #334155;
-  font-weight: 600;
-}
-
-.modal-table {
-  margin-top: 0.7rem;
-}
-
-.selectable-row {
-  cursor: pointer;
-}
-
-.field {
-  margin-top: 0.9rem;
-}
-
-.field label {
-  display: block;
-  margin-bottom: 0.4rem;
-  font-weight: 700;
-  color: #1f2937;
-}
-
-.modal-actions {
-  margin-top: 0.9rem;
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.55rem;
+  .p-calendar, .p-dropdown {
+    width: 100%;
+  }
 }
 
 @media (max-width: 900px) {

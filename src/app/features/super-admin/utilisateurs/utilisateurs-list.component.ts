@@ -93,8 +93,8 @@ export class UtilisateursListComponent implements OnInit {
     ] as any;
 
     this.statusOptions = [
-      { label: this.translate.instant('STATUS.APPROVED'), value: 'ACTIVE' }, // Mapping 'ACTIVE' to 'Approved' or adding 'STATUS.ACTIVE'
-      { label: this.translate.instant('STATUS.REJECTED'), value: 'DISABLED' }, // Mapping 'DISABLED' to 'Rejected' (Inactive)
+      { label: this.translate.instant('STATUS.ACTIVE'), value: 'ACTIVE' },
+      { label: this.translate.instant('STATUS.DISABLED'), value: 'DISABLED' },
       { label: this.translate.instant('STATUS.PENDING'), value: 'PENDING' }
     ] as any;
     
@@ -284,15 +284,12 @@ export class UtilisateursListComponent implements OnInit {
 
   getStatusLabel(status: string): string {
     const keyMap: Record<string, string> = {
-      'ACTIVE': 'STATUS.APPROVED',
-      'DISABLED': 'AVOIRS.TYPE.PARTIEL', // Wait, I should add better keys
-      'PENDING': 'STATUS.PENDING'
+      'ACTIVE': 'STATUS.ACTIVE',
+      'DISABLED': 'STATUS.DISABLED',
+      'PENDING': 'STATUS.PENDING',
+      'REJECTED': 'STATUS.REJECTED'
     };
-    // Let's just use ROLES as a fallback or add to STATUS.
-    // Actually, I'll use simple hardcoded keys if it's too much, but let's try to be consistent.
-    if (status === 'ACTIVE') return this.translate.instant('PRODUITS.STOCK_STATUS.AVAILABLE');
-    if (status === 'DISABLED') return this.translate.instant('AVOIRS.STATUS.ALL'); // No, let's fix the JSONs.
-    return this.translate.instant('STATUS.PENDING');
+    return this.translate.instant(keyMap[status] || 'STATUS.UNKNOWN');
   }
 
   getEntrepriseName(user: UserDTO): string {

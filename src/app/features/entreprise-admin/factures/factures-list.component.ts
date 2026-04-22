@@ -134,7 +134,42 @@ export class FacturesListComponent implements OnInit {
   }
 
   deleteFacture(id: number): void {
-    this.factures = this.factures.filter(f => f.id !== id);
-    this.applyFilters();
+    if (confirm('Êtes-vous sûr de vouloir supprimer cette facture ?')) {
+      this.factureService.deleteFacture(id).subscribe(() => {
+        this.factures = this.factures.filter(f => f.id !== id);
+        this.applyFilters();
+      });
+    }
+  }
+
+  signerFacture(id: number): void {
+    this.factureService.signerFacture(id).subscribe(() => this.loadFactures());
+  }
+
+  emettreFacture(id: number): void {
+    this.factureService.envoyerFacture(id).subscribe(() => this.loadFactures());
+  }
+
+  payerFacture(id: number): void {
+    this.factureService.marquerPayee(id).subscribe(() => this.loadFactures());
+  }
+
+  rejeterFacture(id: number): void {
+    const motif = prompt('Motif du rejet :');
+    if (motif) {
+      this.factureService.rejeterFacture(id, motif).subscribe(() => this.loadFactures());
+    }
+  }
+
+  annulerFacture(id: number): void {
+    if (confirm('Êtes-vous sûr de vouloir annuler cette facture ?')) {
+      this.factureService.annulerFacture(id).subscribe(() => this.loadFactures());
+    }
+  }
+
+  retourBrouillon(id: number): void {
+    if (confirm('Retourner cette facture en brouillon ?')) {
+      this.factureService.retourBrouillon(id).subscribe(() => this.loadFactures());
+    }
   }
 }

@@ -52,8 +52,10 @@
               <button class="icon-btn" *ngIf="!isViewer && canAccepterOuRejeter(d)" (click)="rejeterDevis(d.id)" 
                 title="Rejeter"><i class="pi pi-times"></i></button>
               
-              <button class="icon-btn" *ngIf="!isViewer && canConvertir(d)" (click)="convertirEnBC(d.id)" 
-                title="Convertir en BC"><i class="pi pi-file-export"></i></button>
+              <button class="icon-btn" *ngIf="!isViewer && canConvertir(d)" (click)="ouvrirConversionFacture(d.id)" 
+                [title]="'DEVIS.ACTIONS.GENERATE_INVOICE' | translate">
+                <i class="pi pi-file-plus"></i>
+              </button>
             </div>
           </td>
         </tr>
@@ -63,6 +65,37 @@
       </tbody>
     </table>
   </div>
+
+  <p-dialog [header]="'DEVIS.CONVERT_MODAL.TITLE' | translate" [(visible)]="displayConvertDialog" 
+    [modal]="true" [style]="{width: '450px'}" [draggable]="false" [resizable]="false">
+    <div class="convert-dialog-content" *ngIf="conversionForm" [formGroup]="conversionForm">
+      <p class="subtitle">{{ 'DEVIS.CONVERT_MODAL.SUBTITLE' | translate }}</p>
+
+      <div class="field mt-4">
+        <label for="dateDoc">{{ 'DEVIS.CONVERT_MODAL.DATE_DOC' | translate }}</label>
+        <p-calendar id="dateDoc" formControlName="dateDocument" [showIcon]="true" appendTo="body" styleClass="w-full"></p-calendar>
+      </div>
+
+      <div class="field mt-3">
+        <label for="modeP">{{ 'DEVIS.CONVERT_MODAL.MODE_PAIEMENT' | translate }}</label>
+        <p-dropdown id="modeP" formControlName="modePaiement" [options]="paymentModes" 
+          optionLabel="label" optionValue="value" styleClass="w-full" appendTo="body"></p-dropdown>
+      </div>
+
+      <div class="field mt-3">
+        <label for="dateP">{{ 'DEVIS.CONVERT_MODAL.DATE_PAIEMENT' | translate }}</label>
+        <p-calendar id="dateP" formControlName="datePaiement" [showIcon]="true" appendTo="body" styleClass="w-full"></p-calendar>
+      </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+      <button pButton [label]="'DEVIS.CONVERT_MODAL.CANCEL' | translate" class="p-button-text" (click)="displayConvertDialog = false"></button>
+      <button pButton [label]="'DEVIS.CONVERT_MODAL.SUBMIT' | translate" (click)="confirmerConversionFacture()" 
+        [loading]="isConverting" [disabled]="conversionForm.invalid"></button>
+    </ng-template>
+  </p-dialog>
+
+  <p-toast></p-toast>
 
   <div class="stats-card" *ngIf="showStats">
     <h2>{{ 'DEVIS.STATS_TITLE' | translate }}</h2>

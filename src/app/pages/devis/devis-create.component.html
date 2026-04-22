@@ -20,13 +20,6 @@
         <label>{{ 'FACTURE.ISSUE_DATE' | translate }}</label>
         <input type="date" [(ngModel)]="dateEmission" [ngModelOptions]="{ standalone: true }" />
       </div>
-
-      <div class="field">
-        <label>{{ 'FACTURE.PAYMENT_METHOD' | translate }}</label>
-        <select [(ngModel)]="modePaiement">
-          <option *ngFor="let mode of modePaiementOptions" [ngValue]="mode.value">{{ mode.label }}</option>
-        </select>
-      </div>
     </div>
   </div>
 

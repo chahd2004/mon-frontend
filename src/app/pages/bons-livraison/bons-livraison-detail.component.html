@@ -64,3 +64,43 @@
   <div class="loading" *ngIf="loading">Chargement du bon de livraison...</div>
   <div class="message error" *ngIf="!loading && errorMessage">{{ errorMessage }}</div>
 </ng-template>
+
+<div class="modal-backdrop" *ngIf="displayFactureModal" (click)="fermerFactureModal()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Générer une Facture</h3>
+      <button type="button" class="modal-close" (click)="fermerFactureModal()">x</button>
+    </div>
+
+    <p class="modal-subtitle">Générer une facture à partir du bon de livraison {{ livraison?.numBonLivraison }}</p>
+
+    <div class="field">
+      <label>Date du document</label>
+      <input type="date" [(ngModel)]="factureDateDocument" [ngModelOptions]="{ standalone: true }" />
+    </div>
+
+    <div class="field">
+      <label>Mode de paiement</label>
+      <select [(ngModel)]="factureModePaiement" [ngModelOptions]="{ standalone: true }">
+        <option value="ESPECES">Espèces</option>
+        <option value="CHEQUE">Chèque</option>
+        <option value="VIREMENT">Virement</option>
+        <option value="CARTE_BANCAIRE">Carte bancaire</option>
+        <option value="TRAITE">Traite</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Date de paiement</label>
+      <input type="date" [(ngModel)]="factureDatePaiement" [ngModelOptions]="{ standalone: true }" />
+    </div>
+
+    <div class="modal-actions">
+      <button type="button" class="btn btn-neutral" (click)="fermerFactureModal()">Annuler</button>
+      <button type="button" class="btn btn-primary" [disabled]="generatingFacture"
+        (click)="genererFactureDepuiBL()">
+        {{ generatingFacture ? 'Génération...' : 'Générer Facture' }}
+      </button>
+    </div>
+  </div>
+</div>

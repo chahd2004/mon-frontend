@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { Router } from '@angular/router';
 import { CommandeService } from '../../core/services/commande.service';
@@ -11,6 +11,12 @@ import { BonLivraisonService } from '../../core/services/bon-livraison.service';
 import { BonLivraison } from '../../models/bon-livraison.model';
 import { formatDocumentReference } from '../../shared/utils/reference-format.util';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { DialogModule } from 'primeng/dialog';
+import { ButtonModule } from 'primeng/button';
+import { DropdownModule } from 'primeng/dropdown';
+import { CalendarModule } from 'primeng/calendar';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 interface BonLivraisonView {
   sourceId: number;
@@ -20,12 +26,14 @@ interface BonLivraisonView {
   dateLivraison: string;
   statut: 'DRAFT' | 'DELIVERED' | 'SIGNED_CLIENT' | 'DISPUTE' | 'CLOSED';
   disputeReason?: string;
+  factureRef?: string;
 }
 
 @Component({
   selector: 'app-bons-livraison',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, TranslateModule, DialogModule, ButtonModule, DropdownModule, CalendarModule, ToastModule],
+  providers: [MessageService],
   templateUrl: './bons-livraison.component.html',
   styleUrls: ['./bons-livraison.component.scss']
 })
@@ -36,6 +44,8 @@ export class BonsLivraisonComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly translate = inject(TranslateService);
+  private readonly fb = inject(FormBuilder);
+  private readonly messageService = inject(MessageService);
 
   loading = false;
   showStats = true;
@@ -51,6 +61,19 @@ export class BonsLivraisonComponent implements OnInit {
   conversionSearch = '';
   conversionNotes = '';
   selectedCommandeId: number | null = null;
+
+  displayFactureModal = false;
+  selectedBLForFacture: BonLivraisonView | null = null;
+  conversionForm!: FormGroup;
+  generatingFacture = false;
+
+  paymentModes = [
+    { label: 'Virement', value: 'VIREMENT' },
+    { label: 'Chèque', value: 'CHEQUE' },
+    { label: 'Espèces', value: 'ESPECES' },
+    { label: 'Carte bancaire', value: 'CARTE_BANCAIRE' },
+    { label: 'Traite', value: 'TRAITE' }
+  ];
 
   rawBonsLivraison: BonLivraison[] = [];
   rawCommandes: BonCommande[] = [];
@@ -75,7 +98,8 @@ export class BonsLivraisonComponent implements OnInit {
       client: item.acheteurNom || '-',
       dateLivraison: item.dateLivraison || item.dateCreation || '',
       statut: this.toLivraisonStatus(item.statut),
-      disputeReason: item.disputeReason || undefined
+      disputeReason: item.disputeReason || undefined,
+      factureRef: item.factureRef || undefined
     }));
   }
 
@@ -146,7 +170,19 @@ export class BonsLivraisonComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.initConversionForm();
     this.loadSourceLivraisons();
+  }
+
+  private initConversionForm(): void {
+    const in30Days = new Date();
+    in30Days.setDate(in30Days.getDate() + 30);
+    
+    this.conversionForm = this.fb.group({
+      dateDocument: [new Date(), Validators.required],
+      modePaiement: ['VIREMENT', Validators.required],
+      datePaiement: [in30Days, Validators.required]
+    });
   }
 
   loadSourceLivraisons(): void {
@@ -306,19 +342,69 @@ export class BonsLivraisonComponent implements OnInit {
     });
   }
 
-  cloturerBL(item: BonLivraisonView): void {
+  ouvrirFactureModal(item: BonLivraisonView): void {
+    this.selectedBLForFacture = item;
+    
+    const in30Days = new Date();
+    in30Days.setDate(in30Days.getDate() + 30);
+    
+    this.conversionForm.patchValue({
+      dateDocument: new Date(),
+      modePaiement: 'VIREMENT',
+      datePaiement: in30Days
+    });
+    
+    this.displayFactureModal = true;
     this.errorMessage = '';
     this.successMessage = '';
-    // On passe une chaine vide pour declencher la generation automatique de facture draft cote backend
-    this.bonLivraisonService.cloturer(item.sourceId, '').subscribe({
+  }
+
+  fermerFactureModal(): void {
+    this.displayFactureModal = false;
+    this.selectedBLForFacture = null;
+    this.generatingFacture = false;
+  }
+
+  genererFactureDepuiBL(): void {
+    if (!this.selectedBLForFacture || this.conversionForm.invalid) return;
+
+    this.generatingFacture = true;
+    this.errorMessage = '';
+
+    const formVal = this.conversionForm.value;
+    
+    // Format dates to YYYY-MM-DD for backend
+    const payload = {
+      dateDocument: this.formatDate(formVal.dateDocument),
+      datePaiement: this.formatDate(formVal.datePaiement),
+      modePaiement: formVal.modePaiement
+    };
+
+    this.bonLivraisonService.versFacture(this.selectedBLForFacture.sourceId, payload).subscribe({
       next: () => {
-        this.successMessage = this.translate.instant('BL.MSGS.CLOSE_SUCCESS', { num: item.numeroBL });
+        this.generatingFacture = false;
+        this.fermerFactureModal();
+        this.messageService.add({ severity: 'success', summary: 'Succès', detail: 'Facture générée avec succès.' });
         this.loadSourceLivraisons();
       },
       error: (err: any) => {
-        this.errorMessage = err?.error?.message || this.translate.instant('BL.MSGS.CLOSE_ERROR', { num: item.numeroBL });
+        this.generatingFacture = false;
+        this.errorMessage = err?.error?.message || 'Erreur lors de la génération de la facture.';
       }
     });
+  }
+
+  private formatDate(date: Date): string {
+    if (!date) return '';
+    const d = new Date(date);
+    let month = '' + (d.getMonth() + 1);
+    let day = '' + d.getDate();
+    const year = d.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [year, month, day].join('-');
   }
 
   supprimerBL(item: BonLivraisonView): void {

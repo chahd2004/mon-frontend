@@ -6,10 +6,29 @@
     </div>
     <div class="header-actions">
       <p-tag [value]="getStatusTag().label" [severity]="$any(getStatusTag().severity)"></p-tag>
-      <button pButton type="button" icon="pi pi-download" label="PDF" class="p-button-sm"></button>
-      <button pButton type="button" icon="pi pi-envelope" label="Envoyer" class="p-button-sm"></button>
-      <a routerLink=".." pButton type="button" icon="pi pi-arrow-left" label="Retour"
-        class="p-button-sm p-button-text"></a>
+      
+      <!-- Actions communes -->
+      <button pButton type="button" icon="pi pi-download" label="PDF" class="p-button-sm p-button-secondary" (click)="downloadPDF()"></button>
+      <button pButton type="button" icon="pi pi-envelope" label="Email" class="p-button-sm p-button-secondary" (click)="sendEmail()"></button>
+
+      <!-- Brouillon -->
+      <button *ngIf="facture.statut === 'DRAFT'" pButton type="button" icon="pi pi-pencil" label="Modifier" class="p-button-sm p-button-warning" [routerLink]="['edit']"></button>
+      <button *ngIf="facture.statut === 'DRAFT'" pButton type="button" icon="pi pi-check" label="Signer" class="p-button-sm" (click)="signer()"></button>
+      
+      <!-- Signée -->
+      <button *ngIf="facture.statut === 'SIGNED'" pButton type="button" icon="pi pi-send" label="Émettre" class="p-button-sm" (click)="envoyee()"></button>
+      <button *ngIf="facture.statut === 'SIGNED'" pButton type="button" icon="pi pi-times-circle" label="Rejeter" class="p-button-sm p-button-warning" (click)="rejeter()"></button>
+      <button *ngIf="facture.statut === 'SIGNED'" pButton type="button" icon="pi pi-ban" label="Annuler" class="p-button-sm p-button-danger" (click)="annuler()"></button>
+
+      <!-- Émise -->
+      <button *ngIf="facture.statut === 'SENT'" pButton type="button" icon="pi pi-wallet" label="Payer" class="p-button-sm" (click)="payer()"></button>
+      <button *ngIf="facture.statut === 'SENT'" pButton type="button" icon="pi pi-times-circle" label="Rejeter" class="p-button-sm p-button-warning" (click)="rejeter()"></button>
+      <button *ngIf="facture.statut === 'SENT'" pButton type="button" icon="pi pi-ban" label="Annuler" class="p-button-sm p-button-danger" (click)="annuler()"></button>
+
+      <!-- Rejetée -->
+      <button *ngIf="facture.statut === 'REJECTED' && (facture.previousStatut === 'SIGNED' || facture.previous_statut === 'SIGNED')" pButton type="button" icon="pi pi-replay" label="Retour Brouillon" class="p-button-sm" (click)="retourBrouillon()"></button>
+
+      <a routerLink=".." pButton type="button" icon="pi pi-arrow-left" label="Retour" class="p-button-sm p-button-text"></a>
     </div>
   </div>
 

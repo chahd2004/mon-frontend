@@ -26,35 +26,6 @@
       <p *ngIf="signatureReussie">{{ 'PUBLIC_SIGNATURE.SUCCESS_BC' | translate:{ref: bonCommande?.numBonCommande} }}</p>
       <p *ngIf="dejaSigne">{{ 'PUBLIC_SIGNATURE.BC_ALREADY_SIGNED' | translate:{ref: bonCommande?.numBonCommande} }}</p>
       
-      <!-- Factures List Section -->
-      <div class="factures-section" *ngIf="factures && factures.length > 0">
-        <h3>{{ 'FACTURES.TITLE' | translate }}</h3>
-        <div class="factures-table">
-          <table>
-            <thead>
-              <tr>
-                <th>{{ 'FACTURES.TABLE.NUM' | translate }}</th>
-                <th>{{ 'FACTURES.TABLE.CLIENT' | translate }}</th>
-                <th>{{ 'FACTURES.TABLE.DATE_EMISSION' | translate }}</th>
-                <th>{{ 'FACTURES.TABLE.STATUS' | translate }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let facture of factures">
-                <td>{{ facture.numFact }}</td>
-                <td>{{ facture.clientName }}</td>
-                <td>{{ facture.dateEmission | date:'dd/MM/yyyy' }}</td>
-                <td>
-                  <span class="status-badge" [ngClass]="'status-' + facture.statut?.toLowerCase()">
-                    {{ facture.statut }}
-                  </span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
       <button class="btn-close" (click)="fermer()">{{ 'PUBLIC_SIGNATURE.BTN_CLOSE' | translate }}</button>
     </div>
   </div>

@@ -166,13 +166,8 @@ export class SignatureService {
       const reader = new FileReader();
       reader.onload = () => {
         try {
-          const p12Der = reader.result as ArrayBuffer;
-          const uint8Array = new Uint8Array(p12Der);
-          
-          // Convertir Uint8Array en string binaire
-          const binaryString = String.fromCharCode.apply(null, Array.from(uint8Array) as any);
-          
-          const p12Asn1 = forge.asn1.fromDer(forge.util.binary.raw.decode(binaryString));
+          const binaryString = reader.result as string;
+          const p12Asn1 = forge.asn1.fromDer(binaryString);
           const p12 = forge.pkcs12.pkcs12FromAsn1(p12Asn1, password);
           
           const bags = p12.getBags({ bagType: forge.pki.oids.pkcs8ShroudedKeyBag });
@@ -194,7 +189,7 @@ export class SignatureService {
         }
       };
       reader.onerror = () => reject(new Error('Erreur lecture fichier'));
-      reader.readAsArrayBuffer(p12File);
+      reader.readAsBinaryString(p12File);
     });
   }
 

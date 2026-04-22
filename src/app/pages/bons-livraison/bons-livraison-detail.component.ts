@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -20,7 +21,7 @@ interface LigneLivraisonView {
 @Component({
   selector: 'app-bons-livraison-detail',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, TranslateModule, FormsModule],
   templateUrl: './bons-livraison-detail.component.html',
   styleUrls: ['./bons-livraison-detail.component.scss']
 })
@@ -41,6 +42,12 @@ export class BonsLivraisonDetailComponent implements OnInit {
   infoMessage = '';
 
   adresseLivraison = '-';
+
+  displayFactureModal = false;
+  factureDateDocument = '';
+  factureDatePaiement = '';
+  factureModePaiement = 'VIREMENT';
+  generatingFacture = false;
 
   ngOnInit(): void {
     const rawParam = this.route.snapshot.paramMap.get('id') || this.route.snapshot.paramMap.get('ref') || '';
@@ -209,6 +216,11 @@ export class BonsLivraisonDetailComponent implements OnInit {
       return;
     }
 
+    if (this.statusValue === 'CLOSED') {
+      this.ouvrirFactureModal();
+      return;
+    }
+
     this.infoMessage = 'Resolution litige non disponible pour le moment.';
     this.errorMessage = '';
   }
@@ -232,12 +244,61 @@ export class BonsLivraisonDetailComponent implements OnInit {
     });
   }
 
+  ouvrirFactureModal(): void {
+    if (this.statusValue !== 'CLOSED') {
+      this.errorMessage = 'Le bon de livraison doit être cloturé pour être facturé.';
+      return;
+    }
+    this.factureDateDocument = new Date().toISOString().slice(0, 10);
+    const in30Days = new Date();
+    in30Days.setDate(in30Days.getDate() + 30);
+    this.factureDatePaiement = in30Days.toISOString().slice(0, 10);
+    this.factureModePaiement = 'VIREMENT';
+    this.displayFactureModal = true;
+    this.errorMessage = '';
+    this.infoMessage = '';
+  }
+
+  fermerFactureModal(): void {
+    this.displayFactureModal = false;
+    this.generatingFacture = false;
+  }
+
+  genererFactureDepuiBL(): void {
+    if (!this.factureDateDocument || !this.factureDatePaiement || !this.factureModePaiement) {
+      this.errorMessage = 'Veuillez remplir tous les champs.';
+      return;
+    }
+
+    this.generatingFacture = true;
+    this.errorMessage = '';
+
+    const payload = {
+      dateDocument: this.factureDateDocument,
+      datePaiement: this.factureDatePaiement,
+      modePaiement: this.factureModePaiement
+    };
+
+    this.bonLivraisonService.versFacture(this.livraisonId, payload).subscribe({
+      next: () => {
+        this.generatingFacture = false;
+        this.fermerFactureModal();
+        this.infoMessage = 'Facture générée avec succès.';
+        this.loadDetail();
+      },
+      error: (err: any) => {
+        this.generatingFacture = false;
+        this.errorMessage = err?.error?.message || 'Erreur lors de la génération de la facture.';
+      }
+    });
+  }
+
   get actionStatutLabel(): string {
     const map: Record<string, string> = {
       DRAFT: 'BONS_LIVRAISON.ACTIONS.DELIVER',
       DELIVERED: 'BONS_LIVRAISON.ACTIONS.WAIT_SIGNATURE',
       SIGNED_CLIENT: 'BONS_LIVRAISON.ACTIONS.CLOSE',
-      CLOSED: 'BONS_LIVRAISON.ACTIONS.CLOSED',
+      CLOSED: 'Générer une facture',
       DISPUTE: 'BONS_LIVRAISON.ACTIONS.RESOLVE_DISPUTE'
     };
 

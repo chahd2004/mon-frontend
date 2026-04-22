@@ -18,12 +18,12 @@
         <button *ngIf="!isViewer && statut === 'SENT'" class="action-btn reject-btn" (click)="rejeterFacture()">
           <i class="pi pi-times-circle"></i> {{ 'FACTURES.ACTIONS.REJECT' | translate }}
         </button>
-        <button *ngIf="!isViewer && statut === 'SENT'" class="action-btn cancel-btn" (click)="annulerFacture()">
+        <button *ngIf="!isViewer && (statut === 'SENT' || statut === 'SIGNED')" class="action-btn cancel-btn" (click)="annulerFacture()">
           <i class="pi pi-ban"></i> {{ 'FACTURES.ACTIONS.CANCEL' | translate }}
         </button>
 
-        <!-- REJECTED → Retour brouillon -->
-        <button *ngIf="!isViewer && statut === 'REJECTED'" class="action-btn draft-btn" (click)="retourBrouillon()">
+        <!-- REJECTED depuis SIGNED → Retour brouillon authorized -->
+        <button *ngIf="!isViewer && statut === 'REJECTED' && previousStatut === 'SIGNED'" class="action-btn draft-btn" (click)="retourBrouillon()">
           <i class="pi pi-replay"></i> {{ 'FACTURES.ACTIONS.BACK_TO_DRAFT' | translate }}
         </button>
 

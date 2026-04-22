@@ -2,6 +2,13 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { DialogModule } from 'primeng/dialog';
+import { ButtonModule } from 'primeng/button';
+import { DropdownModule } from 'primeng/dropdown';
+import { CalendarModule } from 'primeng/calendar';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -19,7 +26,11 @@ import { formatDocumentReference } from '../../shared/utils/reference-format.uti
 @Component({
   selector: 'app-devis-detail',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [
+    CommonModule, FormsModule, ReactiveFormsModule, TranslateModule,
+    DialogModule, ButtonModule, DropdownModule, CalendarModule, ToastModule
+  ],
+  providers: [MessageService],
   templateUrl: './devis-detail.component.html',
   styleUrls: ['./devis-detail.component.scss']
 })
@@ -31,6 +42,8 @@ export class DevisDetailComponent implements OnInit {
   private readonly produitService = inject(ProduitService);
   private readonly http = inject(HttpClient);
   private readonly translate = inject(TranslateService);
+  private readonly fb = inject(FormBuilder);
+  private readonly messageService = inject(MessageService);
 
   devisId = 0;
   devis: Devis | null = null;
@@ -38,8 +51,18 @@ export class DevisDetailComponent implements OnInit {
   vendeur: Emetteur | null = null;
   produitsMap: Record<number, Produit> = {};
   loading = false;
-  convertingDirect = false;
   errorMessage = '';
+
+  // Conversion
+  displayConvertDialog = false;
+  conversionForm!: FormGroup;
+  isConverting = false;
+  paymentModes = [
+    { label: 'Virement', value: 'VIREMENT' },
+    { label: 'Chèque', value: 'CHEQUE' },
+    { label: 'Espèces', value: 'ESPECES' },
+    { label: 'Carte', value: 'CARTE' }
+  ];
 
   get lignes(): LigneDevis[] {
     return this.devis?.lignes ?? [];
@@ -47,6 +70,7 @@ export class DevisDetailComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.initConversionForm();
     const rawParam = this.route.snapshot.paramMap.get('id') || this.route.snapshot.paramMap.get('ref') || '';
     const maybeId = Number(rawParam);
 
@@ -213,53 +237,66 @@ export class DevisDetailComponent implements OnInit {
     });
   }
 
-  convertirEnFactureDirecte(): void {
-    if (!this.devis) {
-      return;
-    }
 
-    if (!this.canConvertirDirectement()) {
-      this.errorMessage = 'Conversion directe possible uniquement pour un devis au statut ACCEPTED.';
-      return;
-    }
-
-    const dateDocument = this.toDateOnly(new Date());
-    const datePaiement = this.toDateOnly(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000));
-    const modePaiement = this.normalizeModePaiement(this.devis.modePaiement);
-    this.convertingDirect = true;
-    this.errorMessage = '';
-
-    this.devisService
-      .convertirEnFactureDirecte(this.devis.id, dateDocument, modePaiement, datePaiement)
-      .subscribe({
-        next: (facture) => {
-          this.convertingDirect = false;
-          const anyFacture = facture as any;
-          const factureId = Number(
-            anyFacture?.id ??
-            anyFacture?.factureId ??
-            anyFacture?.data?.id ??
-            anyFacture?.result?.id ??
-            0
-          );
-
-          if (factureId > 0) {
-            this.router.navigate(['/factures', factureId]);
-            return;
-          }
-
-          this.errorMessage = 'Facture creee, mais identifiant introuvable pour ouvrir le detail.';
-          this.router.navigate(['/factures']);
-        },
-        error: (error) => {
-          this.convertingDirect = false;
-          this.errorMessage =
-            error?.error?.message ||
-            error?.error?.error ||
-            'Erreur lors de la conversion en facture directe.';
-        }
-      });
+  private initConversionForm(): void {
+    this.conversionForm = this.fb.group({
+      dateDocument: [new Date(), Validators.required],
+      modePaiement: ['VIREMENT', Validators.required],
+      datePaiement: [new Date(), Validators.required]
+    });
   }
+
+  ouvrirConversionFacture(): void {
+    if (!this.devis) return;
+    this.conversionForm.patchValue({
+      dateDocument: new Date(),
+      modePaiement: 'VIREMENT',
+      datePaiement: new Date()
+    });
+    this.displayConvertDialog = true;
+  }
+
+  confirmerConversionFacture(): void {
+    if (this.conversionForm.invalid || !this.devis) return;
+
+    this.isConverting = true;
+    const val = this.conversionForm.value;
+    const dateDoc = this.formatDate(val.dateDocument);
+    const datePay = this.formatDate(val.datePaiement);
+
+    this.devisService.convertirEnFactureDirecte(
+      this.devis.id,
+      dateDoc,
+      val.modePaiement,
+      datePay
+    ).subscribe({
+      next: (res) => {
+        this.isConverting = false;
+        this.displayConvertDialog = false;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Succès',
+          detail: this.translate.instant('DEVIS.MSGS.CONVERT_FACT_SUCCESS')
+        });
+        this.router.navigate(['/factures']);
+      },
+      error: (err) => {
+        this.isConverting = false;
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erreur',
+          detail: err?.error?.message || this.translate.instant('DEVIS.MSGS.CONVERT_FACT_ERROR')
+        });
+      }
+    });
+  }
+
+  private formatDate(date: any): string {
+    if (!date) return '';
+    const d = new Date(date);
+    return d.toISOString().split('T')[0];
+  }
+
 
   canEnvoyer(): boolean {
     return this.getEffectiveStatut() === 'DRAFT';

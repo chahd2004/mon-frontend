@@ -307,3 +307,43 @@ tr.status-converted {
     grid-template-columns: 1fr;
   }
 }
+
+// Conversion Dialog Styles
+.convert-dialog-content {
+  .subtitle {
+    font-size: 0.9rem;
+    color: #486581;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 1.2rem;
+
+    label {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #102a43;
+    }
+  }
+
+  .w-full {
+    width: 100%;
+  }
+
+  .mt-4 { margin-top: 1rem; }
+  .mt-3 { margin-top: 0.75rem; }
+}
+
+:host ::v-deep {
+  .p-dialog .p-dialog-footer {
+    padding: 1rem;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+}

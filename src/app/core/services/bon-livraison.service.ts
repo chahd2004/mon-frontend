@@ -52,4 +52,8 @@ export class BonLivraisonService {
   cloturer(id: number, factureRef: string = ''): Observable<BonLivraison> {
     return this.http.put<BonLivraison>(`${this.apiUrl}/${id}/cloturer?factureRef=${encodeURIComponent(factureRef)}`, {});
   }
+
+  versFacture(id: number, payload: any): Observable<any> {
+    return this.http.post(`${environment.apiUrl}/conversions/bon-livraison/${id}/vers-facture`, payload);
+  }
 }

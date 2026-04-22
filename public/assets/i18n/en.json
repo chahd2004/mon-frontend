@@ -168,7 +168,9 @@
     "DELIVERED": "Delivered",
     "CLOSED": "Closed",
     "DISPUTE": "In Dispute",
-    "SIGNED_CLIENT": "Signed by Client"
+    "SIGNED_CLIENT": "Signed by Client",
+    "ACTIVE": "Active",
+    "DISABLED": "Blocked"
   },
   "ROLES": {
     "SUPER_ADMIN": "Super Admin",
@@ -199,7 +201,8 @@
     "TOTAL_HT": "Total excl. VAT",
     "ACTIONS": {
       "NEW": "New Quote",
-      "STATS": "Statistics"
+      "STATS": "Statistics",
+      "GENERATE_INVOICE": "Generate Invoice"
     },
     "FILTER_STATUS": "Filter by status",
     "TABLE": {
@@ -219,7 +222,18 @@
       "REJECT_REASON_PROMPT": "Enter rejection reason:",
       "REJECT_ERROR": "Error rejecting quote {{id}}.",
       "CONVERT_ERROR": "Error converting quote {{id}}.",
-      "SEND_ERROR": "Error sending quote {{id}}."
+      "SEND_ERROR": "Error sending quote {{id}}.",
+      "CONVERT_FACT_SUCCESS": "Invoice generated successfully.",
+      "CONVERT_FACT_ERROR": "Error during invoice generation."
+    },
+    "CONVERT_MODAL": {
+      "TITLE": "Generate an Invoice",
+      "SUBTITLE": "Please provide payment details for the conversion.",
+      "DATE_DOC": "Invoice Date",
+      "MODE_PAIEMENT": "Payment Mode",
+      "DATE_PAIEMENT": "Payment Date",
+      "CANCEL": "Cancel",
+      "SUBMIT": "Generate Invoice"
     }
   },
   "BC": {

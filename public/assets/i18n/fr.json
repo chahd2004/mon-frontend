@@ -168,7 +168,9 @@
     "DELIVERED": "Livrée",
     "CLOSED": "Clôturée",
     "DISPUTE": "En Litige",
-    "SIGNED_CLIENT": "Signé Client"
+    "SIGNED_CLIENT": "Signé Client",
+    "ACTIVE": "Actif",
+    "DISABLED": "Bloqué"
   },
   "ROLES": {
     "SUPER_ADMIN": "Super Admin",
@@ -199,7 +201,8 @@
     "TOTAL_HT": "Total H.T.",
     "ACTIONS": {
       "NEW": "Nouveau devis",
-      "STATS": "Statistiques"
+      "STATS": "Statistiques",
+      "GENERATE_INVOICE": "Générer Facture"
     },
     "FILTER_STATUS": "Filtrer par statut",
     "TABLE": {
@@ -219,7 +222,18 @@
       "REJECT_REASON_PROMPT": "Saisir la raison du rejet :",
       "REJECT_ERROR": "Erreur lors du rejet du devis {{id}}.",
       "CONVERT_ERROR": "Erreur lors de la conversion du devis {{id}}.",
-      "SEND_ERROR": "Erreur lors de l'envoi du devis {{id}}."
+      "SEND_ERROR": "Erreur lors de l'envoi du devis {{id}}.",
+      "CONVERT_FACT_SUCCESS": "Facture générée avec succès.",
+      "CONVERT_FACT_ERROR": "Erreur lors de la génération de la facture."
+    },
+    "CONVERT_MODAL": {
+      "TITLE": "Générer une facture",
+      "SUBTITLE": "Veuillez renseigner les détails du paiement pour la conversion.",
+      "DATE_DOC": "Date de la facture",
+      "MODE_PAIEMENT": "Mode de paiement",
+      "DATE_PAIEMENT": "Date de paiement",
+      "CANCEL": "Annuler",
+      "SUBMIT": "Générer la facture"
     }
   },
   "BC": {

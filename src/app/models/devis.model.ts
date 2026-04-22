@@ -20,7 +20,6 @@ export interface Devis {
   totalHT: number;
   montantTVA: number;
   totalTTC: number;
-  modePaiement?: string | null;
   montantEnLettres?: string | null;
   notes?: string | null;
   rejectionReason?: string | null;
@@ -47,7 +46,6 @@ export interface DevisRequest {
   acheteurId: number;
   typeAcheteur: 'CLIENT' | 'EMETTEUR';
   vendeurId: number;
-  modePaiement: 'VIREMENT' | 'CHEQUE' | 'ESPECES' | 'CARTE';
   notes?: string;
   lignes: LigneDevisRequest[];
 }

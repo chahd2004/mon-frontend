@@ -113,8 +113,8 @@
                 </button>
               </ng-container>
 
-              <!-- Rejetée: Retour Brouillon -->
-              <ng-container *ngIf="!isViewer && facture.statut === 'REJECTED'">
+              <!-- Rejetée: Retour Brouillon (uniquement si non déposée sur TTN) -->
+              <ng-container *ngIf="!isViewer && facture.statut === 'REJECTED' && (facture.previousStatut === 'SIGNED' || facture.previous_statut === 'SIGNED')">
                 <button class="icon-btn" (click)="retourBrouillon(facture.id)"
                   [pTooltip]="'FACTURES.ACTIONS.BACK_TO_DRAFT' | translate" tooltipPosition="top">
                   <i class="pi pi-refresh"></i>

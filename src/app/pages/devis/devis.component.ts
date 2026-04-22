@@ -1,7 +1,13 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { DialogModule } from 'primeng/dialog';
+import { ButtonModule } from 'primeng/button';
+import { DropdownModule } from 'primeng/dropdown';
+import { CalendarModule } from 'primeng/calendar';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 import { DevisService } from '../../core/services/devis.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -12,7 +18,11 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-devis',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule],
+  imports: [
+    CommonModule, FormsModule, ReactiveFormsModule, TranslateModule,
+    DialogModule, ButtonModule, DropdownModule, CalendarModule, ToastModule
+  ],
+  providers: [MessageService],
   templateUrl: './devis.component.html',
   styleUrls: ['./devis.component.scss']
 })
@@ -21,6 +31,8 @@ export class DevisComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly translate = inject(TranslateService);
+  private readonly fb = inject(FormBuilder);
+  private readonly messageService = inject(MessageService);
 
   get isViewer(): boolean {
     return this.authService.hasRole('ENTREPRISE_VIEWER');
@@ -31,6 +43,18 @@ export class DevisComponent implements OnInit {
   errorMessage = '';
   showStats = true;
   selectedStatus: 'ALL' | string = 'ALL';
+
+  // Conversion
+  displayConvertDialog = false;
+  conversionForm!: FormGroup;
+  selectedDevisId: number | null = null;
+  isConverting = false;
+  paymentModes = [
+    { label: 'Virement', value: 'VIREMENT' },
+    { label: 'Chèque', value: 'CHEQUE' },
+    { label: 'Espèces', value: 'ESPECES' },
+    { label: 'Carte', value: 'CARTE' }
+  ];
 
   readonly statusOptions: string[] = ['DRAFT', 'SENT', 'ACCEPTED', 'REJECTED', 'EXPIRED'];
 
@@ -43,8 +67,18 @@ export class DevisComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.initConversionForm();
     this.loadDevis();
   }
+
+  private initConversionForm(): void {
+    this.conversionForm = this.fb.group({
+      dateDocument: [new Date(), Validators.required],
+      modePaiement: ['VIREMENT', Validators.required],
+      datePaiement: [new Date(), Validators.required]
+    });
+  }
+
 
   get totalDevis(): number {
     return this.filteredDevis.length;
@@ -152,6 +186,63 @@ export class DevisComponent implements OnInit {
         this.errorMessage = error?.error?.message || this.translate.instant('DEVIS.MSGS.CONVERT_ERROR', { id });
       }
     });
+  }
+
+  ouvrirConversionFacture(id: number): void {
+    this.selectedDevisId = id;
+    this.conversionForm.patchValue({
+      dateDocument: new Date(),
+      datePaiement: new Date()
+    });
+    this.displayConvertDialog = true;
+  }
+
+  confirmerConversionFacture(): void {
+    if (this.conversionForm.invalid || !this.selectedDevisId) return;
+
+    this.isConverting = true;
+    const val = this.conversionForm.value;
+    const dateDoc = this.formatDate(val.dateDocument);
+    const datePay = this.formatDate(val.datePaiement);
+
+    this.devisService.convertirEnFactureDirecte(
+      this.selectedDevisId,
+      dateDoc,
+      val.modePaiement,
+      datePay
+    ).subscribe({
+      next: (res) => {
+        this.isConverting = false;
+        this.displayConvertDialog = false;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Succès',
+          detail: this.translate.instant('DEVIS.MSGS.CONVERT_FACT_SUCCESS')
+        });
+        this.router.navigate(['/factures']);
+      },
+      error: (err) => {
+        this.isConverting = false;
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erreur',
+          detail: err?.error?.message || this.translate.instant('DEVIS.MSGS.CONVERT_FACT_ERROR')
+        });
+      }
+    });
+  }
+
+  private normalizeModePaiement(value?: string | null): 'VIREMENT' | 'CHEQUE' | 'ESPECES' | 'CARTE' {
+    if (value === 'CHEQUE' || value === 'ESPECES' || value === 'CARTE' || value === 'VIREMENT') {
+      return value as any;
+    }
+    return 'VIREMENT';
+  }
+
+  private formatDate(date: any): string {
+    if (!date) return '';
+    const d = new Date(date);
+    return d.toISOString().split('T')[0];
   }
 
   canAccepterOuRejeter(item: Devis): boolean {

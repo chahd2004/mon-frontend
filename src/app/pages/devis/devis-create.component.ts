@@ -41,7 +41,6 @@ export class DevisCreateComponent implements OnInit {
 
   clientId: number | null = null;
   dateEmission: Date | string = new Date();
-  modePaiement: 'VIREMENT' | 'CHEQUE' | 'ESPECES' | 'CARTE' = 'VIREMENT';
   editId: number | null = null;
 
   lignes: DevisLineForm[] = [{ produitId: null, quantite: 1 }];
@@ -66,7 +65,6 @@ export class DevisCreateComponent implements OnInit {
   };
 
   regions: any[] = [];
-  modePaiementOptions: any[] = [];
 
   get isEditMode(): boolean {
     return this.editId !== null;
@@ -114,13 +112,6 @@ export class DevisCreateComponent implements OnInit {
       { label: this.translate.instant('DASHBOARD.REGIONS.GAFSA'), value: 'GAFSA' },
       { label: this.translate.instant('DASHBOARD.REGIONS.TOZEUR'), value: 'TOZEUR' },
       { label: this.translate.instant('DASHBOARD.REGIONS.KEBILI'), value: 'KEBILI' }
-    ];
-
-    this.modePaiementOptions = [
-      { label: this.translate.instant('FACTURE.PAYMENT_METHODS.VIREMENT'), value: 'VIREMENT' },
-      { label: this.translate.instant('FACTURE.PAYMENT_METHODS.CHEQUE'), value: 'CHEQUE' },
-      { label: this.translate.instant('FACTURE.PAYMENT_METHODS.ESPECES'), value: 'ESPECES' },
-      { label: this.translate.instant('FACTURE.PAYMENT_METHODS.CARTE'), value: 'CARTE' }
     ];
   }
 
@@ -289,7 +280,6 @@ export class DevisCreateComponent implements OnInit {
       next: (devis) => {
         this.clientId = devis.acheteurId ?? null;
         this.dateEmission = devis.dateCreation || this.toDateOnly(new Date());
-        this.modePaiement = (devis.modePaiement as any) || 'VIREMENT';
         this.notes = this.extractMainNotes(devis.notes || '');
 
         this.lignes = (devis.lignes || []).map(line => ({
@@ -341,7 +331,6 @@ export class DevisCreateComponent implements OnInit {
       acheteurId: this.clientId,
       typeAcheteur: 'CLIENT',
       vendeurId,
-      modePaiement: this.modePaiement,
       notes: this.notes?.trim() || undefined,
       lignes
     };

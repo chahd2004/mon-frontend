@@ -138,6 +138,8 @@ export class FactureComponent implements OnInit {
   typeAcheteur: 'CLIENT' | 'EMETTEUR' = 'CLIENT';
   modePaiement: string = 'VIREMENT';
   statut: string = 'DRAFT';
+  referenceTtn: string = '';
+  previousStatut: string = '';
   lignes: LigneFacture[] = [];
 
   produitSelectionne: Produit | null = null;
@@ -236,6 +238,8 @@ export class FactureComponent implements OnInit {
       next: (facture) => {
         this.numFact = facture.numFact ?? '';
         this.statut = facture.statut ?? 'DRAFT';
+        this.referenceTtn = facture.reference_ttn ?? '';
+        this.previousStatut = facture.previousStatut ?? facture.previous_statut ?? '';
         this.modePaiement = facture.modePaiement ?? 'VIREMENT';
         this.typeAcheteur = facture.typeAcheteur ?? 'CLIENT';
         this.vendeurId = facture.vendeurId ?? DEFAULT_VENDEUR_ID;

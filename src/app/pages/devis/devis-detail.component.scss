@@ -167,3 +167,78 @@ th {
     grid-template-columns: 1fr;
   }
 }
+
+.actions-footer {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.8rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.btn {
+  border: 0;
+  border-radius: 10px;
+  padding: 0.65rem 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background: #0f9d58;
+  color: #ffffff;
+  &:hover { background: #0b8a4a; }
+}
+
+.btn-neutral {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  &:hover { background: #e2e8f0; }
+}
+
+// Conversion Dialog Styles
+.convert-dialog-content {
+  .subtitle {
+    font-size: 0.92rem;
+    color: #475569;
+    margin-bottom: 1.2rem;
+    line-height: 1.5;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    margin-bottom: 1.25rem;
+
+    label {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #1e293b;
+    }
+  }
+
+  .w-full { width: 100%; }
+  .mt-4 { margin-top: 1rem; }
+  .mt-3 { margin-top: 0.75rem; }
+}
+
+:host ::v-deep {
+  .p-dialog .p-dialog-footer {
+    padding: 1rem 1.25rem;
+    border-top: 1px solid #f1f5f9;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.6rem;
+  }
+  
+  .p-calendar, .p-dropdown {
+    width: 100%;
+  }
+}
