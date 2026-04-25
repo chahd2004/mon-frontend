@@ -45,11 +45,11 @@ export type DemandeStatus = (typeof DEMANDE_STATUSES)[number];
 // ========== STATUTS FACTURE ==========
 export const FACTURE_STATUSES = [
   'DRAFT',
-  'SEND',
-  'PARTIALLY_PAID',
-  'FULLY_PAID',
-  'CANCELLED',
-  'OVERDUE'
+  'SIGNED',
+  'SENT',
+  'PAID',
+  'REJECTED',
+  'CANCELLED'
 ] as const;
 
 export type FactureStatus = (typeof FACTURE_STATUSES)[number];

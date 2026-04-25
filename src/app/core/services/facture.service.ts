@@ -99,12 +99,12 @@ export class FactureService {
         const arr = Array.isArray(list) ? list : [];
         return {
           totalFactures: arr.length,
-          facturesPayees: arr.filter(f => f.statut === 'PAYEE').length,
+          facturesPayees: arr.filter(f => f.statut === 'PAID').length,
           facturesEnAttente: arr.filter(
-            f => f.statut === 'EN_ATTENTE' || f.statut === 'BROUILLON'
+            f => f.statut === 'SENT' || f.statut === 'SIGNED' || f.statut === 'DRAFT'
           ).length,
           chiffreAffaires: arr
-            .filter(f => f.statut === 'PAYEE')
+            .filter(f => f.statut === 'PAID')
             .reduce((s, f) => s + (f.totalTTC || 0), 0)
         };
       })

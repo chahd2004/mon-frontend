@@ -9,8 +9,6 @@ import { RegisterComponent as SuperAdminRegisterComponent } from './pages/regist
 import { ChangePasswordComponent } from './features/public/change-password/change-password.component';
 import { DemandeFormComponent } from './features/public/demande-form/demande-form.component';
 import { DemandeStatutComponent } from './features/public/demande-statut/demande-statut.component';
-import { BonCommandeSignatureComponent } from './features/public/bon-commande-signature/bon-commande-signature.component';
-import { BonsLivraisonSignatureComponent } from './features/public/bons-livraison-signature/bons-livraison-signature.component';
 
 // ✅ PHASE 3 - SUPER_ADMIN Pages
 import { SuperAdminLayoutComponent } from './features/super-admin/layout/super-admin-layout.component';
@@ -44,10 +42,7 @@ import { FactureDetailComponent as FactureDetailViewComponent } from './features
 import { ClientsViewComponent } from './features/viewer/clients/clients-view.component';
 import { ProduitsViewComponent } from './features/viewer/produits/produits-view.component';
 
-// ✅ PHASE 6 - CLIENT Pages
-import { ClientLayoutComponent } from './features/client/layout/client-layout.component';
-import { AchatsListComponent } from './features/client/achats/achats-list.component';
-import { ProfilComponent } from './features/client/profil/profil.component';
+// ✅ PHASE 6 - Removed (CLIENT space)
 
 // ✅ PHASE 7 - EMETTEUR Pages
 
@@ -68,11 +63,6 @@ import { BonCommandeDetailComponent } from './pages/bon-commandes/bon-commande-d
 import { CommandesComponent } from './pages/commandes/commandes.component';
 import { BonsLivraisonComponent } from './pages/bons-livraison/bons-livraison.component';
 import { BonsLivraisonDetailComponent } from './pages/bons-livraison/bons-livraison-detail.component';
-import { DemandesComponent } from './pages/demandes/demandes.component';
-import { DemandeDetailComponent } from './pages/demandes/demande-detail.component';
-import { UsersComponent } from './pages/users/users.component';
-import { CollaborateursComponent } from './pages/collaborateurs/collaborateurs.component';
-import { MonProfilComponent } from './pages/mon-profil/mon-profil.component';
 import { authGuard, firstLoginGuard, guestGuard, roleGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
@@ -92,9 +82,6 @@ export const routes: Routes = [
   { path: 'change-password', component: ChangePasswordComponent, canActivate: [firstLoginGuard] },
   { path: 'demande', component: DemandeFormComponent },
   { path: 'demande/statut', component: DemandeStatutComponent },
-  // Route publique accessible depuis le lien email du bon de commande
-  { path: 'bon-commande/:ref', component: BonCommandeSignatureComponent },
-  { path: 'bon-livraison-signature/:ref', component: BonsLivraisonSignatureComponent },
 
   // ── Protégées : faut être connecté ─────────────────────────────
   {
@@ -126,46 +113,9 @@ export const routes: Routes = [
       },
       { path: 'parametres', component: ParametresComponent },
 
-      // ── Admin seulement ───────────────────────────────────────
-      {
-        path: 'clients',
-        component: ClientsComponent,
-        canActivate: [roleGuard],
-        data: { roles: ['SUPER_ADMIN', 'ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER', 'EMETTEUR'] }
-      },
-      {
-        path: 'produits',
-        component: ProduitsComponent,
-        canActivate: [roleGuard],
-        data: { roles: ['SUPER_ADMIN', 'ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER', 'EMETTEUR'] }
-      },
-      {
-        path: 'demandes',
-        component: DemandesComponent,
-        canActivate: [roleGuard],
-        data: { roles: ['SUPER_ADMIN'] }
-      },
-      {
-        path: 'demandes/:id',
-        component: DemandeDetailComponent,
-        canActivate: [roleGuard],
-        data: { roles: ['SUPER_ADMIN'] }
-      },
       {
         path: 'users',
         redirectTo: '/super-admin/users'
-      },
-      {
-        path: 'collaborateurs',
-        component: CollaborateursComponent,
-        canActivate: [roleGuard],
-        data: { roles: ['ENTREPRISE_ADMIN'] }
-      },
-      {
-        path: 'mon-profil',
-        component: MonProfilComponent,
-        canActivate: [roleGuard],
-        data: { roles: ['CLIENT'] }
       },
     ]
   },
@@ -232,18 +182,7 @@ export const routes: Routes = [
     ]
   },
 
-  // ── PHASE 6: CLIENT PAGES ────────────────────────────────────
-  {
-    path: 'client',
-    component: ClientLayoutComponent,
-    canActivate: [authGuard, roleGuard],
-    data: { roles: ['CLIENT'] },
-    children: [
-      { path: '', redirectTo: 'achats', pathMatch: 'full' },
-      { path: 'achats', component: AchatsListComponent },
-      { path: 'profil', component: ProfilComponent }
-    ]
-  },
+  // ── PHASE 6: CLIENT PAGES Removed ────────────────────────────
 
   { path: '**', redirectTo: '/dashboard' }
 ];

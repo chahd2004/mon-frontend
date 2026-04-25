@@ -1,0 +1,69 @@
+@startuml "Use Case Diagram - Facturation App"
+
+left to right direction
+skinparam packageStyle rectangle
+
+' Acteurs demandés par l'utilisateur
+actor "Super Admin" as SuperAdmin
+actor "Admin Entreprise" as EntAdmin
+actor "Viewer (Consultant)" as Viewer
+
+rectangle "Système de Facturation" {
+    
+    package "Accès & Identité" {
+        usecase "S'inscrire (Demande)" as UC_Register
+        usecase "Se connecter" as UC_Login
+        usecase "Gérer son profil" as UC_Profile
+    }
+
+    package "Cycle de Vie Facturation (Entreprise)" {
+        usecase "Créer Facture (DRAFT)" as UC_Draft
+        usecase "Signer la facture (SIGNED)" as UC_SignFact
+        usecase "Envoyer la facture (SENT)" as UC_SendFact
+        usecase "Enregistrer paiement (PAID)" as UC_Paid
+        usecase "Gestion des Avoirs" as UC_Avoirs
+    }
+
+    package "Ressources & Équipe" {
+        usecase "Gérer les Produits" as UC_Products
+        usecase "Gérer les Clients" as UC_Clients
+        usecase "Gérer les Collaborateurs" as UC_Team
+    }
+
+    package "Supervision (Super Admin)" {
+        usecase "Approuver inscriptions" as UC_ApproveReq
+        usecase "Gérer les utilisateurs" as UC_ManageUsers
+        usecase "Consulter Statistiques Globales" as UC_StatsGlobal
+    }
+
+    package "Consultation (Viewer)" {
+        usecase "Consulter Dashboard / Stats" as UC_ViewStats
+        usecase "Lister Clients / Produits" as UC_ViewList
+    }
+}
+
+' Liens Super Admin
+SuperAdmin --> UC_ApproveReq
+SuperAdmin --> UC_ManageUsers
+SuperAdmin --> UC_StatsGlobal
+SuperAdmin --> UC_Login
+
+' Liens Entreprise Admin
+EntAdmin --> UC_Login
+EntAdmin --> UC_Profile
+EntAdmin --> UC_Draft
+EntAdmin --> UC_SignFact
+EntAdmin --> UC_SendFact
+EntAdmin --> UC_Paid
+EntAdmin --> UC_Avoirs
+EntAdmin --> UC_Products
+EntAdmin --> UC_Clients
+EntAdmin --> UC_Team
+
+' Liens Viewer
+Viewer --> UC_Login
+Viewer --> UC_ViewStats
+Viewer --> UC_ViewList
+Viewer --> UC_Profile
+
+@enduml

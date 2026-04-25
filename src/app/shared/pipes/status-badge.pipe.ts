@@ -28,16 +28,15 @@ export class StatusBadgePipe implements PipeTransform {
       DISABLED: { label: 'Désactivé', severity: 'danger', icon: 'pi pi-times' },
       EXPIRED: { label: 'Expiré', severity: 'danger', icon: 'pi pi-exclamation-triangle' },
       REQUESTED: { label: 'Demandé', severity: 'warning', icon: 'pi pi-send' },
-      REJECTED: { label: 'Rejeté', severity: 'danger', icon: 'pi pi-times-circle' },
       // Demande statuses
       APPROVED: { label: 'Approuvé', severity: 'success', icon: 'pi pi-check-circle' },
       // Facture statuses
       DRAFT: { label: 'Brouillon', severity: 'info', icon: 'pi pi-file' },
-      SEND: { label: 'Envoyée', severity: 'info', icon: 'pi pi-send' },
-      PARTIALLY_PAID: { label: 'Partiellement payée', severity: 'warning', icon: 'pi pi-wallet' },
-      FULLY_PAID: { label: 'Payée', severity: 'success', icon: 'pi pi-check-circle' },
-      CANCELLED: { label: 'Annulée', severity: 'danger', icon: 'pi pi-times' },
-      OVERDUE: { label: 'Échue', severity: 'danger', icon: 'pi pi-exclamation-triangle' }
+      SIGNED: { label: 'Signée', severity: 'success', icon: 'pi pi-check-square' },
+      SENT: { label: 'Envoyée', severity: 'info', icon: 'pi pi-send' },
+      PAID: { label: 'Payée', severity: 'success', icon: 'pi pi-check-circle' },
+      REJECTED: { label: 'Rejetée', severity: 'danger', icon: 'pi pi-times-circle' },
+      CANCELLED: { label: 'Annulée', severity: 'danger', icon: 'pi pi-times' }
     };
 
     return statusMap[status] || { label: status as string, severity: 'secondary' };

@@ -36,7 +36,7 @@ export class SidebarComponent {
         label: 'SIDEBAR.DASHBOARD',
         icon: 'pi pi-home',
         route: userRole === 'SUPER_ADMIN' ? '/super-admin/statistiques' : '/accueil',
-        roles: ['SUPER_ADMIN', 'ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER', 'CLIENT', 'EMETTEUR']
+        roles: ['SUPER_ADMIN', 'ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER', 'EMETTEUR']
       },
       {
         label: 'SIDEBAR.CLIENTS',
@@ -54,7 +54,7 @@ export class SidebarComponent {
         label: 'SIDEBAR.FACTURES',
         icon: 'pi pi-file',
         route: '/factures',
-        roles: ['ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER', 'CLIENT', 'EMETTEUR']
+        roles: ['ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER', 'EMETTEUR']
       },
       {
         label: 'SIDEBAR.DEMANDES',
@@ -78,12 +78,12 @@ export class SidebarComponent {
         label: 'SIDEBAR.PARAMETRES',
         icon: 'pi pi-cog',
         route: this.getParametresRoute(userRole),
-        roles: ['SUPER_ADMIN', 'ENTREPRISE_ADMIN', 'EMETTEUR', 'CLIENT']
+        roles: ['SUPER_ADMIN', 'ENTREPRISE_ADMIN', 'EMETTEUR']
       },
       {
         label: 'SIDEBAR.LOGOUT',
         icon: 'pi pi-sign-out',
-        roles: ['SUPER_ADMIN', 'ENTREPRISE_ADMIN', 'EMETTEUR', 'CLIENT'],
+        roles: ['SUPER_ADMIN', 'ENTREPRISE_ADMIN', 'EMETTEUR'],
         action: 'logout'
       }
     ];
@@ -115,8 +115,6 @@ export class SidebarComponent {
         return '/super-admin/parametres';
       case 'EMETTEUR':
         return '/emetteur/profil';
-      case 'CLIENT':
-        return '/client/profil';
       default:
         return '/parametres';
     }
