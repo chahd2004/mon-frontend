@@ -61,16 +61,8 @@ export class BonsLivraisonSignatureComponent implements OnInit {
 
   private resolveBL(ref: string): void {
     this.loading = true;
-    this.blService.getAll().subscribe({
-      next: (list) => {
-        const bl = list.find(b =>
-          (b.numBonLivraison || '').toUpperCase() === ref.toUpperCase()
-        );
-        if (!bl) {
-          this.errorMessage = `Bon de livraison introuvable : ${ref}`;
-          this.loading = false;
-          return;
-        }
+    this.blService.getPublicByRef(ref).subscribe({
+      next: (bl) => {
         this.bonLivraison = bl;
         if (this.bonLivraison.statut === 'SIGNED_CLIENT') {
           this.dejaSigne = true;
@@ -103,7 +95,7 @@ export class BonsLivraisonSignatureComponent implements OnInit {
 
     try {
       // 1. Récupérer le XML brut
-      const xmlBrut = await this.signatureService.getXmlBrutBL(this.bonLivraison.id);
+      const xmlBrut = await this.signatureService.getXmlBrutBLPublic(this.bonLivraison.id);
 
       // 2. Signer localement
       const xmlSigne = await this.signatureService.signerXAdES(
@@ -114,7 +106,7 @@ export class BonsLivraisonSignatureComponent implements OnInit {
       );
 
       // 3. Envoyer le XML signé
-      await this.signatureService.envoyerXmlSigneBL(this.bonLivraison.id, xmlSigne);
+      await this.signatureService.envoyerXmlSigneBLPublic(this.bonLivraison.id, xmlSigne);
 
       this.signing = false;
       this.signatureReussie = true;

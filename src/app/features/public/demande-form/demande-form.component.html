@@ -17,12 +17,14 @@
           <div class="form-group">
             <label for="code">Code entreprise *</label>
             <input pInputText id="code" [(ngModel)]="code" type="text" placeholder="Ex: ENT001" [disabled]="loading" />
+            <small class="error" *ngIf="fieldErrors['code']">{{ fieldErrors['code'] }}</small>
           </div>
 
           <div class="form-group">
             <label for="raisonSociale">Raison sociale *</label>
             <input pInputText id="raisonSociale" [(ngModel)]="raisonSociale" type="text"
               placeholder="Ex: Acme Corporation SARL" [disabled]="loading" />
+            <small class="error" *ngIf="fieldErrors['raisonSociale']">{{ fieldErrors['raisonSociale'] }}</small>
           </div>
         </div>
 
@@ -31,6 +33,7 @@
             <label for="matriculeFiscal">Matricule fiscal *</label>
             <input pInputText id="matriculeFiscal" [(ngModel)]="matriculeFiscal" type="text" placeholder="Ex: 1234567"
               [disabled]="loading" />
+            <small class="error" *ngIf="fieldErrors['matriculeFiscal']">{{ fieldErrors['matriculeFiscal'] }}</small>
           </div>
 
           <div class="form-group">
@@ -38,6 +41,7 @@
             <p-dropdown id="formeJuridique" [(ngModel)]="formeJuridique" [options]="formeJuridiqueOptions"
               optionLabel="label" optionValue="value" placeholder="Sélectionnez une forme"
               [disabled]="loading"></p-dropdown>
+            <small class="error" *ngIf="fieldErrors['formeJuridique']">{{ fieldErrors['formeJuridique'] }}</small>
           </div>
         </div>
 
@@ -46,12 +50,14 @@
             <label for="telephone">Téléphone</label>
             <input pInputText id="telephone" [(ngModel)]="telephone" type="text" placeholder="+216 XX XXX XXX"
               [disabled]="loading" />
+            <small class="error" *ngIf="fieldErrors['telephone']">{{ fieldErrors['telephone'] }}</small>
           </div>
 
           <div class="form-group">
             <label for="region">Région *</label>
             <p-dropdown id="region" [(ngModel)]="region" [options]="regions" optionLabel="label" optionValue="value"
               placeholder="Sélectionnez une région" [disabled]="loading"></p-dropdown>
+            <small class="error" *ngIf="fieldErrors['region']">{{ fieldErrors['region'] }}</small>
           </div>
         </div>
 
@@ -59,12 +65,14 @@
           <label for="email">Email professionnel *</label>
           <input pInputText id="email" [(ngModel)]="email" type="email" placeholder="contact@monentreprise.tn"
             [disabled]="loading" />
+          <small class="error" *ngIf="fieldErrors['email']">{{ fieldErrors['email'] }}</small>
         </div>
 
         <div class="form-group">
           <label for="adresseComplete">Adresse complète *</label>
           <textarea pInputTextarea id="adresseComplete" [(ngModel)]="adresseComplete"
             placeholder="Votre adresse complète" rows="3" [disabled]="loading"></textarea>
+          <small class="error" *ngIf="fieldErrors['adresseComplete']">{{ fieldErrors['adresseComplete'] }}</small>
         </div>
 
         <div class="form-row">
@@ -96,12 +104,14 @@
             <label for="prenomResponsable">Prénom *</label>
             <input pInputText id="prenomResponsable" [(ngModel)]="prenomResponsable" type="text" placeholder="Prénom"
               [disabled]="loading" />
+            <small class="error" *ngIf="fieldErrors['prenomResponsable']">{{ fieldErrors['prenomResponsable'] }}</small>
           </div>
 
           <div class="form-group">
             <label for="nomResponsable">Nom *</label>
             <input pInputText id="nomResponsable" [(ngModel)]="nomResponsable" type="text" placeholder="Nom"
               [disabled]="loading" />
+            <small class="error" *ngIf="fieldErrors['nomResponsable']">{{ fieldErrors['nomResponsable'] }}</small>
           </div>
         </div>
 
@@ -109,6 +119,7 @@
           <label for="fonctionResponsable">Fonction *</label>
           <input pInputText id="fonctionResponsable" [(ngModel)]="fonctionResponsable" type="text"
             placeholder="Ex: Directeur Général" [disabled]="loading" />
+          <small class="error" *ngIf="fieldErrors['fonctionResponsable']">{{ fieldErrors['fonctionResponsable'] }}</small>
         </div>
       </fieldset>
 

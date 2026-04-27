@@ -73,6 +73,38 @@ export class SignatureService {
   }
 
   // =====================================================
+  // SIGNATURE CLIENT-SIDE (XAdES) - Public Versions
+  // =====================================================
+
+  async getXmlBrutBCPublic(bonCommandeId: number): Promise<string> {
+    return firstValueFrom(
+      this.http.get(`${environment.apiUrl}/public/bon-commande/${bonCommandeId}/xml-brut`, 
+        { responseType: 'text' })
+    );
+  }
+
+  async getXmlBrutBLPublic(bonLivraisonId: number): Promise<string> {
+    return firstValueFrom(
+      this.http.get(`${environment.apiUrl}/public/bon-livraison/${bonLivraisonId}/xml-brut`, 
+        { responseType: 'text' })
+    );
+  }
+
+  async envoyerXmlSigneBCPublic(bonCommandeId: number, xmlSigne: string): Promise<any> {
+    return firstValueFrom(
+      this.http.post(`${environment.apiUrl}/public/bon-commande/${bonCommandeId}/xml-signe`, 
+        { xmlSigne })
+    );
+  }
+
+  async envoyerXmlSigneBLPublic(bonLivraisonId: number, xmlSigne: string): Promise<any> {
+    return firstValueFrom(
+      this.http.post(`${environment.apiUrl}/public/bon-livraison/${bonLivraisonId}/xml-signe`, 
+        { xmlSigne })
+    );
+  }
+
+  // =====================================================
   // SIGNATURE CLIENT-SIDE (XAdES)
   // =====================================================
 

@@ -40,14 +40,14 @@
           <td>
             <div class="row-actions">
               <button class="icon-btn" (click)="voirCommande(item)" title="Voir"><i class="pi pi-eye"></i></button>
-              
-              <button class="icon-btn" *ngIf="!isViewer && canConfirm(item)" (click)="confirmerCommande(item)" 
+
+              <button class="icon-btn" *ngIf="!isViewer && canConfirm(item)" (click)="confirmerCommande(item)"
                 title="Confirmer"><i class="pi pi-check"></i></button>
-              
-              <button class="icon-btn" *ngIf="!isViewer && canStartProduction(item)" (click)="demarrerProduction(item)" 
+
+              <button class="icon-btn" *ngIf="!isViewer && canStartProduction(item)" (click)="demarrerProduction(item)"
                 title="Démarrer production"><i class="pi pi-play"></i></button>
-              
-              <button class="icon-btn" *ngIf="!isViewer && canCancel(item)" (click)="annulerCommande(item)" 
+
+              <button class="icon-btn" *ngIf="!isViewer && canCancel(item)" (click)="annulerCommande(item)"
                 title="Annuler"><i class="pi pi-times"></i></button>
             </div>
           </td>
@@ -124,10 +124,12 @@
     </div>
 
     <div class="modal-actions">
-      <button type="button" class="btn btn-neutral" (click)="closeConvertModal()">{{ 'COMMANDES.CONVERT_MODAL.BTN_CANCEL' | translate }}</button>
+      <button type="button" class="btn btn-neutral" (click)="closeConvertModal()">{{
+        'COMMANDES.CONVERT_MODAL.BTN_CANCEL' | translate }}</button>
       <button type="button" class="btn btn-primary" [disabled]="converting || !selectedBCId"
         (click)="convertirBCSelectionne()">
-        {{ converting ? ('COMMANDES.CONVERT_MODAL.CONVERTING' | translate) : ('COMMANDES.CONVERT_MODAL.BTN_CONVERT' | translate) }}
+        {{ converting ? ('COMMANDES.CONVERT_MODAL.CONVERTING' | translate) : ('COMMANDES.CONVERT_MODAL.BTN_CONVERT' |
+        translate) }}
       </button>
     </div>
   </div>

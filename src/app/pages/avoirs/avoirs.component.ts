@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
@@ -22,6 +22,13 @@ export class AvoirsComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly translate = inject(TranslateService);
+
+  get isViewer(): boolean {
+    return this.authService.hasRole('ENTREPRISE_VIEWER');
+  }
+
+  isReadOnly = computed(() => this.authService.hasRole('ENTREPRISE_VIEWER'));
+
 
   loading = false;
   errorMessage = '';
@@ -117,10 +124,12 @@ export class AvoirsComponent implements OnInit {
   }
 
   modifierAvoir(avoir: Avoir): void {
+    if (this.isViewer) return;
     this.router.navigate(['/avoirs/edit', avoir.id]);
   }
 
   envoyerAvoir(avoir: Avoir): void {
+    if (this.isViewer) return;
     this.loading = true;
     this.avoirService.envoyerAvoir(avoir.id).subscribe({
       next: () => {
@@ -136,6 +145,7 @@ export class AvoirsComponent implements OnInit {
   }
 
   validerAvoir(avoir: Avoir): void {
+    if (this.isViewer) return;
     this.loading = true;
     this.avoirService.validerAvoir(avoir.id).subscribe({
       next: () => {
@@ -151,6 +161,7 @@ export class AvoirsComponent implements OnInit {
   }
 
   appliquerAvoir(avoir: Avoir): void {
+    if (this.isViewer) return;
     this.loading = true;
     this.avoirService.appliquerAvoir(avoir.id).subscribe({
       next: () => {

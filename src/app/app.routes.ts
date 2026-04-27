@@ -9,6 +9,8 @@ import { RegisterComponent as SuperAdminRegisterComponent } from './pages/regist
 import { ChangePasswordComponent } from './features/public/change-password/change-password.component';
 import { DemandeFormComponent } from './features/public/demande-form/demande-form.component';
 import { DemandeStatutComponent } from './features/public/demande-statut/demande-statut.component';
+import { BonCommandeSignatureComponent } from './features/public/bon-commande-signature/bon-commande-signature.component';
+import { BonsLivraisonSignatureComponent } from './features/public/bons-livraison-signature/bons-livraison-signature.component';
 
 // ✅ PHASE 3 - SUPER_ADMIN Pages
 import { SuperAdminLayoutComponent } from './features/super-admin/layout/super-admin-layout.component';
@@ -82,7 +84,7 @@ export const routes: Routes = [
   { path: 'change-password', component: ChangePasswordComponent, canActivate: [firstLoginGuard] },
   { path: 'demande', component: DemandeFormComponent },
   { path: 'demande/statut', component: DemandeStatutComponent },
-
+  
   // ── Protégées : faut être connecté ─────────────────────────────
   {
     path: '',
@@ -91,6 +93,10 @@ export const routes: Routes = [
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
+      { path: 'clients', component: ClientsComponent },
+      { path: 'produits', component: ProduitsComponent },
+      { path: 'collaborateurs', component: CollaborateursListComponent },
+      { path: 'collaborateurs/ajouter', component: CollaborateurFormComponent },
       { path: 'factures', component: FacturesComponent },
       { path: 'factures/:id', component: FactureComponent },
       { path: 'avoirs', component: AvoirsComponent },
@@ -99,14 +105,11 @@ export const routes: Routes = [
       { path: 'devis', component: DevisComponent },
       { path: 'devis/nouveau', component: DevisCreateComponent },
       { path: 'devis/view/:id', component: DevisDetailComponent },
-      { path: 'devis/:ref', component: DevisDetailComponent },
       { path: 'bons-commandes', component: BonCommandesComponent },
       { path: 'bons-commandes/view/:id', component: BonCommandeDetailComponent },
-      { path: 'bon-commande/:ref', component: BonCommandeDetailComponent },
       { path: 'commandes', component: CommandesComponent },
       { path: 'bons-livraison', component: BonsLivraisonComponent },
       { path: 'bons-livraison/view/:id', component: BonsLivraisonDetailComponent },
-      { path: 'bon-livraison/:ref', component: BonsLivraisonDetailComponent },
       {
         path: 'commandes/view/:id',
         loadComponent: () => import('./pages/commandes/commande-detail.component').then(m => m.CommandeDetailComponent)
@@ -183,6 +186,12 @@ export const routes: Routes = [
   },
 
   // ── PHASE 6: CLIENT PAGES Removed ────────────────────────────
+
+  // Public Signature Links (accessible without login)
+  // These are placed at the end to avoid shadowing more specific routes (like devis/nouveau)
+  { path: 'devis/:ref', component: DevisDetailComponent },
+  { path: 'bon-commande/:ref', component: BonCommandeSignatureComponent },
+  { path: 'bon-livraison-signature/:ref', component: BonsLivraisonSignatureComponent },
 
   { path: '**', redirectTo: '/dashboard' }
 ];

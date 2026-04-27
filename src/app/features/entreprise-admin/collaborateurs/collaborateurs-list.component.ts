@@ -5,175 +5,126 @@ import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { DropdownModule } from 'primeng/dropdown';
 import { TooltipModule } from 'primeng/tooltip';
-import { TagModule } from 'primeng/tag';
+import { ToastModule } from 'primeng/toast';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { MessageService, ConfirmationService } from 'primeng/api';
 import { AuthService } from '../../../core/services/auth.service';
-import { EmetteurService } from '../../../core/services/emetteur.service';
+import { CollaborateurService } from '../../../core/services/collaborateur.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 interface Collaborateur {
   id: string;
   prenom: string;
   nom: string;
   email: string;
-  telephone: string;
   role: string;
-  status: 'ACTIVE' | 'INACTIVE' | 'SUSPENDED';
   dateAjout: string;
+  isAdmin?: boolean;
 }
 
 @Component({
   selector: 'app-collaborateurs-list',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, TableModule, ButtonModule, InputTextModule, DropdownModule, TooltipModule, TagModule],
+  imports: [
+    CommonModule, RouterLink, FormsModule,
+    TableModule, ButtonModule, InputTextModule, TooltipModule,
+    ToastModule, ConfirmDialogModule, TranslateModule
+  ],
+  providers: [MessageService, ConfirmationService],
   templateUrl: './collaborateurs-list.component.html',
   styleUrl: './collaborateurs-list.component.scss'
 })
 export class CollaborateursListComponent implements OnInit {
   private authService = inject(AuthService);
-  private emetteurService = inject(EmetteurService);
+  private collaborateurService = inject(CollaborateurService);
+  private messageService = inject(MessageService);
+  private confirmationService = inject(ConfirmationService);
+  private translate = inject(TranslateService);
 
   collaborateurs: Collaborateur[] = [];
   filteredCollaborateurs: Collaborateur[] = [];
   isLoading = false;
   searchTerm = '';
-  selectedRole = '';
-  enterpriseName = 'Entreprise';
-
-  roleOptions = [
-    { label: 'Tous', value: '' },
-    { label: 'Manager', value: 'MANAGER' },
-    { label: 'Comptable', value: 'COMPTABLE' },
-    { label: 'Commercial', value: 'COMMERCIAL' },
-    { label: 'Viewer', value: 'VIEWER' }
-  ];
 
   ngOnInit(): void {
-    this.loadEnterpriseName();
     this.loadCollaborateurs();
-  }
-
-  private loadEnterpriseName(): void {
-    try {
-      const currentUser = this.authService.currentUser();
-      console.log('🔍 Current user (Collaborateurs):', currentUser);
-      
-      if (!currentUser) {
-        console.log('❌ No current user found');
-        this.enterpriseName = 'Entreprise';
-        return;
-      }
-      
-      if (!currentUser.emetteurId) {
-        console.log('⚠️  No emetteurId found in user:', { 
-          id: currentUser.id, 
-          email: currentUser.email,
-          role: currentUser.role
-        });
-        this.enterpriseName = 'Entreprise';
-        return;
-      }
-
-      console.log('📡 Fetching emetteur with ID:', currentUser.emetteurId);
-      this.emetteurService.getEmetteurById(currentUser.emetteurId).subscribe({
-        next: (emetteur) => {
-          console.log('✅ Emetteur loaded:', emetteur);
-          this.enterpriseName = emetteur?.raisonSociale || 'Entreprise';
-          console.log('📝 Enterprise name set to:', this.enterpriseName);
-        },
-        error: (err) => {
-          console.error('❌ Error fetching emetteur:', err);
-          this.enterpriseName = 'Entreprise';
-        },
-        complete: () => {
-          console.log('✔️  Emetteur subscription completed');
-        }
-      });
-    } catch (error) {
-      console.error('❌ Exception in loadEnterpriseName:', error);
-      this.enterpriseName = 'Entreprise';
-    }
   }
 
   private loadCollaborateurs(): void {
     this.isLoading = true;
-    // Mock data
-    this.collaborateurs = [
-      {
-        id: '1',
-        prenom: 'Ahmed',
-        nom: 'Ben Ali',
-        email: 'ahmed.benali@company.tn',
-        telephone: '+216 99 123 456',
-        role: 'MANAGER',
-        status: 'ACTIVE',
-        dateAjout: '2024-01-15'
+    this.collaborateurService.getCollaborateurs().subscribe({
+      next: (data) => {
+        const items = Array.isArray(data) ? data : (data as any).content || [];
+        this.collaborateurs = items.map((c: any) => ({
+          id: c.id?.toString() || '',
+          prenom: c.prenom || c.firstName || '',
+          nom: c.nom || c.lastName || '',
+          email: c.email || '',
+          role: c.role || 'ENTREPRISE_VIEWER',
+          dateAjout: c.createdAt ? new Date(c.createdAt).toLocaleDateString('fr-FR') : 'N/A',
+          isAdmin: false
+        }));
+
+        // Ajouter l'ENTREPRISE_ADMIN connecté en première ligne
+        const currentUser = this.authService.currentUser();
+        if (currentUser && currentUser.role === 'ENTREPRISE_ADMIN') {
+          const adminEntry: Collaborateur = {
+            id: currentUser.id?.toString() || '0',
+            prenom: currentUser.prenom || '',
+            nom: currentUser.nom || '',
+            email: currentUser.email || '',
+            role: 'ENTREPRISE_ADMIN',
+            dateAjout: '—',
+            isAdmin: true
+          };
+          this.collaborateurs = [adminEntry, ...this.collaborateurs];
+        }
+
+        this.filteredCollaborateurs = [...this.collaborateurs];
+        this.isLoading = false;
       },
-      {
-        id: '2',
-        prenom: 'Fatima',
-        nom: 'Trabelsi',
-        email: 'fatima.trabelsi@company.tn',
-        telephone: '+216 98 234 567',
-        role: 'COMPTABLE',
-        status: 'ACTIVE',
-        dateAjout: '2024-02-20'
-      },
-      {
-        id: '3',
-        prenom: 'Mohamed',
-        nom: 'Souissi',
-        email: 'mohamed.souissi@company.tn',
-        telephone: '+216 97 345 678',
-        role: 'COMMERCIAL',
-        status: 'INACTIVE',
-        dateAjout: '2024-03-10'
+      error: (err: any) => {
+        console.error('Erreur chargement collaborateurs:', err);
+        this.isLoading = false;
       }
-    ];
-    this.filteredCollaborateurs = [...this.collaborateurs];
-    this.isLoading = false;
-  }
-
-  onSearch(): void {
-    this.applyFilters();
-  }
-
-  onRoleChange(): void {
-    this.applyFilters();
-  }
-
-  applyFilters(): void {
-    this.filteredCollaborateurs = this.collaborateurs.filter(collab => {
-      const matchesSearch =
-        collab.prenom.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        collab.nom.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        collab.email.toLowerCase().includes(this.searchTerm.toLowerCase());
-
-      const matchesRole = !this.selectedRole || collab.role === this.selectedRole;
-
-      return matchesSearch && matchesRole;
     });
   }
 
-  getStatusSeverity(status: string): string {
-    switch (status) {
-      case 'ACTIVE':
-        return 'success';
-      case 'INACTIVE':
-        return 'warning';
-      case 'SUSPENDED':
-        return 'danger';
-      default:
-        return 'info';
-    }
-  }
-
-  editCollaborateur(id: string): void {
-    console.log('Edit collaborateur:', id);
+  onSearch(): void {
+    this.filteredCollaborateurs = this.collaborateurs.filter(collab =>
+      collab.prenom.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+      collab.nom.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+      collab.email.toLowerCase().includes(this.searchTerm.toLowerCase())
+    );
   }
 
   deleteCollaborateur(id: string): void {
-    this.collaborateurs = this.collaborateurs.filter(c => c.id !== id);
-    this.applyFilters();
+    this.confirmationService.confirm({
+      message: this.translate.instant('COLLABORATEURS.CONFIRM.DELETE_MSG'),
+      header: this.translate.instant('COLLABORATEURS.CONFIRM.DELETE_TITLE'),
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.collaborateurService.deleteCollaborateur(id).subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: this.translate.instant('COMMON.SUCCESS') || 'Succès',
+              detail: this.translate.instant('COLLABORATEURS.CONFIRM.DELETE_SUCCESS')
+            });
+            this.collaborateurs = this.collaborateurs.filter(c => c.id !== id);
+            this.onSearch();
+          },
+          error: (err: any) => {
+            console.error('Erreur lors de la désactivation:', err);
+            this.messageService.add({
+              severity: 'error',
+              summary: this.translate.instant('COMMON.ERROR') || 'Erreur',
+              detail: this.translate.instant('COLLABORATEURS.CONFIRM.DELETE_ERROR')
+            });
+          }
+        });
+      }
+    });
   }
 }

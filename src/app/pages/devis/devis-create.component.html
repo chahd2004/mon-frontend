@@ -81,8 +81,7 @@
   <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
 
   <div class="actions-row">
-    <button type="button" (click)="enregistrerBrouillon()">{{ isEditMode ? ('DEVIS.UPDATE_DRAFT' | translate) : ('DEVIS.SAVE_DRAFT' | translate) }}</button>
-    <button type="button" class="primary" (click)="creerEtEnvoyer()">{{ isEditMode ? ('DEVIS.UPDATE_SEND' | translate) : ('DEVIS.CREATE_SEND' | translate) }}</button>
+    <button type="button" class="primary" (click)="enregistrerBrouillon()">{{ isEditMode ? ('DEVIS.UPDATE_DRAFT' | translate) : ('DEVIS.SAVE_DRAFT' | translate) }}</button>
   </div>
 </div>
 

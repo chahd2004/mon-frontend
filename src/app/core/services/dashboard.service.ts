@@ -4,6 +4,7 @@ import { Observable, forkJoin, map, catchError, of } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { FactureService } from './facture.service';
 import { ClientService } from './client.service';
+import { AuthService } from './auth.service';
 import { BaseService } from './base.service';
 
 export interface DashboardStats {
@@ -80,15 +81,22 @@ export class DashboardService extends BaseService {
   constructor(
     private http: HttpClient,
     private factureService: FactureService,
-    private clientService: ClientService
+    private clientService: ClientService,
+    private authService: AuthService
   ) { super(); }
 
   getStats(): Observable<DashboardStats> {
+    const user = this.authService.currentUser();
+    
     return forkJoin({
       factures: this.factureService.getFactures(1, 1000).pipe(catchError(() => of({ data: [], total: 0 }))),
       clients: this.clientService.getClients().pipe(catchError(() => of([]))),
-      collaborateurs: this.http.get<any[] | { content: any[] }>(`${this.apiUrl}/entreprise-admin/collaborateurs`, this.getHeaders())
-        .pipe(catchError(() => of([])))
+      // On n'essaie pas de charger les collaborateurs pour le VIEWER car il n'a pas les droits en principe
+      // Ou alors le backend doit autoriser le GET pour le VIEWER.
+      collaborateurs: (!user || user.role === 'ENTREPRISE_VIEWER') 
+        ? of([]) 
+        : this.http.get<any[] | { content: any[] }>(`${this.apiUrl}/entreprise-admin/collaborateurs`, this.getHeaders())
+            .pipe(catchError(() => of([])))
     }).pipe(
       map(({ factures, clients, collaborateurs }) => {
         const collabList = Array.isArray(collaborateurs) ? collaborateurs : (collaborateurs as any).content || [];

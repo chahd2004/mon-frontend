@@ -4,6 +4,7 @@ import { StatCardComponent } from '../../../shared';
 import { ChartModule } from 'primeng/chart';
 import { AuthService } from '../../../core/services/auth.service';
 import { EmetteurService } from '../../../core/services/emetteur.service';
+import { DemandeService } from '../../../core/services/demande.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -15,6 +16,7 @@ import { EmetteurService } from '../../../core/services/emetteur.service';
 export class DashboardComponent implements OnInit {
   private authService = inject(AuthService);
   private emetteurService = inject(EmetteurService);
+  private demandeService = inject(DemandeService);
 
   kpiData: any[] = [];
   chartData: any = null;
@@ -45,6 +47,7 @@ export class DashboardComponent implements OnInit {
           email: currentUser.email,
           role: currentUser.role
         });
+        
         this.enterpriseName = 'Entreprise';
         return;
       }

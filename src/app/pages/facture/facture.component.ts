@@ -407,7 +407,7 @@ export class FactureComponent implements OnInit {
         this.loading = false;
         this.messageService.add({
           severity: 'success', summary: this.translate.instant('TOAST.SUCCESS'),
-          detail: this.isEditMode ? this.translate.instant('CLIENTS.MSGS.SAVE_SUCCESS_EDIT') : this.translate.instant('CLIENTS.MSGS.SAVE_SUCCESS_ADD')
+          detail: this.isEditMode ? this.translate.instant('FACTURES.MSGS.SAVE_SUCCESS_EDIT') : this.translate.instant('FACTURES.MSGS.SAVE_SUCCESS_ADD')
         });
         this.factureRefresh.notifyRefresh();
         setTimeout(() => this.router.navigate(['/factures']), 1500);

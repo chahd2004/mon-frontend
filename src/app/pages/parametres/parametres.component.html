@@ -40,7 +40,7 @@
               <label>{{ 'PARAMETRES.MON_PROFIL.NOM' | translate }}</label>
               <input type="text" pInputText [(ngModel)]="userProfile.nom" class="param-input" [placeholder]="'PARAMETRES.MON_PROFIL.PLACEHOLDER_NOM' | translate">
             </div>
-            <button pButton [label]="'PARAMETRES.MON_PROFIL.BTN_SAVE' | translate" class="btn-green profile-save-btn"
+            <button *ngIf="!isViewer" pButton [label]="'PARAMETRES.MON_PROFIL.BTN_SAVE' | translate" class="btn-green profile-save-btn"
               (click)="sauvegarderProfil()">
             </button>
           </div>
@@ -68,7 +68,7 @@
               <p-password [(ngModel)]="passwordData.confirmation" [feedback]="false" [toggleMask]="true"
                 styleClass="password-field" inputStyleClass="param-input" placeholder="••••••••••"></p-password>
             </div>
-            <button pButton [label]="'PARAMETRES.PASSWORD.BTN_CHANGE' | translate" class="p-button-warning profile-save-btn"
+            <button *ngIf="!isViewer" pButton [label]="'PARAMETRES.PASSWORD.BTN_CHANGE' | translate" class="p-button-warning profile-save-btn"
               (click)="changerMotDePasse()">
             </button>
           </div>
@@ -97,7 +97,7 @@
               <label>{{ 'PARAMETRES.SOCIETE.IBAN' | translate }}</label>
               <input type="text" pInputText [(ngModel)]="societeInfo.iban" class="param-input" placeholder="TN59 1234 5678">
             </div>
-            <button pButton [label]="'PARAMETRES.SOCIETE.BTN_SAVE' | translate" class="btn-green profile-save-btn"
+            <button *ngIf="!isViewer" pButton [label]="'PARAMETRES.SOCIETE.BTN_SAVE' | translate" class="btn-green profile-save-btn"
               (click)="sauvegarderSociete()">
             </button>
           </div>

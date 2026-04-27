@@ -177,7 +177,7 @@ export class BonsLivraisonComponent implements OnInit {
   private initConversionForm(): void {
     const in30Days = new Date();
     in30Days.setDate(in30Days.getDate() + 30);
-    
+
     this.conversionForm = this.fb.group({
       dateDocument: [new Date(), Validators.required],
       modePaiement: ['VIREMENT', Validators.required],
@@ -344,16 +344,16 @@ export class BonsLivraisonComponent implements OnInit {
 
   ouvrirFactureModal(item: BonLivraisonView): void {
     this.selectedBLForFacture = item;
-    
+
     const in30Days = new Date();
     in30Days.setDate(in30Days.getDate() + 30);
-    
+
     this.conversionForm.patchValue({
       dateDocument: new Date(),
       modePaiement: 'VIREMENT',
       datePaiement: in30Days
     });
-    
+
     this.displayFactureModal = true;
     this.errorMessage = '';
     this.successMessage = '';
@@ -372,7 +372,7 @@ export class BonsLivraisonComponent implements OnInit {
     this.errorMessage = '';
 
     const formVal = this.conversionForm.value;
-    
+
     // Format dates to YYYY-MM-DD for backend
     const payload = {
       dateDocument: this.formatDate(formVal.dateDocument),

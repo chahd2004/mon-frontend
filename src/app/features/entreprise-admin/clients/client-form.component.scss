@@ -3,6 +3,14 @@
   margin: 0 auto;
   padding: 2rem;
 
+  .error {
+    color: #ef4444;
+    font-size: 0.85rem;
+    margin-top: 0.4rem;
+    display: block;
+    animation: fadeIn 0.3s ease-out;
+  }
+
   @media (max-width: 768px) {
     padding: 1rem;
   }

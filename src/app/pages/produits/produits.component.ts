@@ -1,5 +1,5 @@
 // src/app/pages/produits/produits.component.ts
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -60,6 +60,8 @@ export class ProduitsComponent implements OnInit {
     return this.authService.hasRole('ENTREPRISE_VIEWER');
   }
 
+  isReadOnly = computed(() => this.authService.hasRole('ENTREPRISE_VIEWER'));
+
   // Données
   produits: Produit[] = [];
   produitsFiltered: Produit[] = [];
@@ -106,12 +108,15 @@ export class ProduitsComponent implements OnInit {
   /**
    * Résout l'emetteurId : depuis l'utilisateur connecté, sinon fallback DEFAULT
    */
-  private resolveEmetteurId(): number {
+  private resolveEmetteurId(): number | null {
     const user = this.authService.currentUser();
     if (user?.emetteurId != null && Number(user.emetteurId) > 0) {
       return Number(user.emetteurId);
     }
-    return DEFAULT_EMETTEUR_ID; // ← MODE TEST
+    if ((user as any)?.entrepriseId != null && Number((user as any).entrepriseId) > 0) {
+      return Number((user as any).entrepriseId);
+    }
+    return null; // Le backend filtre via JWT
   }
 
   /**
@@ -213,7 +218,7 @@ export class ProduitsComponent implements OnInit {
       designation: '',
       prixUnitaire: 0,
       tauxTVA: 19,
-      emetteurId: this.resolveEmetteurId(),
+      emetteurId: this.resolveEmetteurId() ?? 0,
       quantiteStock: 0,
       stockIllimite: false,
       seuilAlerteStock: 5

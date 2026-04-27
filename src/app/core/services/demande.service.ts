@@ -54,6 +54,13 @@ export class DemandeService {
   // ── SUPER ADMIN ──────────────────────────────────────────────
 
   /**
+   * Récupérer toutes les demandes (SUPER_ADMIN)
+   */
+  getDemandes(): Observable<any[]> {
+    return this.http.get<any[]>(this.SUPER_ADMIN_URL);
+  }
+
+  /**
    * Récupérer toutes les demandes en attente (SUPER_ADMIN)
    */
   getDemandesEnAttente(): Observable<any[]> {

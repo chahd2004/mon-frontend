@@ -93,7 +93,8 @@ export class AuthService {
       firstLogin: response.firstLogin,
       enabled: true,
       clientId: response.clientId ?? undefined,
-      emetteurId: response.emetteurId ?? undefined
+      emetteurId: response.emetteurId ?? (response as any).entrepriseId ?? undefined,
+      entrepriseId: (response as any).entrepriseId ?? undefined
     };
 
     localStorage.setItem(this.USER_KEY, JSON.stringify(user));

@@ -1,5 +1,5 @@
 // src/app/pages/factures/factures.component.ts
-import { Component, OnInit, inject, OnDestroy } from '@angular/core';
+import { Component, OnInit, inject, OnDestroy, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -57,6 +57,8 @@ export class FacturesComponent implements OnInit, OnDestroy {
   get isViewer(): boolean {
     return this.authService.hasRole('ENTREPRISE_VIEWER');
   }
+
+  isReadOnly = computed(() => this.authService.hasRole('ENTREPRISE_VIEWER'));
 
   factures: Facture[] = [];
   totalRecords: number = 0;

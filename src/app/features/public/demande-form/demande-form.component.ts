@@ -51,6 +51,8 @@ export class DemandeFormComponent {
   nomResponsable: string = '';
   prenomResponsable: string = '';
   fonctionResponsable: string = '';
+  
+  fieldErrors: Record<string, string> = {};
 
 
   loading: boolean = false;
@@ -74,112 +76,74 @@ export class DemandeFormComponent {
   ];
 
   submitDemande(): void {
-    // Validation
+    this.fieldErrors = {};
+    const errors: string[] = [];
+
+    // Validation Locale
     if (!this.code?.trim()) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Validation',
-        detail: 'Veuillez entrer le code de l\'entreprise.'
-      });
-      return;
+      this.fieldErrors['code'] = 'Le code de l\'entreprise est requis.';
+      errors.push(this.fieldErrors['code']);
     }
 
     if (!this.raisonSociale?.trim()) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Validation',
-        detail: 'Veuillez entrer la raison sociale.'
-      });
-      return;
+      this.fieldErrors['raisonSociale'] = 'La raison sociale est requise.';
+      errors.push(this.fieldErrors['raisonSociale']);
     }
 
     if (!this.matriculeFiscal?.trim()) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Validation',
-        detail: 'Veuillez entrer le matricule fiscal.'
-      });
-      return;
-    }
-
-    if (!this.adresseComplete?.trim()) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Validation',
-        detail: 'Veuillez entrer l\'adresse complète.'
-      });
-      return;
-    }
-
-    if (!this.region) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Validation',
-        detail: 'Veuillez sélectionner une région.'
-      });
-      return;
-    }
-
-    if (!this.email?.trim()) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Validation',
-        detail: 'Veuillez entrer votre email.'
-      });
-      return;
-    }
-
-    if (!this.emailRegex.test(this.email.trim())) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Validation',
-        detail: 'Le format de l\'email est invalide.'
-      });
-      return;
+      this.fieldErrors['matriculeFiscal'] = 'Le matricule fiscal est requis.';
+      errors.push(this.fieldErrors['matriculeFiscal']);
     }
 
     if (!this.formeJuridique) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Validation',
-        detail: 'Veuillez sélectionner la forme juridique.'
-      });
-      return;
+      this.fieldErrors['formeJuridique'] = 'La forme juridique est requise.';
+      errors.push(this.fieldErrors['formeJuridique']);
+    }
+
+    if (!this.email?.trim()) {
+      this.fieldErrors['email'] = 'L\'email est requis.';
+      errors.push(this.fieldErrors['email']);
+    } else if (!this.emailRegex.test(this.email.trim())) {
+      this.fieldErrors['email'] = 'Le format de l\'email est invalide.';
+      errors.push(this.fieldErrors['email']);
+    }
+
+    if (!this.adresseComplete?.trim()) {
+      this.fieldErrors['adresseComplete'] = 'L\'adresse complète est requise.';
+      errors.push(this.fieldErrors['adresseComplete']);
+    }
+
+    if (!this.region) {
+      this.fieldErrors['region'] = 'La région est requise.';
+      errors.push(this.fieldErrors['region']);
+    }
+
+    if (!this.nomResponsable?.trim()) {
+      this.fieldErrors['nomResponsable'] = 'Le nom du responsable est requis.';
+      errors.push(this.fieldErrors['nomResponsable']);
+    }
+
+    if (!this.prenomResponsable?.trim()) {
+      this.fieldErrors['prenomResponsable'] = 'Le prénom du responsable est requis.';
+      errors.push(this.fieldErrors['prenomResponsable']);
+    }
+
+    if (!this.fonctionResponsable?.trim()) {
+      this.fieldErrors['fonctionResponsable'] = 'La fonction du responsable est requise.';
+      errors.push(this.fieldErrors['fonctionResponsable']);
     }
 
     const cleanedPhone = this.telephone?.trim();
     if (cleanedPhone && !this.telephoneRegex.test(cleanedPhone)) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Validation',
-        detail: 'Le numéro de téléphone est invalide.'
-      });
-      return;
+      this.fieldErrors['telephone'] = 'Le numéro de téléphone est invalide.';
+      errors.push(this.fieldErrors['telephone']);
     }
 
-    if (!this.nomResponsable?.trim()) {
+    if (errors.length > 0) {
       this.messageService.add({
         severity: 'warn',
-        summary: 'Validation',
-        detail: 'Veuillez entrer le nom du responsable.'
-      });
-      return;
-    }
-
-    if (!this.prenomResponsable?.trim()) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Validation',
-        detail: 'Veuillez entrer le prénom du responsable.'
-      });
-      return;
-    }
-
-    if (!this.fonctionResponsable?.trim()) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Validation',
-        detail: 'Veuillez entrer la fonction du responsable.'
+        summary: 'Formulaire incomplet',
+        detail: 'Veuillez corriger les erreurs dans le formulaire.'
       });
       return;
     }
@@ -203,7 +167,6 @@ export class DemandeFormComponent {
       banque: this.banque?.trim() || undefined
     };
 
-    // Compatibilite backend: certains endpoints attendent encore des noms de champs legacy.
     const requestCompat: any = {
       ...request,
       pays: 'TUNISIE',
@@ -217,7 +180,7 @@ export class DemandeFormComponent {
         this.messageService.add({
           severity: 'success',
           summary: 'Demande soumise',
-          detail: 'Votre demande d\'entreprise a été reçue. Vous serez notifié de sa décision par email.'
+          detail: 'Votre demande d\'entreprise a été reçue.'
         });
 
         setTimeout(() => {
@@ -228,11 +191,70 @@ export class DemandeFormComponent {
       },
       error: (err) => {
         this.loading = false;
+        console.error('❌ Erreur soumission:', err);
+        
+        // Tentative de parsing des erreurs par champ si c'est un 400
+        const payload = err.error;
+        console.log('📦 Raw error payload from backend:', payload);
+        
+        if (err.status === 400 && payload) {
+          const mapBackendKey = (key: string): string => {
+            const mapping: Record<string, string> = {
+              'nomRepresentant': 'nomResponsable',
+              'prenomRepresentant': 'prenomResponsable',
+              'fonctionRepresentant': 'fonctionResponsable',
+              'adresseComplete': 'adresseComplete',
+              'matricule_fiscal': 'matriculeFiscal',
+              'raison_sociale': 'raisonSociale',
+              'forme_juridique': 'formeJuridique',
+              'code_entreprise': 'code'
+            };
+            return mapping[key] || key;
+          };
+
+          if (payload.errors) {
+            if (Array.isArray(payload.errors)) {
+              payload.errors.forEach((e: any) => {
+                if (e.field) {
+                  const targetField = mapBackendKey(e.field);
+                  this.fieldErrors[targetField] = e.defaultMessage || e.message || 'Valeur invalide';
+                }
+              });
+            } else if (typeof payload.errors === 'object') {
+              Object.keys(payload.errors).forEach(key => {
+                const targetField = mapBackendKey(key);
+                const val = (payload.errors as any)[key];
+                this.fieldErrors[targetField] = Array.isArray(val) ? String(val[0]) : String(val);
+              });
+            }
+          } else if (Array.isArray(payload.violations)) {
+            payload.violations.forEach((v: any) => {
+              if (v.field) {
+                const targetField = mapBackendKey(v.field);
+                this.fieldErrors[targetField] = v.message || 'Valeur invalide';
+              }
+            });
+          } else if (typeof payload === 'object' && !payload.errors && !payload.violations) {
+            Object.keys(payload).forEach(key => {
+              const targetField = mapBackendKey(key);
+              const val = payload[key];
+              this.fieldErrors[targetField] = Array.isArray(val) ? String(val[0]) : String(val);
+            });
+          }
+          console.log('✅ Final fieldErrors mapping:', this.fieldErrors);
+        }
+
         const message = this.extractApiError(err, 'Une erreur est survenue lors de la soumission.');
+        const fieldCount = Object.keys(this.fieldErrors).length;
+        
         this.messageService.add({
           severity: 'error',
-          summary: 'Erreur de soumission',
-          detail: message
+          summary: fieldCount > 0 ? 'Erreur de formulaire' : 'Erreur',
+          detail: fieldCount > 1 
+            ? `Veuillez corriger les ${fieldCount} erreurs indiquées.` 
+            : fieldCount === 1 
+              ? 'Veuillez corriger l\'erreur indiquée.' 
+              : message
         });
       },
       complete: () => {

@@ -7,7 +7,7 @@
     <form [formGroup]="editForm">
       <div class="form-grid">
         <div class="form-group">
-          <label for="prenom">{{ 'SUPER_ADMIN.USERS.FORM.FIRST_NAME' | translate }} *</label>
+          <label for="prenom">{{ 'SUPER_ADMIN.USERS.FORM.FIRST_NAME' | translate }}</label>
           <input
             pInputText
             id="prenom"
@@ -21,7 +21,7 @@
         </div>
 
         <div class="form-group">
-          <label for="nom">{{ 'SUPER_ADMIN.USERS.FORM.LAST_NAME' | translate }} *</label>
+          <label for="nom">{{ 'SUPER_ADMIN.USERS.FORM.LAST_NAME' | translate }}</label>
           <input
             pInputText
             id="nom"
@@ -35,7 +35,7 @@
         </div>
 
         <div class="form-group">
-          <label for="email">{{ 'SUPER_ADMIN.USERS.FORM.EMAIL' | translate }} *</label>
+          <label for="email">{{ 'SUPER_ADMIN.USERS.FORM.EMAIL' | translate }}</label>
           <input
             pInputText
             id="email"
@@ -50,7 +50,7 @@
         </div>
 
         <div class="form-group">
-          <label for="telephone">{{ 'SUPER_ADMIN.USERS.FORM.PHONE' | translate }} *</label>
+          <label for="telephone">{{ 'SUPER_ADMIN.USERS.FORM.PHONE' | translate }}</label>
           <input
             pInputText
             id="telephone"
@@ -71,7 +71,7 @@
             optionLabel="label"
             optionValue="value"
             formControlName="role"
-            [placeholder]="'ROLES.ROLE' | translate"
+            [placeholder]="'SUPER_ADMIN.USERS.FORM.PLACEHOLDERS.ROLE_SELECT' | translate"
             [showClear]="false"
             [class.ng-invalid]="editForm.get('role')?.invalid && editForm.get('role')?.touched"
           ></p-dropdown>
@@ -80,8 +80,27 @@
           </small>
         </div>
 
+        <div class="form-group" *ngIf="editForm.get('role')?.value === 'ENTREPRISE_ADMIN' || editForm.get('role')?.value === 'ENTREPRISE_VIEWER'">
+          <label for="emetteurId">Entreprise associée *</label>
+          <p-dropdown
+            id="emetteurId"
+            [options]="emetteurOptions"
+            optionLabel="label"
+            optionValue="value"
+            formControlName="emetteurId"
+            placeholder="Sélectionnez une entreprise"
+            [showClear]="true"
+            [filter]="true"
+            filterBy="label"
+          ></p-dropdown>
+          <small class="info-text">
+            Important : L'administrateur ne pourra voir que les données de cette entreprise.
+          </small>
+        </div>
 
       </div>
+
+      <p-toast></p-toast>
 
       <div class="form-actions">
         <button

@@ -4,7 +4,7 @@
       <h1>Factures</h1>
       <p class="subtitle">Gérez l'ensemble de vos factures</p>
     </div>
-    <a routerLink="ajouter" pButton type="button" icon="pi pi-plus" label="Créer Facture" class="p-button-lg"></a>
+    <a *ngIf="!isReadOnly()" routerLink="ajouter" pButton type="button" icon="pi pi-plus" label="Créer Facture" class="p-button-lg"></a>
   </div>
 
   <div class="filters-section">
@@ -52,42 +52,46 @@
               class="p-button-rounded p-button-text p-button-sm" pTooltip="Voir détails" tooltipPosition="top"></a>
             
             <!-- Brouillon -->
-            <a *ngIf="fact.statut === 'DRAFT'" [routerLink]="[fact.id, 'edit']" pButton type="button"
-              icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-sm" pTooltip="Modifier"
-              tooltipPosition="top"></a>
-            <button *ngIf="fact.statut === 'DRAFT'" pButton type="button" icon="pi pi-check"
-              class="p-button-rounded p-button-text p-button-sm" pTooltip="Signer"
-              tooltipPosition="top" (click)="signerFacture(fact.id)"></button>
-            <button *ngIf="fact.statut === 'DRAFT'" pButton type="button" icon="pi pi-trash"
-              class="p-button-rounded p-button-text p-button-sm p-button-danger" pTooltip="Supprimer"
-              tooltipPosition="top" (click)="deleteFacture(fact.id)"></button>
+            <ng-container *ngIf="!isReadOnly()">
+              <a *ngIf="fact.statut === 'DRAFT'" [routerLink]="[fact.id, 'edit']" pButton type="button"
+                icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-sm" pTooltip="Modifier"
+                tooltipPosition="top"></a>
+              <button *ngIf="fact.statut === 'DRAFT'" pButton type="button" icon="pi pi-check"
+                class="p-button-rounded p-button-text p-button-sm" pTooltip="Signer"
+                tooltipPosition="top" (click)="signerFacture(fact.id)"></button>
+              <button *ngIf="fact.statut === 'DRAFT'" pButton type="button" icon="pi pi-trash"
+                class="p-button-rounded p-button-text p-button-sm p-button-danger" pTooltip="Supprimer"
+                tooltipPosition="top" (click)="deleteFacture(fact.id)"></button>
+            </ng-container>
 
-            <!-- Signée -->
-            <button *ngIf="fact.statut === 'SIGNED'" pButton type="button" icon="pi pi-send"
-              class="p-button-rounded p-button-text p-button-sm" pTooltip="Émettre"
-              tooltipPosition="top" (click)="emettreFacture(fact.id)"></button>
-            <button *ngIf="fact.statut === 'SIGNED'" pButton type="button" icon="pi pi-times"
-              class="p-button-rounded p-button-text p-button-sm p-button-warning" pTooltip="Rejeter"
-              tooltipPosition="top" (click)="rejeterFacture(fact.id)"></button>
-            <button *ngIf="fact.statut === 'SIGNED'" pButton type="button" icon="pi pi-ban"
-              class="p-button-rounded p-button-text p-button-sm p-button-danger" pTooltip="Annuler"
-              tooltipPosition="top" (click)="annulerFacture(fact.id)"></button>
+            <ng-container *ngIf="!isReadOnly()">
+              <!-- Signée -->
+              <button *ngIf="fact.statut === 'SIGNED'" pButton type="button" icon="pi pi-send"
+                class="p-button-rounded p-button-text p-button-sm" pTooltip="Émettre"
+                tooltipPosition="top" (click)="emettreFacture(fact.id)"></button>
+              <button *ngIf="fact.statut === 'SIGNED'" pButton type="button" icon="pi pi-times"
+                class="p-button-rounded p-button-text p-button-sm p-button-warning" pTooltip="Rejeter"
+                tooltipPosition="top" (click)="rejeterFacture(fact.id)"></button>
+              <button *ngIf="fact.statut === 'SIGNED'" pButton type="button" icon="pi pi-ban"
+                class="p-button-rounded p-button-text p-button-sm p-button-danger" pTooltip="Annuler"
+                tooltipPosition="top" (click)="annulerFacture(fact.id)"></button>
 
-            <!-- Émise -->
-            <button *ngIf="fact.statut === 'SENT'" pButton type="button" icon="pi pi-wallet"
-              class="p-button-rounded p-button-text p-button-sm" pTooltip="Payer"
-              tooltipPosition="top" (click)="payerFacture(fact.id)"></button>
-            <button *ngIf="fact.statut === 'SENT'" pButton type="button" icon="pi pi-times"
-              class="p-button-rounded p-button-text p-button-sm p-button-warning" pTooltip="Rejeter"
-              tooltipPosition="top" (click)="rejeterFacture(fact.id)"></button>
-            <button *ngIf="fact.statut === 'SENT'" pButton type="button" icon="pi pi-ban"
-              class="p-button-rounded p-button-text p-button-sm p-button-danger" pTooltip="Annuler"
-              tooltipPosition="top" (click)="annulerFacture(fact.id)"></button>
+              <!-- Émise -->
+              <button *ngIf="fact.statut === 'SENT'" pButton type="button" icon="pi pi-wallet"
+                class="p-button-rounded p-button-text p-button-sm" pTooltip="Payer"
+                tooltipPosition="top" (click)="payerFacture(fact.id)"></button>
+              <button *ngIf="fact.statut === 'SENT'" pButton type="button" icon="pi pi-times"
+                class="p-button-rounded p-button-text p-button-sm p-button-warning" pTooltip="Rejeter"
+                tooltipPosition="top" (click)="rejeterFacture(fact.id)"></button>
+              <button *ngIf="fact.statut === 'SENT'" pButton type="button" icon="pi pi-ban"
+                class="p-button-rounded p-button-text p-button-sm p-button-danger" pTooltip="Annuler"
+                tooltipPosition="top" (click)="annulerFacture(fact.id)"></button>
 
-            <!-- Rejetée: Retour Brouillon (uniquement si rejet vient de SIGNED) -->
-            <button *ngIf="fact.statut === 'REJECTED' && (fact.previousStatut === 'SIGNED' || fact.previous_statut === 'SIGNED')" pButton type="button" icon="pi pi-refresh"
-              class="p-button-rounded p-button-text p-button-sm" pTooltip="Retour Brouillon"
-              tooltipPosition="top" (click)="retourBrouillon(fact.id)"></button>
+              <!-- Rejetée: Retour Brouillon (uniquement si rejet vient de SIGNED) -->
+              <button *ngIf="fact.statut === 'REJECTED' && (fact.previousStatut === 'SIGNED' || fact.previous_statut === 'SIGNED')" pButton type="button" icon="pi pi-refresh"
+                class="p-button-rounded p-button-text p-button-sm" pTooltip="Retour Brouillon"
+                tooltipPosition="top" (click)="retourBrouillon(fact.id)"></button>
+            </ng-container>
           </div>
         </td>
       </tr>

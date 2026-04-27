@@ -7,7 +7,6 @@
     "REFRESH": "Refresh",
     "TOTAL_FACTURES": "Total Invoices",
     "TOTAL_CLIENTS": "Total Clients",
-    "COLLABORATEURS": "Collaborators",
     "REVENUE": "Revenue",
     "UNPAID_INVOICES": "Unpaid Invoices",
     "REFRESH_SUCCESS": "Data refreshed",
@@ -78,6 +77,8 @@
       "DELETE_CONFIRM": "Are you sure you want to delete this invoice?",
       "DELETE_SUCCESS": "Invoice deleted successfully",
       "DELETE_ERROR": "Unable to delete invoice",
+      "SAVE_SUCCESS_ADD": "Invoice added successfully",
+      "SAVE_SUCCESS_EDIT": "Invoice modified successfully",
       "EMIT_SUCCESS": "Invoice emitted and sent",
       "PAY_SUCCESS": "Invoice marked as paid",
       "REJECT_REASON_REQ": "Rejection reason is required",
@@ -657,15 +658,26 @@
     "SUCCESS_BL": "Delivery note {{ref}} signed successfully."
   },
   "COLLABORATEURS": {
-    "TITLE": "Collaborators Management",
-    "BTN_ADD": "Add Collaborator",
-    "LOADING": "Loading collaborators...",
-    "EMPTY": "No collaborators found for your company.",
+    "TITLE": "Collaborators List",
+    "ADD_BTN": "New Collaborator",
+    "SEARCH_PLACEHOLDER": "Search by name or email...",
     "TABLE": {
-      "NOM": "Full Name",
+      "FIRSTNAME": "First Name",
+      "LASTNAME": "Last Name",
       "EMAIL": "Email",
       "ROLE": "Role",
+      "DATE_ADDED": "Date Added",
       "ACTIONS": "Actions"
+    },
+    "EMPTY": {
+      "TITLE": "No collaborators found",
+      "SUBTITLE": "Add collaborators to see them appearing here."
+    },
+    "CONFIRM": {
+      "DELETE_TITLE": "Confirmation",
+      "DELETE_MSG": "Are you sure you want to deactivate this collaborator?",
+      "DELETE_SUCCESS": "Collaborator deactivated successfully.",
+      "DELETE_ERROR": "Impossible to deactivate this collaborator."
     },
     "FORM": {
       "TITLE": "Invite a new collaborator",
@@ -678,16 +690,7 @@
       "TEL": "Phone",
       "INFO": "The collaborator will receive an email invitation to set up their access.",
       "BTN_CANCEL": "Cancel",
-      "BTN_CREATE": "Create Account"
-    },
-    "MSGS": {
-      "VALIDATION_REQUIRED": "Please fill in all required fields.",
-      "CREATE_SUCCESS": "Collaborator invited successfully.",
-      "CREATE_ERROR": "Error creating collaborator.",
-      "DELETE_CONFIRM": "Are you sure you want to remove {{nom}} from your company?",
-      "DELETE_SUCCESS": "Collaborator removed successfully.",
-      "DELETE_ERROR": "Error during deletion.",
-      "LOADING_ERROR": "Could not load collaborators."
+      "BTN_CREATE": "Create account"
     }
   },
   "SUPER_ADMIN": {
@@ -703,6 +706,7 @@
         "SUBTITLE": "Approve or reject company requests",
         "SEARCH_PLACEHOLDER": "Search by company or email...",
         "FILTER_STATUS": "Filter by status",
+        "STATUS_ALL": "All requests",
         "TABLE": {
           "COMPANY": "Company",
           "EMAIL": "Email",
@@ -779,7 +783,7 @@
           "PLACEHOLDERS": {
             "FIRST_NAME": "First Name",
             "LAST_NAME": "Last Name",
-            "EMAIL": "email@example.com",
+            "EMAIL": "email@exemple.com",
             "PHONE": "+216 XX XXX XXX",
             "PASSWORD": "Enter password",
             "CONFIRM_PASSWORD": "Confirm password",
@@ -801,8 +805,8 @@
             "CREATE": "Create Super Admin",
             "SAVE": "Save",
             "NEW": "Create"
+          }
         }
       }
-    }
   }
 }

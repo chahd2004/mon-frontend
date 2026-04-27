@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -9,18 +9,8 @@ import { TooltipModule } from 'primeng/tooltip';
 import { TagModule } from 'primeng/tag';
 import { AuthService } from '../../../core/services/auth.service';
 import { EmetteurService } from '../../../core/services/emetteur.service';
-
-interface Client {
-  id: string;
-  raisonSociale: string;
-  email: string;
-  telephone: string;
-  region: string;
-  totalAchats: number;
-  solde: number;
-  status: 'ACTIF' | 'INACTIF' | 'SUSPENDU';
-  dateAjout: string;
-}
+import { ClientService } from '../../../core/services/client.service';
+import { Client } from '../../../models/client.model';
 
 @Component({
   selector: 'app-clients-list',
@@ -32,6 +22,9 @@ interface Client {
 export class ClientsListComponent implements OnInit {
   private authService = inject(AuthService);
   private emetteurService = inject(EmetteurService);
+  private clientService = inject(ClientService);
+  
+  isReadOnly = computed(() => this.authService.hasRole('ENTREPRISE_VIEWER'));
 
   clients: Client[] = [];
   filteredClients: Client[] = [];
@@ -67,20 +60,21 @@ export class ClientsListComponent implements OnInit {
 
       console.log('📡 Fetching emetteur with ID:', currentUser.emetteurId);
       this.emetteurService.getEmetteurById(currentUser.emetteurId).subscribe({
-        next: (emetteur) => {
+        next: (emetteur: any) => {
           console.log('✅ Emetteur loaded:', emetteur);
           this.enterpriseName = emetteur?.raisonSociale || 'Entreprise';
           console.log('📝 Enterprise name set to:', this.enterpriseName);
         },
-        error: (err) => {
+        error: (err: any) => {
           console.error('❌ Error fetching emetteur:', err);
           this.enterpriseName = 'Entreprise';
         },
+
         complete: () => {
           console.log('✔️  Emetteur subscription completed');
         }
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Exception in loadEnterpriseName:', error);
       this.enterpriseName = 'Entreprise';
     }
@@ -88,44 +82,17 @@ export class ClientsListComponent implements OnInit {
 
   private loadClients(): void {
     this.isLoading = true;
-    // Mock data
-    this.clients = [
-      {
-        id: '1',
-        raisonSociale: 'Société ABC SARL',
-        email: 'contact@abc.tn',
-        telephone: '+216 71 123 456',
-        region: 'Tunis',
-        totalAchats: 50000,
-        solde: 5000,
-        status: 'ACTIF',
-        dateAjout: '2024-01-10'
+    this.clientService.getClients().subscribe({
+      next: (data) => {
+        this.clients = data;
+        this.filteredClients = [...this.clients];
+        this.isLoading = false;
       },
-      {
-        id: '2',
-        raisonSociale: 'Entreprise XYZ Ltée',
-        email: 'info@xyz.tn',
-        telephone: '+216 72 234 567',
-        region: 'Ariana',
-        totalAchats: 75000,
-        solde: 0,
-        status: 'ACTIF',
-        dateAjout: '2024-02-15'
-      },
-      {
-        id: '3',
-        raisonSociale: 'Société Commerce TN',
-        email: 'support@commerce.tn',
-        telephone: '+216 73 345 678',
-        region: 'Sfax',
-        totalAchats: 25000,
-        solde: 2000,
-        status: 'INACTIF',
-        dateAjout: '2024-03-20'
+      error: (err: any) => {
+        console.error('Erreur lors du chargement des clients:', err);
+        this.isLoading = false;
       }
-    ];
-    this.filteredClients = [...this.clients];
-    this.isLoading = false;
+    });
   }
 
   onSearch(): void {
@@ -136,25 +103,20 @@ export class ClientsListComponent implements OnInit {
     );
   }
 
-  getStatusSeverity(status: string): string {
-    switch (status) {
-      case 'ACTIF':
-        return 'success';
-      case 'INACTIF':
-        return 'warning';
-      case 'SUSPENDU':
-        return 'danger';
-      default:
-        return 'info';
-    }
-  }
 
-  editClient(id: string): void {
+  editClient(id: number | string): void {
     console.log('Edit client:', id);
   }
 
-  deleteClient(id: string): void {
-    this.clients = this.clients.filter(c => c.id !== id);
-    this.onSearch();
+  deleteClient(id: number | string): void {
+    if (confirm('Voulez-vous vraiment supprimer ce client ?')) {
+      this.clientService.deleteClient(Number(id)).subscribe({
+        next: () => {
+          this.clients = this.clients.filter(c => c.id !== id);
+          this.onSearch();
+        },
+        error: (err) => console.error('Error deleting client:', err)
+      });
+    }
   }
 }

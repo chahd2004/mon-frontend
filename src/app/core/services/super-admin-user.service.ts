@@ -40,4 +40,12 @@ export class SuperAdminUserService extends BaseService {
       this.getHeaders()
     );
   }
+
+  getUserById(id: number): Observable<UserResponseDTO> {
+    return this.http.get<UserResponseDTO>(`${this.apiUrl}/${id}`, this.getHeaders());
+  }
+
+  updateUser(id: number, request: any): Observable<UserResponseDTO> {
+    return this.http.put<UserResponseDTO>(`${this.apiUrl}/${id}`, request, this.getHeaders());
+  }
 }

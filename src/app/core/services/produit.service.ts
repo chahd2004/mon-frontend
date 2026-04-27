@@ -12,9 +12,8 @@ export class ProduitService extends BaseService {
   constructor(private http: HttpClient) { super(); }
 
   getProduits(emetteurId?: number | null): Observable<Produit[]> {
-    const id = typeof emetteurId === 'number' && emetteurId > 0 ? emetteurId : null;
-    const url = id !== null ? `${this.apiUrl}/emetteur/${id}` : this.apiUrl;
-    return this.http.get<Produit[]>(url);
+    // Le backend filtre automatiquement par entreprise via le JWT
+    return this.http.get<Produit[]>(this.apiUrl);
   }
 
   getProduitById(id: number): Observable<Produit> {

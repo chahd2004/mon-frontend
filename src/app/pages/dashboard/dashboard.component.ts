@@ -20,6 +20,7 @@ import { FactureService } from '../../core/services/facture.service';
 import { ClientService } from '../../core/services/client.service';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { DemandeService } from '../../core/services/demande.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -41,6 +42,7 @@ export class DashboardComponent implements OnInit {
   private authService = inject(AuthService);
   private emetteurService = inject(EmetteurService);
   private translate = inject(TranslateService);
+  private demandeService = inject(DemandeService);
 
   totalFactures: number = 0;
   totalClients: number = 0;
@@ -95,6 +97,7 @@ export class DashboardComponent implements OnInit {
         next: (emetteur) => this.raisonSociale = emetteur?.raisonSociale || null,
         error: () => this.raisonSociale = null
       });
+
     }
   }
 
@@ -194,13 +197,6 @@ export class DashboardComponent implements OnInit {
         });
         this.loading = false;
       }
-    });
-
-
-
-    this.clientService.getClients().subscribe({
-      next: (clients) => { this.totalClients = clients.length; },
-      error: () => { }
     });
   }
 

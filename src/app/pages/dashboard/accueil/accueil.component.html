@@ -58,7 +58,9 @@
         </a>
 
         <!-- Collaborateurs entreprise-admin -->
-        <a *ngIf="hasRole('ENTREPRISE_ADMIN')" routerLink="/collaborateurs" routerLinkActive="active" class="nav-item">
+        <a *ngIf="hasRole('ENTREPRISE_ADMIN')"
+          routerLink="/collaborateurs"
+          routerLinkActive="active" class="nav-item">
           <i class="pi pi-id-card"></i>
           <span class="nav-label">{{ 'SIDEBAR.COLLABORATEURS' | translate }}</span>
         </a>
@@ -78,7 +80,9 @@
         </div>
 
         <!-- Factures : document texte -->
-        <a *ngIf="hasAnyRole(['ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER', 'CLIENT', 'EMETTEUR'])" routerLink="/factures" routerLinkActive="active" class="nav-item">
+        <a *ngIf="hasAnyRole(['ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER', 'CLIENT', 'EMETTEUR'])"
+          routerLink="/factures"
+          routerLinkActive="active" class="nav-item">
           <i class="pi pi-file-edit"></i>
           <span class="nav-label">{{ 'SIDEBAR.FACTURES' | translate }}</span>
         </a>
@@ -105,7 +109,7 @@
         </a>
 
         <!-- Avoirs : remboursement/retour -->
-        <a *ngIf="hasRole('ENTREPRISE_ADMIN')" routerLink="/avoirs" routerLinkActive="active" class="nav-item">
+        <a *ngIf="hasAnyRole(['ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER'])" routerLink="/avoirs" routerLinkActive="active" class="nav-item">
           <i class="pi pi-arrow-right-arrow-left"></i>
           <span class="nav-label">{{ 'SIDEBAR.AVOIRS' | translate }}</span>
         </a>

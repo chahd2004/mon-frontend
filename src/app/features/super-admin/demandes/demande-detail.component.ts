@@ -139,23 +139,31 @@ export class DemandeDetailComponent implements OnInit {
 
   getStatusLabel(): string {
     const status = this.demande?.status;
-    const key = `STATUS.${status === 'REQUESTED' ? 'PENDING' : status}`;
-    const localized = this.translate.instant(key);
+    const map: Record<string, string> = {
+      'REQUESTED': 'STATUS.PENDING',
+      'PENDING': 'STATUS.APPROVED',
+      'APPROVED': 'STATUS.APPROVED',
+      'REJECTED': 'STATUS.REJECTED'
+    };
+    const localized = this.translate.instant(map[status] || 'STATUS.UNKNOWN');
     const icons: Record<string, string> = {
-      REQUESTED: '⏳', APPROVED: '✅', REJECTED: '❌'
+      REQUESTED: '⏳', PENDING: '✅', APPROVED: '✅', REJECTED: '❌'
     };
     return `${icons[status] || ''} ${localized}`.trim();
   }
 
   getStatusSeverity(): 'warning' | 'success' | 'danger' | 'info' {
     const map: Record<string, 'warning' | 'success' | 'danger' | 'info'> = {
-      REQUESTED: 'warning', APPROVED: 'success', REJECTED: 'danger'
+      'REQUESTED': 'warning',
+      'PENDING': 'success',
+      'APPROVED': 'success',
+      'REJECTED': 'danger'
     };
     return map[this.demande?.status] || 'info';
   }
 
   isPending(): boolean {
-    return this.demande?.status === 'REQUESTED' || this.demande?.status === 'PENDING';
+    return this.demande?.status === 'REQUESTED';
   }
 
   private extractApiError(err: any, fallback: string): string {

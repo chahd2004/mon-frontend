@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -26,6 +26,8 @@ export class FacturesListComponent implements OnInit {
   searchTerm = '';
   selectedStatut = '';
   currentEmetteurId: number | null = null;
+  
+  isReadOnly = computed(() => this.authService.hasRole('ENTREPRISE_VIEWER'));
 
   statutOptions = [
     { label: 'Tous', value: '' },

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -37,6 +37,8 @@ export class DevisComponent implements OnInit {
   get isViewer(): boolean {
     return this.authService.hasRole('ENTREPRISE_VIEWER');
   }
+
+  isReadOnly = computed(() => this.authService.hasRole('ENTREPRISE_VIEWER'));
 
   devis: Devis[] = [];
   loading = false;

@@ -1,3 +1,4 @@
+<p-toast></p-toast>
 <div class="form-container">
   <div class="form-header">
     <h1>Ajouter Client</h1>
@@ -8,12 +9,23 @@
       <h3 class="section-title">Informations Générales</h3>
       <div class="form-grid">
         <div class="form-group">
+          <label for="code">Code Client *</label>
+          <input id="code" type="text" pInputText formControlName="code"
+            placeholder="Ex: CL-001" />
+          <small class="error" *ngIf="form.get('code')?.invalid && form.get('code')?.touched">
+            Le code est requis
+          </small>
+          <small class="error" *ngIf="fieldErrors['code']">{{ fieldErrors['code'] }}</small>
+        </div>
+
+        <div class="form-group">
           <label for="raisonSociale">Raison Sociale *</label>
           <input id="raisonSociale" type="text" pInputText formControlName="raisonSociale"
             placeholder="Nom de l'entreprise" />
           <small class="error" *ngIf="form.get('raisonSociale')?.invalid && form.get('raisonSociale')?.touched">
             {{ getErrorMessage('raisonSociale') }}
           </small>
+          <small class="error" *ngIf="fieldErrors['raisonSociale']">{{ fieldErrors['raisonSociale'] }}</small>
         </div>
 
         <div class="form-group">
@@ -22,6 +34,7 @@
           <small class="error" *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
             {{ getErrorMessage('email') }}
           </small>
+          <small class="error" *ngIf="fieldErrors['email']">{{ fieldErrors['email'] }}</small>
         </div>
 
         <div class="form-group">
@@ -30,6 +43,7 @@
           <small class="error" *ngIf="form.get('telephone')?.invalid && form.get('telephone')?.touched">
             Téléphone est requis
           </small>
+          <small class="error" *ngIf="fieldErrors['telephone']">{{ fieldErrors['telephone'] }}</small>
         </div>
 
         <div class="form-group">
@@ -39,6 +53,7 @@
           <small class="error" *ngIf="form.get('contactPrincipal')?.invalid && form.get('contactPrincipal')?.touched">
             Contact Principal est requis
           </small>
+          <small class="error" *ngIf="fieldErrors['contactPrincipal']">{{ fieldErrors['contactPrincipal'] }}</small>
         </div>
       </div>
 
@@ -50,6 +65,7 @@
           <small class="error" *ngIf="form.get('adresse')?.invalid && form.get('adresse')?.touched">
             Adresse est requise
           </small>
+          <small class="error" *ngIf="fieldErrors['adresseComplete']">{{ fieldErrors['adresseComplete'] }}</small>
         </div>
 
         <div class="form-group">
@@ -59,6 +75,7 @@
           <small class="error" *ngIf="form.get('region')?.invalid && form.get('region')?.touched">
             Région est requise
           </small>
+          <small class="error" *ngIf="fieldErrors['region']">{{ fieldErrors['region'] }}</small>
         </div>
 
         <div class="form-group">
@@ -67,6 +84,7 @@
           <small class="error" *ngIf="form.get('codePostal')?.invalid && form.get('codePostal')?.touched">
             Code Postal est requis
           </small>
+          <small class="error" *ngIf="fieldErrors['codePostal']">{{ fieldErrors['codePostal'] }}</small>
         </div>
       </div>
 

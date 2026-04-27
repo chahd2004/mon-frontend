@@ -20,6 +20,7 @@ export interface UserDTO {
   enabled: boolean;
   clientId?: number | null;
   emetteurId?: number | null;
+  entrepriseId?: number | null;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -37,6 +38,7 @@ export interface UserResponseDTO {
   enabled: boolean;
   clientId?: number | null;
   emetteurId?: number | null;
+  entrepriseId?: number | null;
   createdAt?: string;
   updatedAt?: string;
 }

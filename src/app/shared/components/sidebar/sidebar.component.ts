@@ -35,7 +35,7 @@ export class SidebarComponent {
       {
         label: 'SIDEBAR.DASHBOARD',
         icon: 'pi pi-home',
-        route: userRole === 'SUPER_ADMIN' ? '/super-admin/statistiques' : '/accueil',
+        route: userRole === 'SUPER_ADMIN' ? '/super-admin/statistiques' : '/dashboard',
         roles: ['SUPER_ADMIN', 'ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER', 'EMETTEUR']
       },
       {
@@ -57,6 +57,36 @@ export class SidebarComponent {
         roles: ['ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER', 'EMETTEUR']
       },
       {
+        label: 'SIDEBAR.DEVIS',
+        icon: 'pi pi-file-edit',
+        route: '/devis',
+        roles: ['ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER', 'EMETTEUR']
+      },
+      {
+        label: 'SIDEBAR.AVOIRS',
+        icon: 'pi pi-file-excel',
+        route: '/avoirs',
+        roles: ['ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER', 'EMETTEUR']
+      },
+      {
+        label: 'SIDEBAR.COMMANDES',
+        icon: 'pi pi-shopping-cart',
+        route: '/commandes',
+        roles: ['ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER', 'EMETTEUR']
+      },
+      {
+        label: 'SIDEBAR.BON_COMMANDES',
+        icon: 'pi pi-list',
+        route: '/bons-commandes',
+        roles: ['ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER', 'EMETTEUR']
+      },
+      {
+        label: 'SIDEBAR.BON_LIVRAISON',
+        icon: 'pi pi-truck',
+        route: '/bons-livraison',
+        roles: ['ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER', 'EMETTEUR']
+      },
+      {
         label: 'SIDEBAR.DEMANDES',
         icon: 'pi pi-inbox',
         route: userRole === 'SUPER_ADMIN' ? '/super-admin/demandes' : '/demandes',
@@ -72,7 +102,7 @@ export class SidebarComponent {
         label: 'SIDEBAR.COLLABORATEURS',
         icon: 'pi pi-users-alt',
         route: '/collaborateurs',
-        roles: ['ENTREPRISE_ADMIN', 'EMETTEUR']
+        roles: ['ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER', 'EMETTEUR']
       },
       {
         label: 'SIDEBAR.PARAMETRES',
@@ -83,7 +113,7 @@ export class SidebarComponent {
       {
         label: 'SIDEBAR.LOGOUT',
         icon: 'pi pi-sign-out',
-        roles: ['SUPER_ADMIN', 'ENTREPRISE_ADMIN', 'EMETTEUR'],
+        roles: ['SUPER_ADMIN', 'ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER', 'EMETTEUR'],
         action: 'logout'
       }
     ];

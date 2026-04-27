@@ -13,11 +13,12 @@ import { DialogModule } from 'primeng/dialog';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { AccountStatus, ADMIN_ROLES, UserDTO, UserResponseDTO, normalizeUserRole } from '../../../models';
+import { AccountStatus, ADMIN_ROLES, UserDTO, UserResponseDTO, normalizeUserRole, UserRole } from '../../../models';
 import { RoleLabelPipe } from '../../../shared';
 import { SuperAdminUserService, CreateSuperAdminRequest } from '../../../core/services/super-admin-user.service';
 import { EmetteurService } from '../../../core/services/emetteur.service';
 import { Emetteur } from '../../../models/emetteur.model';
+import { DemandeService } from '../../../core/services/demande.service';
 
 @Component({
   selector: 'app-utilisateurs-list',
@@ -34,6 +35,7 @@ import { Emetteur } from '../../../models/emetteur.model';
 export class UtilisateursListComponent implements OnInit {
   private readonly superAdminUserService = inject(SuperAdminUserService);
   private readonly emetteurService = inject(EmetteurService);
+  private readonly demandeService = inject(DemandeService);
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
   private readonly messageService = inject(MessageService);
@@ -42,6 +44,7 @@ export class UtilisateursListComponent implements OnInit {
   utilisateurs: UserDTO[] = [];
   filteredUtilisateurs: UserDTO[] = [];
   emetteursMap: Map<number, string> = new Map();
+  emailToEntrepriseMap: Map<string, string> = new Map();
   isLoading = false;
   searchTerm = '';
   
@@ -63,6 +66,7 @@ export class UtilisateursListComponent implements OnInit {
     this.initOptions();
     this.initCreateForm();
     this.loadEmetteurs();
+    this.loadDemandes();
     this.loadUtilisateurs();
   }
 
@@ -86,10 +90,7 @@ export class UtilisateursListComponent implements OnInit {
   private initOptions(): void {
     this.roleOptions = [
       { label: this.translate.instant('ROLES.SUPER_ADMIN'), value: 'SUPER_ADMIN' },
-      { label: this.translate.instant('ROLES.ENTREPRISE_ADMIN'), value: 'ENTREPRISE_ADMIN' },
-      { label: this.translate.instant('ROLES.ENTREPRISE_VIEWER'), value: 'ENTREPRISE_VIEWER' },
-      { label: this.translate.instant('ROLES.CLIENT'), value: 'CLIENT' },
-      { label: this.translate.instant('ROLES.EMETTEUR'), value: 'EMETTEUR' }
+      { label: this.translate.instant('ROLES.ENTREPRISE_ADMIN'), value: 'ENTREPRISE_ADMIN' }
     ] as any;
 
     this.statusOptions = [
@@ -109,6 +110,19 @@ export class UtilisateursListComponent implements OnInit {
         emetteurs.forEach(e => this.emetteursMap.set(e.id, e.raisonSociale));
       },
       error: (err) => console.error('Erreur chargement émetteurs:', err)
+    });
+  }
+
+  loadDemandes(): void {
+    this.demandeService.getDemandes().subscribe({
+      next: (demandes: any[]) => {
+        demandes.forEach(d => {
+          if (d.email && d.raisonSociale) {
+            this.emailToEntrepriseMap.set(d.email.toLowerCase(), d.raisonSociale);
+          }
+        });
+      },
+      error: (err) => console.error('Erreur chargement demandes:', err)
     });
   }
 
@@ -138,11 +152,12 @@ export class UtilisateursListComponent implements OnInit {
     const normalizedSearchTerm = this.searchTerm.trim().toLowerCase();
 
     this.filteredUtilisateurs = this.utilisateurs.filter(u => {
-      // Vérifier le rôle (afficher que les admins par défaut)
-      if (!ADMIN_ROLES.includes(u.role)) {
+      // Filtrer pour n'afficher que les administrateurs (Super Admin et Entreprise Admin)
+      const allowedRoles: UserRole[] = ['SUPER_ADMIN', 'ENTREPRISE_ADMIN'];
+      if (!allowedRoles.includes(u.role)) {
         return false;
       }
-
+      
       // Vérifier le filtre de rôle sélectionné
       if (this.selectedRole && u.role !== this.selectedRole) {
         return false;
@@ -292,8 +307,51 @@ export class UtilisateursListComponent implements OnInit {
     return this.translate.instant(keyMap[status] || 'STATUS.UNKNOWN');
   }
 
-  getEntrepriseName(user: UserDTO): string {
-    if (!user.emetteurId) return '';
-    return this.emetteursMap.get(user.emetteurId) || `ID: ${user.emetteurId}`;
+  getEntrepriseName(user: any): string {
+    // 1. Chercher l'ID (plusieurs noms possibles selon l'API)
+    const id = user.entrepriseId || user.emetteurId || user.clientId || 
+               user.entreprise_id || user.emetteur_id || user.client_id;
+    
+    // 2. Si on a un ID, chercher dans la map des émetteurs
+    if (id && this.emetteursMap.has(Number(id))) {
+      return this.emetteursMap.get(Number(id))!;
+    }
+
+    // 2b. Fallback par email si pas d'ID (pour les demandes récentes ou orphelines)
+    if (user.email && this.emailToEntrepriseMap.has(user.email.toLowerCase())) {
+      return this.emailToEntrepriseMap.get(user.email.toLowerCase())!;
+    }
+
+    // 3. Chercher le nom directement sur l'objet user (plusieurs variantes API possibles)
+    const possibleNames = [
+      user.raisonSociale,
+      user.raison_sociale,
+      user.nomEntreprise,
+      user.entrepriseNom,
+      user.emetteurNom,
+      user.nomSociete,
+      user.companyName
+    ];
+
+    for (const name of possibleNames) {
+      if (name && typeof name === 'string' && name.trim()) return name;
+    }
+
+    // 4. Chercher dans des objets imbriqués
+    if (user.entreprise?.raisonSociale) return user.entreprise.raisonSociale;
+    if (user.emetteur?.raisonSociale) return user.emetteur.raisonSociale;
+    if (user.entreprise?.raison_sociale) return user.entreprise.raison_sociale;
+    if (user.emetteur?.raison_sociale) return user.emetteur.raison_sociale;
+
+    // 5. Fallback si on a un ID mais pas de nom résolu
+    if (id) return `ID: ${id}`;
+
+    // 6. Aucun nom trouvé
+    return '';
+  }
+
+  getObjectKeys(obj: any): string {
+    if (!obj) return 'null';
+    return Object.keys(obj).join(', ');
   }
 }

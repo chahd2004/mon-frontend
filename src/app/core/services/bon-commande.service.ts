@@ -8,6 +8,7 @@ import { BonCommande, BonCommandeRequest } from '../../models/bon-commande.model
 @Injectable({ providedIn: 'root' })
 export class BonCommandeService {
   private readonly apiUrl = `${environment.apiUrl}/bon-commandes`;
+  private readonly publicApiUrl = `${environment.apiUrl}/public/bon-commande`;
   private readonly conversionApiUrl = `${environment.apiUrl}/conversions`;
 
   constructor(private readonly http: HttpClient) {}
@@ -57,6 +58,23 @@ export class BonCommandeService {
 
   annuler(id: number, raison: string): Observable<BonCommande> {
     return this.http.put<BonCommande>(`${this.apiUrl}/${id}/annuler`, { raison });
+  }
+
+  // PUBLIC ACCESS
+  getPublicByRef(ref: string): Observable<BonCommande> {
+    return this.http.get<BonCommande>(`${this.publicApiUrl}/${ref}`);
+  }
+
+  getXmlBrutPublic(id: number): Observable<string> {
+    return this.http.get(`${this.publicApiUrl}/${id}/xml-brut`, { responseType: 'text' });
+  }
+
+  sauvegarderXmlSignePublic(id: number, xmlSigne: string): Observable<BonCommande> {
+    return this.http.post<BonCommande>(`${this.publicApiUrl}/${id}/xml-signe`, { xmlSigne });
+  }
+
+  signerPublic(formData: FormData): Observable<BonCommande> {
+    return this.http.post<BonCommande>(`${this.publicApiUrl}/signer-client`, formData);
   }
 }
 

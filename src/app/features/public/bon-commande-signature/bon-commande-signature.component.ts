@@ -66,17 +66,8 @@ export class BonCommandeSignatureComponent implements OnInit {
 
   private resolveBC(ref: string): void {
     this.loading = true;
-    // The endpoint getAll is accessible — we fetch all and find by ref
-    this.bcService.getAll().subscribe({
-      next: (list) => {
-        const bc = list.find(b =>
-          (b.numBonCommande || '').toUpperCase() === ref.toUpperCase()
-        );
-        if (!bc) {
-          this.errorMessage = `Bon de commande introuvable : ${ref}`;
-          this.loading = false;
-          return;
-        }
+    this.bcService.getPublicByRef(ref).subscribe({
+      next: (bc) => {
         this.bonCommande = bc;
         if (this.bonCommande.statut === 'SIGNED_CLIENT') {
           this.dejaSigne = true;
@@ -109,7 +100,7 @@ export class BonCommandeSignatureComponent implements OnInit {
 
     try {
       // 1. Récupérer le XML brut
-      const xmlBrut = await this.signatureService.getXmlBrutBC(this.bonCommande.id);
+      const xmlBrut = await this.signatureService.getXmlBrutBCPublic(this.bonCommande.id);
 
       // 2. Signer localement
       const xmlSigne = await this.signatureService.signerXAdES(
@@ -120,7 +111,7 @@ export class BonCommandeSignatureComponent implements OnInit {
       );
 
       // 3. Envoyer le XML signé
-      await this.signatureService.envoyerXmlSigneBC(this.bonCommande.id, xmlSigne);
+      await this.signatureService.envoyerXmlSigneBCPublic(this.bonCommande.id, xmlSigne);
 
       this.signing = false;
       this.signatureReussie = true;

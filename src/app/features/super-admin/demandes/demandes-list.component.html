@@ -24,7 +24,7 @@
       optionValue="value"
       [(ngModel)]="selectedStatus"
       (onChange)="onStatusChange()"
-      [placeholder]="'SUPER_ADMIN.REQUESTS.FILTER_STATUS' | translate"
+      [placeholder]="'SUPER_ADMIN.REQUESTS.STATUS_ALL' | translate"
       class="status-dropdown"
     ></p-dropdown>
 
@@ -76,6 +76,25 @@
                 class="p-button-text p-button-info"
                 (click)="viewDetails(demande.id)"
               ></button>
+              
+              <ng-container *ngIf="isPending(demande.status)">
+                <button
+                  pButton
+                  icon="pi pi-check"
+                  [pTooltip]="'SUPER_ADMIN.REQUESTS.DETAIL.APPROVE' | translate"
+                  tooltipPosition="top"
+                  class="p-button-text p-button-success"
+                  (click)="approveDemande(demande)"
+                ></button>
+                <button
+                  pButton
+                  icon="pi pi-times"
+                  [pTooltip]="'SUPER_ADMIN.REQUESTS.DETAIL.REJECT' | translate"
+                  tooltipPosition="top"
+                  class="p-button-text p-button-danger"
+                  (click)="rejectDemande(demande)"
+                ></button>
+              </ng-container>
             </div>
           </td>
         </tr>
@@ -91,4 +110,6 @@
       </ng-template>
     </p-table>
   </div>
+  
+  <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
 </div>

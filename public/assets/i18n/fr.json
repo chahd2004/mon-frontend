@@ -7,7 +7,6 @@
     "REFRESH": "Actualiser",
     "TOTAL_FACTURES": "Total Factures",
     "TOTAL_CLIENTS": "Total Clients",
-    "COLLABORATEURS": "Collaborateurs",
     "REVENUE": "Chiffre d'affaires",
     "UNPAID_INVOICES": "Factures impayées",
     "REFRESH_SUCCESS": "Données mises à jour",
@@ -77,6 +76,8 @@
       "DELETE_CONFIRM": "Êtes-vous sûr de vouloir supprimer cette facture ?",
       "DELETE_SUCCESS": "Facture supprimée avec succès",
       "DELETE_ERROR": "Impossible de supprimer la facture",
+      "SAVE_SUCCESS_ADD": "Facture ajoutée avec succès",
+      "SAVE_SUCCESS_EDIT": "Facture modifiée avec succès",
       "EMIT_SUCCESS": "Facture émise et envoyée",
       "PAY_SUCCESS": "Facture marquée comme payée",
       "REJECT_REASON_REQ": "La raison du rejet est obligatoire",
@@ -657,15 +658,26 @@
     "SUCCESS_BL": "Bon de livraison {{ref}} signé avec succès."
   },
   "COLLABORATEURS": {
-    "TITLE": "Gestion des Collaborateurs",
-    "BTN_ADD": "Ajouter un collaborateur",
-    "LOADING": "Chargement des collaborateurs...",
-    "EMPTY": "Aucun collaborateur trouvé pour votre entreprise.",
+    "TITLE": "Liste des collaborateurs",
+    "ADD_BTN": "Nouveau collaborateur",
+    "SEARCH_PLACEHOLDER": "Rechercher par nom ou email...",
     "TABLE": {
-      "NOM": "Nom & Prénom",
+      "FIRSTNAME": "Prénom",
+      "LASTNAME": "Nom",
       "EMAIL": "Email",
       "ROLE": "Rôle",
+      "DATE_ADDED": "Date d'Ajout",
       "ACTIONS": "Actions"
+    },
+    "EMPTY": {
+      "TITLE": "Aucun collaborateur trouvé",
+      "SUBTITLE": "Ajoutez des collaborateurs pour les voir apparaître ici."
+    },
+    "CONFIRM": {
+      "DELETE_TITLE": "Confirmation",
+      "DELETE_MSG": "Voulez-vous vraiment désactiver ce collaborateur ?",
+      "DELETE_SUCCESS": "Collaborateur désactivé avec succès.",
+      "DELETE_ERROR": "Impossible de désactiver ce collaborateur."
     },
     "FORM": {
       "TITLE": "Inviter un nouveau collaborateur",
@@ -679,15 +691,6 @@
       "INFO": "Le collaborateur recevra une invitation par email pour configurer son accès.",
       "BTN_CANCEL": "Annuler",
       "BTN_CREATE": "Créer le compte"
-    },
-    "MSGS": {
-      "VALIDATION_REQUIRED": "Veuillez remplir tous les champs obligatoires.",
-      "CREATE_SUCCESS": "Collaborateur invité avec succès.",
-      "CREATE_ERROR": "Erreur lors de la création du collaborateur.",
-      "DELETE_CONFIRM": "Êtes-vous sûr de vouloir retirer {{nom}} de votre entreprise ?",
-      "DELETE_SUCCESS": "Collaborateur retiré avec succès.",
-      "DELETE_ERROR": "Erreur lors de la suppression.",
-      "LOADING_ERROR": "Impossible de charger les collaborateurs."
     }
   },
   "SUPER_ADMIN": {
@@ -703,6 +706,7 @@
         "SUBTITLE": "Approuvez ou rejetez les demandes d'entreprise",
         "SEARCH_PLACEHOLDER": "Rechercher par entreprise ou email...",
         "FILTER_STATUS": "Filtrer par statut",
+        "STATUS_ALL": "Toutes les demandes",
         "TABLE": {
           "COMPANY": "Entreprise",
           "EMAIL": "Email",
@@ -801,8 +805,8 @@
             "CREATE": "Créer le Super Admin",
             "SAVE": "Sauvegarder",
             "NEW": "Créer"
+          }
         }
       }
-    }
   }
 }

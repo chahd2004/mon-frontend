@@ -57,16 +57,16 @@
               <button class="icon-btn" (click)="voirAvoir(avoir)" title="Voir"><i class="pi pi-eye"></i></button>
               <button class="icon-btn" (click)="telechargerPdf(avoir)" title="PDF"><i class="pi pi-file-pdf" style="color: #e74c3c;"></i></button>
               
-              <button class="icon-btn" *ngIf="avoir.statut === 'DRAFT'" (click)="modifierAvoir(avoir)" 
+              <button class="icon-btn" *ngIf="!isViewer && avoir.statut === 'DRAFT'" (click)="modifierAvoir(avoir)" 
                 title="Modifier"><i class="pi pi-pencil"></i></button>
 
-              <button class="icon-btn" *ngIf="avoir.statut === 'DRAFT'" (click)="validerAvoir(avoir)" 
+              <button class="icon-btn" *ngIf="!isViewer && avoir.statut === 'DRAFT'" (click)="validerAvoir(avoir)" 
                 title="Valider"><i class="pi pi-check" style="color: #22c55e;"></i></button>
               
-              <button class="icon-btn" *ngIf="avoir.statut === 'VALIDATED'" (click)="envoyerAvoir(avoir)" 
+              <button class="icon-btn" *ngIf="!isViewer && avoir.statut === 'VALIDATED'" (click)="envoyerAvoir(avoir)" 
                 title="Envoyer"><i class="pi pi-send"></i></button>
 
-              <button class="icon-btn" *ngIf="avoir.statut === 'SENT'" (click)="appliquerAvoir(avoir)" 
+              <button class="icon-btn" *ngIf="!isViewer && avoir.statut === 'SENT'" (click)="appliquerAvoir(avoir)" 
                 title="Appliquer"><i class="pi pi-check-circle" style="color: #3b82f6;"></i></button>
             </div>
           </td>

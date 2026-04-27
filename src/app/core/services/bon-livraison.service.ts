@@ -8,6 +8,7 @@ import { BonLivraison } from '../../models/bon-livraison.model';
 @Injectable({ providedIn: 'root' })
 export class BonLivraisonService {
   private readonly apiUrl = `${environment.apiUrl}/bon-livraisons`;
+  private readonly publicApiUrl = `${environment.apiUrl}/public/bon-livraison`;
 
   constructor(private readonly http: HttpClient) {}
 
@@ -55,5 +56,22 @@ export class BonLivraisonService {
 
   versFacture(id: number, payload: any): Observable<any> {
     return this.http.post(`${environment.apiUrl}/conversions/bon-livraison/${id}/vers-facture`, payload);
+  }
+
+  // PUBLIC ACCESS
+  getPublicByRef(ref: string): Observable<BonLivraison> {
+    return this.http.get<BonLivraison>(`${this.publicApiUrl}/${ref}`);
+  }
+
+  getXmlBrutPublic(id: number): Observable<string> {
+    return this.http.get(`${this.publicApiUrl}/${id}/xml-brut`, { responseType: 'text' });
+  }
+
+  sauvegarderXmlSignePublic(id: number, xmlSigne: string): Observable<BonLivraison> {
+    return this.http.post<BonLivraison>(`${this.publicApiUrl}/${id}/xml-signe`, { xmlSigne });
+  }
+
+  signerPublic(formData: FormData): Observable<BonLivraison> {
+    return this.http.post<BonLivraison>(`${this.publicApiUrl}/signer-client`, formData);
   }
 }

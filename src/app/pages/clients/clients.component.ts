@@ -1,5 +1,5 @@
 // src/app/pages/clients/clients.component.ts
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -54,6 +54,8 @@ export class ClientsComponent implements OnInit {
   get isViewer(): boolean {
     return this.authService.hasRole('ENTREPRISE_VIEWER');
   }
+
+  isReadOnly = computed(() => this.authService.hasRole('ENTREPRISE_VIEWER'));
 
   // Données
   clients: Client[] = [];

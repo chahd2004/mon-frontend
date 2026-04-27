@@ -8,6 +8,7 @@ import { Devis, DevisRequest } from '../../models/devis.model';
 @Injectable({ providedIn: 'root' })
 export class DevisService {
   private readonly apiUrl = `${environment.apiUrl}/devis`;
+  private readonly publicApiUrl = `${environment.apiUrl}/public/devis`;
   private readonly conversionApiUrl = `${environment.apiUrl}/conversions`;
 
   constructor(private readonly http: HttpClient) {}
@@ -57,5 +58,18 @@ export class DevisService {
       `${this.conversionApiUrl}/devis/${id}/vers-facture`,
       { dateDocument, modePaiement, datePaiement }
     );
+  }
+
+  // PUBLIC ACCESS (No login required)
+  getPublicByRef(ref: string): Observable<Devis> {
+    return this.http.get<Devis>(`${this.publicApiUrl}/${ref}`);
+  }
+
+  accepterPublic(id: number): Observable<Devis> {
+    return this.http.put<Devis>(`${this.publicApiUrl}/${id}/accepter`, {});
+  }
+
+  rejeterPublic(id: number, raison: string): Observable<Devis> {
+    return this.http.put<Devis>(`${this.publicApiUrl}/${id}/rejeter`, { raison });
   }
 }

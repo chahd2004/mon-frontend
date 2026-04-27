@@ -1,5 +1,5 @@
 // src/app/pages/parametres/parametres.component.ts
-import { Component, OnInit, inject, Renderer2 } from '@angular/core';
+import { Component, OnInit, inject, Renderer2, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -43,9 +43,15 @@ export class ParametresComponent implements OnInit {
   private renderer            = inject(Renderer2);
   private messageService      = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
-  private translate: TranslateService = inject(TranslateService);
+  private translate           = inject(TranslateService);
   private authService         = inject(AuthService);
   private emetteurService     = inject(EmetteurService);
+
+  get isViewer(): boolean {
+    return this.authService.hasRole('ENTREPRISE_VIEWER');
+  }
+
+  isReadOnly = computed(() => this.authService.hasRole('ENTREPRISE_VIEWER'));
 
   // ===== PROFIL =====
   userProfile = {
