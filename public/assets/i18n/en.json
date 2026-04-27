@@ -7,6 +7,7 @@
     "REFRESH": "Refresh",
     "TOTAL_FACTURES": "Total Invoices",
     "TOTAL_CLIENTS": "Total Clients",
+    "COLLABORATEURS": "Collaborators",
     "REVENUE": "Revenue",
     "UNPAID_INVOICES": "Unpaid Invoices",
     "REFRESH_SUCCESS": "Data refreshed",
@@ -103,12 +104,13 @@
     "INVOICE_INFO": "INVOICE INFORMATION",
     "INVOICE_LINES": "Invoice Lines",
     "ADD_LINE": "Add a line",
+    "UNIT_PRICE": "Unit Price",
     "VENDOR": "Vendor",
     "CLIENT": "Client",
     "NUMBER": "Invoice N°",
     "DATE": "Date",
-    "AMOUNT_HT": "Amount excl. VAT",
-    "AMOUNT_TTC": "Amount incl. VAT",
+    "AMOUNT_HT": "Total HT",
+    "AMOUNT_TTC": "Total TTC",
     "ACTIONS": "Actions",
     "SAVE": "Save",
     "SUBMIT": "Submit",
@@ -695,118 +697,118 @@
   },
   "SUPER_ADMIN": {
     "DASHBOARD": {
-        "WELCOME": "Welcome",
-        "TITLE": "SUPER ADMIN - Dashboard",
-        "USERS": "USERS",
-        "INVOICES": "INVOICES",
-        "COMPANIES": "COMPANIES"
+      "WELCOME": "Welcome",
+      "TITLE": "SUPER ADMIN - Dashboard",
+      "USERS": "USERS",
+      "INVOICES": "INVOICES",
+      "COMPANIES": "COMPANIES"
+    },
+    "REQUESTS": {
+      "TITLE": "Registration Requests Management",
+      "SUBTITLE": "Approve or reject company requests",
+      "SEARCH_PLACEHOLDER": "Search by company or email...",
+      "FILTER_STATUS": "Filter by status",
+      "STATUS_ALL": "All requests",
+      "TABLE": {
+        "COMPANY": "Company",
+        "EMAIL": "Email",
+        "REGION": "Region",
+        "STATUS": "Status",
+        "DATE": "Date",
+        "ACTIONS": "Actions"
       },
-      "REQUESTS": {
-        "TITLE": "Registration Requests Management",
-        "SUBTITLE": "Approve or reject company requests",
-        "SEARCH_PLACEHOLDER": "Search by company or email...",
-        "FILTER_STATUS": "Filter by status",
-        "STATUS_ALL": "All requests",
-        "TABLE": {
-          "COMPANY": "Company",
-          "EMAIL": "Email",
-          "REGION": "Region",
-          "STATUS": "Status",
-          "DATE": "Date",
-          "ACTIONS": "Actions"
-        },
-        "EMPTY": "No requests found",
-        "DETAIL": {
-          "TITLE": "Request Detail",
-          "BACK": "Back to list",
-          "LOADING": "Loading details...",
-          "CURRENT_STATUS": "Current Status:",
-          "SUBMITTED_ON": "Submitted on {{date}}",
-          "COMPANY_INFO": "Company Information",
-          "CODE": "Code",
-          "BUSINESS_NAME": "Business Name",
-          "TAX_ID": "Tax ID",
-          "LEGAL_FORM": "Legal Form",
-          "ADDRESS": "Address",
-          "REGION": "Region",
-          "PHONE": "Phone",
-          "WEBSITE": "Website",
-          "BANK": "Bank",
-          "IBAN": "IBAN",
-          "RESPONSIBLE": "Responsible",
+      "EMPTY": "No requests found",
+      "DETAIL": {
+        "TITLE": "Request Detail",
+        "BACK": "Back to list",
+        "LOADING": "Loading details...",
+        "CURRENT_STATUS": "Current Status:",
+        "SUBMITTED_ON": "Submitted on {{date}}",
+        "COMPANY_INFO": "Company Information",
+        "CODE": "Code",
+        "BUSINESS_NAME": "Business Name",
+        "TAX_ID": "Tax ID",
+        "LEGAL_FORM": "Legal Form",
+        "ADDRESS": "Address",
+        "REGION": "Region",
+        "PHONE": "Phone",
+        "WEBSITE": "Website",
+        "BANK": "Bank",
+        "IBAN": "IBAN",
+        "RESPONSIBLE": "Responsible",
+        "FIRST_NAME": "First Name",
+        "LAST_NAME": "Last Name",
+        "FUNCTION": "Function",
+        "REJECTION_COMMENT": "Treatment Comment",
+        "REJECT_REASON_TITLE": "Rejection Reason",
+        "REJECT_REASON_PLACEHOLDER": "Explain the reason for rejection (required)...",
+        "CONFIRM_REJECT": "Confirm Rejection",
+        "APPROVE": "Approve",
+        "REJECT": "Reject"
+      },
+      "CONFIRMATIONS": {
+        "APPROVE_HEADER": "Approval Confirmation",
+        "APPROVE_MESSAGE": "Approve the request from \"{{company}}\"? An email with credentials will be sent automatically.",
+        "APPROVE_SUCCESS_TITLE": "Request Approved",
+        "APPROVE_SUCCESS_DETAIL": "Account created and email sent to the responsible.",
+        "REJECT_SUCCESS_TITLE": "Request Rejected",
+        "REJECT_SUCCESS_DETAIL": "Request rejected and email sent.",
+        "REJECT_WARN_TITLE": "Validation",
+        "REJECT_WARN_DETAIL": "Please enter a rejection reason."
+      }
+    },
+    "USERS": {
+      "TITLE": "Users Management",
+      "SUBTITLE": "Manage all platform users",
+      "CREATE_BTN": "Create Super Admin",
+      "SEARCH_PLACEHOLDER": "Search by name, first name or email...",
+      "TABLE": {
+        "NAME": "Name",
+        "EMAIL": "Email",
+        "ROLE": "Role",
+        "COMPANY": "Company",
+        "STATUS": "Status",
+        "ACTIONS": "Actions"
+      },
+      "EMPTY": "No users found",
+      "FORM": {
+        "CREATE_TITLE": "Create Super Admin",
+        "EDIT_TITLE": "Edit User",
+        "NEW_TITLE": "New User",
+        "FIRST_NAME": "First Name *",
+        "LAST_NAME": "Last Name *",
+        "EMAIL": "Email *",
+        "PHONE": "Phone *",
+        "PASSWORD": "Password *",
+        "CONFIRM_PASSWORD": "Confirm Password *",
+        "ROLE": "Role *",
+        "PLACEHOLDERS": {
           "FIRST_NAME": "First Name",
           "LAST_NAME": "Last Name",
-          "FUNCTION": "Function",
-          "REJECTION_COMMENT": "Treatment Comment",
-          "REJECT_REASON_TITLE": "Rejection Reason",
-          "REJECT_REASON_PLACEHOLDER": "Explain the reason for rejection (required)...",
-          "CONFIRM_REJECT": "Confirm Rejection",
-          "APPROVE": "Approve",
-          "REJECT": "Reject"
+          "EMAIL": "email@exemple.com",
+          "PHONE": "+216 XX XXX XXX",
+          "PASSWORD": "Enter password",
+          "CONFIRM_PASSWORD": "Confirm password",
+          "ROLE_SELECT": "Select a role"
         },
-        "CONFIRMATIONS": {
-          "APPROVE_HEADER": "Approval Confirmation",
-          "APPROVE_MESSAGE": "Approve the request from \"{{company}}\"? An email with credentials will be sent automatically.",
-          "APPROVE_SUCCESS_TITLE": "Request Approved",
-          "APPROVE_SUCCESS_DETAIL": "Account created and email sent to the responsible.",
-          "REJECT_SUCCESS_TITLE": "Request Rejected",
-          "REJECT_SUCCESS_DETAIL": "Request rejected and email sent.",
-          "REJECT_WARN_TITLE": "Validation",
-          "REJECT_WARN_DETAIL": "Please enter a rejection reason."
-        }
-      },
-      "USERS": {
-        "TITLE": "Users Management",
-        "SUBTITLE": "Manage all platform users",
-        "CREATE_BTN": "Create Super Admin",
-        "SEARCH_PLACEHOLDER": "Search by name, first name or email...",
-        "TABLE": {
-          "NAME": "Name",
-          "EMAIL": "Email",
-          "ROLE": "Role",
-          "COMPANY": "Company",
-          "STATUS": "Status",
-          "ACTIONS": "Actions"
+        "VALIDATIONS": {
+          "FIRST_NAME_REQ": "First name required (min 2 characters)",
+          "LAST_NAME_REQ": "Last name required (min 2 characters)",
+          "EMAIL_VALID": "Valid email required",
+          "PHONE_REQ": "Phone required (min 8 characters)",
+          "PASSWORD_REQ": "Password required (min 8 characters)",
+          "CONFIRM_REQ": "Password confirmation required",
+          "MISMATCH": "Passwords do not match",
+          "ROLE_REQ": "Role required"
         },
-        "EMPTY": "No users found",
-        "FORM": {
-          "CREATE_TITLE": "Create Super Admin",
-          "EDIT_TITLE": "Edit User",
-          "NEW_TITLE": "New User",
-          "FIRST_NAME": "First Name *",
-          "LAST_NAME": "Last Name *",
-          "EMAIL": "Email *",
-          "PHONE": "Phone *",
-          "PASSWORD": "Password *",
-          "CONFIRM_PASSWORD": "Confirm Password *",
-          "ROLE": "Role *",
-          "PLACEHOLDERS": {
-            "FIRST_NAME": "First Name",
-            "LAST_NAME": "Last Name",
-            "EMAIL": "email@exemple.com",
-            "PHONE": "+216 XX XXX XXX",
-            "PASSWORD": "Enter password",
-            "CONFIRM_PASSWORD": "Confirm password",
-            "ROLE_SELECT": "Select a role"
-          },
-          "VALIDATIONS": {
-            "FIRST_NAME_REQ": "First name required (min 2 characters)",
-            "LAST_NAME_REQ": "Last name required (min 2 characters)",
-            "EMAIL_VALID": "Valid email required",
-            "PHONE_REQ": "Phone required (min 8 characters)",
-            "PASSWORD_REQ": "Password required (min 8 characters)",
-            "CONFIRM_REQ": "Password confirmation required",
-            "MISMATCH": "Passwords do not match",
-            "ROLE_REQ": "Role required"
-          },
-          "INFO_BOX": "Please enter a secure password (minimum 8 characters) for this Super Admin.",
-          "ACTIONS": {
-            "CANCEL": "Cancel",
-            "CREATE": "Create Super Admin",
-            "SAVE": "Save",
-            "NEW": "Create"
-          }
+        "INFO_BOX": "Please enter a secure password (minimum 8 characters) for this Super Admin.",
+        "ACTIONS": {
+          "CANCEL": "Cancel",
+          "CREATE": "Create Super Admin",
+          "SAVE": "Save",
+          "NEW": "Create"
         }
       }
+    }
   }
 }

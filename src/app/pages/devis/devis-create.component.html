@@ -2,6 +2,32 @@
   <button class="back-link" (click)="retourAuxDevis()">&larr; {{ 'COMMON.BACK_TO_LIST' | translate }}</button>
   <h1 class="title">{{ isEditMode ? ('DEVIS.EDIT' | translate) : ('DEVIS.NEW' | translate) }}</h1>
 
+  <!-- En-tête Vendeur (Compte Connecté) -->
+  <div class="section vendeur-section">
+    <div class="vendeur-left">
+      <div class="vendeur-avatar">
+        <span>{{ vendeurSelected?.raisonSociale?.charAt(0) ?? 'V' }}</span>
+      </div>
+      <div class="vendeur-info">
+        <div class="vendeur-fixed">
+          <span class="vendeur-value">{{ vendeurSelected?.raisonSociale ?? ('FACTURE.NOT_DEFINED' | translate) }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="vendeur-right">
+      <div class="info-grid">
+        <div class="info-item"><span class="info-label">{{ 'FACTURE.ADDRESS' | translate }}</span><span
+            class="info-value">{{ vendeurSelected?.adresseComplete ?? ('FACTURE.NOT_PROVIDED' | translate) }}</span></div>
+        <div class="info-item"><span class="info-label">{{ 'FACTURE.PHONE' | translate }}</span><span
+            class="info-value">{{ vendeurSelected?.telephone ?? ('FACTURE.NOT_PROVIDED' | translate) }}</span></div>
+        <div class="info-item"><span class="info-label">{{ 'FACTURE.CODE_RC' | translate }}</span><span
+            class="info-value">{{ vendeurSelected?.code ?? ('FACTURE.NOT_PROVIDED' | translate) }}</span></div>
+        <div class="info-item"><span class="info-label">{{ 'FACTURE.EMAIL' | translate }}</span><span
+            class="info-value">{{ vendeurSelected?.email ?? ('FACTURE.NOT_PROVIDED' | translate) }}</span></div>
+      </div>
+    </div>
+  </div>
+
   <div class="card">
     <h2>{{ 'DEVIS.GENERAL_INFO' | translate }}</h2>
     <div class="grid two-cols">
@@ -12,7 +38,8 @@
             <option [ngValue]="null">{{ 'DEVIS.SELECT_CLIENT' | translate }}</option>
             <option *ngFor="let c of clients" [ngValue]="c.id">{{ c.raisonSociale }}</option>
           </select>
-          <button type="button" class="secondary" (click)="ouvrirNouveauClientModal()">+ {{ 'DEVIS.NEW_CLIENT' | translate }}</button>
+          <button type="button" class="secondary" (click)="ouvrirNouveauClientModal()">+ {{ 'DEVIS.NEW_CLIENT' |
+            translate }}</button>
         </div>
       </div>
 
@@ -32,8 +59,8 @@
             <th>#</th>
             <th>{{ 'FACTURE.PRODUCT' | translate }}</th>
             <th>{{ 'FACTURE.QUANTITY' | translate }}</th>
-            <th>{{ 'FACTURE.AMOUNT_HT' | translate }}</th>
-            <th>{{ 'VAT' | translate }} %</th>
+            <th>{{ 'FACTURE.UNIT_PRICE' | translate }}</th>
+            <th>{{ 'FACTURE.VAT' | translate }} %</th>
             <th>{{ 'FACTURE.AMOUNT_HT' | translate }}</th>
             <th>{{ 'FACTURES.TABLE.ACTIONS' | translate }}</th>
           </tr>
@@ -54,7 +81,8 @@
             <td>{{ (getProduit(line)?.tauxTVA || 0) | number:'1.0-0' }}%</td>
             <td>{{ getLigneMontantTTC(line) | number:'1.3-3' }}</td>
             <td>
-              <button type="button" class="danger" (click)="supprimerLigne(i)">{{ 'COMMON.DELETE' | translate }}</button>
+              <button type="button" class="danger" (click)="supprimerLigne(i)">{{ 'COMMON.DELETE' | translate
+                }}</button>
             </td>
           </tr>
         </tbody>
@@ -75,13 +103,15 @@
 
   <div class="card">
     <h2>{{ 'DEVIS.NOTES' | translate }}</h2>
-    <textarea rows="4" [(ngModel)]="notes" [ngModelOptions]="{ standalone: true }" [placeholder]="'DEVIS.NOTES_PLACEHOLDER' | translate"></textarea>
+    <textarea rows="4" [(ngModel)]="notes" [ngModelOptions]="{ standalone: true }"
+      [placeholder]="'DEVIS.NOTES_PLACEHOLDER' | translate"></textarea>
   </div>
 
   <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
 
   <div class="actions-row">
-    <button type="button" class="primary" (click)="enregistrerBrouillon()">{{ isEditMode ? ('DEVIS.UPDATE_DRAFT' | translate) : ('DEVIS.SAVE_DRAFT' | translate) }}</button>
+    <button type="button" class="primary" (click)="enregistrerBrouillon()">{{ isEditMode ? ('DEVIS.UPDATE_DRAFT' |
+      translate) : ('DEVIS.SAVE_DRAFT' | translate) }}</button>
   </div>
 </div>
 
@@ -130,8 +160,10 @@
     <div *ngIf="clientModalError" class="error">{{ clientModalError }}</div>
 
     <div class="modal-actions">
-      <button type="button" class="secondary" (click)="fermerNouveauClientModal()">{{ 'COMMON.CANCEL' | translate }}</button>
-      <button type="button" class="primary" [disabled]="clientSaving" (click)="sauvegarderNouveauClient()">{{ 'FACTURE.ADD' | translate }}</button>
+      <button type="button" class="secondary" (click)="fermerNouveauClientModal()">{{ 'COMMON.CANCEL' | translate
+        }}</button>
+      <button type="button" class="primary" [disabled]="clientSaving" (click)="sauvegarderNouveauClient()">{{
+        'FACTURE.ADD' | translate }}</button>
     </div>
   </div>
 </div>

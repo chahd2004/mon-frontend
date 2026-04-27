@@ -205,11 +205,22 @@ export class FactureComponent implements OnInit {
 
   // ===== CHARGEMENTS =====
   loadEmetteurs(): void {
+    const connectedUser = this.authService.currentUser();
+    const connectedId = connectedUser?.emetteurId || connectedUser?.entrepriseId || DEFAULT_VENDEUR_ID;
+
     this.http.get<Emetteur[]>(`${environment.apiUrl}/emetteurs`).subscribe({
       next: (data) => {
         this.emetteurs = data;
-        const vendeur = data.find(e => e.id === DEFAULT_VENDEUR_ID);
-        if (vendeur) this.vendeurSelectionne = vendeur;
+        
+        // Par défaut, on prend l'ID du compte connecté pour une nouvelle facture
+        if (this.isCreateMode && !this.vendeurSelectionne) {
+          const vendeur = data.find(e => e.id === connectedId);
+          if (vendeur) {
+            this.vendeurSelectionne = vendeur;
+            this.vendeurId = vendeur.id;
+          }
+        }
+
         if ((this.isEditMode || this.isViewMode) && this.factureId) {
           this.loadFacture(this.factureId);
         }
@@ -249,6 +260,12 @@ export class FactureComponent implements OnInit {
         if (facture.datePaiement) this.datePaiement = new Date(facture.datePaiement);
 
         this.vendeurSelectionne = this.emetteurs.find(e => e.id === this.vendeurId) ?? null;
+        if (!this.vendeurSelectionne && this.vendeurId) {
+          // Si l'émetteur n'est pas dans la liste initiale, on le charge spécifiquement
+          this.http.get<Emetteur>(`${environment.apiUrl}/emetteurs/${this.vendeurId}`).subscribe({
+            next: (e) => this.vendeurSelectionne = e
+          });
+        }
         this.onAcheteurChange();
 
         if (facture.lignes && Array.isArray(facture.lignes)) {

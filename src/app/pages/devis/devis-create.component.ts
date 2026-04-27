@@ -4,6 +4,8 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 import { ClientService } from '../../core/services/client.service';
 import { ProduitService } from '../../core/services/produit.service';
@@ -33,6 +35,7 @@ export class DevisCreateComponent implements OnInit {
   private readonly translate = inject(TranslateService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+  private readonly http = inject(HttpClient);
 
   private langSub?: any;
 
@@ -40,6 +43,7 @@ export class DevisCreateComponent implements OnInit {
   produits: Produit[] = [];
 
   clientId: number | null = null;
+  vendeurSelected: any = null;
   dateEmission: Date | string = new Date();
   editId: number | null = null;
 
@@ -196,6 +200,7 @@ export class DevisCreateComponent implements OnInit {
         this.produitService.getProduits().subscribe({
           next: (produits) => {
             this.produits = produits || [];
+            this.loadConnectedVendeur();
             if (this.editId) {
               this.loadDevisForEdit(this.editId);
             } else {
@@ -213,6 +218,16 @@ export class DevisCreateComponent implements OnInit {
         this.errorMessage = 'Impossible de charger les clients.';
       }
     });
+  }
+
+  private loadConnectedVendeur(): void {
+    const user = this.authService.currentUser();
+    const vendeurId = user?.emetteurId || user?.entrepriseId;
+    if (vendeurId) {
+      this.http.get<any>(`${environment.apiUrl}/emetteurs/${vendeurId}`).subscribe({
+        next: (v) => this.vendeurSelected = v
+      });
+    }
   }
 
   ajouterLigne(): void {
@@ -289,6 +304,12 @@ export class DevisCreateComponent implements OnInit {
 
         if (!this.lignes.length) {
           this.lignes = [{ produitId: null, quantite: 1 }];
+        }
+
+        if (devis.vendeurId) {
+          this.http.get<any>(`${environment.apiUrl}/emetteurs/${devis.vendeurId}`).subscribe({
+            next: (v) => this.vendeurSelected = v
+          });
         }
 
         this.loading = false;

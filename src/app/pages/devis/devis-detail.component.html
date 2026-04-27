@@ -28,8 +28,8 @@
           <th>#</th>
           <th>{{ 'FACTURE.DESIGNATION' | translate }}</th>
           <th>{{ 'FACTURE.QUANTITY' | translate }}</th>
-          <th>{{ 'FACTURE.AMOUNT_HT' | translate }}</th>
-          <th>{{ 'VAT' | translate }} %</th>
+          <th>{{ 'FACTURE.UNIT_PRICE' | translate }}</th>
+          <th>{{ 'FACTURE.VAT' | translate }} %</th>
           <th>{{ 'FACTURE.AMOUNT_HT' | translate }}</th>
           <th>Total</th>
         </tr>
@@ -66,31 +66,34 @@
 
   <div class="error" *ngIf="errorMessage">{{ errorMessage }}</div>
 
-  <p-dialog [header]="'DEVIS.CONVERT_MODAL.TITLE' | translate" [(visible)]="displayConvertDialog" 
-    [modal]="true" [style]="{width: '450px'}" [draggable]="false" [resizable]="false">
+  <p-dialog [header]="'DEVIS.CONVERT_MODAL.TITLE' | translate" [(visible)]="displayConvertDialog" [modal]="true"
+    [style]="{width: '450px'}" [draggable]="false" [resizable]="false">
     <div class="convert-dialog-content" *ngIf="conversionForm" [formGroup]="conversionForm">
       <p class="subtitle">{{ 'DEVIS.CONVERT_MODAL.SUBTITLE' | translate }}</p>
 
       <div class="field mt-4">
         <label for="dateDoc">{{ 'DEVIS.CONVERT_MODAL.DATE_DOC' | translate }}</label>
-        <p-calendar id="dateDoc" formControlName="dateDocument" [showIcon]="true" appendTo="body" styleClass="w-full"></p-calendar>
+        <p-calendar id="dateDoc" formControlName="dateDocument" [showIcon]="true" appendTo="body"
+          styleClass="w-full"></p-calendar>
       </div>
 
       <div class="field mt-3">
         <label for="modeP">{{ 'DEVIS.CONVERT_MODAL.MODE_PAIEMENT' | translate }}</label>
-        <p-dropdown id="modeP" formControlName="modePaiement" [options]="paymentModes" 
-          optionLabel="label" optionValue="value" styleClass="w-full" appendTo="body"></p-dropdown>
+        <p-dropdown id="modeP" formControlName="modePaiement" [options]="paymentModes" optionLabel="label"
+          optionValue="value" styleClass="w-full" appendTo="body"></p-dropdown>
       </div>
 
       <div class="field mt-3">
         <label for="dateP">{{ 'DEVIS.CONVERT_MODAL.DATE_PAIEMENT' | translate }}</label>
-        <p-calendar id="dateP" formControlName="datePaiement" [showIcon]="true" appendTo="body" styleClass="w-full"></p-calendar>
+        <p-calendar id="dateP" formControlName="datePaiement" [showIcon]="true" appendTo="body"
+          styleClass="w-full"></p-calendar>
       </div>
     </div>
 
     <ng-template pTemplate="footer">
-      <button pButton [label]="'DEVIS.CONVERT_MODAL.CANCEL' | translate" class="p-button-text" (click)="displayConvertDialog = false"></button>
-      <button pButton [label]="'DEVIS.CONVERT_MODAL.SUBMIT' | translate" (click)="confirmerConversionFacture()" 
+      <button pButton [label]="'DEVIS.CONVERT_MODAL.CANCEL' | translate" class="p-button-text"
+        (click)="displayConvertDialog = false"></button>
+      <button pButton [label]="'DEVIS.CONVERT_MODAL.SUBMIT' | translate" (click)="confirmerConversionFacture()"
         [loading]="isConverting" [disabled]="conversionForm.invalid"></button>
     </ng-template>
   </p-dialog>

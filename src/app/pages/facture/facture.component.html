@@ -18,12 +18,10 @@
         <button *ngIf="!isViewer && statut === 'SENT'" class="action-btn reject-btn" (click)="rejeterFacture()">
           <i class="pi pi-times-circle"></i> {{ 'FACTURES.ACTIONS.REJECT' | translate }}
         </button>
-        <button *ngIf="!isViewer && (statut === 'SENT' || statut === 'SIGNED')" class="action-btn cancel-btn" (click)="annulerFacture()">
-          <i class="pi pi-ban"></i> {{ 'FACTURES.ACTIONS.CANCEL' | translate }}
-        </button>
 
         <!-- REJECTED depuis SIGNED → Retour brouillon authorized -->
-        <button *ngIf="!isViewer && statut === 'REJECTED' && previousStatut === 'SIGNED'" class="action-btn draft-btn" (click)="retourBrouillon()">
+        <button *ngIf="!isViewer && statut === 'REJECTED' && previousStatut === 'SIGNED'" class="action-btn draft-btn"
+          (click)="retourBrouillon()">
           <i class="pi pi-replay"></i> {{ 'FACTURES.ACTIONS.BACK_TO_DRAFT' | translate }}
         </button>
 
@@ -71,7 +69,8 @@
                 </ng-container>
                 {{ vendeurSelectionne?.email ?? '' }}
               </div>
-              <div class="recu-vendeur-detail">{{ 'FACTURE.MF' | translate }} : {{ vendeurSelectionne?.matriculeFiscal ?? 'N/A' }}</div>
+              <div class="recu-vendeur-detail">{{ 'FACTURE.MF' | translate }} : {{ vendeurSelectionne?.matriculeFiscal
+                ?? 'N/A' }}</div>
             </div>
           </div>
 
@@ -139,11 +138,11 @@
             <tr>
               <th>#</th>
               <th>{{ 'FACTURE.DESIGNATION' | translate }}</th>
-               <th class="text-right">{{ 'FACTURE.QUANTITY' | translate }}</th>
+              <th class="text-right">{{ 'FACTURE.QUANTITY' | translate }}</th>
+              <th class="text-right">{{ 'FACTURE.UNIT_PRICE' | translate }}</th>
+              <th class="text-center">{{ 'FACTURE.VAT' | translate }} %</th>
               <th class="text-right">{{ 'FACTURE.AMOUNT_HT' | translate }}</th>
-              <th class="text-center">{{ 'VAT' | translate }} %</th>
-              <th class="text-right">{{ 'FACTURE.AMOUNT_HT' | translate }}</th>
-              <th class="text-right">{{ 'VAT' | translate }}</th>
+              <th class="text-right">{{ 'FACTURE.VAT' | translate }}</th>
               <th class="text-right">{{ 'FACTURE.AMOUNT_TTC' | translate }}</th>
             </tr>
           </thead>
@@ -158,7 +157,7 @@
               <td class="text-right">{{ formatPrix(ligne.montantTVA) }}</td>
               <td class="text-right font-bold">{{ formatPrix(ligne.montantTTC) }}</td>
             </tr>
-             <tr *ngIf="lignes.length === 0">
+            <tr *ngIf="lignes.length === 0">
               <td colspan="8" class="text-center empty-lignes">{{ 'FACTURES.EMPTY.TITLE' | translate }}</td>
             </tr>
           </tbody>
@@ -173,7 +172,7 @@
           </div>
 
           <div class="recu-totaux">
-             <div class="recu-total-row">
+            <div class="recu-total-row">
               <span>{{ 'FACTURE.TOTAL_HT' | translate }}</span>
               <strong>{{ formatPrix(totalHT) }}</strong>
             </div>
@@ -223,20 +222,25 @@
         </div>
         <div class="vendeur-info">
           <!-- Vendeur FIXE (non modifiable) -->
-           <div class="vendeur-fixed">
-            <span class="vendeur-value">{{ vendeurSelectionne?.raisonSociale ?? ('FACTURE.NOT_DEFINED' | translate) }}</span>
+          <div class="vendeur-fixed">
+            <span class="vendeur-value">{{ vendeurSelectionne?.raisonSociale ?? ('FACTURE.NOT_DEFINED' | translate)
+              }}</span>
           </div>
         </div>
       </div>
       <div class="vendeur-right">
-         <div class="info-grid">
-          <div class="info-item"><span class="info-label">{{ 'FACTURE.ADDRESS' | translate }}</span><span class="info-value">{{
+        <div class="info-grid">
+          <div class="info-item"><span class="info-label">{{ 'FACTURE.ADDRESS' | translate }}</span><span
+              class="info-value">{{
               vendeurSelectionne?.adresseComplete ?? ('FACTURE.NOT_PROVIDED' | translate) }}</span></div>
-          <div class="info-item"><span class="info-label">{{ 'FACTURE.PHONE' | translate }}</span><span class="info-value">{{
+          <div class="info-item"><span class="info-label">{{ 'FACTURE.PHONE' | translate }}</span><span
+              class="info-value">{{
               vendeurSelectionne?.telephone ?? ('FACTURE.NOT_PROVIDED' | translate) }}</span></div>
-          <div class="info-item"><span class="info-label">{{ 'FACTURE.CODE_RC' | translate }}</span><span class="info-value">{{
+          <div class="info-item"><span class="info-label">{{ 'FACTURE.CODE_RC' | translate }}</span><span
+              class="info-value">{{
               vendeurSelectionne?.code ?? ('FACTURE.NOT_PROVIDED' | translate) }}</span></div>
-          <div class="info-item"><span class="info-label">{{ 'FACTURE.EMAIL' | translate }}</span><span class="info-value">{{
+          <div class="info-item"><span class="info-label">{{ 'FACTURE.EMAIL' | translate }}</span><span
+              class="info-value">{{
               vendeurSelectionne?.email ?? ('FACTURE.NOT_PROVIDED' | translate) }}</span></div>
         </div>
       </div>
@@ -283,7 +287,7 @@
             <p-dropdown [options]="typeAcheteurOptions" [(ngModel)]="typeAcheteur" optionLabel="label"
               optionValue="value" (onChange)="onTypeAcheteurChange()"></p-dropdown>
           </div>
-           <div class="form-group">
+          <div class="form-group">
             <label>{{ 'FACTURE.SELECT_BUYER' | translate }} <span class="required">*</span></label>
             <p-dropdown [options]="acheteurOptions" [(ngModel)]="acheteurId" optionLabel="label" optionValue="value"
               [placeholder]="'FACTURE.SELECT_BUYER' | translate" (onChange)="onAcheteurChange()" [filter]="true"
@@ -301,11 +305,12 @@
       <div class="add-ligne-bar">
         <div class="add-ligne-title"><i class="pi pi-plus-circle"></i> {{ 'FACTURE.ADD_LINE' | translate }}</div>
         <div class="add-ligne-controls">
-           <div class="ctrl-group ctrl-produit">
+          <div class="ctrl-group ctrl-produit">
             <label>{{ 'FACTURE.PRODUCT' | translate }}</label>
             <p-dropdown [options]="produitOptions" [(ngModel)]="produitSelectionne" optionLabel="label"
               optionValue="value" [placeholder]="'FACTURE.PRODUCT' | translate" [filter]="true"
-              [filterPlaceholder]="'FACTURES.SEARCH_PLACEHOLDER' | translate" (onChange)="onProduitSelect($event.value)">
+              [filterPlaceholder]="'FACTURES.SEARCH_PLACEHOLDER' | translate"
+              (onChange)="onProduitSelect($event.value)">
             </p-dropdown>
           </div>
           <div class="ctrl-group">
@@ -327,10 +332,10 @@
             <th>#</th>
             <th>{{ 'FACTURE.PRODUCT' | translate }}</th>
             <th class="text-right">{{ 'FACTURE.QUANTITY' | translate }}</th>
-             <th class="text-right">{{ 'FACTURE.AMOUNT_HT' | translate }}</th>
-            <th class="text-right">{{ 'VAT' | translate }} %</th>
+            <th class="text-right">{{ 'FACTURE.UNIT_PRICE' | translate }}</th>
+            <th class="text-right">{{ 'FACTURE.VAT' | translate }} %</th>
             <th class="text-right">{{ 'FACTURE.AMOUNT_HT' | translate }}</th>
-            <th class="text-right">{{ 'VAT' | translate }}</th>
+            <th class="text-right">{{ 'FACTURE.VAT' | translate }}</th>
             <th class="text-right">{{ 'FACTURE.AMOUNT_TTC' | translate }}</th>
             <th></th>
           </tr>
@@ -346,7 +351,8 @@
             <td class="text-right">{{ formatPrix(ligne.montantTVA) }}</td>
             <td class="text-right font-bold">{{ formatPrix(ligne.montantTTC) }}</td>
             <td>
-               <button class="delete-ligne-btn" (click)="supprimerLigne(i)" [pTooltip]="'FACTURES.ACTIONS.DELETE' | translate">
+              <button class="delete-ligne-btn" (click)="supprimerLigne(i)"
+                [pTooltip]="'FACTURES.ACTIONS.DELETE' | translate">
                 <i class="pi pi-trash"></i>
               </button>
             </td>
@@ -356,28 +362,35 @@
     </div>
 
     <div class="section footer-section">
-       <div class="mention-legale" *ngIf="vendeurSelectionne">
-        {{ vendeurSelectionne.raisonSociale }} - {{ 'FACTURE.MF' | translate }} : {{ vendeurSelectionne.matriculeFiscal ?? 'N/A' }}
+      <div class="mention-legale" *ngIf="vendeurSelectionne">
+        {{ vendeurSelectionne.raisonSociale }} - {{ 'FACTURE.MF' | translate }} : {{ vendeurSelectionne.matriculeFiscal
+        ?? 'N/A' }}
       </div>
       <div class="total-bloc">
         <h4>{{ 'FACTURE.TOTAL_GENERAL' | translate }}</h4>
-        <div class="total-row"><span>{{ 'FACTURE.TOTAL_HT' | translate }}</span><strong>{{ formatPrix(totalHT) }}</strong></div>
-        <div class="total-row"><span>{{ 'FACTURE.VAT' | translate }}</span><strong>{{ formatPrix(totalTVA) }}</strong></div>
-        <div class="total-row"><span>{{ 'FACTURE.STAMP_DUTY' | translate }}</span><strong>{{ formatPrix(droitTimbre) }}</strong></div>
-         <p-divider></p-divider>
-        <div class="total-row grand-total"><span>{{ 'FACTURE.TOTAL_GENERAL' | translate }}</span><strong>{{ formatPrix(totalTTC + droitTimbre)
+        <div class="total-row"><span>{{ 'FACTURE.TOTAL_HT' | translate }}</span><strong>{{ formatPrix(totalHT)
+            }}</strong></div>
+        <div class="total-row"><span>{{ 'FACTURE.VAT' | translate }}</span><strong>{{ formatPrix(totalTVA) }}</strong>
+        </div>
+        <div class="total-row"><span>{{ 'FACTURE.STAMP_DUTY' | translate }}</span><strong>{{ formatPrix(droitTimbre)
+            }}</strong></div>
+        <p-divider></p-divider>
+        <div class="total-row grand-total"><span>{{ 'FACTURE.TOTAL_GENERAL' | translate }}</span><strong>{{
+            formatPrix(totalTTC + droitTimbre)
             }}</strong></div>
       </div>
     </div>
 
     <div class="bottom-bar">
-       <span class="facture-num-label">
-        {{ 'FACTURE.NUMBER' | translate }} {{ numFact || ('FACTURES.TABLE.NOT_DEFINED' | translate) }} &nbsp;|&nbsp; {{ 'FACTURE.DATE' | translate }} {{ dateEmission | date:'dd/MM/yyyy' }}
+      <span class="facture-num-label">
+        {{ 'FACTURE.NUMBER' | translate }} {{ numFact || ('FACTURES.TABLE.NOT_DEFINED' | translate) }} &nbsp;|&nbsp; {{
+        'FACTURE.DATE' | translate }} {{ dateEmission | date:'dd/MM/yyyy' }}
       </span>
       <div class="bottom-actions">
-         <button class="save-btn secondary" (click)="sauvegarder()" [disabled]="loading">
+        <button class="save-btn secondary" (click)="sauvegarder()" [disabled]="loading">
           <i class="pi pi-save"></i>
-          {{ loading ? ('PARAMETRES.MSGS.SAVING' | translate) : (isEditMode ? ('PARAMETRES.MON_PROFIL.BTN_UPDATE' | translate) : ('PARAMETRES.MON_PROFIL.BTN_SAVE' | translate)) }}
+          {{ loading ? ('PARAMETRES.MSGS.SAVING' | translate) : (isEditMode ? ('PARAMETRES.MON_PROFIL.BTN_UPDATE' |
+          translate) : ('PARAMETRES.MON_PROFIL.BTN_SAVE' | translate)) }}
         </button>
       </div>
     </div>

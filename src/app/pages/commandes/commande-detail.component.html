@@ -22,7 +22,8 @@
       <div class="mini-card">
         <h3>{{ 'COMMANDES.TITLE' | translate }}</h3>
         <p><strong>{{ 'FACTURE.ISSUE_DATE' | translate }}:</strong> {{ commande.dateCreation | date:'dd/MM/yyyy' }}</p>
-        <p><strong>{{ 'FACTURE.PAYMENT_METHOD' | translate }}:</strong> {{ formatModePaiement(commande.modePaiement) }}</p>
+        <p><strong>{{ 'FACTURE.PAYMENT_METHOD' | translate }}:</strong> {{ formatModePaiement(commande.modePaiement) }}
+        </p>
       </div>
     </div>
 
@@ -40,8 +41,8 @@
             <th>#</th>
             <th>{{ 'FACTURE.DESIGNATION' | translate }}</th>
             <th>{{ 'FACTURE.QUANTITY' | translate }}</th>
-            <th>{{ 'FACTURE.AMOUNT_HT' | translate }}</th>
-            <th>{{ 'VAT' | translate }} %</th>
+            <th>{{ 'FACTURE.UNIT_PRICE' | translate }}</th>
+            <th>{{ 'FACTURE.VAT' | translate }} %</th>
             <th>{{ 'FACTURE.AMOUNT_TTC' | translate }}</th>
           </tr>
         </thead>
