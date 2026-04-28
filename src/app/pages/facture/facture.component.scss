@@ -18,9 +18,9 @@ $white: #ffffff;
 
 // ===== CONTENEUR PRINCIPAL =====
 .facture-container {
-  max-width: 1100px;
+  max-width: 950px;
   margin: 0 auto;
-  padding: 1.5rem 2rem 4rem;
+  padding: 1rem 1.5rem 3rem;
   background: $bg;
   min-height: 100vh;
   font-family: 'Segoe UI', sans-serif;
@@ -41,20 +41,24 @@ $white: #ffffff;
 }
 
 .back-btn {
-  background: $dark; color: white; border: none;
-  padding: 0.6rem 1.2rem; border-radius: 20px; font-weight: 600;
-  display: flex; align-items: center; gap: 0.5rem; cursor: pointer; transition: all 0.2s; font-size: 0.9rem;
-  &:hover { background: color.adjust($dark, $lightness: 10%); transform: translateX(-3px); }
+  background: transparent; color: #1d4ed8; border: none;
+  padding: 0.2rem 0; border-radius: 0; font-weight: 700;
+  display: flex; align-items: center; gap: 0.5rem; cursor: pointer; transition: all 0.2s; font-size: 0.95rem;
+  &:hover { color: #1e3a8a; }
 }
 
 .save-btn {
   background: $success; color: white; border: none;
-  padding: 0.7rem 1.8rem; border-radius: 20px; font-weight: 700;
-  display: flex; align-items: center; gap: 0.5rem; cursor: pointer; transition: all 0.2s; font-size: 0.95rem;
-  box-shadow: 0 4px 12px rgba($success, 0.3);
-  &:hover { background: #0d9668; transform: translateY(-2px); box-shadow: 0 6px 16px rgba($success, 0.4); }
+  padding: 0.75rem 1.8rem; border-radius: 30px; font-weight: 700;
+  display: flex; align-items: center; gap: 0.6rem; cursor: pointer; transition: all 0.2s; font-size: 0.95rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  &:hover { background: #0d9668; transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2); }
   &:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-  &.secondary { background: $blue-light; box-shadow: 0 4px 12px rgba($blue-light, 0.3); &:hover { background: $blue; } }
+  &.secondary { 
+    background: $blue; 
+    box-shadow: 0 4px 15px rgba($blue, 0.3); 
+    &:hover { background: color.adjust($blue, $lightness: -5%); } 
+  }
 }
 
 .print-btn {
@@ -124,8 +128,8 @@ $white: #ffffff;
 
 // ===== SECTIONS (formulaire) =====
 .section {
-  background: $white; border-radius: 16px; padding: 1.5rem 2rem;
-  margin-bottom: 1.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  background: $white; border-radius: 12px; padding: 1rem 1.5rem;
+  margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.03);
 }
 
 .section-title {
@@ -172,20 +176,23 @@ $white: #ffffff;
     .title-inline { display: flex; align-items: center; gap: 1rem; }
     .facture-title { color: $blue; font-size: 1rem; font-weight: 800; margin: 0; letter-spacing: 1px; }
     .form-row {
-      display: flex; align-items: center; gap: 0.8rem;
-      label { font-weight: 700; color: $dark; font-size: 1rem; }
+      display: flex; align-items: center; gap: 0.6rem;
+      label { font-weight: 700; color: $dark; font-size: 0.9rem; }
       .num-input {
-        width: 200px; padding: 0.6rem 1rem; border: 2px solid $border; border-radius: 8px;
-        color: $gray; background: $bg; font-size: 0.95rem;
+        width: 160px; padding: 0.5rem 0.8rem; border: 2px solid $border; border-radius: 8px;
+        color: $gray; background: $bg; font-size: 0.9rem;
       }
     }
   }
   .facture-dates {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; min-width: 420px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; min-width: 380px;
     .date-block {
-      display: flex; flex-direction: column; gap: 0.4rem;
-      label { font-weight: 600; color: $dark; font-size: 0.85rem; .required { color: $danger; } }
-      ::ng-deep .p-calendar, ::ng-deep .p-dropdown { width: 100%; }
+      display: flex; flex-direction: column; gap: 0.3rem;
+      label { font-weight: 600; color: $dark; font-size: 0.8rem; .required { color: $danger; } }
+      ::ng-deep .p-calendar, ::ng-deep .p-dropdown { 
+        width: 100%;
+        .p-inputtext { padding: 0.45rem 0.75rem; font-size: 0.85rem; }
+      }
     }
   }
 }
@@ -197,9 +204,12 @@ $white: #ffffff;
     .acheteur-select-block {
       display: flex; flex-direction: column; gap: 1rem;
       .form-group {
-        display: flex; flex-direction: column; gap: 0.4rem;
-        label { font-weight: 600; color: $dark; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; .required { color: $danger; } }
-        ::ng-deep .p-dropdown { width: 100%; }
+        display: flex; flex-direction: column; gap: 0.3rem;
+        label { font-weight: 600; color: $dark; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; .required { color: $danger; } }
+        ::ng-deep .p-dropdown { 
+          width: 100%;
+          .p-inputtext { padding: 0.45rem 0.75rem; font-size: 0.85rem; }
+        }
       }
     }
     .acheteur-info-block {
@@ -229,7 +239,7 @@ $white: #ffffff;
     }
     .add-ligne-controls {
       display: grid; grid-template-columns: minmax(260px, 1fr) 140px auto;
-      align-items: flex-end; gap: 1rem;
+      align-items: flex-end; gap: 0.75rem;
       .ctrl-group {
         display: flex; flex-direction: column; gap: 0.4rem;
         label { font-weight: 600; color: $dark; font-size: 0.8rem; letter-spacing: 0.5px; }
@@ -295,10 +305,12 @@ $white: #ffffff;
 
 // ===== BARRE INFÉRIEURE =====
 .bottom-bar {
-  position: sticky; bottom: 0; background: $white; border-top: 2px solid $border;
-  padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center;
-  margin: 0 -2rem -4rem; box-shadow: 0 -4px 12px rgba(0,0,0,0.08); z-index: 10;
-  .facture-num-label { color: $gray; font-size: 0.9rem; font-weight: 500; }
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 2rem;
+  padding: 0;
+  z-index: 10;
   .bottom-actions { display: flex; align-items: center; gap: 1rem; }
 }
 

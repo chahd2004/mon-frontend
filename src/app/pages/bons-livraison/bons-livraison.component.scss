@@ -324,6 +324,73 @@ tr.status-closed {
   padding: 0.9rem;
 }
 
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modal-card {
+  width: min(1080px, 100%);
+  max-height: 90vh;
+  overflow: auto;
+  background: #ffffff;
+  border-radius: 14px;
+  border: 1px solid #d8e4f5;
+  padding: 1rem;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 0.7rem;
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #0f172a;
+  text-transform: uppercase;
+}
+
+.modal-close {
+  border: 0;
+  background: #e2e8f0;
+  color: #1f2937;
+  border-radius: 8px;
+  width: 2rem;
+  height: 2rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.modal-subtitle {
+  margin: 0 0 0.7rem;
+  color: #334155;
+  font-weight: 600;
+}
+
+.modal-table {
+  margin-top: 0.7rem;
+}
+
+.selectable-row {
+  cursor: pointer;
+}
+
+.modal-actions {
+  margin-top: 0.9rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.55rem;
+}
+
 .convert-dialog-content {
   .subtitle {
     font-size: 0.95rem;

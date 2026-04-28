@@ -21,7 +21,6 @@ export interface Devis {
   montantTVA: number;
   totalTTC: number;
   montantEnLettres?: string | null;
-  notes?: string | null;
   rejectionReason?: string | null;
   documentConvertiRef?: string | null;
   lignes?: LigneDevis[];
@@ -46,6 +45,6 @@ export interface DevisRequest {
   acheteurId: number;
   typeAcheteur: 'CLIENT' | 'EMETTEUR';
   vendeurId: number;
-  notes?: string;
+  dateValidite?: string | null;
   lignes: LigneDevisRequest[];
 }

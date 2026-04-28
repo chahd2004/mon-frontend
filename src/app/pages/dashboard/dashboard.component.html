@@ -8,9 +8,6 @@
       <p class="subtitle">{{ 'DASHBOARD.SUBTITLE' | translate }}</p>
     </div>
     <div class="header-actions">
-      <button class="btn-outline" (click)="retourAccueil()">
-        <i class="pi pi-home"></i> {{ 'DASHBOARD.HOME' | translate }}
-      </button>
       <button class="btn-outline" (click)="rafraichir()">
         <i class="pi pi-refresh"></i> {{ 'DASHBOARD.REFRESH' | translate }}
       </button>
@@ -75,6 +72,33 @@
       <div class="card-body">
         <p-chart type="bar" [data]="ventesProduitsData" [options]="ventesProduitsOptions" height="220px"></p-chart>
         <div *ngIf="ventesProduitsData.datasets.length === 0" class="chart-empty">
+          <p>{{ 'DASHBOARD.NO_DATA' | translate }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARTE PREMIUM : FACTURES EN RETARD -->
+    <div class="chart-card overdue-card">
+      <div class="overdue-header">
+        <div class="alert-icon">
+          <i class="pi pi-exclamation-triangle"></i>
+        </div>
+        <div class="overdue-titles">
+          <h3>{{ 'DASHBOARD.LATE_INVOICES_TITLE' | translate }}</h3>
+          <p>{{ 'DASHBOARD.LATE_INVOICES_SUBTITLE' | translate }}</p>
+        </div>
+      </div>
+      <div class="overdue-body">
+        <div class="overdue-list" *ngIf="lateInvoices.length > 0">
+          <div class="overdue-item" *ngFor="let inv of lateInvoices">
+            <span class="status-dot" [class]="inv.severity"></span>
+            <span class="invoice-num">{{ inv.numFact }}</span>
+            <span class="separator">—</span>
+            <span class="delay">{{ 'DASHBOARD.DAYS_LATE' | translate:{days: inv.days} }}</span>
+          </div>
+        </div>
+        <div *ngIf="lateInvoices.length === 0" class="overdue-empty">
+          <i class="pi pi-check-circle"></i>
           <p>{{ 'DASHBOARD.NO_DATA' | translate }}</p>
         </div>
       </div>

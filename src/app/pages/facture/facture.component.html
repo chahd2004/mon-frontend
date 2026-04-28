@@ -382,10 +382,6 @@
     </div>
 
     <div class="bottom-bar">
-      <span class="facture-num-label">
-        {{ 'FACTURE.NUMBER' | translate }} {{ numFact || ('FACTURES.TABLE.NOT_DEFINED' | translate) }} &nbsp;|&nbsp; {{
-        'FACTURE.DATE' | translate }} {{ dateEmission | date:'dd/MM/yyyy' }}
-      </span>
       <div class="bottom-actions">
         <button class="save-btn secondary" (click)="sauvegarder()" [disabled]="loading">
           <i class="pi pi-save"></i>

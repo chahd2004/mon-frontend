@@ -47,6 +47,11 @@
         <label>{{ 'FACTURE.ISSUE_DATE' | translate }}</label>
         <input type="date" [(ngModel)]="dateEmission" [ngModelOptions]="{ standalone: true }" />
       </div>
+
+      <div class="field">
+        <label>{{ 'DEVIS.VALIDITY_DATE' | translate }}</label>
+        <input type="date" [(ngModel)]="dateValidite" [ngModelOptions]="{ standalone: true }" />
+      </div>
     </div>
   </div>
 
@@ -101,11 +106,7 @@
     </div>
   </div>
 
-  <div class="card">
-    <h2>{{ 'DEVIS.NOTES' | translate }}</h2>
-    <textarea rows="4" [(ngModel)]="notes" [ngModelOptions]="{ standalone: true }"
-      [placeholder]="'DEVIS.NOTES_PLACEHOLDER' | translate"></textarea>
-  </div>
+
 
   <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
 

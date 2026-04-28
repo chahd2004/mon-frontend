@@ -4,11 +4,12 @@ import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Produit } from '../../../models/produit.model';
 import { ProduitService } from '../../../core/services/produit.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-produits-view',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, TranslateModule],
   templateUrl: './produits-view.component.html',
   styleUrls: ['./produits-view.component.scss']
 })

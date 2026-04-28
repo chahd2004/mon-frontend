@@ -40,6 +40,9 @@
     "CHART_TITLE": "Monthly Evolution",
     "CHART_DISTRIBUTION": "Invoices Distribution",
     "CHART_SALES": "Sales by product / month",
+    "LATE_INVOICES_TITLE": "Late Invoices",
+    "LATE_INVOICES_SUBTITLE": "Number of unpaid invoices past due date",
+    "DAYS_LATE": "+{{days}} days",
     "NO_DATA": "No data available"
   },
   "FACTURES": {
@@ -202,10 +205,13 @@
     "UPDATE_SEND": "Update and Send",
     "TOTAL_TTC": "TOTAL incl. VAT",
     "TOTAL_HT": "Total excl. VAT",
+    "VALIDITY_DATE": "Validity Date",
     "ACTIONS": {
       "NEW": "New Quote",
       "STATS": "Statistics",
-      "GENERATE_INVOICE": "Generate Invoice"
+      "GENERATE_INVOICE": "Generate Invoice",
+      "APPROVE": "Approve Quote",
+      "REJECT": "Reject Quote"
     },
     "FILTER_STATUS": "Filter by status",
     "TABLE": {
@@ -296,6 +302,7 @@
       "CLIENT": "Client",
       "DATE": "Date",
       "STATUS": "Status",
+      "TOTAL": "Total incl. VAT",
       "ACTIONS": "Actions"
     },
     "EMPTY": "No delivery notes found",
@@ -447,9 +454,9 @@
     "TABLE": {
       "REF": "Reference",
       "DESIGNATION": "Designation",
-      "PRIX_HT": "Unit Price (Excl. Tax)",
+      "PRIX_HT": "Unit Price",
       "TVA": "VAT %",
-      "PRIX_TTC": "Price (Incl. Tax)",
+      "PRIX_TTC": "Price",
       "STOCK": "Stock",
       "STATUS": "Status",
       "ACTIONS": "Actions"
@@ -470,7 +477,7 @@
     "FORM": {
       "REF": "Reference",
       "DESIGNATION": "Designation",
-      "PRIX_HT": "Unit Price (Excl. Tax)",
+      "PRIX_HT": "Unit Price",
       "TVA": "VAT %",
       "STOCK_TITLE": "Stock Management",
       "STOCK_UNLIMITED": "Unlimited stock (services / digital products)",
@@ -479,9 +486,9 @@
       "STOCK_PREVIEW": "Expected status:",
       "EMETTEUR_ID": "Issuer ID",
       "PREVIEW_TITLE": "Price Preview",
-      "PREVIEW_HT": "Price (Excl. Tax)",
+      "PREVIEW_HT": "Price",
       "PREVIEW_VAT": "VAT Amount",
-      "PREVIEW_TTC": "Price (Incl. Tax)"
+      "PREVIEW_TTC": "Total Price"
     },
     "STOCK_STATUS": {
       "AVAILABLE": "Available",
@@ -701,7 +708,8 @@
       "TITLE": "SUPER ADMIN - Dashboard",
       "USERS": "USERS",
       "INVOICES": "INVOICES",
-      "COMPANIES": "COMPANIES"
+      "COMPANIES": "COMPANIES",
+      "INVOICE_BREAKDOWN": "Invoices Breakdown by Company"
     },
     "REQUESTS": {
       "TITLE": "Registration Requests Management",
@@ -771,6 +779,10 @@
         "ACTIONS": "Actions"
       },
       "EMPTY": "No users found",
+      "ACTIONS": {
+        "ACTIVATE": "Activate",
+        "BLOCK": "Block"
+      },
       "FORM": {
         "CREATE_TITLE": "Create Super Admin",
         "EDIT_TITLE": "Edit User",

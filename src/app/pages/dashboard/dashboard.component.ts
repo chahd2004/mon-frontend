@@ -51,6 +51,7 @@ export class DashboardComponent implements OnInit {
   facturesImpayees: number = 0;
   loading: boolean = true;
   raisonSociale: string | null = null;
+  lateInvoices: any[] = [];
 
   get isViewer(): boolean {
     return this.authService.hasRole('ENTREPRISE_VIEWER' as any);
@@ -83,10 +84,45 @@ export class DashboardComponent implements OnInit {
     }
     this.initChartOptions();
     this.loadData();
+    this.loadLateInvoices();
     this.fetchEnterpriseName();
 
     this.translate.onLangChange.subscribe(() => {
       this.loadData();
+      this.loadLateInvoices();
+    });
+  }
+
+  private loadLateInvoices(): void {
+    this.factureService.getAll().subscribe({
+      next: (factures) => {
+        const now = new Date();
+        now.setHours(0, 0, 0, 0);
+
+        this.lateInvoices = factures
+          .filter(f => {
+            // Inclure tout sauf PAID, CANCELLED et REJECTED
+            if (!f.dateEcheance || f.statut === 'PAID' || f.statut === 'CANCELLED' || f.statut === 'REJECTED') return false;
+            
+            const echeance = new Date(f.dateEcheance);
+            echeance.setHours(0, 0, 0, 0);
+            
+            // On l'affiche dès le jour de l'échéance (<=)
+            return echeance <= now;
+          })
+          .map(f => {
+            const echeance = new Date(f.dateEcheance!);
+            const diffMs = now.getTime() - echeance.getTime();
+            const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+            return {
+              numFact: f.numFact,
+              days: days,
+              severity: days > 10 ? 'high' : 'medium'
+            };
+          })
+          .sort((a, b) => b.days - a.days)
+          .slice(0, 5);
+      }
     });
   }
 
@@ -219,7 +255,6 @@ export class DashboardComponent implements OnInit {
 
   naviguerVersFactures(): void { this.router.navigate(['/factures']); }
   naviguerVersClients(): void { this.router.navigate(['/clients']); }
-  retourAccueil(): void { this.router.navigate(['/']); }
 
   rafraichir(): void {
     this.loadData();

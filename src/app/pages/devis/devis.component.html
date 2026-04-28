@@ -3,7 +3,6 @@
 
   <div class="action-bar">
     <button class="btn btn-primary" *ngIf="!isViewer" (click)="nouveauDevis()">{{ 'DEVIS.ACTIONS.NEW' | translate }}</button>
-    <button class="btn btn-neutral" (click)="toggleStats()">{{ 'DEVIS.ACTIONS.STATS' | translate }}</button>
   </div>
 
   <div class="filters-row">
@@ -45,12 +44,6 @@
                 
               <button class="icon-btn" *ngIf="!isViewer && isEnvoyable(d)" (click)="envoyerDevis(d.id)" 
                 title="Envoyer"><i class="pi pi-send"></i></button>
-              
-              <button class="icon-btn" *ngIf="!isViewer && canAccepterOuRejeter(d)" (click)="accepterDevis(d.id)" 
-                title="Accepter"><i class="pi pi-check"></i></button>
-                
-              <button class="icon-btn" *ngIf="!isViewer && canAccepterOuRejeter(d)" (click)="rejeterDevis(d.id)" 
-                title="Rejeter"><i class="pi pi-times"></i></button>
               
               <button class="icon-btn" *ngIf="!isViewer && canConvertir(d)" (click)="ouvrirConversionFacture(d.id)" 
                 [title]="'DEVIS.ACTIONS.GENERATE_INVOICE' | translate">
@@ -97,7 +90,7 @@
 
   <p-toast></p-toast>
 
-  <div class="stats-card" *ngIf="showStats">
+  <div class="stats-card">
     <h2>{{ 'DEVIS.STATS_TITLE' | translate }}</h2>
     <div class="stats-container">
       <div class="stat-badge draft">

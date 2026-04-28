@@ -138,9 +138,6 @@ export class DevisComponent implements OnInit {
     });
   }
 
-  toggleStats(): void {
-    this.showStats = !this.showStats;
-  }
 
   nouveauDevis(): void {
     this.router.navigate(['/devis', 'nouveau']);

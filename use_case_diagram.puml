@@ -7,6 +7,7 @@ skinparam packageStyle rectangle
 actor "Super Admin" as SuperAdmin
 actor "Admin Entreprise" as EntAdmin
 actor "Viewer (Consultant)" as Viewer
+actor "Utilisateur Public" as PublicUser
 
 rectangle "Système de Facturation" {
     
@@ -14,6 +15,8 @@ rectangle "Système de Facturation" {
         usecase "S'inscrire (Demande)" as UC_Register
         usecase "Se connecter" as UC_Login
         usecase "Gérer son profil" as UC_Profile
+        usecase "Soumettre demande création" as UC_SubmitRequest
+        usecase "Envoyer mail confirmation réception" as UC_SendConfirmMail
     }
 
     package "Cycle de Vie Facturation (Entreprise)" {
@@ -40,6 +43,12 @@ rectangle "Système de Facturation" {
         usecase "Consulter Dashboard / Stats" as UC_ViewStats
         usecase "Lister Clients / Produits" as UC_ViewList
     }
+
+    package "Signature & Communication" {
+        usecase "Envoyer demandes signature (BC & BL)" as UC_SendSignReq
+        usecase "Envoyer mail rejet" as UC_SendReject
+        usecase "Envoyer mail approbation" as UC_SendApprove
+    }
 }
 
 ' Liens Super Admin
@@ -47,6 +56,9 @@ SuperAdmin --> UC_ApproveReq
 SuperAdmin --> UC_ManageUsers
 SuperAdmin --> UC_StatsGlobal
 SuperAdmin --> UC_Login
+SuperAdmin --> UC_SendReject
+SuperAdmin --> UC_SendApprove
+SuperAdmin --> UC_SendConfirmMail
 
 ' Liens Entreprise Admin
 EntAdmin --> UC_Login
@@ -59,11 +71,19 @@ EntAdmin --> UC_Avoirs
 EntAdmin --> UC_Products
 EntAdmin --> UC_Clients
 EntAdmin --> UC_Team
+EntAdmin --> UC_SendSignReq
+EntAdmin --> UC_SubmitRequest
 
 ' Liens Viewer
 Viewer --> UC_Login
 Viewer --> UC_ViewStats
 Viewer --> UC_ViewList
 Viewer --> UC_Profile
+
+' Liens Utilisateur Public
+PublicUser --> UC_Register
+
+' Relations d'extension
+UC_SendConfirmMail --|> UC_SubmitRequest : extends
 
 @enduml

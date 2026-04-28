@@ -2,8 +2,7 @@
   <h1 class="title">{{ 'COMMANDES.TITLE' | translate }}</h1>
 
   <div class="action-bar">
-    <button class="btn btn-neutral" (click)="depuisBC()">{{ 'COMMANDES.ACTIONS.FROM_BC' | translate }}</button>
-    <button class="btn btn-neutral" (click)="toggleStats()">{{ 'COMMANDES.ACTIONS.STATS' | translate }}</button>
+    <button class="btn btn-neutral" *ngIf="!isViewer" (click)="depuisBC()">{{ 'COMMANDES.ACTIONS.FROM_BC' | translate }}</button>
   </div>
 
   <div *ngIf="errorMessage" class="message error">{{ errorMessage }}</div>
@@ -59,7 +58,7 @@
     </table>
   </div>
 
-  <div class="stats-card" *ngIf="showStats">
+  <div class="stats-card">
     <h2>{{ 'COMMANDES.STATS_TITLE' | translate }}</h2>
     <div class="stats-container">
       <div *ngFor="let stat of statusStats" class="stat-badge" [ngClass]="getStatusClass(stat.status)">
@@ -86,7 +85,7 @@
     <input type="text" class="search-input" [placeholder]="'COMMANDES.CONVERT_MODAL.SEARCH_PLACEHOLDER' | translate"
       [(ngModel)]="conversionSearch" [ngModelOptions]="{ standalone: true }" />
 
-    <div class="table-wrapper modal-table">
+    <div class="table-wrapper modal-table" *ngIf="!chargementBCs; else loadingBCsTpl">
       <table>
         <thead>
           <tr>
@@ -117,11 +116,9 @@
       </table>
     </div>
 
-    <div class="field">
-      <label>{{ 'COMMANDES.CONVERT_MODAL.NOTES_LABEL' | translate }}</label>
-      <textarea rows="3" [(ngModel)]="conversionNotes" [ngModelOptions]="{ standalone: true }"
-        [placeholder]="'COMMANDES.CONVERT_MODAL.NOTES_PLACEHOLDER' | translate"></textarea>
-    </div>
+    <ng-template #loadingBCsTpl>
+      <div class="loading">{{ 'COMMANDES.CONVERT_MODAL.LOADING' | translate }}</div>
+    </ng-template>
 
     <div class="modal-actions">
       <button type="button" class="btn btn-neutral" (click)="closeConvertModal()">{{

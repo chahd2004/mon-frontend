@@ -3,7 +3,6 @@
 
   <div class="action-bar">
     <button class="btn btn-neutral" *ngIf="!isViewer" (click)="depuisDevis()">{{ 'BC.ACTIONS.FROM_QUOTE' | translate }}</button>
-    <button class="btn btn-neutral" (click)="toggleStats()">{{ 'BC.ACTIONS.STATS' | translate }}</button>
   </div>
 
   <div class="filters-row">
@@ -59,7 +58,7 @@
     </table>
   </div>
 
-  <div class="stats-card" *ngIf="showStats">
+  <div class="stats-card">
     <h2>{{ 'BC.ACTIONS.STATS' | translate }}</h2>
     <div class="stats-container">
       <div *ngFor="let stat of statusStats" class="stat-badge" [ngClass]="getStatutClass(stat.status)">
@@ -120,12 +119,6 @@
     <ng-template #loadingAcceptedTpl>
       <div class="loading">{{ 'BC.CONVERT_MODAL.LOADING' | translate }}</div>
     </ng-template>
-
-    <div class="field">
-      <label>{{ 'BC.CONVERT_MODAL.NOTES_LABEL' | translate }}</label>
-      <textarea rows="3" [(ngModel)]="conversionNotes" [ngModelOptions]="{ standalone: true }"
-        [placeholder]="'BC.CONVERT_MODAL.NOTES_PLACEHOLDER' | translate"></textarea>
-    </div>
 
     <div class="modal-actions">
       <button type="button" class="btn btn-neutral" (click)="closeConvertModal()">{{ 'BC.CONVERT_MODAL.BTN_CANCEL' | translate }}</button>

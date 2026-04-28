@@ -44,7 +44,6 @@ export class CommandesComponent implements OnInit {
   displayConvertModal = false;
   converting = false;
   conversionSearch = '';
-  conversionNotes = '';
   selectedBCId: number | null = null;
 
   rawCommandes: any[] = [];
@@ -157,7 +156,6 @@ export class CommandesComponent implements OnInit {
   openConvertModal(): void {
     this.displayConvertModal = true;
     this.conversionSearch = '';
-    this.conversionNotes = '';
     this.selectedBCId = null;
     this.errorMessage = '';
     this.successMessage = '';
@@ -178,7 +176,6 @@ export class CommandesComponent implements OnInit {
   closeConvertModal(): void {
     this.displayConvertModal = false;
     this.conversionSearch = '';
-    this.conversionNotes = '';
     this.selectedBCId = null;
   }
 
@@ -212,7 +209,7 @@ export class CommandesComponent implements OnInit {
 
     const dateDocument = new Date().toISOString().slice(0, 10);
 
-    this.bonCommandeService.convertirEnCommande(this.selectedBCId, dateDocument, this.conversionNotes || undefined).subscribe({
+    this.bonCommandeService.convertirEnCommande(this.selectedBCId, dateDocument).subscribe({
       next: () => {
         this.converting = false;
         this.closeConvertModal();
@@ -229,9 +226,6 @@ export class CommandesComponent implements OnInit {
     });
   }
 
-  toggleStats(): void {
-    this.showStats = !this.showStats;
-  }
 
   exporter(): void {
     const data = this.filteredCommandes;

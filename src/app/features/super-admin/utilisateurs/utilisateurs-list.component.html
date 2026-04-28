@@ -99,7 +99,7 @@
                 pButton
                 [icon]="user.enabled ? 'pi pi-ban' : 'pi pi-check'"
                 [class]="user.enabled ? 'action-btn action-delete' : 'action-btn action-enable'"
-                [pTooltip]="(user.enabled ? 'FACTURES.ACTIONS.REJECT' : 'FACTURES.ACTIONS.EMIT') | translate"
+                [pTooltip]="(user.enabled ? 'SUPER_ADMIN.USERS.ACTIONS.BLOCK' : 'SUPER_ADMIN.USERS.ACTIONS.ACTIVATE') | translate"
                 tooltipPosition="top"
                 (click)="user.enabled ? disableUser(user.id) : enableUser(user.id)"
               ></button>

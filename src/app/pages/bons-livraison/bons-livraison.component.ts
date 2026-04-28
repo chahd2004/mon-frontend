@@ -59,7 +59,6 @@ export class BonsLivraisonComponent implements OnInit {
   loadingConfirmedCommandes = false;
   converting = false;
   conversionSearch = '';
-  conversionNotes = '';
   selectedCommandeId: number | null = null;
 
   displayFactureModal = false;
@@ -204,7 +203,6 @@ export class BonsLivraisonComponent implements OnInit {
   depuisCommande(): void {
     this.displayConvertModal = true;
     this.conversionSearch = '';
-    this.conversionNotes = '';
     this.selectedCommandeId = null;
     this.loadingConfirmedCommandes = true;
     this.errorMessage = '';
@@ -224,7 +222,6 @@ export class BonsLivraisonComponent implements OnInit {
   fermerConvertModal(): void {
     this.displayConvertModal = false;
     this.conversionSearch = '';
-    this.conversionNotes = '';
     this.selectedCommandeId = null;
   }
 
@@ -268,7 +265,6 @@ export class BonsLivraisonComponent implements OnInit {
         produitDesignation: ligne.produitDesignation,
         quantite: ligne.quantite
       })),
-      notes: this.conversionNotes || null
     };
 
     this.bonLivraisonService.create(bonLivraisonPayload).subscribe({
@@ -296,9 +292,6 @@ export class BonsLivraisonComponent implements OnInit {
     });
   }
 
-  toggleStats(): void {
-    this.showStats = !this.showStats;
-  }
 
   exporter(): void {
     const data = this.filteredBonsLivraison;

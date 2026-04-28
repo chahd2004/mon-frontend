@@ -11,6 +11,7 @@ import { DemandeFormComponent } from './features/public/demande-form/demande-for
 import { DemandeStatutComponent } from './features/public/demande-statut/demande-statut.component';
 import { BonCommandeSignatureComponent } from './features/public/bon-commande-signature/bon-commande-signature.component';
 import { BonsLivraisonSignatureComponent } from './features/public/bons-livraison-signature/bons-livraison-signature.component';
+import { DevisPublicActionComponent } from './features/public/devis-public-action/devis-public-action.component';
 
 // ✅ PHASE 3 - SUPER_ADMIN Pages
 import { SuperAdminLayoutComponent } from './features/super-admin/layout/super-admin-layout.component';
@@ -189,7 +190,7 @@ export const routes: Routes = [
 
   // Public Signature Links (accessible without login)
   // These are placed at the end to avoid shadowing more specific routes (like devis/nouveau)
-  { path: 'devis/:ref', component: DevisDetailComponent },
+  { path: 'devis/:ref', component: DevisPublicActionComponent, title: 'Approbation Devis - Facturation' },
   { path: 'bon-commande/:ref', component: BonCommandeSignatureComponent },
   { path: 'bon-livraison-signature/:ref', component: BonsLivraisonSignatureComponent },
 

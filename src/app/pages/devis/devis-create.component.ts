@@ -45,13 +45,13 @@ export class DevisCreateComponent implements OnInit {
   clientId: number | null = null;
   vendeurSelected: any = null;
   dateEmission: Date | string = new Date();
+  dateValidite: Date | string | null = null;
   editId: number | null = null;
 
   lignes: DevisLineForm[] = [{ produitId: null, quantite: 1 }];
 
   remiseGlobalePercent = 0;
   fraisPort = 0;
-  notes = '';
 
   loading = false;
   errorMessage = '';
@@ -295,7 +295,7 @@ export class DevisCreateComponent implements OnInit {
       next: (devis) => {
         this.clientId = devis.acheteurId ?? null;
         this.dateEmission = devis.dateCreation || this.toDateOnly(new Date());
-        this.notes = this.extractMainNotes(devis.notes || '');
+        this.dateValidite = devis.dateValidite ?? null;
 
         this.lignes = (devis.lignes || []).map(line => ({
           produitId: line.produitId ?? null,
@@ -352,7 +352,7 @@ export class DevisCreateComponent implements OnInit {
       acheteurId: this.clientId,
       typeAcheteur: 'CLIENT',
       vendeurId,
-      notes: this.notes?.trim() || undefined,
+      dateValidite: this.dateValidite ? this.toDateOnly(this.dateValidite) : null,
       lignes
     };
   }
@@ -407,18 +407,6 @@ export class DevisCreateComponent implements OnInit {
           this.errorMessage = error?.error?.message || 'Erreur lors de la mise a jour/envoi du devis.';
         }
       });
-  }
-
-  private extractMainNotes(notes: string): string {
-    if (!notes) {
-      return '';
-    }
-
-    return notes
-      .split('|')
-      .map(item => item.trim())
-      .filter(item => !!item && !/^Date validite:/i.test(item))
-      .join(' | ');
   }
 
   private toDateOnly(date: Date | string): string {

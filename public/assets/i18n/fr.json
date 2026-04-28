@@ -40,6 +40,9 @@
     "CHART_TITLE": "Évolution mensuelle",
     "CHART_DISTRIBUTION": "Répartition des factures",
     "CHART_SALES": "Ventes par produit / mois",
+    "LATE_INVOICES_TITLE": "Factures en retard",
+    "LATE_INVOICES_SUBTITLE": "Nombre de factures impayées dépassant l'échéance",
+    "DAYS_LATE": "+{{days}} jours",
     "NO_DATA": "Aucune donnée disponible"
   },
   "FACTURES": {
@@ -202,10 +205,13 @@
     "UPDATE_SEND": "Mettre à jour et envoyer",
     "TOTAL_TTC": "TOTAL TTC",
     "TOTAL_HT": "Total H.T.",
+    "VALIDITY_DATE": "Date de Validité",
     "ACTIONS": {
       "NEW": "Nouveau devis",
       "STATS": "Statistiques",
-      "GENERATE_INVOICE": "Générer Facture"
+      "GENERATE_INVOICE": "Générer Facture",
+      "APPROVE": "Accepter le Devis",
+      "REJECT": "Rejeter le Devis"
     },
     "FILTER_STATUS": "Filtrer par statut",
     "TABLE": {
@@ -296,6 +302,7 @@
       "CLIENT": "Client",
       "DATE": "Date",
       "STATUS": "Statut",
+      "TOTAL": "Total TTC",
       "ACTIONS": "Actions"
     },
     "EMPTY": "Aucun bon de livraison trouvé",
@@ -701,7 +708,8 @@
       "TITLE": "SUPER ADMIN - Tableau de bord",
       "USERS": "UTILISATEURS",
       "INVOICES": "FACTURES",
-      "COMPANIES": "ENTREPRISES"
+      "COMPANIES": "ENTREPRISES",
+      "INVOICE_BREAKDOWN": "Répartition des factures par entreprise"
     },
     "REQUESTS": {
       "TITLE": "Gestion des demandes d'inscription",
@@ -771,6 +779,10 @@
         "ACTIONS": "Actions"
       },
       "EMPTY": "Aucun utilisateur trouvé",
+      "ACTIONS": {
+        "ACTIVATE": "Activer",
+        "BLOCK": "Bloquer"
+      },
       "FORM": {
         "CREATE_TITLE": "Créer un Super Admin",
         "EDIT_TITLE": "Modifier utilisateur",

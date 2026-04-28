@@ -35,7 +35,6 @@ export interface BonCommande {
   montantTVA: number;
   totalTTC: number;
   montantEnLettres?: string | null;
-  notes?: string | null;
   lignes?: LigneBonCommande[];
 }
 
@@ -50,6 +49,5 @@ export interface BonCommandeRequest {
   typeAcheteur: 'CLIENT' | 'EMETTEUR';
   vendeurId: number;
   modePaiement: 'VIREMENT' | 'CHEQUE' | 'ESPECES' | 'CARTE';
-  notes?: string;
   lignes: LigneBonCommandeRequest[];
 }

@@ -81,7 +81,7 @@ export class DevisDetailComponent implements OnInit {
     }
 
     if (rawParam && rawParam.toUpperCase().startsWith('DEV-')) {
-      this.resolveDevisFromPublicRef(rawParam);
+      this.resolveDevisIdFromReference(rawParam);
       return;
     }
 
@@ -108,20 +108,7 @@ export class DevisDetailComponent implements OnInit {
     });
   }
 
-  private resolveDevisFromPublicRef(reference: string): void {
-    this.loading = true;
-    this.devisService.getPublicByRef(reference).subscribe({
-      next: (devis) => {
-        this.devis = devis;
-        this.devisId = devis.id;
-        this.loadParties();
-      },
-      error: () => {
-        this.loading = false;
-        this.errorMessage = `Devis introuvable pour la reference ${reference}.`;
-      }
-    });
-  }
+
 
   private resolveDevisIdFromReference(reference: string): void {
     const target = this.normalizeRef(reference);
@@ -211,11 +198,7 @@ export class DevisDetailComponent implements OnInit {
       return;
     }
 
-    const obs = this.isPublicView() 
-      ? this.devisService.accepterPublic(this.devis.id)
-      : this.devisService.accepter(this.devis.id);
-
-    obs.subscribe({
+    this.devisService.accepter(this.devis.id).subscribe({
       next: (updated) => {
         this.devis = updated;
       },
@@ -235,11 +218,7 @@ export class DevisDetailComponent implements OnInit {
       return;
     }
 
-    const obs = this.isPublicView()
-      ? this.devisService.rejeterPublic(this.devis.id, raison.trim())
-      : this.devisService.rejeter(this.devis.id, raison.trim());
-
-    obs.subscribe({
+    this.devisService.rejeter(this.devis.id, raison.trim()).subscribe({
       next: (updated) => {
         this.devis = updated;
       },
@@ -247,10 +226,6 @@ export class DevisDetailComponent implements OnInit {
         this.errorMessage = 'Erreur lors du rejet du devis.';
       }
     });
-  }
-
-  private isPublicView(): boolean {
-    return this.router.url.includes('/devis/') && !this.router.url.includes('/accueil/');
   }
 
   convertirEnBonCommande(): void {

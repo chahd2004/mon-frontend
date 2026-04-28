@@ -32,7 +32,17 @@
 
   .toggle-btn {
     color: white !important;
-    width: 100%;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    width: auto !important;
+    min-width: unset !important;
+    padding: 0.5rem !important;
+
+    &:focus {
+      outline: none !important;
+      box-shadow: none !important;
+    }
   }
 }
 

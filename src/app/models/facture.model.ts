@@ -22,6 +22,7 @@ export interface Facture {
   periode_au?: string;
   reference_unique?: string;
   reference_ttn?: string;
+  dateEcheance?: string;
   previousStatut?: string;
 }
 

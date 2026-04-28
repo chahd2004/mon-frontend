@@ -46,7 +46,6 @@ export class BonCommandesComponent implements OnInit {
   loadingAcceptedDevis = false;
   converting = false;
   conversionSearch = '';
-  conversionNotes = '';
   selectedDevisId: number | null = null;
   acceptedDevis: Devis[] = [];
 
@@ -78,9 +77,6 @@ export class BonCommandesComponent implements OnInit {
     this.openConvertModal();
   }
 
-  toggleStats(): void {
-    this.showStats = !this.showStats;
-  }
 
   voirBC(id: number): void {
     this.router.navigate(['/bons-commandes', 'view', id]);
@@ -138,7 +134,6 @@ export class BonCommandesComponent implements OnInit {
   openConvertModal(): void {
     this.displayConvertModal = true;
     this.conversionSearch = '';
-    this.conversionNotes = '';
     this.selectedDevisId = null;
     this.loadingAcceptedDevis = true;
     this.errorMessage = '';
@@ -160,7 +155,6 @@ export class BonCommandesComponent implements OnInit {
   closeConvertModal(): void {
     this.displayConvertModal = false;
     this.conversionSearch = '';
-    this.conversionNotes = '';
     this.selectedDevisId = null;
   }
 

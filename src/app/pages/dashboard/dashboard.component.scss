@@ -18,7 +18,7 @@
     font-size: 1.4rem;
     font-weight: 800;
     color: #0f172a;
-    margin-bottom: 0.1rem;
+    margin-bottom: 0.75rem;
     display: block;
     letter-spacing: -0.5px;
   }
@@ -63,6 +63,68 @@
       i {
         font-size: 1rem;
       }
+    }
+  }
+}
+
+// ===== PREMIUM OVERDUE CARD =====
+.overdue-card {
+  background: white !important;
+  color: #1e293b !important;
+  border: 1px solid #fee2e2 !important; // Subtle red border
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.08) !important;
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem !important;
+
+  .overdue-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+
+    .alert-icon {
+      width: 48px;
+      height: 48px;
+      background: #fef2f2;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      i { font-size: 1.5rem; color: #ef4444; }
+    }
+
+    .overdue-titles {
+       background: transparent !important;
+      h3 { margin: 0; font-size: 1.3rem; font-weight: 700; color: #1e293b !important; line-height: 1.2; }
+      p { margin: 0.1rem 0 0 0; font-size: 0.85rem; color: #64748b; }
+    }
+  }
+
+  .overdue-body {
+    flex: 1;
+    .overdue-list { background: #f8fafc; border-radius: 12px; border: 1px solid #f1f5f9; }
+    .overdue-item {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 0.95rem;
+      font-weight: 600;
+      &:last-child { border-bottom: none; }
+      .status-dot {
+        width: 8px; height: 8px; border-radius: 50%; margin-right: 0.75rem;
+        &.high { background-color: #ef4444; color: #ef4444; box-shadow: 0 0 6px #ef4444; }
+        &.medium { background-color: #f59e0b; color: #f59e0b; box-shadow: 0 0 6px #f59e0b; }
+      }
+      .invoice-num { color: #1e293b !important; }
+      .delay { margin-left: auto; color: #ef4444; font-weight: 700; }
+    }
+    .overdue-empty {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      height: 100%; color: #94a3b8;
+      i { font-size: 2.5rem; color: #3b82f6; opacity: 0.5; margin-bottom: 0.75rem; }
     }
   }
 }
