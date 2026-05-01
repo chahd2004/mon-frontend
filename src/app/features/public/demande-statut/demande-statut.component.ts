@@ -3,14 +3,13 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
-import { TagModule } from 'primeng/tag';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { DemandeService } from '../../../core/services/demande.service';
 
 @Component({
   selector: 'app-demande-statut',
   standalone: true,
-  imports: [CommonModule, CardModule, ButtonModule, TagModule, ProgressSpinnerModule],
+  imports: [CommonModule, CardModule, ButtonModule, ProgressSpinnerModule],
   templateUrl: './demande-statut.component.html',
   styleUrls: ['./demande-statut.component.scss']
 })
@@ -86,9 +85,9 @@ export class DemandeStatutComponent implements OnInit {
 
   getStatusLabel(): string {
     const labels: Record<string, string> = {
-      PENDING: '⏳ En attente',
-      APPROVED: '✅ Approuvée',
-      REJECTED: '❌ Rejetée'
+      PENDING: 'En attente',
+      APPROVED: 'Approuvée',
+      REJECTED: 'Rejetée'
     };
     return labels[this.demande.statut] || 'Inconnu';
   }

@@ -43,7 +43,8 @@ export class CollaborateurFormComponent implements OnInit {
   isSubmitting = false;
 
   roleOptions = [
-    { label: 'Viewer (lecture seule)', value: 'ENTREPRISE_VIEWER' },
+    { label: 'Consultant', value: 'ENTREPRISE_VIEWER' },
+    { label: 'Gérant', value: 'ENTREPRISE_MANAGER' },
   ];
 
   fieldErrors: Record<string, string> = {};
@@ -65,8 +66,7 @@ export class CollaborateurFormComponent implements OnInit {
       nom: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
       telephone: [''],
-      role: ['ENTREPRISE_VIEWER', Validators.required],
-      permissions: ['']
+      role: ['ENTREPRISE_VIEWER', Validators.required]
     });
   }
 
@@ -81,7 +81,7 @@ export class CollaborateurFormComponent implements OnInit {
         email: val.email,
         prenom: val.prenom,
         nom: val.nom,
-        fonction: val.permissions || 'Collaborateur',
+        fonction: val.role === 'ENTREPRISE_MANAGER' ? 'Gérant' : 'Consultant',
         role: val.role,
         telephone: val.telephone || undefined
       }).subscribe({

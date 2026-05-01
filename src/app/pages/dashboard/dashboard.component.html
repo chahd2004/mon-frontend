@@ -35,7 +35,7 @@
         <span class="stat-label">{{ 'DASHBOARD.TOTAL_CLIENTS' | translate }}</span>
       </div>
     </div>
-    <div class="stat-card purple" *ngIf="!isViewer">
+    <div class="stat-card purple" *ngIf="!isViewer && !isManager">
       <div class="stat-icon"><i class="pi pi-id-card"></i></div>
       <div class="stat-info">
         <span class="stat-value">{{ totalCollaborateurs }}</span>

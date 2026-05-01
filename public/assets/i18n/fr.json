@@ -181,7 +181,8 @@
   "ROLES": {
     "SUPER_ADMIN": "Super Admin",
     "ENTREPRISE_ADMIN": "Administrateur",
-    "ENTREPRISE_VIEWER": "Consultant (Lecture seule)",
+    "ENTREPRISE_MANAGER": "Gérant",
+    "ENTREPRISE_VIEWER": "Consultant",
     "COLLABORATOR": "Collaborateur",
     "CLIENT": "Client",
     "EMETTEUR": "Émetteur"
@@ -694,7 +695,8 @@
       "PRENOM": "Prénom",
       "NOM": "Nom",
       "ROLE": "Rôle attribué",
-      "ROLE_VIEWER": "Consultant (Accès limité)",
+      "ROLE_MANAGER": "Gérant",
+      "ROLE_VIEWER": "Consultant",
       "FONCTION": "Fonction / Poste",
       "TEL": "Téléphone",
       "INFO": "Le collaborateur recevra une invitation par email pour configurer son accès.",

@@ -42,7 +42,16 @@ export class DemandesListComponent implements OnInit {
   statusOptions = [];
 
   ngOnInit(): void {
-    this.initStatusOptions();
+    // S'assurer que les traductions sont chargées avant d'initialiser les options
+    this.translate.get('SUPER_ADMIN.REQUESTS.STATUS_ALL').subscribe(() => {
+      this.initStatusOptions();
+    });
+
+    // Ré-initialiser les options si on change de langue
+    this.translate.onLangChange.subscribe(() => {
+      this.initStatusOptions();
+    });
+
     this.loadDemandes();
   }
 
@@ -79,7 +88,14 @@ export class DemandesListComponent implements OnInit {
       const matchesSearch = !this.searchTerm ||
         d.raisonSociale?.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
         d.email?.toLowerCase().includes(this.searchTerm.toLowerCase());
-      const matchesStatus = !this.selectedStatus || d.status === this.selectedStatus;
+      
+      let matchesStatus = !this.selectedStatus || d.status === this.selectedStatus;
+      
+      // Si on filtre par 'Approuvée', on inclut APPROVED et PENDING
+      if (this.selectedStatus === 'APPROVED') {
+        matchesStatus = d.status === 'APPROVED' || d.status === 'PENDING';
+      }
+      
       return matchesSearch && matchesStatus;
     });
   }

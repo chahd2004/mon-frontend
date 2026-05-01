@@ -19,7 +19,7 @@
     <!-- Statut actuel -->
     <div class="status-banner">
       <span>{{ 'SUPER_ADMIN.REQUESTS.DETAIL.CURRENT_STATUS' | translate }}</span>
-      <p-tag [value]="getStatusLabel()" [severity]="getStatusSeverity()" styleClass="large-tag"></p-tag>
+      <p>{{ getStatusLabel() }}</p>
       <span class="date-info" *ngIf="demande.dateSoumission">
         {{ 'SUPER_ADMIN.REQUESTS.DETAIL.SUBMITTED_ON' | translate:{date: (demande.dateSoumission | date: 'dd/MM/yyyy HH:mm')} }}
       </span>

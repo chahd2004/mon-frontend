@@ -9,7 +9,7 @@ export interface CollaborateurApiItem {
   prenom: string;
   nom: string;
   email: string;
-  role: 'ENTREPRISE_VIEWER' | 'ENTREPRISE_ADMIN' | 'EMETTEUR';
+  role: 'ENTREPRISE_VIEWER' | 'ENTREPRISE_ADMIN' | 'ENTREPRISE_MANAGER' | 'EMETTEUR';
   fonction?: string;
   telephone?: string;
 }
@@ -18,7 +18,7 @@ export interface CreateCollaborateurPayload {
   email: string;
   prenom: string;
   nom: string;
-  role: 'ENTREPRISE_VIEWER' | 'ENTREPRISE_ADMIN' | 'EMETTEUR';
+  role: 'ENTREPRISE_VIEWER' | 'ENTREPRISE_ADMIN' | 'ENTREPRISE_MANAGER' | 'EMETTEUR';
   fonction: string;
   telephone?: string;
 }
@@ -27,7 +27,7 @@ interface CreateCollaborateurApiPayload {
   email: string;
   firstName: string;
   lastName: string;
-  role: 'ENTREPRISE_VIEWER' | 'ENTREPRISE_ADMIN' | 'EMETTEUR';
+  role: 'ENTREPRISE_VIEWER' | 'ENTREPRISE_ADMIN' | 'ENTREPRISE_MANAGER' | 'EMETTEUR';
   fonction: string;
   telephone?: string;
 }

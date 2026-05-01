@@ -57,6 +57,10 @@ export class DashboardComponent implements OnInit {
     return this.authService.hasRole('ENTREPRISE_VIEWER' as any);
   }
 
+  get isManager(): boolean {
+    return this.authService.hasRole('ENTREPRISE_MANAGER' as any);
+  }
+
   chartData: any = {
     labels: [],
     datasets: [
@@ -101,17 +105,19 @@ export class DashboardComponent implements OnInit {
 
         this.lateInvoices = factures
           .filter(f => {
-            // Inclure tout sauf PAID, CANCELLED et REJECTED
-            if (!f.dateEcheance || f.statut === 'PAID' || f.statut === 'CANCELLED' || f.statut === 'REJECTED') return false;
-            
-            const echeance = new Date(f.dateEcheance);
+            // Utiliser datePaiement (champ échéance réel) avec dateEcheance en fallback
+            const dueDateStr = f.datePaiement || f.dateEcheance;
+            if (!dueDateStr || f.statut === 'PAID' || f.statut === 'CANCELLED' || f.statut === 'REJECTED') return false;
+
+            const echeance = new Date(dueDateStr);
             echeance.setHours(0, 0, 0, 0);
-            
+
             // On l'affiche dès le jour de l'échéance (<=)
             return echeance <= now;
           })
           .map(f => {
-            const echeance = new Date(f.dateEcheance!);
+            const dueDateStr = f.datePaiement || f.dateEcheance!;
+            const echeance = new Date(dueDateStr);
             const diffMs = now.getTime() - echeance.getTime();
             const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
             return {

@@ -60,7 +60,8 @@ export class AccueilComponent {
     const map: Record<UserRole, string> = {
       SUPER_ADMIN: 'Super Admin',
       ENTREPRISE_ADMIN: 'Entreprise Admin',
-      ENTREPRISE_VIEWER: 'Collaborateur',
+      ENTREPRISE_MANAGER: 'Gérant',
+      ENTREPRISE_VIEWER: 'Consultant',
       CLIENT: 'Client',
       EMETTEUR: 'Emetteur'
     };

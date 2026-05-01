@@ -28,7 +28,7 @@
         </a>
 
         <!-- Clients : personnes -->
-          <a *ngIf="hasAnyRole(['ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER', 'EMETTEUR'])"
+          <a *ngIf="hasAnyRole(['ENTREPRISE_ADMIN', 'ENTREPRISE_MANAGER', 'ENTREPRISE_VIEWER', 'EMETTEUR'])"
             routerLink="/clients"
             routerLinkActive="active"
             class="nav-item">
@@ -37,7 +37,7 @@
         </a>
 
         <!-- Produits : article/tag -->
-          <a *ngIf="hasAnyRole(['ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER', 'EMETTEUR'])"
+          <a *ngIf="hasAnyRole(['ENTREPRISE_ADMIN', 'ENTREPRISE_MANAGER', 'ENTREPRISE_VIEWER', 'EMETTEUR'])"
             routerLink="/produits"
             routerLinkActive="active"
             class="nav-item">
@@ -80,7 +80,7 @@
         </div>
 
         <!-- Factures : document texte -->
-        <a *ngIf="hasAnyRole(['ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER', 'CLIENT', 'EMETTEUR'])"
+        <a *ngIf="hasAnyRole(['ENTREPRISE_ADMIN', 'ENTREPRISE_MANAGER', 'ENTREPRISE_VIEWER', 'CLIENT', 'EMETTEUR'])"
           routerLink="/factures"
           routerLinkActive="active" class="nav-item">
           <i class="pi pi-file-edit"></i>
@@ -88,28 +88,28 @@
         </a>
 
         <!-- Devis : document avec loupe -->
-        <a *ngIf="hasAnyRole(['ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER'])" routerLink="/devis" routerLinkActive="active" class="nav-item">
+        <a *ngIf="hasAnyRole(['ENTREPRISE_ADMIN', 'ENTREPRISE_MANAGER', 'ENTREPRISE_VIEWER'])" routerLink="/devis" routerLinkActive="active" class="nav-item">
           <i class="pi pi-file-export"></i>
           <span class="nav-label">{{ 'SIDEBAR.DEVIS' | translate }}</span>
         </a>
 
-        <a *ngIf="hasAnyRole(['ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER'])" routerLink="/bons-commandes" routerLinkActive="active" class="nav-item">
+        <a *ngIf="hasAnyRole(['ENTREPRISE_ADMIN', 'ENTREPRISE_MANAGER', 'ENTREPRISE_VIEWER'])" routerLink="/bons-commandes" routerLinkActive="active" class="nav-item">
           <i class="pi pi-file"></i>
           <span class="nav-label">{{ 'SIDEBAR.BON_COMMANDES' | translate }}</span>
         </a>
 
-        <a *ngIf="hasAnyRole(['ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER'])" routerLink="/commandes" routerLinkActive="active" class="nav-item">
+        <a *ngIf="hasAnyRole(['ENTREPRISE_ADMIN', 'ENTREPRISE_MANAGER', 'ENTREPRISE_VIEWER'])" routerLink="/commandes" routerLinkActive="active" class="nav-item">
           <i class="pi pi-briefcase"></i>
           <span class="nav-label">{{ 'SIDEBAR.COMMANDES' | translate }}</span>
         </a>
 
-        <a *ngIf="hasAnyRole(['ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER'])" routerLink="/bons-livraison" routerLinkActive="active" class="nav-item">
+        <a *ngIf="hasAnyRole(['ENTREPRISE_ADMIN', 'ENTREPRISE_MANAGER', 'ENTREPRISE_VIEWER'])" routerLink="/bons-livraison" routerLinkActive="active" class="nav-item">
           <i class="pi pi-truck"></i>
           <span class="nav-label">{{ 'SIDEBAR.BON_LIVRAISON' | translate }}</span>
         </a>
 
         <!-- Avoirs : remboursement/retour -->
-        <a *ngIf="hasAnyRole(['ENTREPRISE_ADMIN', 'ENTREPRISE_VIEWER'])" routerLink="/avoirs" routerLinkActive="active" class="nav-item">
+        <a *ngIf="hasAnyRole(['ENTREPRISE_ADMIN', 'ENTREPRISE_MANAGER', 'ENTREPRISE_VIEWER'])" routerLink="/avoirs" routerLinkActive="active" class="nav-item">
           <i class="pi pi-arrow-right-arrow-left"></i>
           <span class="nav-label">{{ 'SIDEBAR.AVOIRS' | translate }}</span>
         </a>

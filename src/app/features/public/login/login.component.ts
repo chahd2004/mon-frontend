@@ -124,7 +124,7 @@ export class LoginComponent implements OnInit {
       return '/super-admin/users';
     }
 
-    if (this.authService.hasRole('ENTREPRISE_ADMIN')) {
+    if (this.authService.hasRole('ENTREPRISE_ADMIN') || this.authService.hasRole('ENTREPRISE_MANAGER')) {
       return returnUrl || '/dashboard';
     }
 

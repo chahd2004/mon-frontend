@@ -7,6 +7,7 @@
 export const USER_ROLES = [
   'SUPER_ADMIN',
   'ENTREPRISE_ADMIN',
+  'ENTREPRISE_MANAGER',
   'ENTREPRISE_VIEWER',
   'CLIENT',
   'EMETTEUR'
@@ -16,7 +17,7 @@ export type UserRole = (typeof USER_ROLES)[number];
 
 export type BuyerRole = Extract<UserRole, 'CLIENT' | 'EMETTEUR'>;
 
-export const ADMIN_ROLES: readonly UserRole[] = ['SUPER_ADMIN', 'ENTREPRISE_ADMIN'];
+export const ADMIN_ROLES: readonly UserRole[] = ['SUPER_ADMIN', 'ENTREPRISE_ADMIN', 'ENTREPRISE_MANAGER'];
 
 export const VIEWER_ROLES: readonly UserRole[] = ['ENTREPRISE_VIEWER'];
 

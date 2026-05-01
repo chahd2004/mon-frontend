@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { TagModule } from 'primeng/tag';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -17,7 +16,7 @@ import { DemandeService } from '../../../core/services/demande.service';
   selector: 'app-demande-detail',
   standalone: true,
   imports: [
-    CommonModule, FormsModule, ButtonModule, CardModule, TagModule,
+    CommonModule, FormsModule, ButtonModule, CardModule,
     InputTextareaModule, ToastModule, ConfirmDialogModule, ProgressSpinnerModule,
     TranslateModule
   ],
@@ -146,10 +145,7 @@ export class DemandeDetailComponent implements OnInit {
       'REJECTED': 'STATUS.REJECTED'
     };
     const localized = this.translate.instant(map[status] || 'STATUS.UNKNOWN');
-    const icons: Record<string, string> = {
-      REQUESTED: '⏳', PENDING: '✅', APPROVED: '✅', REJECTED: '❌'
-    };
-    return `${icons[status] || ''} ${localized}`.trim();
+    return localized;
   }
 
   getStatusSeverity(): 'warning' | 'success' | 'danger' | 'info' {
