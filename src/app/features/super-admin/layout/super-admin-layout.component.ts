@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { SidebarComponent } from '../../../shared';
 
+import { ChatWidgetComponent } from '../../../shared/components/chat-widget/chat-widget.component';
+
 @Component({
   selector: 'app-super-admin-layout',
   standalone: true,

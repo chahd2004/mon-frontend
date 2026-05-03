@@ -16,10 +16,12 @@ import { signal, effect } from '@angular/core';
 
 import { TranslateModule } from '@ngx-translate/core';
 
+import { ChatWidgetComponent } from '../../../shared/components/chat-widget/chat-widget.component';
+
 @Component({
   selector: 'app-accueil',
   standalone: true,
-  imports: [CommonModule, RouterModule, ButtonModule, TooltipModule, ToastModule, TranslateModule],
+  imports: [CommonModule, RouterModule, ButtonModule, TooltipModule, ToastModule, TranslateModule, ChatWidgetComponent],
   providers: [MessageService],
   templateUrl: './accueil.component.html',
   styleUrls: ['./accueil.component.scss']

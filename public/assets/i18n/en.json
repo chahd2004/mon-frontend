@@ -1,5 +1,12 @@
 {
   "FACTURATION": "Billing",
+  "CHATBOT": {
+    "TITLE": "Billing Assistant",
+    "WELCOME": "Hello! I am your billing assistant. How can I help you?",
+    "THINKING": "AI is thinking...",
+    "PLACEHOLDER": "Ask your question...",
+    "ERROR": "Sorry, an error occurred while communicating with the assistant. Please check your connection or try again later."
+  },
   "DASHBOARD": {
     "TITLE": "Dashboard",
     "SUBTITLE": "Welcome to your management space",

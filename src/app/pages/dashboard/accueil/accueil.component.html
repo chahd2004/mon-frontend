@@ -22,25 +22,21 @@
 
         <!-- Tableau de bord : vue d'ensemble -->
         <a [routerLink]="hasRole('SUPER_ADMIN') ? '/super-admin/statistiques' : '/dashboard'" routerLinkActive="active"
-           [routerLinkActiveOptions]="{exact: true}" class="nav-item">
+          [routerLinkActiveOptions]="{exact: true}" class="nav-item">
           <i class="pi pi-gauge"></i>
           <span class="nav-label">{{ 'SIDEBAR.DASHBOARD' | translate }}</span>
         </a>
 
         <!-- Clients : personnes -->
-          <a *ngIf="hasAnyRole(['ENTREPRISE_ADMIN', 'ENTREPRISE_MANAGER', 'ENTREPRISE_VIEWER', 'EMETTEUR'])"
-            routerLink="/clients"
-            routerLinkActive="active"
-            class="nav-item">
+        <a *ngIf="hasAnyRole(['ENTREPRISE_ADMIN', 'ENTREPRISE_MANAGER', 'ENTREPRISE_VIEWER', 'EMETTEUR'])"
+          routerLink="/clients" routerLinkActive="active" class="nav-item">
           <i class="pi pi-users"></i>
           <span class="nav-label">{{ 'SIDEBAR.CLIENTS' | translate }}</span>
         </a>
 
         <!-- Produits : article/tag -->
-          <a *ngIf="hasAnyRole(['ENTREPRISE_ADMIN', 'ENTREPRISE_MANAGER', 'ENTREPRISE_VIEWER', 'EMETTEUR'])"
-            routerLink="/produits"
-            routerLinkActive="active"
-            class="nav-item">
+        <a *ngIf="hasAnyRole(['ENTREPRISE_ADMIN', 'ENTREPRISE_MANAGER', 'ENTREPRISE_VIEWER', 'EMETTEUR'])"
+          routerLink="/produits" routerLinkActive="active" class="nav-item">
           <i class="pi pi-tag"></i>
           <span class="nav-label">{{ 'SIDEBAR.PRODUITS' | translate }}</span>
         </a>
@@ -58,9 +54,7 @@
         </a>
 
         <!-- Collaborateurs entreprise-admin -->
-        <a *ngIf="hasRole('ENTREPRISE_ADMIN')"
-          routerLink="/collaborateurs"
-          routerLinkActive="active" class="nav-item">
+        <a *ngIf="hasRole('ENTREPRISE_ADMIN')" routerLink="/collaborateurs" routerLinkActive="active" class="nav-item">
           <i class="pi pi-id-card"></i>
           <span class="nav-label">{{ 'SIDEBAR.COLLABORATEURS' | translate }}</span>
         </a>
@@ -81,35 +75,39 @@
 
         <!-- Factures : document texte -->
         <a *ngIf="hasAnyRole(['ENTREPRISE_ADMIN', 'ENTREPRISE_MANAGER', 'ENTREPRISE_VIEWER', 'CLIENT', 'EMETTEUR'])"
-          routerLink="/factures"
-          routerLinkActive="active" class="nav-item">
+          routerLink="/factures" routerLinkActive="active" class="nav-item">
           <i class="pi pi-file-edit"></i>
           <span class="nav-label">{{ 'SIDEBAR.FACTURES' | translate }}</span>
         </a>
 
         <!-- Devis : document avec loupe -->
-        <a *ngIf="hasAnyRole(['ENTREPRISE_ADMIN', 'ENTREPRISE_MANAGER', 'ENTREPRISE_VIEWER'])" routerLink="/devis" routerLinkActive="active" class="nav-item">
+        <a *ngIf="hasAnyRole(['ENTREPRISE_ADMIN', 'ENTREPRISE_MANAGER', 'ENTREPRISE_VIEWER'])" routerLink="/devis"
+          routerLinkActive="active" class="nav-item">
           <i class="pi pi-file-export"></i>
           <span class="nav-label">{{ 'SIDEBAR.DEVIS' | translate }}</span>
         </a>
 
-        <a *ngIf="hasAnyRole(['ENTREPRISE_ADMIN', 'ENTREPRISE_MANAGER', 'ENTREPRISE_VIEWER'])" routerLink="/bons-commandes" routerLinkActive="active" class="nav-item">
+        <a *ngIf="hasAnyRole(['ENTREPRISE_ADMIN', 'ENTREPRISE_MANAGER', 'ENTREPRISE_VIEWER'])"
+          routerLink="/bons-commandes" routerLinkActive="active" class="nav-item">
           <i class="pi pi-file"></i>
           <span class="nav-label">{{ 'SIDEBAR.BON_COMMANDES' | translate }}</span>
         </a>
 
-        <a *ngIf="hasAnyRole(['ENTREPRISE_ADMIN', 'ENTREPRISE_MANAGER', 'ENTREPRISE_VIEWER'])" routerLink="/commandes" routerLinkActive="active" class="nav-item">
+        <a *ngIf="hasAnyRole(['ENTREPRISE_ADMIN', 'ENTREPRISE_MANAGER', 'ENTREPRISE_VIEWER'])" routerLink="/commandes"
+          routerLinkActive="active" class="nav-item">
           <i class="pi pi-briefcase"></i>
           <span class="nav-label">{{ 'SIDEBAR.COMMANDES' | translate }}</span>
         </a>
 
-        <a *ngIf="hasAnyRole(['ENTREPRISE_ADMIN', 'ENTREPRISE_MANAGER', 'ENTREPRISE_VIEWER'])" routerLink="/bons-livraison" routerLinkActive="active" class="nav-item">
+        <a *ngIf="hasAnyRole(['ENTREPRISE_ADMIN', 'ENTREPRISE_MANAGER', 'ENTREPRISE_VIEWER'])"
+          routerLink="/bons-livraison" routerLinkActive="active" class="nav-item">
           <i class="pi pi-truck"></i>
           <span class="nav-label">{{ 'SIDEBAR.BON_LIVRAISON' | translate }}</span>
         </a>
 
         <!-- Avoirs : remboursement/retour -->
-        <a *ngIf="hasAnyRole(['ENTREPRISE_ADMIN', 'ENTREPRISE_MANAGER', 'ENTREPRISE_VIEWER'])" routerLink="/avoirs" routerLinkActive="active" class="nav-item">
+        <a *ngIf="hasAnyRole(['ENTREPRISE_ADMIN', 'ENTREPRISE_MANAGER', 'ENTREPRISE_VIEWER'])" routerLink="/avoirs"
+          routerLinkActive="active" class="nav-item">
           <i class="pi pi-arrow-right-arrow-left"></i>
           <span class="nav-label">{{ 'SIDEBAR.AVOIRS' | translate }}</span>
         </a>
@@ -158,5 +156,6 @@
     </div>
     <router-outlet></router-outlet>
   </main>
-
+  <app-chat-widget
+    *ngIf="hasAnyRole(['ENTREPRISE_ADMIN', 'ENTREPRISE_MANAGER', 'ENTREPRISE_VIEWER'])"></app-chat-widget>
 </div>

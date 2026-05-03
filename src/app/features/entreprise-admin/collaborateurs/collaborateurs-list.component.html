@@ -17,8 +17,8 @@
   <div class="filters-section">
     <div class="search-box">
       <i class="pi pi-search"></i>
-      <input type="text" pInputText [placeholder]="'COLLABORATEURS.SEARCH_PLACEHOLDER' | translate" [(ngModel)]="searchTerm"
-        (keyup)="onSearch()" />
+      <input type="text" pInputText [placeholder]="'COLLABORATEURS.SEARCH_PLACEHOLDER' | translate"
+        [(ngModel)]="searchTerm" (keyup)="onSearch()" />
     </div>
   </div>
 
@@ -45,8 +45,8 @@
         <td>{{ collab.dateAjout }}</td>
         <td>
           <div class="actions-cell" *ngIf="!collab.isAdmin">
-            <button class="icon-btn icon-btn-delete" (click)="deleteCollaborateur(collab.id)" [pTooltip]="'COMMON.DELETE' | translate"
-              tooltipPosition="top">
+            <button class="icon-btn icon-btn-delete" (click)="deleteCollaborateur(collab.id)"
+              [pTooltip]="'COMMON.DELETE' | translate" tooltipPosition="top">
               <i class="pi pi-trash"></i>
             </button>
           </div>

@@ -1,5 +1,12 @@
 {
   "FACTURATION": "Facturation",
+  "CHATBOT": {
+    "TITLE": "Assistant de Facturation",
+    "WELCOME": "Bonjour ! Je suis votre assistant. Comment puis-je vous aider ?",
+    "THINKING": "L'IA réfléchit...",
+    "PLACEHOLDER": "Posez votre question...",
+    "ERROR": "Désolé, une erreur est survenue lors de la communication avec l'assistant. Veuillez vérifier votre connexion ou réessayer plus tard."
+  },
   "DASHBOARD": {
     "TITLE": "Tableau de bord",
     "SUBTITLE": "Bienvenue sur votre espace de gestion",

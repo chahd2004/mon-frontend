@@ -5,10 +5,12 @@ import { AuthService } from '../../../core/services/auth.service';
 import { EmetteurService } from '../../../core/services/emetteur.service';
 import { inject, signal, effect } from '@angular/core';
 
+import { ChatWidgetComponent } from '../../../shared/components/chat-widget/chat-widget.component';
+
 @Component({
   selector: 'app-viewer-layout',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, ChatWidgetComponent],
   templateUrl: './viewer-layout.component.html',
   styleUrls: ['./viewer-layout.component.scss']
 })
