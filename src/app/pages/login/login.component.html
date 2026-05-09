@@ -46,14 +46,6 @@
 
       <!-- Ligne "Se souvenir de moi" et "Mot de passe oublié" -->
       <div class="remember-forgot">
-        <div class="remember-me">
-          <p-checkbox 
-            [(ngModel)]="rememberMe" 
-            [binary]="true" 
-            inputId="rememberMe">
-          </p-checkbox>
-          <label for="rememberMe">Se souvenir de moi</label>
-        </div>
         <a href="#" class="forgot-password" (click)="forgotPassword($event)">
           Mot de passe oublié ?
         </a>

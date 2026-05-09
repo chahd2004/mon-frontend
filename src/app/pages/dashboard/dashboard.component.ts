@@ -66,8 +66,8 @@ export class DashboardComponent implements OnInit {
     datasets: [
       {
         data: [],
-        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444'],
-        hoverBackgroundColor: ['#2563eb', '#059669', '#d97706', '#dc2626'],
+        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#6b7280'],
+        hoverBackgroundColor: ['#2563eb', '#059669', '#d97706', '#dc2626', '#4b5563'],
         borderWidth: 0
       }
     ]
@@ -208,7 +208,7 @@ export class DashboardComponent implements OnInit {
           const total = valeurs.reduce((a: number, b: number) => a + b, 0);
 
           this.chartData.labels = labels.map((label: string, i: number) => {
-            const translatedLabel = this.translate.instant('STATUS.' + (label.toUpperCase() === 'SIGNÉE' ? 'SIGNED' : label.toUpperCase() === 'PAYÉE' ? 'PAID' : label.toUpperCase() === 'BROUILLON' ? 'DRAFT' : label.toUpperCase() === 'ANNULÉE' ? 'CANCELLED' : label));
+            const translatedLabel = this.translate.instant('STATUS.' + (label.toUpperCase() === 'SIGNÉE' ? 'SIGNED' : label.toUpperCase() === 'PAYÉE' ? 'PAID' : label.toUpperCase() === 'BROUILLON' ? 'DRAFT' : label.toUpperCase() === 'ANNULÉE' ? 'CANCELLED' : label.toUpperCase() === 'REJETÉE' || label.toUpperCase() === 'REJECTED' ? 'REJECTED' : label));
             const pct = total > 0 ? Math.round((valeurs[i] / total) * 100) : 0;
             return `${translatedLabel} ${pct}%`;
           });

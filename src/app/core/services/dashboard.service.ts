@@ -262,12 +262,13 @@ export class DashboardService extends BaseService {
           )
         },
         factureRepartition: {
-          labels: ['Signée', 'Payée', 'Brouillon', 'Annulée'],
+          labels: ['Signée', 'Payée', 'Brouillon', 'Annulée', 'Rejetée'],
           valeurs: [
             factures.filter(f => f.statut === 'SIGNED').length,
             factures.filter(f => f.statut === 'PAID').length,
             factures.filter(f => f.statut === 'SENT' || f.statut === 'DRAFT').length,
-            factures.filter(f => f.statut === 'CANCELLED' || f.statut === 'REJECTED').length
+            factures.filter(f => f.statut === 'CANCELLED').length,
+            factures.filter(f => f.statut === 'REJECTED').length
           ]
         },
         ventesParProduit: (() => {

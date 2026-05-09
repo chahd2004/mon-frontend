@@ -168,6 +168,7 @@ export class FacturesComponent implements OnInit, OnDestroy {
   }
 
   formatStatut(statut: string): string {
+    if (!statut) return '';
     return this.translate.instant('STATUS.' + statut);
   }
 

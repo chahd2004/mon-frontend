@@ -55,6 +55,8 @@
   "FACTURES": {
     "TITLE": "Invoices Management",
     "NEW": "New Invoice",
+    "ALL_STATUSES": "All statuses",
+    "FILTER_STATUS": "Filter by status",
     "SEARCH_PLACEHOLDER": "Search by Invoice N° or client...",
     "TABLE": {
       "NUM": "Invoice N°",

@@ -245,6 +245,12 @@ export class DemandeFormComponent {
         }
 
         const message = this.extractApiError(err, 'Une erreur est survenue lors de la soumission.');
+        
+        // Gestion spécifique de l'erreur d'email déjà utilisé
+        if (message.includes('email') && (message.includes('utilisé') || message.includes('existe déjà'))) {
+          this.fieldErrors['email'] = message;
+        }
+
         const fieldCount = Object.keys(this.fieldErrors).length;
         
         this.messageService.add({
@@ -252,9 +258,7 @@ export class DemandeFormComponent {
           summary: fieldCount > 0 ? 'Erreur de formulaire' : 'Erreur',
           detail: fieldCount > 1 
             ? `Veuillez corriger les ${fieldCount} erreurs indiquées.` 
-            : fieldCount === 1 
-              ? 'Veuillez corriger l\'erreur indiquée.' 
-              : message
+            : message // Affiche le message spécifique s'il n'y a qu'une erreur ou aucune erreur par champ
         });
       },
       complete: () => {

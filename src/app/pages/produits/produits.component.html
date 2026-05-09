@@ -102,9 +102,6 @@
             <h3 style="color:#1e293b; margin:0.5rem 0;">{{ 'PRODUITS.EMPTY.TITLE' | translate }}</h3>
             <p *ngIf="!isViewer" style="color:#64748b; margin-bottom:1.5rem;">{{ 'PRODUITS.EMPTY.SUBTITLE_ADD' | translate }}</p>
             <p *ngIf="isViewer" style="color:#64748b; margin-bottom:1.5rem;">{{ 'PRODUITS.EMPTY.SUBTITLE_VIEW' | translate }}</p>
-            <button *ngIf="!isViewer" class="add-btn" (click)="ajouterProduit()">
-              <i class="pi pi-plus"></i> {{ 'PRODUITS.NEW' | translate }}
-            </button>
           </td>
         </tr>
       </ng-template>

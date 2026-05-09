@@ -30,4 +30,13 @@ export class EmetteurService extends BaseService {
   deleteEmetteur(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`, this.getHeaders());
   }
+
+  // Profil entreprise pour l'utilisateur connecté
+  getMyProfile(): Observable<Emetteur> {
+    return this.http.get<Emetteur>(`${this.apiUrl}/my-profile`, this.getHeaders());
+  }
+
+  updateMyProfile(emetteur: EmetteurRequest): Observable<Emetteur> {
+    return this.http.put<Emetteur>(`${this.apiUrl}/my-profile`, emetteur, this.getHeaders());
+  }
 }

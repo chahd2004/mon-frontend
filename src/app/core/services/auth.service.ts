@@ -8,10 +8,12 @@ import { UpdatePasswordRequest } from '../../models/user.models';
 import { UserDTO } from '../../models/user.models';
 import { ADMIN_ROLES, UserRole, normalizeUserRole } from '../../models/enums';
 
+import { environment } from '../../../environments/environment';
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 
-  private readonly API_URL = 'http://localhost:8080/api/auth';
+  private readonly API_URL = `${environment.apiUrl}/auth`;
   private readonly TOKEN_KEY = 'jwt_token';
   private readonly USER_KEY = 'current_user';
 
@@ -45,6 +47,19 @@ export class AuthService {
   updatePassword(request: UpdatePasswordRequest): Observable<void> {
     return this.http.post<void>(`${this.API_URL}/change-password`, request).pipe(
       tap(() => this.markFirstLoginAsCompleted())
+    );
+  }
+
+  updateProfile(request: any): Observable<UserDTO> {
+    return this.http.put<UserDTO>(`${this.API_URL}/profile`, request).pipe(
+      tap(updatedUser => {
+        const current = this._currentUser();
+        if (current) {
+          const newUser = { ...current, ...updatedUser };
+          localStorage.setItem(this.USER_KEY, JSON.stringify(newUser));
+          this._currentUser.set(newUser);
+        }
+      })
     );
   }
 

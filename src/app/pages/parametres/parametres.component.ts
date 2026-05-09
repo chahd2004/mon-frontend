@@ -17,6 +17,7 @@ import { InputSwitchModule } from 'primeng/inputswitch';
 import { AvatarModule } from 'primeng/avatar';
 import { FileUploadModule } from 'primeng/fileupload';
 import { TabViewModule } from 'primeng/tabview';
+import { DropdownModule } from 'primeng/dropdown';
 import { TooltipModule } from 'primeng/tooltip';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MessageService, ConfirmationService } from 'primeng/api';
@@ -30,7 +31,7 @@ import { EmetteurService } from '../../core/services/emetteur.service';
     CommonModule, FormsModule,
     CardModule, ButtonModule, InputTextModule, PasswordModule,
     DividerModule, ToastModule, ConfirmDialogModule,
-    SelectButtonModule, InputSwitchModule,
+    SelectButtonModule, InputSwitchModule, DropdownModule,
     AvatarModule, FileUploadModule, TabViewModule, TooltipModule,
     TranslateModule
   ],
@@ -59,6 +60,7 @@ export class ParametresComponent implements OnInit {
     avatar: '', role: '',
     dateCreation: '', derniereConnexion: new Date()
   };
+  fullEmetteur: any = null;
 
   // ===== SÉCURITÉ =====
   passwordData = { ancien: '', nouveau: '', confirmation: '' };
@@ -80,16 +82,28 @@ export class ParametresComponent implements OnInit {
 
   // ===== SOCIÉTÉ =====
   societeInfo = {
-    raison_sociale: 'TRADENET', adresse: '123 Rue de la Liberté, Tunis',
-    email: 'contact@tradenet.com.tn', telephone: '71 86 11 41',
-    matricule_fiscal: '750230XAM001', rc: 'B11 260100',
-    iban: 'TN59 1000 1234 5678 9012 3456', banque: 'Banque de Tunisie',
-    forme_juridique: 'SARL', capitale: '200000'
+    raison_sociale: '', adresse: '',
+    email: '', telephone: '',
+    matricule_fiscal: '', code: '',
+    forme_juridique: 'SARL', region: 'TUNIS',
+    iban: '', banque: '', site_web: ''
   };
 
   // ===== OPTIONS =====
   langues     = [{ label: 'Français', value: 'fr' }, { label: 'English', value: 'en' }];
   themes      = [{ label: 'Clair', value: 'clair' }, { label: 'Sombre', value: 'sombre' }, { label: 'Système', value: 'systeme' }];
+  
+  formesJuridiques = [
+    { label: 'SARL', value: 'SARL' }, { label: 'SA', value: 'SA' }, 
+    { label: 'SUARL', value: 'SUARL' }, { label: 'PERSONNE_PHYSIQUE', value: 'PERSONNE_PHYSIQUE' }
+  ];
+  
+  regions = [
+    { label: 'Tunis', value: 'TUNIS' }, { label: 'Ariana', value: 'ARIANA' },
+    { label: 'Ben Arous', value: 'BEN_AROUS' }, { label: 'Manouba', value: 'MANOUBA' },
+    { label: 'Sousse', value: 'SOUSSE' }, { label: 'Sfax', value: 'SFAX' },
+    { label: 'Bizerte', value: 'BIZERTE' }, { label: 'Gabès', value: 'GABES' }
+  ];
   // formatsDate removed from UI
 
   // ===== INIT =====
@@ -108,24 +122,29 @@ export class ParametresComponent implements OnInit {
       this.userProfile.email  = user.email  || '';
       this.userProfile.role   = user.role   || '';
 
-      // Charger les données de l'émetteur depuis l'API
-      const emetteurId = user.emetteurId;
-      if (emetteurId) {
-        this.emetteurService.getEmetteurById(Number(emetteurId)).subscribe({
+      // Charger les données de l'émetteur uniquement pour les rôles entreprise
+      if (!this.isSuperAdmin()) {
+        this.emetteurService.getMyProfile().subscribe({
           next: (emetteur) => {
+            this.fullEmetteur = emetteur;
             this.societeInfo.raison_sociale = emetteur.raisonSociale || '';
             this.societeInfo.telephone      = emetteur.telephone      || '';
             this.societeInfo.adresse        = emetteur.adresseComplete || '';
             this.societeInfo.iban           = emetteur.iban            || '';
             this.societeInfo.email          = emetteur.email           || '';
+            this.societeInfo.code           = emetteur.code            || '';
+            this.societeInfo.matricule_fiscal = emetteur.matriculeFiscal || '';
+            this.societeInfo.forme_juridique = emetteur.formeJuridique   || 'SARL';
+            this.societeInfo.region          = emetteur.region           || 'TUNIS';
+            this.societeInfo.banque          = emetteur.banque           || '';
+            this.societeInfo.site_web        = emetteur.siteWeb          || '';
           },
-          error: () => {
+          error: (err) => {
+            console.error('Erreur chargement profil entreprise:', err);
             // Fallback silencieux si l'API n'est pas disponible
             if (user.telephone) this.societeInfo.telephone = user.telephone;
           }
         });
-      } else if (user.telephone) {
-        this.societeInfo.telephone = user.telephone;
       }
     }
   }
@@ -222,10 +241,26 @@ export class ParametresComponent implements OnInit {
 
   // ===== PROFIL =====
   sauvegarderProfil(): void {
-    this.messageService.add({
-      severity: 'success',
-      summary: this.translate.instant('TOAST.SUCCESS'),
-      detail: this.translate.instant('PARAMETRES.MSGS.PROFILE_SUCCESS')
+    const request = {
+      nom: this.userProfile.nom,
+      prenom: this.userProfile.prenom
+    };
+
+    this.authService.updateProfile(request).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: this.translate.instant('TOAST.SUCCESS'),
+          detail: this.translate.instant('PARAMETRES.MSGS.PROFILE_SUCCESS') || 'Profil mis à jour'
+        });
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: this.translate.instant('TOAST.ERROR'),
+          detail: err.error?.message || 'Erreur lors de la mise à jour'
+        });
+      }
     });
   }
 
@@ -259,12 +294,27 @@ export class ParametresComponent implements OnInit {
       });
       return;
     }
-    this.messageService.add({
-      severity: 'success',
-      summary: this.translate.instant('TOAST.SUCCESS'),
-      detail: this.translate.instant('PARAMETRES.MSGS.PWD_SUCCESS')
+    this.authService.updatePassword({
+      oldPassword: this.passwordData.ancien,
+      newPassword: this.passwordData.nouveau,
+      confirmPassword: this.passwordData.confirmation
+    }).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: this.translate.instant('TOAST.SUCCESS'),
+          detail: this.translate.instant('PARAMETRES.MSGS.PWD_SUCCESS') || 'Mot de passe changé'
+        });
+        this.passwordData = { ancien: '', nouveau: '', confirmation: '' };
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: this.translate.instant('TOAST.ERROR'),
+          detail: err.error?.message || 'Erreur lors du changement'
+        });
+      }
     });
-    this.passwordData = { ancien: '', nouveau: '', confirmation: '' };
   }
 
   activer2FA(): void {
@@ -291,10 +341,42 @@ export class ParametresComponent implements OnInit {
 
   // ===== SOCIÉTÉ =====
   sauvegarderSociete(): void {
-    this.messageService.add({
-      severity: 'success',
-      summary: this.translate.instant('TOAST.SUCCESS'),
-      detail: this.translate.instant('PARAMETRES.MSGS.SOCIETE_SUCCESS')
+    const user = this.authService.currentUser();
+    if (!user?.emetteurId) {
+      this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'ID Émetteur non trouvé' });
+      return;
+    }
+
+    const request = {
+      ...this.fullEmetteur,
+      code: this.societeInfo.code,
+      raisonSociale: this.societeInfo.raison_sociale,
+      matriculeFiscal: this.societeInfo.matricule_fiscal,
+      formeJuridique: this.societeInfo.forme_juridique,
+      region: this.societeInfo.region,
+      telephone: this.societeInfo.telephone,
+      adresseComplete: this.societeInfo.adresse,
+      iban: this.societeInfo.iban,
+      email: this.societeInfo.email,
+      banque: this.societeInfo.banque,
+      siteWeb: this.societeInfo.site_web
+    };
+
+    this.emetteurService.updateMyProfile(request).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: this.translate.instant('TOAST.SUCCESS'),
+          detail: this.translate.instant('PARAMETRES.MSGS.SOCIETE_SUCCESS') || 'Société mise à jour'
+        });
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: this.translate.instant('TOAST.ERROR'),
+          detail: err.error?.message || 'Erreur lors de la mise à jour de la société'
+        });
+      }
     });
   }
 

@@ -35,7 +35,11 @@ export class LoginComponent implements OnInit {
 
   email: string = '';
   password: string = '';
+  rememberMe: boolean = false;
   loading: boolean = false;
+  recentEmails: string[] = [];
+  private readonly REMEMBER_ME_KEY = 'remember_me_email';
+  private readonly RECENT_EMAILS_KEY = 'recent_login_emails';
 
   get isAdminContext(): boolean {
     const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
@@ -43,7 +47,20 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Permet l'accès au login même si connecté
+    const savedEmail = localStorage.getItem(this.REMEMBER_ME_KEY);
+    if (savedEmail) {
+      this.email = savedEmail;
+      this.rememberMe = true;
+    }
+
+    const storedRecent = localStorage.getItem(this.RECENT_EMAILS_KEY);
+    if (storedRecent) {
+      try {
+        this.recentEmails = JSON.parse(storedRecent);
+      } catch (e) {
+        this.recentEmails = [];
+      }
+    }
   }
 
   login(): void {
@@ -64,15 +81,26 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    this.loading = true;
-
     const request: LoginRequest = {
       email: this.email.trim(),
       password: this.password
     };
+    console.log('🚀 Tentative de connexion pour:', request.email);
 
     this.authService.login(request).subscribe({
-      next: () => {
+      next: (response) => {
+        console.log('✅ Connexion réussie, réponse:', response);
+        
+        // Gérer le "Se souvenir de moi"
+        if (this.rememberMe) {
+          localStorage.setItem(this.REMEMBER_ME_KEY, this.email.trim());
+        } else {
+          localStorage.removeItem(this.REMEMBER_ME_KEY);
+        }
+
+        // Ajouter à la liste des emails récents
+        this.addToRecentEmails(this.email.trim());
+
         const redirectUrl = this.getPostLoginRedirectUrl();
         this.messageService.add({
           severity: 'success',
@@ -84,6 +112,7 @@ export class LoginComponent implements OnInit {
         }, 1500);
       },
       error: (err) => {
+        console.error('❌ Erreur de connexion:', err);
         this.loading = false;
         const message = err?.error?.message || 'Identifiants incorrects';
         this.messageService.add({
@@ -131,7 +160,22 @@ export class LoginComponent implements OnInit {
     if (this.authService.hasRole('ENTREPRISE_VIEWER')) {
       return returnUrl || '/dashboard';
     }
-
     return returnUrl || '/dashboard';
+  }
+
+  private addToRecentEmails(email: string): void {
+    if (!email) return;
+    
+    // Filtrer pour éviter les doublons
+    let emails = this.recentEmails.filter(e => e.toLowerCase() !== email.toLowerCase());
+    
+    // Ajouter au début
+    emails.unshift(email);
+    
+    // Limiter à 5
+    emails = emails.slice(0, 5);
+    
+    this.recentEmails = emails;
+    localStorage.setItem(this.RECENT_EMAILS_KEY, JSON.stringify(this.recentEmails));
   }
 }

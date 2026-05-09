@@ -1,0 +1,231 @@
+@startuml
+skinparam backgroundColor White
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+hide circle
+hide empty members
+
+skinparam class {
+    BackgroundColor White
+    BorderColor #1565C0
+    HeaderBackgroundColor #BBDEFB
+    FontName Arial
+    FontSize 10
+    AttributeFontSize 9
+}
+skinparam package {
+    BackgroundColor #F0F8FF
+    BorderColor #1565C0
+    FontName Arial
+    FontSize 11
+}
+skinparam ArrowColor #263238
+skinparam ArrowThickness 1.2
+
+' ═══ COMPTES ═══
+package "Comptes" {
+    class DemandeEmetteur {
+        id : Long
+        raisonSociale : String
+        matriculeFiscal : String
+        status : AccountStatus
+        dateSoumission : LocalDateTime
+    }
+    class User {
+        id : Long
+        email : String
+        nom : String
+        prenom : String
+        role : UserRole
+        accountStatus : AccountStatus
+    }
+    class Emetteur {
+        id : Long
+        raisonSociale : String
+        matriculeFiscal : String
+        formeJuridique : FormeJuridique
+        adresseComplete : String
+        region : RegionTunisie
+        email : String
+        telephone : String
+    }
+    class Client {
+        id : Long
+        raisonSociale : String
+        email : String
+        telephone : String
+        region : RegionTunisie
+    }
+    DemandeEmetteur -[hidden]d- User
+    User -[hidden]d- Emetteur
+    Emetteur -[hidden]d- Client
+}
+
+' ═══ DOCUMENTS ═══
+package "Documents" {
+    class Devis {
+        id : Long
+        numDevis : String
+        dateCreation : LocalDate
+        statut : StatutDevis
+        totalHT : BigDecimal
+        totalTTC : BigDecimal
+        calculerTotaux() : void
+    }
+    class Facture {
+        id : Long
+        numFact : String
+        dateEmission : LocalDate
+        statut : StatutFacture
+        totalHT : BigDecimal
+        totalTTC : BigDecimal
+        calculerTotaux() : void
+    }
+    class BonCommande {
+        id : Long
+        numBonCommande : String
+        dateCreation : LocalDate
+        statut : StatutBonCommande
+        dateSignature : LocalDateTime
+        calculerTotaux() : void
+    }
+    class Commande {
+        id : Long
+        numCommande : String
+        dateCreation : LocalDate
+        statut : StatutCommande
+        totalTTC : BigDecimal
+        calculerTotaux() : void
+    }
+    class BonLivraison {
+        id : Long
+        numBonLivraison : String
+        dateCreation : LocalDate
+        dateLivraison : LocalDate
+        statut : StatutBonLivraison
+    }
+    class Avoir {
+        id : Long
+        numAvoir : String
+        dateCreation : LocalDate
+        statut : StatutAvoir
+        totalTTC : BigDecimal
+        calculerTotaux() : void
+    }
+    Devis -[hidden]d- Facture
+    Facture -[hidden]d- BonCommande
+    BonCommande -[hidden]d- Commande
+    Commande -[hidden]d- BonLivraison
+    BonLivraison -[hidden]d- Avoir
+}
+
+' ═══ LIGNES ═══
+package "Lignes" {
+    class LigneDevis {
+        id : Long
+        quantite : Integer
+        prixUnitaire : BigDecimal
+        montantHT : BigDecimal
+    }
+    class LigneFacture {
+        id : Long
+        quantite : Integer
+        prixUnitaire : BigDecimal
+    }
+    class LigneBonCommande {
+        id : Long
+        quantite : Integer
+        prixUnitaire : BigDecimal
+        montantHT : BigDecimal
+    }
+    class LigneCommande {
+        id : Long
+        quantite : Integer
+        prixUnitaire : BigDecimal
+        montantHT : BigDecimal
+    }
+    class LigneBonLivraison {
+        id : Long
+        quantite : Integer
+    }
+    class LigneAvoir {
+        id : Long
+        quantite : Integer
+        prixUnitaire : BigDecimal
+        montantHT : BigDecimal
+    }
+    LigneDevis -[hidden]d- LigneFacture
+    LigneFacture -[hidden]d- LigneBonCommande
+    LigneBonCommande -[hidden]d- LigneCommande
+    LigneCommande -[hidden]d- LigneBonLivraison
+    LigneBonLivraison -[hidden]d- LigneAvoir
+}
+
+' ═══ CATALOGUE ═══
+package "Catalogue" {
+    class Produit {
+        id : Long
+        reference : String
+        designation : String
+        prixUnitaire : BigDecimal
+        tauxTVA : BigDecimal
+        quantiteStock : Integer
+        seuilAlerteStock : Integer
+        isDisponible(qty) : boolean
+        diminuerStock(qty) : void
+    }
+}
+
+' ═══════════════════════════════════
+' RELATIONS
+' ═══════════════════════════════════
+
+' Comptes
+User "1" --> "0..1" DemandeEmetteur : userCree
+DemandeEmetteur "0..1" --> "1" Emetteur : emetteurCree
+User "1" --> "1" Emetteur : administre
+Emetteur "1" --> "0..*" Client : gere
+
+' Vendeur (1 -> *)
+Emetteur "1" -right-> "0..*" Devis : vendeur
+Emetteur "1" -right-> "0..*" Facture : vendeur
+Emetteur "1" -right-> "0..*" BonCommande : vendeur
+Emetteur "1" -right-> "0..*" Commande : vendeur
+Emetteur "1" -right-> "0..*" BonLivraison : vendeur
+Emetteur "1" -right-> "0..*" Avoir : vendeur
+
+' Acheteur (0..1 -> 1)
+Client "0..1" -right-> "1" Devis : acheteur
+Client "0..1" -right-> "1" Facture : acheteur
+Client "0..1" -right-> "1" BonCommande : acheteur
+Client "0..1" -right-> "1" Commande : acheteur
+Client "0..1" -right-> "1" BonLivraison : acheteur
+Client "0..1" -right-> "1" Avoir : acheteur
+
+' Catalogue
+Emetteur "1" -right-> "0..*" Produit : catalogue
+
+' Compositions
+Devis "1" *-right-> "0..*" LigneDevis
+Facture "1" *-right-> "0..*" LigneFacture
+BonCommande "1" *-right-> "0..*" LigneBonCommande
+Commande "1" *-right-> "0..*" LigneCommande
+BonLivraison "1" *-right-> "0..*" LigneBonLivraison
+Avoir "1" *-right-> "0..*" LigneAvoir
+
+' Lignes -> Produit
+LigneDevis "0..*" -right-> "1" Produit
+LigneFacture "0..*" -right-> "1" Produit
+LigneBonCommande "0..*" -right-> "1" Produit
+LigneCommande "0..*" -right-> "1" Produit
+LigneBonLivraison "0..*" -right-> "1" Produit
+LigneAvoir "0..*" -right-> "1" Produit
+
+' Flux métier
+Devis ..> BonCommande : génère
+BonCommande ..> Commande : génère
+Commande ..> BonLivraison : expédie
+BonLivraison ..> Facture : transforme
+Facture ..> Avoir : annule
+
+@enduml

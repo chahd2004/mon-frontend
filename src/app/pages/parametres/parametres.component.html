@@ -54,19 +54,19 @@
           </div>
           <div class="profile-card-body">
             <div class="form-group">
-              <label>{{ 'PARAMETRES.PASSWORD.ACTUEL' | translate }}</label>
-              <p-password [(ngModel)]="passwordData.ancien" [feedback]="false" [toggleMask]="true"
-                styleClass="password-field" inputStyleClass="param-input" placeholder="••••••••••"></p-password>
+              <label for="ancien">{{ 'PARAMETRES.PASSWORD.ACTUEL' | translate }}</label>
+              <p-password inputId="ancien" [(ngModel)]="passwordData.ancien" [feedback]="false" [toggleMask]="true"
+                styleClass="password-field" inputStyleClass="param-input" placeholder="Entrez le mot de passe actuel"></p-password>
             </div>
             <div class="form-group">
-              <label>{{ 'PARAMETRES.PASSWORD.NOUVEAU' | translate }}</label>
-              <p-password [(ngModel)]="passwordData.nouveau" [feedback]="true" [toggleMask]="true"
-                styleClass="password-field" inputStyleClass="param-input" placeholder="••••••••••"></p-password>
+              <label for="nouveau">{{ 'PARAMETRES.PASSWORD.NOUVEAU' | translate }}</label>
+              <p-password inputId="nouveau" [(ngModel)]="passwordData.nouveau" [feedback]="true" [toggleMask]="true"
+                styleClass="password-field" inputStyleClass="param-input" placeholder="Nouveau mot de passe"></p-password>
             </div>
             <div class="form-group">
-              <label>{{ 'PARAMETRES.PASSWORD.CONFIRMER' | translate }}</label>
-              <p-password [(ngModel)]="passwordData.confirmation" [feedback]="false" [toggleMask]="true"
-                styleClass="password-field" inputStyleClass="param-input" placeholder="••••••••••"></p-password>
+              <label for="confirmation">{{ 'PARAMETRES.PASSWORD.CONFIRMER' | translate }}</label>
+              <p-password inputId="confirmation" [(ngModel)]="passwordData.confirmation" [feedback]="false" [toggleMask]="true"
+                styleClass="password-field" inputStyleClass="param-input" placeholder="Confirmer le mot de passe"></p-password>
             </div>
             <button *ngIf="!isViewer" pButton [label]="'PARAMETRES.PASSWORD.BTN_CHANGE' | translate" class="p-button-warning profile-save-btn"
               (click)="changerMotDePasse()">
@@ -81,22 +81,49 @@
             <h3>{{ 'PARAMETRES.SOCIETE.TITLE' | translate }}</h3>
           </div>
           <div class="profile-card-body">
-            <div class="form-group">
-              <label>{{ 'PARAMETRES.SOCIETE.RAISON' | translate }}</label>
-              <input type="text" pInputText [(ngModel)]="societeInfo.raison_sociale" class="param-input" placeholder="Acme SARL">
+            <div class="form-group-grid">
+              <div class="form-group">
+                <label>{{ 'PARAMETRES.SOCIETE.RAISON' | translate }}</label>
+                <input type="text" pInputText [(ngModel)]="societeInfo.raison_sociale" class="param-input" placeholder="Acme SARL">
+              </div>
             </div>
-            <div class="form-group">
-              <label>{{ 'PARAMETRES.SOCIETE.TEL' | translate }}</label>
-              <input type="text" pInputText [(ngModel)]="societeInfo.telephone" class="param-input" placeholder="+216 71 123 456">
+
+
+            <div class="form-group-grid">
+              <div class="form-group">
+                <label>Forme Juridique</label>
+                <p-dropdown [options]="formesJuridiques" [(ngModel)]="societeInfo.forme_juridique" 
+                  styleClass="param-input-dropdown" [placeholder]="'Choisir...'"></p-dropdown>
+              </div>
+              <div class="form-group">
+                <label>Région</label>
+                <p-dropdown [options]="regions" [(ngModel)]="societeInfo.region" 
+                  styleClass="param-input-dropdown" [placeholder]="'Choisir...'"></p-dropdown>
+              </div>
             </div>
-            <div class="form-group">
-              <label>{{ 'PARAMETRES.SOCIETE.ADRESSE' | translate }}</label>
-              <input type="text" pInputText [(ngModel)]="societeInfo.adresse" class="param-input" placeholder="123 Rue de la Liberté, Tunis">
+
+            <div class="form-group-grid">
+              <div class="form-group">
+                <label>{{ 'PARAMETRES.SOCIETE.TEL' | translate }}</label>
+                <input type="text" pInputText [(ngModel)]="societeInfo.telephone" class="param-input" placeholder="216 71 123 456">
+              </div>
+              <div class="form-group">
+                <label>Site Web</label>
+                <input type="text" pInputText [(ngModel)]="societeInfo.site_web" class="param-input" placeholder="https://www.acme.tn">
+              </div>
             </div>
-            <div class="form-group">
-              <label>{{ 'PARAMETRES.SOCIETE.IBAN' | translate }}</label>
-              <input type="text" pInputText [(ngModel)]="societeInfo.iban" class="param-input" placeholder="TN59 1234 5678">
+
+            <div class="form-group-grid">
+              <div class="form-group">
+                <label>Banque</label>
+                <input type="text" pInputText [(ngModel)]="societeInfo.banque" class="param-input" placeholder="Banque Centrale">
+              </div>
+              <div class="form-group">
+                <label>{{ 'PARAMETRES.SOCIETE.ADRESSE' | translate }}</label>
+                <input type="text" pInputText [(ngModel)]="societeInfo.adresse" class="param-input" placeholder="123 Rue de la Liberté, Tunis">
+              </div>
             </div>
+
             <button *ngIf="!isViewer" pButton [label]="'PARAMETRES.SOCIETE.BTN_SAVE' | translate" class="btn-green profile-save-btn"
               (click)="sauvegarderSociete()">
             </button>

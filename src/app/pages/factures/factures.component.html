@@ -20,9 +20,25 @@
       <i class="pi pi-search"></i>
       <input type="text" pInputText [placeholder]="'FACTURES.SEARCH_PLACEHOLDER' | translate" [(ngModel)]="searchText"
         (keyup.enter)="onSearch()" autocomplete="one-time-code" name="facture_search_query" id="facture_search_query">
-      <button *ngIf="searchText" class="clear-search" (click)="resetFilters()">
+      <button *ngIf="searchText || statutFilter" class="clear-search" (click)="resetFilters()">
         <i class="pi pi-times"></i>
       </button>
+    </div>
+    
+    <div class="status-filter" style="min-width: 200px;">
+      <p-dropdown 
+        [options]="statuts" 
+        [(ngModel)]="statutFilter" 
+        (onChange)="applyFilters()" 
+        [placeholder]="'FACTURES.FILTER_STATUS' | translate" 
+        styleClass="w-full">
+        <ng-template pTemplate="selectedItem" let-selectedOption>
+          <div *ngIf="selectedOption">{{ formatStatut(selectedOption) }}</div>
+        </ng-template>
+        <ng-template pTemplate="item" let-option>
+          <div>{{ formatStatut(option) }}</div>
+        </ng-template>
+      </p-dropdown>
     </div>
   </div>
 
@@ -140,9 +156,6 @@
               <i class="pi pi-file" style="font-size: 3rem; color: #94a3b8;"></i>
               <h3>{{ 'FACTURES.EMPTY.TITLE' | translate }}</h3>
               <p>{{ 'FACTURES.EMPTY.SUBTITLE' | translate }}</p>
-              <button *ngIf="!isViewer" class="nouvelle-facture-btn" (click)="nouvelleFacture()">
-                <i class="pi pi-plus"></i> {{ 'FACTURES.EMPTY.BUTTON' | translate }}
-              </button>
             </div>
           </td>
         </tr>

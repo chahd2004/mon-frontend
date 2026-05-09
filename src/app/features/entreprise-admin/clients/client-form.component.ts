@@ -10,6 +10,7 @@ import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
 import { Router } from '@angular/router';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-client-form',
@@ -64,7 +65,8 @@ export class ClientFormComponent implements OnInit {
     private clientService: ClientService,
     private messageService: MessageService,
     private errorHandler: ErrorHandlerService,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) { }
 
   ngOnInit(): void {
@@ -91,14 +93,16 @@ export class ClientFormComponent implements OnInit {
       this.isSubmitting = true;
       const val = this.form.value;
       
+      const currentUser = this.authService.currentUser();
+      
       this.clientService.createClient({
-        code: val.code,
         raisonSociale: val.raisonSociale,
         email: val.email,
         telephone: val.telephone,
         adresseComplete: val.adresse,
         pays: 'TUNISIE',
-        region: val.region
+        region: val.region,
+        userId: currentUser?.id
       }).subscribe({
         next: () => {
           this.messageService.add({

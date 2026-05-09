@@ -241,6 +241,17 @@ $border:       #e2e8f0;
   }
 }
 
+.form-group-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 1.1rem;
+  }
+}
+
 .form-group {
   display: flex;
   flex-direction: column;
@@ -270,6 +281,24 @@ $border:       #e2e8f0;
 
   &:focus { border-color: $primary-blue; outline: none; box-shadow: 0 0 0 3px rgba($primary-blue, 0.1); }
   &:disabled { background: $gray-light; color: $gray-text; cursor: not-allowed; }
+}
+
+::ng-deep .param-input-dropdown {
+  width: 100%;
+  .p-dropdown {
+    width: 100%;
+    border: 2px solid $border;
+    border-radius: 8px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    background: white;
+    &:not(.p-disabled).p-focus {
+      border-color: $primary-blue;
+      box-shadow: 0 0 0 3px rgba($primary-blue, 0.1);
+    }
+  }
+  .p-dropdown-label { font-size: 0.95rem; color: $dark-blue; padding-left: 0.9rem; }
 }
 
 // ===== BOUTON SECTION =====

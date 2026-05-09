@@ -34,7 +34,6 @@ import { environment } from '../../../environments/environment';
 import { FactureRefreshService } from '../../core/services/facture-refresh.service';
 
 const DEFAULT_VENDEUR_ID = 1;
-const QR_BASE_URL = 'https://mon-app.com';
 
 interface Emetteur {
   id: number;
@@ -118,8 +117,9 @@ export class FactureComponent implements OnInit {
 
   // ===== QR CODE =====
   get qrUrl(): string {
-    const id = this.factureId ?? this.numFact ?? 'UNKNOWN';
-    return `${QR_BASE_URL}/factures/status/${id}`;
+    const id = this.factureId ?? 'UNKNOWN';
+    const baseUrl = environment.qrBaseUrl || window.location.origin;
+    return `${baseUrl}/public/facture/${id}`;
   }
 
   // ===== DONNÉES =====

@@ -13,11 +13,12 @@ export interface Client {
 }
 
 export interface ClientRequest {
-  code: string;
+  code?: string;
   raisonSociale: string;
   email: string;
   telephone: string;
   adresseComplete: string;
   pays: string;
   region: RegionTunisie;
+  userId?: number;
 }

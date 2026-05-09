@@ -15,7 +15,7 @@ export const appConfig: ApplicationConfig = {
     ),
     provideAnimations(),
     provideTranslateService({
-      defaultLanguage: 'fr',
+      fallbackLang: 'fr',
       loader: {
         provide: TranslateLoader,
         useClass: TranslateHttpLoader

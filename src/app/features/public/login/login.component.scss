@@ -73,14 +73,22 @@
           }
         }
 
-        &.checkbox {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
+        &.checkbox-group {
+          margin-bottom: 1.5rem;
+          
+          .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
 
-          label {
-            margin-bottom: 0;
-            cursor: pointer;
+            label {
+              margin-bottom: 0;
+              cursor: pointer;
+              font-size: 0.9rem;
+              text-transform: none;
+              font-weight: 500;
+              color: #64748b;
+            }
           }
         }
       }

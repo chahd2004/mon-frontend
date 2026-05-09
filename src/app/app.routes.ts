@@ -12,6 +12,7 @@ import { DemandeStatutComponent } from './features/public/demande-statut/demande
 import { BonCommandeSignatureComponent } from './features/public/bon-commande-signature/bon-commande-signature.component';
 import { BonsLivraisonSignatureComponent } from './features/public/bons-livraison-signature/bons-livraison-signature.component';
 import { DevisPublicActionComponent } from './features/public/devis-public-action/devis-public-action.component';
+import { PublicFactureComponent } from './pages/public-facture/public-facture.component';
 
 // ✅ PHASE 3 - SUPER_ADMIN Pages
 import { SuperAdminLayoutComponent } from './features/super-admin/layout/super-admin-layout.component';
@@ -85,6 +86,7 @@ export const routes: Routes = [
   { path: 'change-password', component: ChangePasswordComponent, canActivate: [firstLoginGuard] },
   { path: 'demande', component: DemandeFormComponent },
   { path: 'demande/statut', component: DemandeStatutComponent },
+  { path: 'public/facture/:id', component: PublicFactureComponent },
   
   // ── Protégées : faut être connecté ─────────────────────────────
   {

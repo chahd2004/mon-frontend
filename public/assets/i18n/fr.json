@@ -55,6 +55,8 @@
   "FACTURES": {
     "TITLE": "Gestion des factures",
     "NEW": "Nouvelle facture",
+    "ALL_STATUSES": "Tous les statuts",
+    "FILTER_STATUS": "Filtrer par statut",
     "SEARCH_PLACEHOLDER": "Rechercher par N° facture ou client...",
     "TABLE": {
       "NUM": "N° Facture",
@@ -603,7 +605,10 @@
       "PWD_SUCCESS": "Mot de passe changé",
       "SOCIETE_SUCCESS": "Informations entreprise mises à jour",
       "ERROR": "Une erreur est survenue",
-      "SAVING": "Enregistrement..."
+      "SAVING": "Enregistrement...",
+      "VALIDATION_REQUIRED": "Veuillez remplir tous les champs obligatoires",
+      "PWD_MISMATCH": "Les nouveaux mots de passe ne correspondent pas",
+      "PWD_MIN_LENGTH": "Le nouveau mot de passe doit contenir au moins 8 caractères"
     }
   },
   "COMMON": {

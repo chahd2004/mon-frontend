@@ -143,6 +143,8 @@ export class DemandesListComponent implements OnInit {
       icon: 'pi pi-exclamation-triangle',
       acceptLabel: this.translate.instant('SUPER_ADMIN.REQUESTS.DETAIL.APPROVE') as string,
       rejectLabel: this.translate.instant('COMMON.CANCEL') as string,
+      acceptButtonStyleClass: 'p-button-success',
+      rejectButtonStyleClass: 'p-button-text p-button-secondary',
       accept: () => {
         this.isLoading = true;
         this.demandeService.approuverDemande(demande.id).subscribe({

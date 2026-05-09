@@ -88,6 +88,15 @@
           font-size: 0.95rem;
           font-family: inherit;
           box-sizing: border-box;
+          transition: border-color 0.2s, box-shadow 0.2s;
+
+          &.p-invalid {
+            border-color: #ef4444 !important;
+            
+            &:focus {
+              box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
+            }
+          }
 
           &:focus {
             border-color: var(--brand-primary);
